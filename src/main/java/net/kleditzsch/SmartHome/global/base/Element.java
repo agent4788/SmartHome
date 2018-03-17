@@ -1,5 +1,7 @@
 package net.kleditzsch.SmartHome.global.base;
 
+import java.util.Optional;
+
 /**
  * Basis Element
  *
@@ -99,8 +101,9 @@ public abstract class Element {
      *
      * @return Beschreibung des Elements
      */
-    public String getDescription() {
-        return description;
+    public Optional<String> getDescription() {
+
+        return Optional.ofNullable(description);
     }
 
     /**

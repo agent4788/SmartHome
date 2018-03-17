@@ -11,4 +11,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compile group: 'com.google.code.gson', name: 'gson', version: '+'
+
+    // https://mvnrepository.com/artifact/org.jdom/jdom2
+    compile group: 'org.jdom', name: 'jdom2', version: '+'
 }
