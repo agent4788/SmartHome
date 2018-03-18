@@ -1,8 +1,8 @@
-package net.kleditzsch.SmartHome.util.DateTime.Holidays;
+package net.kleditzsch.SmartHome.util.datetime.Holidays;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
-import net.kleditzsch.SmartHome.util.DateTime.EasterDate;
+import net.kleditzsch.SmartHome.util.datetime.EasterDate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

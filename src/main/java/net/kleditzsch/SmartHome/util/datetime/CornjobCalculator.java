@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.util.DateTime;
+package net.kleditzsch.SmartHome.util.datetime;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;

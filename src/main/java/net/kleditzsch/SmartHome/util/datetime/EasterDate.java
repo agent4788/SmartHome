@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.util.DateTime;
+package net.kleditzsch.SmartHome.util.datetime;
 
 import com.google.common.base.Preconditions;
 
