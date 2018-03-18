@@ -2,6 +2,7 @@ package net.kleditzsch.SmartHome.util.api.avm;
 
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.*;
 import net.kleditzsch.SmartHome.util.api.avm.Device.SmarthomeDevice;
+import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Fritz Box SmartHome HTTP API
@@ -62,7 +64,7 @@ public class FritzBoxSmarthome {
         return new HashSet<>(Arrays.asList(response.split(",")));
     }
 
-    public Set<SmarthomeDevice> listDevices() throws IOException, JDOMException {
+    public Set<SmarthomeDevice> listDevices() throws IOException {
 
         Set<SmarthomeDevice> smartHomeDevices = new HashSet<>();
         Set<String> devices = getDeviceList();
@@ -71,137 +73,144 @@ public class FritzBoxSmarthome {
             String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getdevicelistinfos&ain=" + devices.stream().findFirst().get());
 
             //XML Daten auswerten
-            Document doc = new SAXBuilder().build(new StringReader(response));
-            Element root = doc.getRootElement();
-            List<Element> deviceList = root.getChildren();
-            for(Element e : deviceList) {
+            try {
 
-                //Geräte
-                if(e.getName().equals("device")) {
+                Document doc = new SAXBuilder().build(new StringReader(response));
+                Element root = doc.getRootElement();
+                List<Element> deviceList = root.getChildren();
+                for (Element e : deviceList) {
 
-                    String identifier = e.getAttribute("identifier").getValue();
-                    Integer functionbitmask = Integer.parseInt(e.getAttribute("functionbitmask").getValue());
-                    String fwversion = e.getAttribute("fwversion").getValue();
-                    String manufacturer = e.getAttribute("manufacturer").getValue();
-                    String productname = e.getAttribute("productname").getValue();
+                    //Geräte
+                    if (e.getName().equals("device")) {
 
-                    boolean present = (Integer.parseInt(e.getChild("present").getValue()) == 1);
-                    String name = e.getChild("name").getValue();
+                        String identifier = e.getAttribute("identifier").getValue();
+                        Integer functionbitmask = Integer.parseInt(e.getAttribute("functionbitmask").getValue());
+                        String fwversion = e.getAttribute("fwversion").getValue();
+                        String manufacturer = e.getAttribute("manufacturer").getValue();
+                        String productname = e.getAttribute("productname").getValue();
 
-                    Alert alert = null;
-                    HKR hkr = null;
-                    PowerMeter powerMeter = null;
-                    Switch aSwitch = null;
-                    TemperatureSensor temperatureSensor = null;
+                        boolean present = (Integer.parseInt(e.getChild("present").getValue()) == 1);
+                        String name = e.getChild("name").getValue();
 
-                    //Alarmsensor
-                    if((functionbitmask & 16) == 16) {
+                        Alert alert = null;
+                        HKR hkr = null;
+                        PowerMeter powerMeter = null;
+                        Switch aSwitch = null;
+                        TemperatureSensor temperatureSensor = null;
 
-                        Element alertElement = e.getChild("alert");
-                        alert = new Alert(
+                        //Alarmsensor
+                        if ((functionbitmask & 16) == 16) {
+
+                            Element alertElement = e.getChild("alert");
+                            alert = new Alert(
+                                    identifier,
+                                    fritzBoxHandler,
+                                    alertElement.getChild("state").getValue().equals("1")
+                            );
+                        }
+
+                        //HKR
+                        if ((functionbitmask & 64) == 64) {
+
+                            //TODO implementieren
+                            hkr = new HKR();
+                        }
+
+                        //EnergyMeter
+                        if ((functionbitmask & 128) == 128) {
+
+                            Element powerMeterElement = e.getChild("powermeter");
+                            double power, energy;
+                            try {
+
+                                power = Double.parseDouble(powerMeterElement.getChild("power").getValue());
+                            } catch (NumberFormatException e1) {
+
+                                power = 0.0;
+                            }
+                            try {
+
+                                energy = Double.parseDouble(powerMeterElement.getChild("energy").getValue());
+                            } catch (NumberFormatException e2) {
+
+                                energy = 0.0;
+                            }
+                            powerMeter = new PowerMeter(
+                                    identifier,
+                                    fritzBoxHandler,
+                                    power,
+                                    energy
+                            );
+                        }
+
+                        //Temperatur Sensor
+                        if ((functionbitmask & 256) == 256) {
+
+                            Element temperatureElement = e.getChild("temperature");
+                            double temperature, offset;
+                            try {
+
+                                temperature = Double.parseDouble(temperatureElement.getChild("celsius").getValue()) / 10;
+                            } catch (NumberFormatException e1) {
+
+                                temperature = 0.0;
+                            }
+                            try {
+
+                                offset = Double.parseDouble(temperatureElement.getChild("offset").getValue());
+                            } catch (NumberFormatException e2) {
+
+                                offset = 0.0;
+                            }
+                            temperatureSensor = new TemperatureSensor(
+                                    identifier,
+                                    fritzBoxHandler,
+                                    temperature,
+                                    offset
+                            );
+                        }
+
+                        //Switch Socket
+                        if ((functionbitmask & 512) == 512) {
+
+                            Element switchElement = e.getChild("switch");
+                            aSwitch = new Switch(
+                                    identifier,
+                                    fritzBoxHandler,
+                                    (switchElement.getChild("state").getValue().equals("1") ? Switch.STATE.ON : Switch.STATE.OFF),
+                                    (switchElement.getChild("mode").getValue().equals("auto") ? Switch.MODE.AUTO : Switch.MODE.MANUALLY),
+                                    switchElement.getChild("lock").getValue().equals("1"),
+                                    switchElement.getChild("devicelock").getValue().equals("1")
+                            );
+                        }
+
+                        //DECT Repeater
+                        /*if ((functionbitmask & 1024) == 1024) {
+
+                            //nop
+                        }*/
+
+                        SmarthomeDevice shd = new SmarthomeDevice(
                                 identifier,
                                 fritzBoxHandler,
-                                alertElement.getChild("state").getValue().equals("1")
+                                fwversion,
+                                manufacturer,
+                                productname,
+                                functionbitmask,
+                                present,
+                                name,
+                                alert,
+                                hkr,
+                                powerMeter,
+                                aSwitch,
+                                temperatureSensor
                         );
+                        smartHomeDevices.add(shd);
                     }
-
-                    //HKR
-                    if((functionbitmask & 64) == 64) {
-
-                        //TODO implementieren
-                    }
-
-                    //EnergyMeter
-                    if((functionbitmask & 128) == 128) {
-
-                        Element powerMeterElement = e.getChild("powermeter");
-                        double power, energy;
-                        try {
-
-                            power = Double.parseDouble(powerMeterElement.getChild("power").getValue());
-                        } catch (NumberFormatException e1) {
-
-                            power = 0.0;
-                        }
-                        try {
-
-                            energy = Double.parseDouble(powerMeterElement.getChild("energy").getValue());
-                        } catch (NumberFormatException e2) {
-
-                            energy = 0.0;
-                        }
-                        powerMeter = new PowerMeter(
-                                identifier,
-                                fritzBoxHandler,
-                                power,
-                                energy
-                        );
-                    }
-
-                    //Temperatur Sensor
-                    if((functionbitmask & 256) == 256) {
-
-                        Element temperatureElement = e.getChild("temperature");
-                        double temperature, offset;
-                        try {
-
-                            temperature = Double.parseDouble(temperatureElement.getChild("celsius").getValue()) / 10;
-                        } catch (NumberFormatException e1) {
-
-                            temperature = 0.0;
-                        }
-                        try {
-
-                            offset = Double.parseDouble(temperatureElement.getChild("offset").getValue());
-                        } catch (NumberFormatException e2) {
-
-                            offset = 0.0;
-                        }
-                        temperatureSensor = new TemperatureSensor(
-                                identifier,
-                                fritzBoxHandler,
-                                temperature,
-                                offset
-                        );
-                    }
-
-                    //Switch Socket
-                    if((functionbitmask & 512) == 512) {
-
-                        Element switchElement = e.getChild("switch");
-                        aSwitch = new Switch(
-                                identifier,
-                                fritzBoxHandler,
-                                (switchElement.getChild("state").getValue().equals("1") ? Switch.STATE.ON : Switch.STATE.OFF),
-                                (switchElement.getChild("mode").getValue().equals("auto") ? Switch.MODE.AUTO : Switch.MODE.MANUALLY),
-                                switchElement.getChild("lock").getValue().equals("1"),
-                                switchElement.getChild("devicelock").getValue().equals("1")
-                        );
-                    }
-
-                    //DECT Repeater
-                    if((functionbitmask & 1024) == 1024) {
-
-                        //nop
-                    }
-
-                    SmarthomeDevice shd = new SmarthomeDevice(
-                            identifier,
-                            fritzBoxHandler,
-                            fwversion,
-                            manufacturer,
-                            productname,
-                            functionbitmask,
-                            present,
-                            name,
-                            alert,
-                            hkr,
-                            powerMeter,
-                            aSwitch,
-                            temperatureSensor
-                    );
-                    smartHomeDevices.add(shd);
                 }
+            } catch (JDOMException e) {
+
+                LoggerUtil.getLogger(this.getClass()).log(Level.WARNING, e.getLocalizedMessage(), e);
             }
         }
         return smartHomeDevices;
