@@ -1,5 +1,8 @@
 package net.kleditzsch.SmartHome.global.base;
 
+import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateNotNull;
+import net.kleditzsch.SmartHome.util.validation.Annotation.ValidatePattern;
+
 import java.util.Optional;
 
 /**
@@ -17,34 +20,14 @@ public abstract class Element {
     /**
      * Name des Elements
      */
+    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
+    @ValidatePattern(value = "^[\\w -_.:!?&%$§#+]{3,25}$", errorCode = 10001, message = "Ungültiger Name")
     private String name = "";
 
     /**
      * Beschreibund des Elements
      */
     private String description = "";
-
-    /**
-     * @param id ID
-     * @param name Name
-     */
-    public Element(ID id, String name) {
-
-        setId(id);
-        setName(name);
-    }
-
-    /**
-     * @param id ID
-     * @param name Name
-     * @param description Beschreibung
-     */
-    public Element(ID id, String name, String description) {
-
-        setId(id);
-        setName(name);
-        setDescription(description);
-    }
 
     /**
      * gibt die ID des Elements zurück
@@ -113,12 +96,6 @@ public abstract class Element {
      */
     public void setDescription(String description) {
 
-        if(description != null) {
-
-            this.description = description;
-        } else {
-
-            throw new IllegalArgumentException("Ungültige Beschreibung");
-        }
+        this.description = description;
     }
 }
