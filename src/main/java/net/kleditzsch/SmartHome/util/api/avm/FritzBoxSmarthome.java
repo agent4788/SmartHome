@@ -10,10 +10,7 @@ import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -58,16 +55,16 @@ public class FritzBoxSmarthome {
      *
      * @return Set mit den Geräte IDs
      */
-    public Set<String> getDeviceList() throws IOException {
+    public List<String> getDeviceList() throws IOException {
 
         String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getswitchlist");
-        return new HashSet<>(Arrays.asList(response.split(",")));
+        return Arrays.asList(response.split(","));
     }
 
-    public Set<SmarthomeDevice> listDevices() throws IOException {
+    public List<SmarthomeDevice> listDevices() throws IOException {
 
-        Set<SmarthomeDevice> smartHomeDevices = new HashSet<>();
-        Set<String> devices = getDeviceList();
+        List<SmarthomeDevice> smartHomeDevices = new ArrayList<>();
+        List<String> devices = getDeviceList();
         if(devices.size() > 0) {
 
             String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getdevicelistinfos&ain=" + devices.stream().findFirst().get());
