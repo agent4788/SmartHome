@@ -1,7 +1,5 @@
 package net.kleditzsch.SmartHome.model.automation.switchserver;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateIpAddress;
