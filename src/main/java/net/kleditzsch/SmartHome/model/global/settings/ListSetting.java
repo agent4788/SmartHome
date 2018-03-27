@@ -1,7 +1,7 @@
-package net.kleditzsch.SmartHome.util.settings;
+package net.kleditzsch.SmartHome.model.global.settings;
 
 import com.google.common.base.Preconditions;
-import net.kleditzsch.SmartHome.util.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,7 @@ import java.util.List;
 /**
  * Listen Einstellung
  */
-public class ListSetting implements Setting {
-
-    /**
-     * Name der Einstellung
-     */
-    private String name;
+public class ListSetting extends Setting {
 
     /**
      * Wert der Einstellung
@@ -38,25 +33,7 @@ public class ListSetting implements Setting {
      * @param name Name der Einstellung
      */
     public ListSetting(String name) {
-        this.name = name;
-    }
-
-    /**
-     * gibt den Namen der Einstellung zurück
-     *
-     * @return Name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * setzt den Namen der Einstellung
-     *
-     * @param name Name
-     */
-    public void setName(String name) {
-        this.name = name;
+        setName(name);
     }
 
     /**

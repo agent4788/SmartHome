@@ -1,17 +1,12 @@
-package net.kleditzsch.SmartHome.util.settings;
+package net.kleditzsch.SmartHome.model.global.settings;
 
 import com.google.common.base.Preconditions;
-import net.kleditzsch.SmartHome.util.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
 
 /**
  * String Einstellung
  */
-public class StringSetting implements Setting {
-
-    /**
-     * Name der Einstellung
-     */
-    private String name;
+public class StringSetting extends Setting {
 
     /**
      * Wert der Einstellung
@@ -36,27 +31,10 @@ public class StringSetting implements Setting {
      * @param defaultValue
      */
     public StringSetting(String name, String value, String defaultValue) {
-        this.name = name;
-        this.value = value;
-        this.defaultValue = defaultValue;
-    }
 
-    /**
-     * gibt den Namen der Einstellung zurück
-     *
-     * @return Name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * setzt den Namen der Einstellung
-     *
-     * @param name Name
-     */
-    public void setName(String name) {
-        this.name = name;
+        setName(name);
+        setValue(value);
+        setDefaultValue(defaultValue);
     }
 
     /**

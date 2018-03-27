@@ -1,16 +1,11 @@
-package net.kleditzsch.SmartHome.util.settings;
+package net.kleditzsch.SmartHome.model.global.settings;
 
-import net.kleditzsch.SmartHome.util.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
 
 /**
  * Boolean Setting
  */
-public class BooleanSetting implements Setting {
-
-    /**
-     * Name der Einstellung
-     */
-    private String name;
+public class BooleanSetting extends Setting {
 
     /**
      * Wert der Einstellung
@@ -35,27 +30,10 @@ public class BooleanSetting implements Setting {
      * @param defaultValue
      */
     public BooleanSetting(String name, boolean value, boolean defaultValue) {
-        this.name = name;
-        this.value = value;
-        this.defaultValue = defaultValue;
-    }
 
-    /**
-     * gibt den Namen der Einstellung zurück
-     *
-     * @return Name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * setzt den Namen der Einstellung
-     *
-     * @param name Name
-     */
-    public void setName(String name) {
-        this.name = name;
+        setName(name);
+        setValue(value);
+        setDefaultValue(defaultValue);
     }
 
     /**

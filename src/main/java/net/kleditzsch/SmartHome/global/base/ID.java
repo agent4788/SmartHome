@@ -58,7 +58,7 @@ public class ID {
      *
      * @param id ID Objekt
      */
-    public boolean compareTo(ID id) {
+    public boolean equals(ID id) {
 
         if((this.id.compareTo(UUID.fromString(id.get())) == 0)) {
 
@@ -72,7 +72,7 @@ public class ID {
      *
      * @param id ID
      */
-    public boolean compareTo(String id) {
+    public boolean equals(String id) {
 
         if((this.id.compareTo(UUID.fromString(id)) == 0)) {
 

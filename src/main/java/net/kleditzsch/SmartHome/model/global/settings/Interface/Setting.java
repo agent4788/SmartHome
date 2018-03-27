@@ -1,16 +1,16 @@
-package net.kleditzsch.SmartHome.util.settings.Interface;
+package net.kleditzsch.SmartHome.model.global.settings.Interface;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Einstellung
  */
-public interface Setting {
+public abstract class Setting {
 
     /**
      * Einstellungstypen
      */
-    enum Type {
+    public enum Type {
 
         @SerializedName("STRING")
         STRING,
@@ -25,23 +25,32 @@ public interface Setting {
     }
 
     /**
+     * Name der Einstellung
+     */
+    private String name;
+
+    /**
      * gibt den Namen der Einstellung zurück
      *
      * @return Name
      */
-    String getName();
+    public String getName() {
+        return name;
+    }
 
     /**
      * setzt den Namen der Einstellung
      *
      * @param name Name
      */
-    void setName(String name);
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * gibt den Typ der Einstellung zurück
      *
      * @return Typ
      */
-    Type getType();
+    public abstract Type getType();
 }

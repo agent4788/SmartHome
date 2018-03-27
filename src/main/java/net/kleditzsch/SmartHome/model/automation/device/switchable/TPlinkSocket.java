@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import sun.net.util.IPAddressUtil;
 
 /**
  * AVM Steckdose

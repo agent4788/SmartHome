@@ -1,19 +1,11 @@
-package net.kleditzsch.SmartHome.util.settings;
+package net.kleditzsch.SmartHome.model.global.settings;
 
-import net.kleditzsch.SmartHome.util.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
 
 /**
  * Double Einstellung
- *
- * @author Oliver Kleditzsch
- * @copyright Copyright (c) 2016, Oliver Kleditzsch
  */
-public class DoubleSetting implements Setting {
-
-    /**
-     * Name der Einstellung
-     */
-    private String name;
+public class DoubleSetting extends Setting {
 
     /**
      * Wert der Einstellung
@@ -38,27 +30,10 @@ public class DoubleSetting implements Setting {
      * @param defaultValue
      */
     public DoubleSetting(String name, double value, double defaultValue) {
-        this.name = name;
-        this.value = value;
-        this.defaultValue = defaultValue;
-    }
 
-    /**
-     * gibt den Namen der Einstellung zurück
-     *
-     * @return Name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * setzt den Namen der Einstellung
-     *
-     * @param name Name
-     */
-    public void setName(String name) {
-        this.name = name;
+        setName(name);
+        setValue(value);
+        setDefaultValue(defaultValue);
     }
 
     /**
