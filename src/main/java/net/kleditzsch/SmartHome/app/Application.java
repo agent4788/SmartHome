@@ -87,38 +87,43 @@ public class Application {
         LoggerUtil.setLogFileLevel(Level.OFF);
         logger = LoggerUtil.getLogger(Application.class);
 
-        //prüfen ob die Datenbankkonfiguration vorhanden ist
-        databaseManager = new DatabaseManager();
-        if(!Files.exists(databaseManager.getDbConfigFile())) {
+        try {
 
-            logger.severe("Keine Datenbankkonfiguration vorhanden");
-            System.exit(1);
-        }
+            //prüfen ob die Datenbankkonfiguration vorhanden ist
+            databaseManager = new DatabaseManager();
+            if (!Files.exists(databaseManager.getDbConfigFile())) {
 
-        //Anwendung initalisieren
-        instance = new Application();
-        instance.init();
-
-        //Shutdown Funktion
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-
-                try {
-
-                    Application.getInstance().stop();
-                } catch (Throwable throwable) {
-
-                    LoggerUtil.serveException(logger, throwable);
-                }
+                logger.severe("Keine Datenbankkonfiguration vorhanden");
+                System.exit(1);
             }
-        });
 
-        //Anwendung starten
-        instance.start();
+            //Anwendung initalisieren
+            instance = new Application();
+            instance.init();
 
+            //Shutdown Funktion
+            Runtime.getRuntime().addShutdownHook(new Thread() {
 
+                @Override
+                public void run() {
+
+                    try {
+
+                        Application.getInstance().stop();
+                    } catch (Throwable throwable) {
+
+                        LoggerUtil.serveException(logger, throwable);
+                    }
+                }
+            });
+
+            //Anwendung starten
+            instance.start();
+
+        } catch (Throwable throwable) {
+
+            LoggerUtil.serveException(logger, "Allgemeiner Anwendungsfehler!", throwable);
+        }
     }
 
     /**
@@ -128,6 +133,7 @@ public class Application {
 
         initGson();
         initDatabase();
+        initData();
     }
 
     /**
@@ -169,6 +175,15 @@ public class Application {
     }
 
     /**
+     * Daten initalisieren
+     */
+    private void initData() {
+
+        settings = new SettingsEditor();
+        settings.load();
+    }
+
+    /**
      * gibt die Datenbankverbindung zurück
      *
      * @return Datenbankverbindung
@@ -192,7 +207,9 @@ public class Application {
      */
     public void start() {
 
-
+        System.out.println("Start");
+        settings.getDoubleSetting(SettingsEditor.LATITUDE).ifPresent(s -> System.out.println(s.getValue()));
+        System.out.println("Ende");
     }
 
     /**
@@ -200,7 +217,7 @@ public class Application {
      */
     public void dump() {
 
-
+        settings.dump();
     }
 
     /**

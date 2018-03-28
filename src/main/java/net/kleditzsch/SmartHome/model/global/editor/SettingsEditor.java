@@ -12,6 +12,7 @@ import redis.clients.jedis.Pipeline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SettingsEditor extends AbstractDatabaseEditor {
@@ -99,6 +100,10 @@ public class SettingsEditor extends AbstractDatabaseEditor {
         Gson gson = Application.getInstance().getGson();
 
         List<String> settingsList = db.lrange(DATABASE_KEY, 0, -1);
+
+        ReentrantReadWriteLock.WriteLock lock = readWriteLock.writeLock();
+        lock.lock();
+
         settings.clear();
         for(String settingJson : settingsList) {
 
@@ -125,9 +130,100 @@ public class SettingsEditor extends AbstractDatabaseEditor {
                 settings.add(knownSetting);
             }
         }
+
+        lock.unlock();
     }
 
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<Setting> getSetting(String name) {
 
+        return settings.stream().filter(setting -> setting.getName().equals(name)).findFirst();
+    }
+
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<StringSetting> getStringSetting(String name) {
+
+        Optional<Setting> setting = getSetting(name);
+        if(setting.isPresent() && setting.get() instanceof StringSetting) {
+
+            return Optional.of((StringSetting) setting.get());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<IntegerSetting> getIntegerSetting(String name) {
+
+        Optional<Setting> setting = getSetting(name);
+        if(setting.isPresent() && setting.get() instanceof IntegerSetting) {
+
+            return Optional.of((IntegerSetting) setting.get());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<DoubleSetting> getDoubleSetting(String name) {
+
+        Optional<Setting> setting = getSetting(name);
+        if(setting.isPresent() && setting.get() instanceof DoubleSetting) {
+
+            return Optional.of((DoubleSetting) setting.get());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<BooleanSetting> getBooleanSetting(String name) {
+
+        Optional<Setting> setting = getSetting(name);
+        if(setting.isPresent() && setting.get() instanceof BooleanSetting) {
+
+            return Optional.of((BooleanSetting) setting.get());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * gibt eine Einstellung zurück
+     *
+     * @param name Name der Einstellung
+     * @return Einstellung
+     */
+    public Optional<ListSetting> getListSetting(String name) {
+
+        Optional<Setting> setting = getSetting(name);
+        if(setting.isPresent() && setting.get() instanceof ListSetting) {
+
+            return Optional.of((ListSetting) setting.get());
+        }
+        return Optional.empty();
+    }
 
     /**
      * Einstellungen in der Datenbank speichern
@@ -140,10 +236,17 @@ public class SettingsEditor extends AbstractDatabaseEditor {
 
         Pipeline pipeline = db.pipelined();
         pipeline.del(DATABASE_KEY);
+
+        ReentrantReadWriteLock.ReadLock lock = readWriteLock.readLock();
+        lock.lock();
+
         for(Setting setting : settings) {
 
             pipeline.lpush(DATABASE_KEY, gson.toJson(setting));
         }
+
+        lock.unlock();
+
         pipeline.sync();
     }
 
