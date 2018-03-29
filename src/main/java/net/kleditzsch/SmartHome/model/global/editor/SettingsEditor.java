@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
+import net.kleditzsch.SmartHome.global.database.DatabaseEditor;
 import net.kleditzsch.SmartHome.model.global.settings.*;
 import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
 import redis.clients.jedis.Jedis;
@@ -15,14 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class SettingsEditor extends AbstractDatabaseEditor {
+public class SettingsEditor implements DatabaseEditor {
 
-    /**
-     * Lock objekt
-     */
-    private volatile ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-    private static final String DATABASE_KEY = "smarthome:global:settings";
+    private static final String DATABASE_KEY = "smarthome:global:setting";
 
     //Globale Einstellungen
     public static final String SERVER_ADDRESS = "APPLICATION_SERVER_ADDRESS";
@@ -41,6 +37,11 @@ public class SettingsEditor extends AbstractDatabaseEditor {
     public static final String ENERGY_ELECTRIC_PRICE = "ENERGY_ELECTRIC_PRICE";
     public static final String ENERGY_WATER_PRICE = "ENERGY_WATER_PRICE";
     public static final String ENERGY_GAS_PRICE = "ENERGY_GAS_PRICE";
+
+    /**
+     * Lock objekt
+     */
+    private volatile ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
 
     /**
      * Einstellungen
@@ -101,7 +102,7 @@ public class SettingsEditor extends AbstractDatabaseEditor {
 
         List<String> settingsList = db.lrange(DATABASE_KEY, 0, -1);
 
-        ReentrantReadWriteLock.WriteLock lock = readWriteLock.writeLock();
+        ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         settings.clear();
@@ -237,7 +238,7 @@ public class SettingsEditor extends AbstractDatabaseEditor {
         Pipeline pipeline = db.pipelined();
         pipeline.del(DATABASE_KEY);
 
-        ReentrantReadWriteLock.ReadLock lock = readWriteLock.readLock();
+        ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
 
         for(Setting setting : settings) {

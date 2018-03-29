@@ -78,11 +78,11 @@ public abstract class AbstractDatabaseEditor<T extends Element> implements Datab
      * @param idList Liste mit IDs
      * @return Liste mit Elementen
      */
-    public List<T> getSublist(List<String> idList) {
+    public List<T> getSublistByID(List<String> idList) {
 
         return data.stream()
                 .filter(e -> idList.contains(e.getId().toString()))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
     }
 
     /**
@@ -92,11 +92,24 @@ public abstract class AbstractDatabaseEditor<T extends Element> implements Datab
      * @param type Typ filtern
      * @return Liste mit Elementen
      */
-    public List<T> getSublist(List<String> idList, Class type) {
+    public List<T> getSublistByID(List<String> idList, Class type) {
 
         return data.stream()
                 .filter(e -> idList.contains(e.getId().toString()) && type.isInstance(e))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * gibt eine Liste mit den Elementen der IDs zurück
+     *
+     * @param names Liste mit IDs
+     * @return Liste mit Elementen
+     */
+    public List<T> getSublistByName(List<String> names) {
+
+        return data.stream()
+                .filter(e -> names.contains(e.getName()))
+                .collect(Collectors.toList());
     }
 
     /**
