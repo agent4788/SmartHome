@@ -2,8 +2,10 @@ package net.kleditzsch.SmartHome.app;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.util.json.Serializer.IdSerializer;
 import net.kleditzsch.SmartHome.util.json.Serializer.LocalDateSerializer;
 import net.kleditzsch.SmartHome.util.json.Serializer.LocalDateTimeSerializer;
 import net.kleditzsch.SmartHome.util.json.Serializer.LocalTimeSerializer;
@@ -147,6 +149,7 @@ public class Application {
         builder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
         builder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
         builder.registerTypeAdapter(LocalTime.class, new LocalTimeSerializer());
+        builder.registerTypeAdapter(ID.class, new IdSerializer());
     }
 
     /**
