@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
 
+import java.util.List;
+
 /**
  * Script mit nur einem Befehl
  */
@@ -14,7 +16,12 @@ public class ScriptSingle extends SingleSwitchable {
     /**
      * Befehle
      */
-    private String command;
+    private List<String> command;
+
+    /**
+     * Pfad zum Arbeitsordner
+     */
+    private String workingDir;
 
     public ScriptSingle() {}
 
@@ -33,7 +40,7 @@ public class ScriptSingle extends SingleSwitchable {
      *
      * @return Einschaltbefehl
      */
-    public String getCommand() {
+    public List<String> getCommand() {
         return command;
     }
 
@@ -42,11 +49,29 @@ public class ScriptSingle extends SingleSwitchable {
      *
      * @param command Einschaltbefehl
      */
-    public void setCommand(String command) {
+    public void setCommand(List<String> command) {
 
         Preconditions.checkNotNull(command);
-        Preconditions.checkArgument(command.length() >= 3, "Ungültiger Befehl %s", command);
+        Preconditions.checkArgument(command.size() >= 1, "Ungültiger Befehl %s", command);
         this.command = command;
+    }
+
+    /**
+     * gibt den Pfad zum Arbeitsordner zurück
+     *
+     * @return Pfad zum Arbeitsordner
+     */
+    public String getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * setzt den Pfad zum Arbeitsordner
+     *
+     * @param workingDir Pfad zum Arbeitsordner
+     */
+    public void setWorkingDir(String workingDir) {
+        this.workingDir = workingDir;
     }
 
     /**

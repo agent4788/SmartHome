@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 
+import java.util.List;
+
 /**
  * Script mit an/aus Funktion
  */
@@ -14,8 +16,13 @@ public class ScriptDouble extends DoubleSwitchable {
     /**
      * Befehle
      */
-    private String onCommand;
-    private String offCommand;
+    private List<String> onCommand;
+    private List<String> offCommand;
+
+    /**
+     * Pfad zum Arbeitsordner
+     */
+    private String workingDir;
 
     public ScriptDouble() {}
 
@@ -34,7 +41,7 @@ public class ScriptDouble extends DoubleSwitchable {
      *
      * @return Ausschaltbefehl
      */
-    public String getOffCommand() {
+    public List<String> getOffCommand() {
         return offCommand;
     }
 
@@ -43,10 +50,10 @@ public class ScriptDouble extends DoubleSwitchable {
      *
      * @param offCommand Ausschaltbefehl
      */
-    public void setOffCommand(String offCommand) {
+    public void setOffCommand(List<String> offCommand) {
 
         Preconditions.checkNotNull(offCommand);
-        Preconditions.checkArgument(offCommand.length() >= 3, "Ungültiger Befehl %s", offCommand);
+        Preconditions.checkArgument(offCommand.size() >= 1, "Ungültiger Befehl %s", offCommand);
         this.offCommand = offCommand;
     }
 
@@ -55,7 +62,7 @@ public class ScriptDouble extends DoubleSwitchable {
      *
      * @return Einschaltbefehl
      */
-    public String getOnCommand() {
+    public List<String> getOnCommand() {
         return onCommand;
     }
 
@@ -64,11 +71,29 @@ public class ScriptDouble extends DoubleSwitchable {
      *
      * @param onCommand Einschaltbefehl
      */
-    public void setOnCommand(String onCommand) {
+    public void setOnCommand(List<String> onCommand) {
 
         Preconditions.checkNotNull(onCommand);
-        Preconditions.checkArgument(onCommand.length() >= 3, "Ungültiger Befehl %s", onCommand);
+        Preconditions.checkArgument(onCommand.size() >= 1, "Ungültiger Befehl %s", onCommand);
         this.onCommand = onCommand;
+    }
+
+    /**
+     * gibt den Pfad zum Arbeitsordner zurück
+     *
+     * @return Pfad zum Arbeitsordner
+     */
+    public String getWorkingDir() {
+        return workingDir;
+    }
+
+    /**
+     * setzt den Pfad zum Arbeitsordner
+     *
+     * @param workingDir Pfad zum Arbeitsordner
+     */
+    public void setWorkingDir(String workingDir) {
+        this.workingDir = workingDir;
     }
 
     /**

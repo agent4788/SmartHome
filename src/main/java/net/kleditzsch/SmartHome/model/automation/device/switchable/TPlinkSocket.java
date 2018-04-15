@@ -2,6 +2,7 @@ package net.kleditzsch.SmartHome.model.automation.device.switchable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
+import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 
@@ -13,6 +14,17 @@ public class TPlinkSocket extends DoubleSwitchable {
     private Type type = Type.SWITCHABLE_TPLINK_SOCKET;
 
     /**
+     * Steckdosen Typ
+     */
+    public enum SOCKET_TYPE {
+
+        @SerializedName("HS100")
+        HS100,
+        @SerializedName("HS110")
+        HS110
+    }
+
+    /**
      * IP Adresse
      */
     private String ipAddress = "";
@@ -21,6 +33,11 @@ public class TPlinkSocket extends DoubleSwitchable {
      * Port
      */
     private int port = 9999;
+
+    /**
+     * Steckdosentyp
+     */
+    private SOCKET_TYPE socketType = SOCKET_TYPE.HS100;
 
     /**
      * Sensorwerte der Steckdose
@@ -79,6 +96,24 @@ public class TPlinkSocket extends DoubleSwitchable {
         Preconditions.checkNotNull(port);
         Preconditions.checkArgument((port >= 0 && port <= 65535));
         this.port = port;
+    }
+
+    /**
+     * gibt den Steckdosentyp zurück
+     *
+     * @return Steckdosentyp
+     */
+    public SOCKET_TYPE getSocketType() {
+        return socketType;
+    }
+
+    /**
+     * setzt den Steckdosentyp
+     *
+     * @param socketType Steckdosentyp
+     */
+    public void setSocketType(SOCKET_TYPE socketType) {
+        this.socketType = socketType;
     }
 
     /**
