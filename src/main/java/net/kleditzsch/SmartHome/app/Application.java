@@ -2,8 +2,19 @@ package net.kleditzsch.SmartHome.app;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
+import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
+import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
+import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
+import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.util.json.Serializer.IdSerializer;
 import net.kleditzsch.SmartHome.util.json.Serializer.LocalDateSerializer;
@@ -17,6 +28,7 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,6 +78,11 @@ public class Application {
      * Einstellungs Verwaltung
      */
     private volatile SettingsEditor settings;
+
+    /**
+     * Datenverwaltung der Automatisierung
+     */
+    private volatile AutomationAppliaction automationAppliaction;
 
     /**
      * Einstieg in die Anwendung
@@ -184,6 +201,9 @@ public class Application {
 
         settings = new SettingsEditor();
         settings.load();
+
+        automationAppliaction = new AutomationAppliaction();
+        automationAppliaction.init();
     }
 
     /**
@@ -193,6 +213,15 @@ public class Application {
      */
     public Jedis getDatabaseConnection() {
         return databaseManager.getConnection();
+    }
+
+    /**
+     * gibt den Einstellungs-Editor zurück
+     *
+     * @return Einstellungs-Editor
+     */
+    public SettingsEditor getSettings() {
+        return settings;
     }
 
     /**
@@ -206,12 +235,39 @@ public class Application {
     }
 
     /**
+     * gibt die Automatisierungsverwaltung zurück
+     *
+     * @return Automatisierungsverwaltung
+     */
+    public AutomationAppliaction getAutomation() {
+
+        return automationAppliaction;
+    }
+
+    /**
      * startet alle Dienste der Anwendung
      */
     public void start() {
 
         System.out.println("Start");
-        settings.getDoubleSetting(SettingsEditor.LATITUDE).ifPresent(s -> System.out.println(s.getValue()));
+
+        ExecutorService executorService = new ExecutorService();
+        executorService.startService();
+
+        AvmSocket avmSocket = new AvmSocket();
+        avmSocket.setName("Test AVM Steckdose");
+        avmSocket.setIdentifier("08761 0316460");
+
+        executorService.putCommand(new SwitchCommand(avmSocket, Command.SWITCH_COMMAND.ON));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        executorService.putCommand(new SwitchCommand(avmSocket, Command.SWITCH_COMMAND.OFF));
+
+        executorService.stopService();
+
         System.out.println("Ende");
     }
 
@@ -221,6 +277,8 @@ public class Application {
     public void dump() {
 
         settings.dump();
+
+        automationAppliaction.dump();
     }
 
     /**
@@ -229,7 +287,11 @@ public class Application {
     public void stop() throws Throwable {
 
         //Editoren speichern
+        automationAppliaction.dump();
         dump();
+
+        //Anwendungen stoppen
+        automationAppliaction.stop();
 
         //Datenbankverbindung aufheben
         if(databaseManager != null && databaseManager.isConnected()) {
