@@ -18,7 +18,7 @@ public class WakeOnLan extends SingleSwitchable {
     private String mac;
 
     /**
-     * IP Adresse
+     * Broadcast IP Adresse
      */
     private String ipAddress;
 
@@ -56,18 +56,18 @@ public class WakeOnLan extends SingleSwitchable {
     }
 
     /**
-     * gibt die IP Adresse zurück
+     * gibt die Broadcast IP Adresse zurück
      *
-     * @return IP Adresse
+     * @return Broadcast IP Adresse
      */
     public String getIpAddress() {
         return ipAddress;
     }
 
     /**
-     * setzt die IP Adresse
+     * setzt die Broadcast IP Adresse
      *
-     * @param ipAddress IP Adresse
+     * @param ipAddress Broadcast IP Adresse
      */
     public void setIpAddress(String ipAddress) {
 
