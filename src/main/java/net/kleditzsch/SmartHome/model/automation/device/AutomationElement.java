@@ -21,10 +21,6 @@ public abstract class AutomationElement extends Element {
         SWITCHABLE_AVM_SOCKET,
         @SerializedName("SWITCHABLE_TPLINK_SOCKET")
         SWITCHABLE_TPLINK_SOCKET,
-        @SerializedName("SWITCHABLE_FRITZ_BOX_WLAN")
-        SWITCHABLE_FRITZ_BOX_WLAN,
-        @SerializedName("SWITCHABLE_FRITZ_BOX_REBOOT_RECONNECT")
-        SWITCHABLE_FRITZ_BOX_REBOOT_RECONNECT,
         @SerializedName("SWITCHABLE_OUTPUT")
         SWITCHABLE_OUTPUT,
         @SerializedName("SWITCHABLE_REBOOT_SHUTDOWN")

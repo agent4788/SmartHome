@@ -63,11 +63,6 @@ public class AvmEditor implements DatabaseEditor {
 
         lock.unlock();
 
-        active = true;
-        address = "fritz.box";
-        user = "oliver";
-        password = "1988oliver";
-
         if(!active) {
             return;
         }

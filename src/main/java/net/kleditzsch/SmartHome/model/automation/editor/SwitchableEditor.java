@@ -102,12 +102,6 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
             case SWITCHABLE_AVM_SOCKET:
 
                 return AvmSocket.class;
-            case SWITCHABLE_FRITZ_BOX_REBOOT_RECONNECT:
-
-                return FritzBoxRebootReconnect.class;
-            case SWITCHABLE_FRITZ_BOX_WLAN:
-
-                return FritzBoxWirelessLan.class;
             case SWITCHABLE_OUTPUT:
 
                 return Output.class;
