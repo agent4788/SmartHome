@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * führt die Schaltbefehle für TP-Link Steckdosen aus
  */
-public class TpLinkHandler implements Runnable {
+public class TpLinkSwitchHandler implements Runnable {
 
     /**
      * schaltbares Element
@@ -35,7 +35,7 @@ public class TpLinkHandler implements Runnable {
      * @param socket schaltbares Element
      * @param switchCommand Schaltbefehl
      */
-    public TpLinkHandler(TPlinkSocket socket, Command.SWITCH_COMMAND switchCommand) {
+    public TpLinkSwitchHandler(TPlinkSocket socket, Command.SWITCH_COMMAND switchCommand) {
 
         Preconditions.checkNotNull(socket);
         Preconditions.checkNotNull(switchCommand);

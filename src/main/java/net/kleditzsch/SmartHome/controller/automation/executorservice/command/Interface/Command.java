@@ -9,6 +9,8 @@ public interface Command {
 
         ON,
         OFF,
-        TOGGLE
+        TOGGLE,
+        UPDATE,
+        UPDATE_SENSOR
     }
 }

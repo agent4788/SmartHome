@@ -153,6 +153,10 @@ public class Application {
         initGson();
         initDatabase();
         initData();
+
+        //Automatisierung initalisieren
+        automationAppliaction = new AutomationAppliaction();
+        automationAppliaction.init();
     }
 
     /**
@@ -201,9 +205,6 @@ public class Application {
 
         settings = new SettingsEditor();
         settings.load();
-
-        automationAppliaction = new AutomationAppliaction();
-        automationAppliaction.init();
     }
 
     /**
@@ -249,26 +250,8 @@ public class Application {
      */
     public void start() {
 
-        System.out.println("Start");
-
-        ExecutorService executorService = new ExecutorService();
-        executorService.startService();
-
-        AvmSocket avmSocket = new AvmSocket();
-        avmSocket.setName("Test AVM Steckdose");
-        avmSocket.setIdentifier("08761 0316460");
-
-        executorService.putCommand(new SwitchCommand(avmSocket, Command.SWITCH_COMMAND.ON));
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        executorService.putCommand(new SwitchCommand(avmSocket, Command.SWITCH_COMMAND.OFF));
-
-        executorService.stopService();
-
-        System.out.println("Ende");
+        getAutomation().start();
+        System.out.println("Anwendung erfolgreich gestartet");
     }
 
     /**

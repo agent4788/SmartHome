@@ -37,8 +37,19 @@ public class ExecutorScheduler implements Runnable {
                     if(switchCommand.getSwitchable() instanceof TPlinkSocket) {
 
                         //TP Link Steckdosen
-                        TpLinkHandler handler = new TpLinkHandler((TPlinkSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
-                        executor.execute(handler);
+                        if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.ON || switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.OFF) {
+
+                            TpLinkSwitchHandler handler = new TpLinkSwitchHandler((TPlinkSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
+                            executor.execute(handler);
+                        } else if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.UPDATE) {
+
+                            TpLinkStateHandler handler = new TpLinkStateHandler((TPlinkSocket) switchCommand.getSwitchable());
+                            executor.execute(handler);
+                        } else if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.UPDATE_SENSOR) {
+
+                            TPLinkSensorHandler handler = new TPLinkSensorHandler((TPlinkSocket) switchCommand.getSwitchable());
+                            executor.execute(handler);
+                        }
                     } else if(switchCommand.getSwitchable() instanceof AvmSocket) {
 
                         //AVM Steckdose

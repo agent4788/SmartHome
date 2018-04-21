@@ -209,6 +209,7 @@ public class HS100 {
     protected String sendCommand(String command) throws IOException {
 
         Socket socket = new Socket(ip, port);
+        socket.setSoTimeout(500);
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(encryptWithHeader(command));
 

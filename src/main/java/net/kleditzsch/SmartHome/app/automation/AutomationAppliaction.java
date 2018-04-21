@@ -2,18 +2,23 @@ package net.kleditzsch.SmartHome.app.automation;
 
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
+import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
+import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class AutomationAppliaction {
 
     /**
-     * Timer objekt
+     * Scheduler
      */
-    private volatile Timer timer = new Timer();
+    private volatile ScheduledExecutorService timerExecutor;
 
     /**
      * Sensor Editor
@@ -29,6 +34,11 @@ public class AutomationAppliaction {
      * Schaltserver Editor
      */
     private volatile SwitchServerEditor switchServerEditor;
+
+    /**
+     * Ausführungsservice
+     */
+    private volatile ExecutorService executorService;
 
     /**
      * AVM Editor
@@ -51,10 +61,6 @@ public class AutomationAppliaction {
 
         avmEditor = new AvmEditor();
         avmEditor.load();
-        if(avmEditor.isActive()) {
-
-            timer.schedule(new AvmDataUpdateService(), 30_000, 30_000);
-        }
     }
 
     /**
@@ -94,6 +100,39 @@ public class AutomationAppliaction {
     }
 
     /**
+     * gibt den Ausführungsservice zurück
+     *
+     * @return Ausführungsservice
+     */
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    /**
+     * startet die Anwendung
+     */
+    public void start() {
+
+        //Scheduler Threadpool erzeugen
+        timerExecutor = Executors.newScheduledThreadPool(2);
+
+        //Executor starten
+        ExecutorService executorService = new ExecutorService();
+        executorService.startService();
+
+        //AVM Update Task starten
+        if(avmEditor.isActive()) {
+
+            timerExecutor.scheduleAtFixedRate(new AvmDataUpdateService(), 30, 30, TimeUnit.SECONDS);
+        }
+
+        //TP Link Update Task starten
+        timerExecutor.scheduleAtFixedRate(new TpLinkUpdateService(), 10, 30, TimeUnit.SECONDS);
+
+
+    }
+
+    /**
      * Speichert alle Anwendungsdaten
      */
     public void dump() {
@@ -108,6 +147,7 @@ public class AutomationAppliaction {
      */
     public void stop() {
 
-        timer.cancel();
+        timerExecutor.shutdown();
+        executorService.stopService();
     }
 }
