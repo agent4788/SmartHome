@@ -4,6 +4,7 @@ import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateSe
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
+import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
@@ -36,6 +37,11 @@ public class AutomationAppliaction {
     private volatile SwitchServerEditor switchServerEditor;
 
     /**
+     * Raum Editor
+     */
+    private volatile RoomEditor roomEditor;
+
+    /**
      * Ausführungsservice
      */
     private volatile ExecutorService executorService;
@@ -58,6 +64,9 @@ public class AutomationAppliaction {
 
         switchServerEditor = new SwitchServerEditor();
         switchServerEditor.load();
+
+        roomEditor = new RoomEditor();
+        roomEditor.load();
 
         avmEditor = new AvmEditor();
         avmEditor.load();
@@ -117,7 +126,7 @@ public class AutomationAppliaction {
         timerExecutor = Executors.newScheduledThreadPool(2);
 
         //Executor starten
-        ExecutorService executorService = new ExecutorService();
+        executorService = new ExecutorService();
         executorService.startService();
 
         //AVM Update Task starten
@@ -140,6 +149,7 @@ public class AutomationAppliaction {
         sensorEditor.dump();
         switchableEditor.dump();
         switchServerEditor.dump();
+        roomEditor.dump();
     }
 
     /**
