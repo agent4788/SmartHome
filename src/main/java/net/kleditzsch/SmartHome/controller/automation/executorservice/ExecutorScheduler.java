@@ -5,6 +5,7 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.command.In
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.StopCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.handler.*;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.*;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -37,15 +38,15 @@ public class ExecutorScheduler implements Runnable {
                     if(switchCommand.getSwitchable() instanceof TPlinkSocket) {
 
                         //TP Link Steckdosen
-                        if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.ON || switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.OFF) {
+                        if(switchCommand.getSwitchCommands() == SwitchCommands.on || switchCommand.getSwitchCommands() == SwitchCommands.off) {
 
-                            TpLinkSwitchHandler handler = new TpLinkSwitchHandler((TPlinkSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
+                            TpLinkSwitchHandler handler = new TpLinkSwitchHandler((TPlinkSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                             executor.execute(handler);
-                        } else if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.UPDATE) {
+                        } else if(switchCommand.getSwitchCommands() == SwitchCommands.updateState) {
 
                             TpLinkStateHandler handler = new TpLinkStateHandler((TPlinkSocket) switchCommand.getSwitchable());
                             executor.execute(handler);
-                        } else if(switchCommand.getSwitchCommand() == Command.SWITCH_COMMAND.UPDATE_SENSOR) {
+                        } else if(switchCommand.getSwitchCommands() == SwitchCommands.updateSensor) {
 
                             TPLinkSensorHandler handler = new TPLinkSensorHandler((TPlinkSocket) switchCommand.getSwitchable());
                             executor.execute(handler);
@@ -53,7 +54,7 @@ public class ExecutorScheduler implements Runnable {
                     } else if(switchCommand.getSwitchable() instanceof AvmSocket) {
 
                         //AVM Steckdose
-                        AvmHandler handler = new AvmHandler((AvmSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
+                        AvmHandler handler = new AvmHandler((AvmSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                         executor.execute(handler);
                     } else if(switchCommand.getSwitchable() instanceof ScriptSingle) {
 
@@ -63,7 +64,7 @@ public class ExecutorScheduler implements Runnable {
                     } else if(switchCommand.getSwitchable() instanceof ScriptDouble) {
 
                         //Doppeltes Script
-                        ScriptHandler handler = new ScriptHandler((ScriptDouble) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
+                        ScriptHandler handler = new ScriptHandler((ScriptDouble) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                         executor.execute(handler);
                     } else if(switchCommand.getSwitchable() instanceof WakeOnLan) {
 
@@ -73,7 +74,7 @@ public class ExecutorScheduler implements Runnable {
                     } else if(switchCommand.getSwitchable() instanceof Output) {
 
                         //Ausgang
-                        OutputHandler handler = new OutputHandler((Output) switchCommand.getSwitchable(), switchCommand.getSwitchCommand());
+                        OutputHandler handler = new OutputHandler((Output) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                         executor.execute(handler);
                     }
                 } else if(command instanceof StopCommand) {

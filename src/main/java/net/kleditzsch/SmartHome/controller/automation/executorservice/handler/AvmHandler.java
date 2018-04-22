@@ -7,6 +7,7 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.command.In
 import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.Switch;
 import net.kleditzsch.SmartHome.util.api.avm.Device.SmarthomeDevice;
 import net.kleditzsch.SmartHome.util.api.avm.Exception.AuthException;
@@ -27,13 +28,13 @@ public class AvmHandler implements Runnable {
     /**
      * Schaltbefehl
      */
-    private Command.SWITCH_COMMAND switchCommand;
+    private SwitchCommands switchCommand;
 
     /**
      * @param socket schaltbares Element
      * @param switchCommand Schaltbefehl
      */
-    public AvmHandler(AvmSocket socket, Command.SWITCH_COMMAND switchCommand) {
+    public AvmHandler(AvmSocket socket, SwitchCommands switchCommand) {
 
         Preconditions.checkNotNull(socket);
         Preconditions.checkNotNull(switchCommand);
@@ -70,8 +71,8 @@ public class AvmHandler implements Runnable {
             if(deviceOptional.isPresent() && deviceOptional.get().isSwitchSocket()) {
 
                 SmarthomeDevice device = deviceOptional.get();
-                if((switchCommand == Command.SWITCH_COMMAND.ON && !socket.isInverse())
-                        || (switchCommand == Command.SWITCH_COMMAND.OFF && socket.isInverse())) {
+                if((switchCommand == SwitchCommands.on && !socket.isInverse())
+                        || (switchCommand == SwitchCommands.off && socket.isInverse())) {
 
                     //Einschalten
                     try {
@@ -82,8 +83,8 @@ public class AvmHandler implements Runnable {
                         //nochmal probieren
                         newState = device.getSwitch().get().switchOn();
                     }
-                } else if((switchCommand == Command.SWITCH_COMMAND.OFF && !socket.isInverse())
-                        || (switchCommand == Command.SWITCH_COMMAND.ON && socket.isInverse())) {
+                } else if((switchCommand == SwitchCommands.off && !socket.isInverse())
+                        || (switchCommand == SwitchCommands.on && socket.isInverse())) {
 
                     //Uasschalten
                     try {

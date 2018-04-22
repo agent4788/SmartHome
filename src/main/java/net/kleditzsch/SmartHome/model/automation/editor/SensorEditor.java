@@ -90,6 +90,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
         pipeline.del(DATABASE_KEY);
 
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
+        lock.lock();
 
         List<SensorValue> data = getData();
         for(SensorValue sensorValue : data) {

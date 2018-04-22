@@ -1,8 +1,8 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice.command;
 
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 /**
  * Schaltbefehl für Doppelschaltelement
@@ -17,15 +17,15 @@ public class SwitchCommand implements Command {
     /**
      * Ziel Status
      */
-    private SWITCH_COMMAND switchCommand;
+    private SwitchCommands switchCommands;
 
     /**
      * @param switchable Schaltbares Element
      * @param targetState Ziel Status
      */
-    public SwitchCommand(Switchable switchable, SWITCH_COMMAND targetState) {
+    public SwitchCommand(Switchable switchable, SwitchCommands targetState) {
         this.switchable = switchable;
-        this.switchCommand = targetState;
+        this.switchCommands = targetState;
     }
 
     /**
@@ -42,7 +42,7 @@ public class SwitchCommand implements Command {
      *
      * @return Ziel Status
      */
-    public SWITCH_COMMAND getSwitchCommand() {
-        return switchCommand;
+    public SwitchCommands getSwitchCommands() {
+        return switchCommands;
     }
 }

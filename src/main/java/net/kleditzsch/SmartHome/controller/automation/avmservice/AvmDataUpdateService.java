@@ -57,6 +57,7 @@ public class AvmDataUpdateService implements Runnable {
             });
 
             //Sensordaten aktualisieren
+            //TODO Sensordaten aktualisierung implementieren
 
             avmLock.unlock();
             lock.unlock();

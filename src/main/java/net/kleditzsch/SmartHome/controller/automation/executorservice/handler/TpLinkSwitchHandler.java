@@ -8,6 +8,7 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Dou
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.api.tplink.HS100;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
@@ -29,13 +30,13 @@ public class TpLinkSwitchHandler implements Runnable {
     /**
      * Schaltbefehl
      */
-    private Command.SWITCH_COMMAND switchCommand;
+    private SwitchCommands switchCommand;
 
     /**
      * @param socket schaltbares Element
      * @param switchCommand Schaltbefehl
      */
-    public TpLinkSwitchHandler(TPlinkSocket socket, Command.SWITCH_COMMAND switchCommand) {
+    public TpLinkSwitchHandler(TPlinkSocket socket, SwitchCommands switchCommand) {
 
         Preconditions.checkNotNull(socket);
         Preconditions.checkNotNull(switchCommand);
@@ -55,15 +56,15 @@ public class TpLinkSwitchHandler implements Runnable {
             HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
 
             final Switchable.State newSate;
-            if ((switchCommand == Command.SWITCH_COMMAND.ON && !socket.isInverse())
-                    || (switchCommand == Command.SWITCH_COMMAND.OFF && socket.isInverse())) {
+            if ((switchCommand == SwitchCommands.on && !socket.isInverse())
+                    || (switchCommand == SwitchCommands.off && socket.isInverse())) {
 
                 //Steckdose einschalten
                 hs100.switchOn();
                 newSate = AutomationElement.State.ON;
 
-            } else if (switchCommand == Command.SWITCH_COMMAND.OFF && !socket.isInverse()
-                    || (switchCommand == Command.SWITCH_COMMAND.ON && socket.isInverse())) {
+            } else if (switchCommand == SwitchCommands.off && !socket.isInverse()
+                    || (switchCommand == SwitchCommands.on && socket.isInverse())) {
 
                 //Steckdose ausschalten
                 hs100.switchOff();

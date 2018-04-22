@@ -1,7 +1,9 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Output;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
+
+import javax.swing.*;
 
 public class OutputHandler implements Runnable {
 
@@ -13,13 +15,13 @@ public class OutputHandler implements Runnable {
     /**
      * Schaltbefehl
      */
-    private Command.SWITCH_COMMAND switchCommand;
+    private SwitchCommands switchCommand;
 
     /**
      * @param output schaltbares Element
      * @param switchCommand Schaltbefehl
      */
-    public OutputHandler(Output output, Command.SWITCH_COMMAND switchCommand) {
+    public OutputHandler(Output output, SwitchCommands switchCommand) {
         this.output = output;
         this.switchCommand = switchCommand;
     }

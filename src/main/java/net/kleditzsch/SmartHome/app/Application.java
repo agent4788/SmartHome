@@ -3,23 +3,11 @@ package net.kleditzsch.SmartHome.app;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
-import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
-import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.util.json.Serializer.IdSerializer;
-import net.kleditzsch.SmartHome.util.json.Serializer.LocalDateSerializer;
-import net.kleditzsch.SmartHome.util.json.Serializer.LocalDateTimeSerializer;
-import net.kleditzsch.SmartHome.util.json.Serializer.LocalTimeSerializer;
+import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -28,10 +16,7 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -171,6 +156,7 @@ public class Application {
         builder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
         builder.registerTypeAdapter(LocalTime.class, new LocalTimeSerializer());
         builder.registerTypeAdapter(ID.class, new IdSerializer());
+        builder.registerTypeAdapter(Room.class, new RoomSerializer());
     }
 
     /**
@@ -252,6 +238,8 @@ public class Application {
 
         getAutomation().start();
         System.out.println("Anwendung erfolgreich gestartet");
+
+
     }
 
     /**

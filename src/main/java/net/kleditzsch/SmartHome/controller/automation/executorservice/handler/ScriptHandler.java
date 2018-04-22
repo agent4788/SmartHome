@@ -10,6 +10,7 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Swi
 import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptSingle;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
 import java.io.File;
@@ -35,7 +36,7 @@ public class ScriptHandler implements Runnable {
     /**
      * Schaltbefehl
      */
-    private Command.SWITCH_COMMAND switchCommand;
+    private SwitchCommands switchCommand;
 
     /**
      * @param scriptSingle schaltbares Element
@@ -49,7 +50,7 @@ public class ScriptHandler implements Runnable {
     /**
      * @param scriptDouble schaltbares Element
      */
-    public ScriptHandler(ScriptDouble scriptDouble, Command.SWITCH_COMMAND switchCommand) {
+    public ScriptHandler(ScriptDouble scriptDouble, SwitchCommands switchCommand) {
 
         Preconditions.checkNotNull(scriptDouble);
         Preconditions.checkNotNull(switchCommand);
@@ -77,14 +78,14 @@ public class ScriptHandler implements Runnable {
         } else {
 
             //Doppelter Schaltbefehl
-            if((switchCommand == Command.SWITCH_COMMAND.ON && !scriptDouble.isInverse())
-                    || (switchCommand == Command.SWITCH_COMMAND.OFF && scriptDouble.isInverse())) {
+            if((switchCommand == SwitchCommands.on && !scriptDouble.isInverse())
+                    || (switchCommand == SwitchCommands.off && scriptDouble.isInverse())) {
 
                 //Einschalten
                 cliCommand = scriptDouble.getOnCommand();
                 newState = Switchable.State.ON;
 
-            } else if (switchCommand == Command.SWITCH_COMMAND.TOGGLE) {
+            } else if (switchCommand == SwitchCommands.toggle) {
 
                 //Umschalten
                 if(scriptDouble.getState() == Switchable.State.ON) {
