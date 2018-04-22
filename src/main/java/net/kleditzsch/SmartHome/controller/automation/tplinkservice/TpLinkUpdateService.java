@@ -32,10 +32,13 @@ public class TpLinkUpdateService implements Runnable {
                     newTpLinkSocket.setIpAddress(tPlinkSocket.getIpAddress());
                     newTpLinkSocket.setPort(tPlinkSocket.getPort());
                     newTpLinkSocket.setSocketType(tPlinkSocket.getSocketType());
-                    newTpLinkSocket.setCurrentSensor(ID.of(tPlinkSocket.getCurrentSensor().get()));
-                    newTpLinkSocket.setVoltageSensor(ID.of(tPlinkSocket.getVoltageSensor().get()));
-                    newTpLinkSocket.setEnergySensorId(ID.of(tPlinkSocket.getEnergySensorId().get()));
-                    newTpLinkSocket.setPowerSensorId(ID.of(tPlinkSocket.getPowerSensorId().get()));
+                    if(tPlinkSocket.getSocketType() == TPlinkSocket.SOCKET_TYPE.HS110) {
+
+                        newTpLinkSocket.setCurrentSensor(ID.of(tPlinkSocket.getCurrentSensor().get()));
+                        newTpLinkSocket.setVoltageSensor(ID.of(tPlinkSocket.getVoltageSensor().get()));
+                        newTpLinkSocket.setEnergySensorId(ID.of(tPlinkSocket.getEnergySensorId().get()));
+                        newTpLinkSocket.setPowerSensorId(ID.of(tPlinkSocket.getPowerSensorId().get()));
+                    }
                     return newTpLinkSocket;
                 })
                 .forEach(e -> {

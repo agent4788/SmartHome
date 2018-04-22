@@ -132,11 +132,11 @@ public class AutomationAppliaction {
         //AVM Update Task starten
         if(avmEditor.isActive()) {
 
-            timerExecutor.scheduleAtFixedRate(new AvmDataUpdateService(), 30, 30, TimeUnit.SECONDS);
+            timerExecutor.scheduleAtFixedRate(new AvmDataUpdateService(), 30, 15, TimeUnit.SECONDS);
         }
 
         //TP Link Update Task starten
-        timerExecutor.scheduleAtFixedRate(new TpLinkUpdateService(), 10, 30, TimeUnit.SECONDS);
+        timerExecutor.scheduleAtFixedRate(new TpLinkUpdateService(), 10, 15, TimeUnit.SECONDS);
 
 
     }

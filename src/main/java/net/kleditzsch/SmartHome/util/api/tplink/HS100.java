@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -204,12 +206,12 @@ public class HS100 {
      *
      * @param command Befehl
      * @return Json STring mit dem Antwortobjekt
-     * @throws IOException
      */
     protected String sendCommand(String command) throws IOException {
 
-        Socket socket = new Socket(ip, port);
-        socket.setSoTimeout(500);
+        SocketAddress addr = new InetSocketAddress(ip, port);
+        Socket socket = new Socket();
+        socket.connect(addr, 1000);
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(encryptWithHeader(command));
 

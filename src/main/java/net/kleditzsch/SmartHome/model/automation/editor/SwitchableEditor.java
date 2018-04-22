@@ -99,6 +99,9 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
         AutomationElement.Type type = AutomationElement.Type.valueOf(typeStr);
         switch(type) {
 
+            case SWITCHABLE_TPLINK_SOCKET:
+
+                return TPlinkSocket.class;
             case SWITCHABLE_AVM_SOCKET:
 
                 return AvmSocket.class;

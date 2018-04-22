@@ -37,7 +37,7 @@ public class AvmDataUpdateService implements Runnable {
                     .collect(Collectors.toList());
 
             ReentrantReadWriteLock.ReadLock avmLock = avmEditor.readLock();
-            lock.lock();
+            avmLock.lock();
 
             //Schaltstatus aktualisieren
             avmSockets.forEach(e -> {

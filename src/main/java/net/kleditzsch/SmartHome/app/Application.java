@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
@@ -17,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -238,6 +242,32 @@ public class Application {
 
         getAutomation().start();
         System.out.println("Anwendung erfolgreich gestartet");
+
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+
+                        try {
+
+                            SwitchableEditor se = getAutomation().getSwitchableEditor();
+                            ReentrantReadWriteLock.ReadLock lock = se.readLock();
+                            lock.lock();
+                            Optional<Switchable> switchable = se.getById("07fd8826-ffdb-4601-917f-cfcdf8751085");
+                            if(switchable.isPresent()) {
+
+                                TPlinkSocket socket = (TPlinkSocket) switchable.get();
+                                System.out.println(socket.getName() + " -> " + socket.getState() + " " + LocalTime.now());;
+                            }
+                            lock.unlock();
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                1_000,
+                1_000);
 
 
     }
