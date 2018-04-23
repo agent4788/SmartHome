@@ -32,6 +32,11 @@ public class FritzBoxHandler {
     private LocalDateTime sessionIdTimeout;
 
     /**
+     * maximale Zeit die ein Login gültig ist
+     */
+    private LocalDateTime loginTimeout;
+
+    /**
      * Fritzbox Adresse
      */
     private String fritzBoxAddress = "fritz.box";
@@ -108,6 +113,7 @@ public class FritzBoxHandler {
 
                 this.sessionId = sid.get();
                 this.sessionIdTimeout = LocalDateTime.now().plusSeconds(590);
+                this.loginTimeout = LocalDateTime.now().plusHours(12);
             } else {
 
                 //Benutzername oder Passwort falsch
@@ -132,7 +138,9 @@ public class FritzBoxHandler {
                 || sessionId.equals("0000000000000000")
                 || sessionId.equals("")
                 || sessionIdTimeout == null
-                || sessionIdTimeout.isBefore(LocalDateTime.now())) {
+                || sessionIdTimeout.isBefore(LocalDateTime.now())
+                || loginTimeout == null
+                || loginTimeout.isBefore(LocalDateTime.now())) {
 
             this.login(fritzBoxAddress, username, password);
         }
