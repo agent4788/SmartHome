@@ -57,7 +57,8 @@ public class TpLinkStateHandler implements Runnable {
 
         } catch (IOException e) {
 
-            LoggerUtil.getLogger(this.getClass()).info("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
+            //Steckdose nicht erreichbar
+            //LoggerUtil.getLogger(this.getClass()).info("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
         }
     }
 }

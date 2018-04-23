@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
@@ -259,6 +260,14 @@ public class Application {
                                 TPlinkSocket socket = (TPlinkSocket) switchable.get();
                                 System.out.println(socket.getName() + " -> " + socket.getState() + " " + LocalTime.now());;
                             }
+
+                            Optional<Switchable> switchable1 = se.getById("568c28b5-9e60-413a-acc5-a8e12131e42a");
+                            if(switchable1.isPresent()) {
+
+                                AvmSocket socket = (AvmSocket) switchable1.get();
+                                System.out.println(socket.getName() + " -> " + socket.getState() + " " + LocalTime.now());;
+                            }
+
                             lock.unlock();
                         } catch (Exception e) {
 

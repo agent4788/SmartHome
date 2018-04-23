@@ -21,14 +21,14 @@ public class FritzBoxSmarthome {
     /**
      * Fritz Box Verbindungs Handler
      */
-    private FritzBoxHandler fritzBoxHandler = new FritzBoxHandler();
+    private FritzBoxHandler fritzBoxHandler;
 
     /**
      * @param password Passwort
      */
     public FritzBoxSmarthome(String password) {
 
-        fritzBoxHandler.login("fritz.box", "", password);
+        fritzBoxHandler = new FritzBoxHandler("fritz.box", "", password);
     }
 
     /**
@@ -37,7 +37,7 @@ public class FritzBoxSmarthome {
      */
     public FritzBoxSmarthome(String username, String password) {
 
-        fritzBoxHandler.login("fritz.box", username, password);
+        fritzBoxHandler = new FritzBoxHandler("fritz.box", username, password);
     }
 
     /**
@@ -47,7 +47,7 @@ public class FritzBoxSmarthome {
      */
     public FritzBoxSmarthome(String fritzBoxAddress, String username, String password) {
 
-        fritzBoxHandler.login(fritzBoxAddress, username, password);
+        fritzBoxHandler = new FritzBoxHandler(fritzBoxAddress, username, password);
     }
 
     /**

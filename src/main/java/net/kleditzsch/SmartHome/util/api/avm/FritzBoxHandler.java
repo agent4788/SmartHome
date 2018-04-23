@@ -46,6 +46,36 @@ public class FritzBoxHandler {
      */
     private Logger logger = LoggerUtil.getLogger(this.getClass());
 
+    public FritzBoxHandler() {}
+
+    /**
+     * @param fritzBoxAddress Fritz Box Adresse
+     * @param password Passwort
+     */
+    public FritzBoxHandler(String fritzBoxAddress, String password) {
+        this.fritzBoxAddress = fritzBoxAddress;
+        this.password = password;
+    }
+
+    /**
+     * @param fritzBoxAddress Fritz Box Adresse
+     * @param username Benutzername
+     * @param password Passwort
+     */
+    public FritzBoxHandler(String fritzBoxAddress, String username, String password) {
+        this.fritzBoxAddress = fritzBoxAddress;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * meldet einen Benutzer nur mit Passwort an der Fritz!Box an
+     */
+    public void login() {
+
+        this.login(fritzBoxAddress, username, password);
+    }
+
     /**
      * meldet einen Benutzer nur mit Passwort an der Fritz!Box an
      *
@@ -98,7 +128,11 @@ public class FritzBoxHandler {
      */
     private String getSessionId() {
 
-        if(sessionIdTimeout.isAfter(LocalDateTime.now())) {
+        if(sessionId == null
+                || sessionId.equals("0000000000000000")
+                || sessionId.equals("")
+                || sessionIdTimeout == null
+                || sessionIdTimeout.isBefore(LocalDateTime.now())) {
 
             this.login(fritzBoxAddress, username, password);
         }
