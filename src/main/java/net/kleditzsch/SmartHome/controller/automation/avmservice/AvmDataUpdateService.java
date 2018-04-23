@@ -25,6 +25,7 @@ public class AvmDataUpdateService implements Runnable {
 
             //aktuelle Daten von der FritzBox holen
             avmEditor.load();
+            LoggerUtil.getLogger(this.getClass()).finest("Die AVM Daten wurden erfolgreich aktualisiert");
 
             //Status der AVM Steckdosen aktualisieren
             SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
@@ -64,7 +65,7 @@ public class AvmDataUpdateService implements Runnable {
 
         } catch (AuthException e) {
 
-            LoggerUtil.getLogger(this.getClass()).warning("Die AVM Daten konnten nicht aktualisiert werden");
+            LoggerUtil.getLogger(this.getClass()).finer("Die AVM Daten konnten nicht aktualisiert werden");
         }
     }
 }

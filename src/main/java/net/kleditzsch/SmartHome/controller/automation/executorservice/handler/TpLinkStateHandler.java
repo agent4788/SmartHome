@@ -51,6 +51,7 @@ public class TpLinkStateHandler implements Runnable {
 
                     switchableOptional.get().setState(Switchable.State.OFF);
                 }
+                LoggerUtil.getLogger(this.getClass()).finest("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " wurde erfolgreich aktualisiert");
             }
 
             lock.unlock();
@@ -58,7 +59,7 @@ public class TpLinkStateHandler implements Runnable {
         } catch (IOException e) {
 
             //Steckdose nicht erreichbar
-            //LoggerUtil.getLogger(this.getClass()).info("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
+            LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
         }
     }
 }
