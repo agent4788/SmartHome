@@ -26,20 +26,7 @@ public class TpLinkUpdateService implements Runnable {
                 .filter(e -> e instanceof TPlinkSocket && !e.isDisabled())
                 .map(e -> {
 
-                    TPlinkSocket tPlinkSocket = (TPlinkSocket) e;
-                    TPlinkSocket newTpLinkSocket = new TPlinkSocket();
-                    newTpLinkSocket.setId(ID.of(tPlinkSocket.getId().get()));
-                    newTpLinkSocket.setIpAddress(tPlinkSocket.getIpAddress());
-                    newTpLinkSocket.setPort(tPlinkSocket.getPort());
-                    newTpLinkSocket.setSocketType(tPlinkSocket.getSocketType());
-                    if(tPlinkSocket.getSocketType() == TPlinkSocket.SOCKET_TYPE.HS110) {
-
-                        newTpLinkSocket.setCurrentSensor(ID.of(tPlinkSocket.getCurrentSensor().get()));
-                        newTpLinkSocket.setVoltageSensor(ID.of(tPlinkSocket.getVoltageSensor().get()));
-                        newTpLinkSocket.setEnergySensorId(ID.of(tPlinkSocket.getEnergySensorId().get()));
-                        newTpLinkSocket.setPowerSensorId(ID.of(tPlinkSocket.getPowerSensorId().get()));
-                    }
-                    return newTpLinkSocket;
+                    return (TPlinkSocket) switchableEditor.copyOf(e);
                 })
                 .forEach(e -> {
 

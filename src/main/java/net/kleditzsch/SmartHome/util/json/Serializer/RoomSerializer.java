@@ -3,7 +3,7 @@ package net.kleditzsch.SmartHome.util.json.Serializer;
 import com.google.gson.*;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
-import net.kleditzsch.SmartHome.model.automation.room.Interface.SwitchCommand;
+import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
 import net.kleditzsch.SmartHome.model.automation.room.element.SensorElement;

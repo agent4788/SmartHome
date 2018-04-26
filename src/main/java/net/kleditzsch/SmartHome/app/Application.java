@@ -5,12 +5,12 @@ import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
+import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
+import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import redis.clients.jedis.Jedis;
@@ -24,6 +24,8 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Kernklasse der Anwendung
@@ -92,7 +94,7 @@ public class Application {
         }
 
         //Logger initaliiseren
-        LoggerUtil.setLogLevel(Level.FINEST);
+        LoggerUtil.setLogLevel(Level.INFO);
         LoggerUtil.setLogFileLevel(Level.OFF);
         logger = LoggerUtil.getLogger(Application.class);
 
@@ -244,40 +246,26 @@ public class Application {
         getAutomation().start();
         System.out.println("Anwendung erfolgreich gestartet");
 
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
+        SwitchTimer switchTimer = new SwitchTimer();
+        switchTimer.setId(ID.create());
+        switchTimer.setName("Test ein");
+        switchTimer.getMinute().addAll(IntStream.iterate(0, i -> i + 2).limit(30).collect(TreeSet::new, TreeSet::add, TreeSet::addAll));
+        switchTimer.getCommands().add(new SwitchCommand(ID.of("07fd8826-ffdb-4601-917f-cfcdf8751085"), SwitchCommands.on));
 
-                        try {
+        SwitchTimer switchTimer1 = new SwitchTimer();
+        switchTimer1.setId(ID.create());
+        switchTimer1.setName("Test aus");
+        switchTimer1.getMinute().addAll(IntStream.iterate(1, i -> i + 2).limit(30).collect(TreeSet::new, TreeSet::add, TreeSet::addAll));
+        switchTimer1.getCommands().add(new SwitchCommand(ID.of("07fd8826-ffdb-4601-917f-cfcdf8751085"), SwitchCommands.off));
 
-                            SwitchableEditor se = getAutomation().getSwitchableEditor();
-                            ReentrantReadWriteLock.ReadLock lock = se.readLock();
-                            lock.lock();
-                            Optional<Switchable> switchable = se.getById("07fd8826-ffdb-4601-917f-cfcdf8751085");
-                            if(switchable.isPresent()) {
+        SwitchTimerEditor ste = getAutomation().getSwitchTimerEditor();
+        ReentrantReadWriteLock.WriteLock lock = ste.writeLock();
+        lock.lock();
 
-                                TPlinkSocket socket = (TPlinkSocket) switchable.get();
-                                System.out.println(socket.getName() + " -> " + socket.getState() + " " + LocalTime.now());;
-                            }
+        ste.getData().add(switchTimer);
+        ste.getData().add(switchTimer1);
 
-                            Optional<Switchable> switchable1 = se.getById("568c28b5-9e60-413a-acc5-a8e12131e42a");
-                            if(switchable1.isPresent()) {
-
-                                AvmSocket socket = (AvmSocket) switchable1.get();
-                                System.out.println(socket.getName() + " -> " + socket.getState() + " " + LocalTime.now());;
-                            }
-
-                            lock.unlock();
-                        } catch (Exception e) {
-
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                1_000,
-                1_000);
-
+        lock.unlock();
 
     }
 

@@ -3,11 +3,9 @@ package net.kleditzsch.SmartHome.app.automation;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
+import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
-import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.*;
 
 import java.util.Timer;
 import java.util.concurrent.Executors;
@@ -42,6 +40,11 @@ public class AutomationAppliaction {
     private volatile RoomEditor roomEditor;
 
     /**
+     * Schalt Timer Editor
+     */
+    private volatile SwitchTimerEditor switchTimerEditor;
+
+    /**
      * Ausführungsservice
      */
     private volatile ExecutorService executorService;
@@ -67,6 +70,9 @@ public class AutomationAppliaction {
 
         roomEditor = new RoomEditor();
         roomEditor.load();
+
+        switchTimerEditor = new SwitchTimerEditor();
+        switchTimerEditor.load();
 
         avmEditor = new AvmEditor();
         avmEditor.load();
@@ -97,6 +103,15 @@ public class AutomationAppliaction {
      */
     public SwitchServerEditor getSwitchServerEditor() {
         return switchServerEditor;
+    }
+
+    /**
+     * gibt den Schalttimer-Editor zurück
+     *
+     * @return Schalttimer-Editor
+     */
+    public SwitchTimerEditor getSwitchTimerEditor() {
+        return switchTimerEditor;
     }
 
     /**
@@ -132,13 +147,14 @@ public class AutomationAppliaction {
         //AVM Update Task starten
         if(avmEditor.isActive()) {
 
-            timerExecutor.scheduleAtFixedRate(new AvmDataUpdateService(), 30, 15, TimeUnit.SECONDS);
+            timerExecutor.scheduleAtFixedRate(new AvmDataUpdateService(), 15, 15, TimeUnit.SECONDS);
         }
 
         //TP Link Update Task starten
-        timerExecutor.scheduleAtFixedRate(new TpLinkUpdateService(), 10, 15, TimeUnit.SECONDS);
+        timerExecutor.scheduleAtFixedRate(new TpLinkUpdateService(), 15, 15, TimeUnit.SECONDS);
 
-
+        //Schalt Timer starten
+        timerExecutor.scheduleAtFixedRate(new SwitchTimerService(), 15, 15, TimeUnit.SECONDS);
     }
 
     /**

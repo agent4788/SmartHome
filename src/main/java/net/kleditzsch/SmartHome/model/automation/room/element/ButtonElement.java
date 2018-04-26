@@ -1,7 +1,7 @@
 package net.kleditzsch.SmartHome.model.automation.room.element;
 
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
-import net.kleditzsch.SmartHome.model.automation.room.Interface.SwitchCommand;
+import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 
 import java.util.ArrayList;
 import java.util.List;

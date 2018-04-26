@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 
+import java.util.Optional;
+
 /**
  * AVM Steckdose
  */
@@ -121,8 +123,8 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public ID getVoltageSensor() {
-        return voltageSensor;
+    public Optional<ID> getVoltageSensor() {
+        return Optional.ofNullable(voltageSensor);
     }
 
     /**
@@ -139,8 +141,8 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public ID getCurrentSensor() {
-        return currentSensor;
+    public Optional<ID> getCurrentSensor() {
+        return Optional.ofNullable(currentSensor);
     }
 
     /**
@@ -157,8 +159,8 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public ID getPowerSensorId() {
-        return powerSensorId;
+    public Optional<ID> getPowerSensorId() {
+        return Optional.ofNullable(powerSensorId);
     }
 
     /**
@@ -177,8 +179,8 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public ID getEnergySensorId() {
-        return energySensorId;
+    public Optional<ID> getEnergySensorId() {
+        return Optional.ofNullable(energySensorId);
     }
 
     /**
