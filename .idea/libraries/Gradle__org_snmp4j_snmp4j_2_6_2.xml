@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.snmp4j:snmp4j:2.6.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.snmp4j/snmp4j/2.6.2/ed0d9f5f91065f8ca00d8a445896c8f57d4fcfc9/snmp4j-2.6.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.snmp4j/snmp4j/2.6.2/73b09e48cb7ccf27ff2cbefd1b81a6ad3cafec96/snmp4j-2.6.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

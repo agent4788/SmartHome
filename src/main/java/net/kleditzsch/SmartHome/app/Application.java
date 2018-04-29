@@ -5,14 +5,16 @@ import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
-import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
+import net.kleditzsch.SmartHome.view.global.index.GlobalIndexServlet;
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
@@ -26,8 +28,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Kernklasse der Anwendung
@@ -78,6 +78,11 @@ public class Application {
      * Scheduler
      */
     private volatile ScheduledExecutorService timerExecutor;
+
+    /**
+     * Webserver
+     */
+    private volatile Server server;
 
     /**
      * Einstieg in die Anwendung
@@ -148,6 +153,7 @@ public class Application {
         initGson();
         initDatabase();
         initData();
+        initWebserver();
 
         //Automatisierung initalisieren
         automationAppliaction = new AutomationAppliaction();
@@ -201,6 +207,67 @@ public class Application {
 
         settings = new SettingsEditor();
         settings.load();
+    }
+
+    /**
+     * Webserver initalisieren
+     */
+    private void initWebserver() {
+
+        //Webserver initalisieren
+        server = new Server();
+
+        //Einstellungen laden
+        SettingsEditor se = settings;
+        ReentrantReadWriteLock.ReadLock lock = se.readLock();
+        lock.lock();
+
+        int port = se.getIntegerSetting(SettingsEditor.SERVER_PORT).get().getValue();
+        int securePort = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT).get().getValue();
+        String keyStorePassword = se.getStringSetting(SettingsEditor.SERVER_KEY_STORE_PASSWORD).get().getValue();
+        String keyManagerPassword = se.getStringSetting(SettingsEditor.SERVER_KEY_MANAGER_PASSWORD).get().getValue();
+
+        lock.unlock();
+
+        //Unverschlüsselter Connector
+        ServerConnector defaultConnector = new ServerConnector(server);
+        defaultConnector.setPort(port);
+
+        //Verschlüsselter Connector
+        /*HttpConfiguration https = new HttpConfiguration();
+        https.addCustomizer(new SecureRequestCustomizer());
+
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.setKeyStorePath(getClass().getClassLoader().getResource("./webserver/keystore.jks").toExternalForm());
+        sslContextFactory.setKeyStorePassword(keyStorePassword);
+        sslContextFactory.setKeyManagerPassword(keyManagerPassword);
+
+        ServerConnector sslConnector = new ServerConnector(
+                server,
+                new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                new HttpConnectionFactory(https));
+        sslConnector.setPort(securePort);*/
+
+        server.setConnectors(new Connector[] {defaultConnector, /*sslConnector*/});
+
+        //Statische Inhalte
+        ServletContextHandler staticHandler = new ServletContextHandler();
+        staticHandler.setContextPath("/static/");
+        DefaultServlet defaultServlet = new DefaultServlet();
+        ServletHolder holder = new ServletHolder("default", defaultServlet);
+        holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
+        staticHandler.addServlet(holder, "/*");
+
+        //Dynamische Inhalte
+        ServletContextHandler dynamicHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        dynamicHandler.setContextPath("/");
+        dynamicHandler.addServlet(GlobalIndexServlet.class, "/");
+        dynamicHandler.addServlet(GlobalIndexServlet.class, "/index");
+
+        //Contexthandler dem Server bekannt machen
+        ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+        contextHandlerCollection.setHandlers(new Handler[] {staticHandler, dynamicHandler});
+        server.setHandler(contextHandlerCollection);
     }
 
     /**
@@ -261,9 +328,17 @@ public class Application {
         //Module starten
         getAutomation().start();
 
-        //Anwendung bereit
-        System.out.println("Anwendung erfolgreich gestartet");
+        //Webserver starteb
+        try {
 
+            server.start();
+            System.out.println("Anwendung erfolgreich gestartet");
+            server.join();
+
+        } catch (Exception e) {
+
+            LoggerUtil.serveException(LoggerUtil.getLogger(getClass()), e);
+        }
     }
 
     /**

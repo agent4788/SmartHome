@@ -1,9 +1,10 @@
 group 'net.kleditzsch'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = '9'
+targetCompatibility = '9'
 
 repositories {
     mavenCentral()
@@ -25,4 +26,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.snmp4j/snmp4j
     compile group: 'org.snmp4j', name: 'snmp4j', version: '+'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '+'
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '+'
+
+    // https://mvnrepository.com/artifact/org.jtwig/jtwig-web
+    compile group: 'org.jtwig', name: 'jtwig-web', version: '+'
 }

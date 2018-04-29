@@ -18,11 +18,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SettingsEditor implements DatabaseEditor {
 
-    private static final String DATABASE_KEY = "smarthome:global:setting";
+    private static final String DATABASE_KEY = "smarthome:global:settings";
 
     //Globale Einstellungen
-    public static final String SERVER_ADDRESS = "APPLICATION_SERVER_ADDRESS";
     public static final String SERVER_PORT = "APPLICATION_SERVER_PORT";
+    public static final String SERVER_SECURE_PORT = "APPLICATION_SERVER_SECURE_PORT";
+    public static final String SERVER_KEY_STORE_PASSWORD = "SERVER_KEY_STORE_PASSWORD";
+    public static final String SERVER_KEY_MANAGER_PASSWORD = "SERVER_KEY_MANAGER_PASSWORD";
 
     //Smarthome Einstellungen
     public static final String SUNRISE_OFFSET = "SUNRISE_OFFSET";
@@ -55,11 +57,15 @@ public class SettingsEditor implements DatabaseEditor {
 
     public SettingsEditor() {
 
-        //Globale Einstellungen
-        StringSetting applicationServerAddress = new StringSetting(SERVER_ADDRESS, "localhost", "localhost");
-        knownSettings.add(applicationServerAddress);
+        //Webserver Einstellungen
         IntegerSetting applicationServerPort = new IntegerSetting(SERVER_PORT, 8080, 8080);
         knownSettings.add(applicationServerPort);
+        IntegerSetting applicationServerSecurePort = new IntegerSetting(SERVER_SECURE_PORT, 8081, 8081);
+        knownSettings.add(applicationServerSecurePort);
+        StringSetting keyStorePassword = new StringSetting(SERVER_KEY_STORE_PASSWORD, "", "");
+        knownSettings.add(keyStorePassword);
+        StringSetting keyManagerPassword = new StringSetting(SERVER_KEY_MANAGER_PASSWORD, "", "");
+        knownSettings.add(keyManagerPassword);
 
         //Smarthome Einstellungen
         IntegerSetting sunriseOffset = new IntegerSetting(SUNRISE_OFFSET, 0, 0);
