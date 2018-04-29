@@ -153,11 +153,12 @@ public class Application {
         initGson();
         initDatabase();
         initData();
-        initWebserver();
 
         //Automatisierung initalisieren
         automationAppliaction = new AutomationAppliaction();
         automationAppliaction.init();
+
+        initWebserver();
     }
 
     /**
@@ -261,8 +262,13 @@ public class Application {
         //Dynamische Inhalte
         ServletContextHandler dynamicHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         dynamicHandler.setContextPath("/");
+
+        //Globale Seiten
         dynamicHandler.addServlet(GlobalIndexServlet.class, "/");
         dynamicHandler.addServlet(GlobalIndexServlet.class, "/index");
+
+        //Automatisierung Seiten
+        getAutomation().initWebContext(dynamicHandler);
 
         //Contexthandler dem Server bekannt machen
         ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();

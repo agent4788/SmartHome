@@ -7,6 +7,7 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorSe
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
+import org.eclipse.jetty.server.handler.ContextHandler;
 
 import java.util.Timer;
 import java.util.concurrent.Executors;
@@ -72,6 +73,16 @@ public class AutomationAppliaction {
 
         avmEditor = new AvmEditor();
         avmEditor.load();
+    }
+
+    /**
+     * initalisiert die Webinhalte der Anwendung
+     *
+     * @param contextHandler Context Handler
+     */
+    public void initWebContext(ContextHandler contextHandler) {
+
+
     }
 
     /**
