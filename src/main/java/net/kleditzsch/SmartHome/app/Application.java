@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,11 +37,7 @@ public class Application {
     /**
      * Server Version
      */
-    public static final String VERSION = "0.1.0";
-    /**
-     * Server API LEVEL
-     */
-    public static final int API_LEVEL = 1;
+    public static final String VERSION = "1.0.0";
 
     /**
      * Singleton Instanz
@@ -75,6 +73,11 @@ public class Application {
      * Datenverwaltung der Automatisierung
      */
     private volatile AutomationAppliaction automationAppliaction;
+
+    /**
+     * Scheduler
+     */
+    private volatile ScheduledExecutorService timerExecutor;
 
     /**
      * Einstieg in die Anwendung
@@ -210,6 +213,15 @@ public class Application {
     }
 
     /**
+     * gibt den ThreadPool Scheduler zurück
+     *
+     * @return ThreadPool Scheduler
+     */
+    public ScheduledExecutorService getTimerExecutor() {
+        return timerExecutor;
+    }
+
+    /**
      * gibt den Einstellungs-Editor zurück
      *
      * @return Einstellungs-Editor
@@ -243,29 +255,14 @@ public class Application {
      */
     public void start() {
 
+        //Scheduler Threadpool
+        timerExecutor = Executors.newScheduledThreadPool(5);
+
+        //Module starten
         getAutomation().start();
+
+        //Anwendung bereit
         System.out.println("Anwendung erfolgreich gestartet");
-
-        SwitchTimer switchTimer = new SwitchTimer();
-        switchTimer.setId(ID.create());
-        switchTimer.setName("Test ein");
-        switchTimer.getMinute().addAll(IntStream.iterate(0, i -> i + 2).limit(30).collect(TreeSet::new, TreeSet::add, TreeSet::addAll));
-        switchTimer.getCommands().add(new SwitchCommand(ID.of("07fd8826-ffdb-4601-917f-cfcdf8751085"), SwitchCommands.on));
-
-        SwitchTimer switchTimer1 = new SwitchTimer();
-        switchTimer1.setId(ID.create());
-        switchTimer1.setName("Test aus");
-        switchTimer1.getMinute().addAll(IntStream.iterate(1, i -> i + 2).limit(30).collect(TreeSet::new, TreeSet::add, TreeSet::addAll));
-        switchTimer1.getCommands().add(new SwitchCommand(ID.of("07fd8826-ffdb-4601-917f-cfcdf8751085"), SwitchCommands.off));
-
-        SwitchTimerEditor ste = getAutomation().getSwitchTimerEditor();
-        ReentrantReadWriteLock.WriteLock lock = ste.writeLock();
-        lock.lock();
-
-        ste.getData().add(switchTimer);
-        ste.getData().add(switchTimer1);
-
-        lock.unlock();
 
     }
 
@@ -290,6 +287,9 @@ public class Application {
 
         //Anwendungen stoppen
         automationAppliaction.stop();
+
+        //Scheduler stoppen
+        timerExecutor.shutdown();
 
         //Datenbankverbindung aufheben
         if(databaseManager != null && databaseManager.isConnected()) {

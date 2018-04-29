@@ -1,5 +1,6 @@
 package net.kleditzsch.SmartHome.app.automation;
 
+import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
@@ -13,11 +14,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class AutomationAppliaction {
-
-    /**
-     * Scheduler
-     */
-    private volatile ScheduledExecutorService timerExecutor;
 
     /**
      * Sensor Editor
@@ -137,8 +133,8 @@ public class AutomationAppliaction {
      */
     public void start() {
 
-        //Scheduler Threadpool erzeugen
-        timerExecutor = Executors.newScheduledThreadPool(2);
+        //Scheduler Threadpool
+        ScheduledExecutorService timerExecutor = Application.getInstance().getTimerExecutor();
 
         //Executor starten
         executorService = new ExecutorService();
@@ -173,7 +169,6 @@ public class AutomationAppliaction {
      */
     public void stop() {
 
-        timerExecutor.shutdown();
         executorService.stopService();
     }
 }
