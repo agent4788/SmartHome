@@ -48,12 +48,12 @@ public class SettingsEditor implements DatabaseEditor {
     /**
      * Einstellungen
      */
-    private List<Setting> settings = new ArrayList<>();
+    private List<Setting> settings = new ArrayList<>(50);
 
     /**
      * Bekannte Einstellungen
      */
-    private List<Setting> knownSettings = new ArrayList<>();
+    private List<Setting> knownSettings = new ArrayList<>(50);
 
     public SettingsEditor() {
 

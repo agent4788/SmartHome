@@ -15,7 +15,7 @@ public abstract class AbstractDatabaseEditor<T extends Element> implements Datab
     /**
      * Liste aller Elemente
      */
-    private List<T> data = new ArrayList<T>();
+    private List<T> data = new ArrayList<T>(50);
 
     /**
      * Lock objekt
