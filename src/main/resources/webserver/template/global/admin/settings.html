@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHome Einstellungen</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.menu .item').tab();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/global/admin/headline.html' %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div>
+            <h2 class="ui header">Einstellungen</h2>
+        </div>
+        {% if success is defined %}
+            {% if success %}
+                <div class="ui message success">
+                    Die Einstellungen wurden erfolgreich gespeichert
+                </div>
+            {% else %}
+                <div class="ui message error">
+                    Die Einstellungen konnten nicht gespeichert werden
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="ui divider"></div>
+        <form class="ui form" method="post" action="/admin/settings">
+            <div class="ui top attached tabular menu">
+                <div data-tab="webserverUnsave" class="active item" style="cursor: pointer;">Webserver (unverschl&uuml;sselt)</div>
+                <div data-tab="webserverSave" class="item" style="cursor: pointer;">Webserver (verschl&uuml;sselt)</div>
+            </div>
+            <div data-tab="webserverUnsave" class="ui bottom attached tab segment active">
+                <h4></h4>
+                <div class="ui divider"></div>
+                <div class="field required">
+                    <label>Port des Webservers</label>
+                    <input name="port" type="number" min="0" max="65535" step="1" value="{{ port }}">
+                </div>
+            </div>
+            <div data-tab="webserverSave" class="ui bottom attached tab segment">
+                <div class="field required">
+                    <label>Port des Webservers</label>
+                    <input name="securePort" type="number" min="0" max="65535" step="1" value="{{ securePort }}">
+                </div>
+                <div class="field">
+                    <label>Passwort des Key Store</label>
+                    <input name="storePassword" type="password" value="">
+                </div>
+                <div class="field">
+                    <label>Passwort des Key Managers</label>
+                    <input name="managerPassword" type="password" value="">
+                </div>
+            </div>
+            <div class="ui divider"></div>
+            <input type="submit" class="ui button primary" value="speichern">
+            <input type="reset" class="ui button" value="reset">
+        </form>
+    </div>
+</main>
+</body>
+</html>

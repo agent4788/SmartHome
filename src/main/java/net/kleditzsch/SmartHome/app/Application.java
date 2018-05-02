@@ -9,6 +9,10 @@ import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
+import net.kleditzsch.SmartHome.view.global.admin.GlobalAdminIndexServlet;
+import net.kleditzsch.SmartHome.view.global.admin.GlobalBackupServlet;
+import net.kleditzsch.SmartHome.view.global.admin.GlobalServerInfoServlet;
+import net.kleditzsch.SmartHome.view.global.admin.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.index.GlobalIndexServlet;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -266,6 +270,10 @@ public class Application {
         //Globale Seiten
         dynamicHandler.addServlet(GlobalIndexServlet.class, "/");
         dynamicHandler.addServlet(GlobalIndexServlet.class, "/index");
+        dynamicHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");
+        dynamicHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
+        dynamicHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
+        dynamicHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
 
         //Automatisierung Seiten
         getAutomation().initWebContext(dynamicHandler);
@@ -283,6 +291,15 @@ public class Application {
      */
     public Jedis getDatabaseConnection() {
         return databaseManager.getConnection();
+    }
+
+    /**
+     * gibt die Datenbankverwaltung zurück
+     *
+     * @return Datenbankverwaltung
+     */
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     /**

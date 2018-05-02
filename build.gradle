@@ -41,3 +41,15 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jtwig/jtwig-web
     compile group: 'org.jtwig', name: 'jtwig-web', version: '+'
 }
+
+task fatJar(type: Jar) {
+
+    manifest {
+        attributes  'Implementation-Title': 'SmartHome Application Server',
+                    'Implementation-Version': version,
+                    'Main-Class': 'net.kleditzsch.SmartHome.app.Application'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

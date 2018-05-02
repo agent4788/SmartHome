@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHome Admin</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/global/admin/headline.html' with {backlink: '/admin'} %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div class="ui link cards four column doubling stackable">
+            <div class="card" onclick="window.location = '/admin/backup'">
+                <div class="image">
+                    <img src="/static/img/icon/backup.png">
+                </div>
+                <div class="content">
+                    <div class="header">Backup</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/admin/settings'">
+                <div class="image">
+                    <img src="/static/img/icon/settings.png">
+                </div>
+                <div class="content">
+                    <div class="header">Einstellungen</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/admin/info'">
+                <div class="image">
+                    <img src="/static/img/icon/info.png">
+                </div>
+                <div class="content">
+                    <div class="header">Info</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

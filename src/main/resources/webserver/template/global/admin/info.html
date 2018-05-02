@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHome Info</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.menu .item').tab();
+            $('#progress1').progress();
+            $('#progress2').progress();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/global/admin/headline.html' %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div>
+            <h2 class="ui header">Server Info</h2>
+        </div>
+        <div class="ui divider"></div>
+        <div class="ui top attached tabular menu">
+            <div data-tab="software" class="active item" style="cursor: pointer;">Software</div>
+            <div data-tab="hardware" class="item" style="cursor: pointer;">Hardware</div>
+            <div data-tab="database" class="item" style="cursor: pointer;">Datenbank</div>
+        </div>
+        <div data-tab="software" class="ui bottom attached tab segment active">
+            <table class="ui celled table">
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">SmartHome</div></td>
+                </tr>
+                <tr>
+                    <td>Version:</td>
+                    <td>{{ smartHomeVersion }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Betriebssystem</div></td>
+                </tr>
+                <tr>
+                    <td>Betriebssystem:</td>
+                    <td>{{ properties.get('os.name') }}</td>
+                </tr>
+                <tr>
+                    <td>Architektur:</td>
+                    <td>{{ properties.get('os.arch') }}</td>
+                </tr>
+                <tr>
+                    <td>Version:</td>
+                    <td>{{ properties.get('os.version') }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Java</div></td>
+                </tr>
+                <tr>
+                    <td>Home:</td>
+                    <td>{{ properties.get('java.home') }}</td>
+                </tr>
+                <tr>
+                    <td>Hersteller:</td>
+                    <td>{{ properties.get('java.vendor') }} - <a href="{{ properties.get('java.vendor.url') }}">{{ properties.get('java.vendor.url') }}</a></td>
+                </tr>
+                <tr>
+                    <td>Version:</td>
+                    <td>{{ properties.get('java.version') }}</td>
+                </tr>
+                <tr>
+                    <td>Benutzer:</td>
+                    <td>{{ properties.get('user.name') }}</td>
+                </tr>
+                <tr>
+                    <td>Arbeitsspeicher:</td>
+                    <td>
+                        <div class="ui teal progress" data-total="{{ javaMemoryTotal }}" data-value="{{ javaMemoryUsed }}" id="progress1">
+                            <div class="bar">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="label">{{ javaMemoryUsed | filesize }} von {{ javaMemoryTotal | filesize }} verwendet</div>
+                        </div>
+                        <span style="font-weight: bold;">Maiximal verf&uuml;gbar:</span>&nbsp;&nbsp;{{ javaMemoryMax | filesize }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-tab="hardware" class="ui bottom attached tab segment">
+            <table class="ui celled table">
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Hardware</div></td>
+                </tr>
+                <tr>
+                    <td>Hostname:</td>
+                    <td>{{ hostname }}</td>
+                </tr>
+                <tr>
+                    <td>Laufzeit:</td>
+                    <td>{{ uptime | secondformat }}</td>
+                </tr>
+                <tr>
+                    <td>letzter Systemstart:</td>
+                    <td>{{ lastStartTime | datetimeformat }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Arbeitsspeicher</div></td>
+                </tr>
+                <tr>
+                    <td>Gesamt:</td>
+                    <td>{{ memoryInfo.getTotalSize() | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Frei:</td>
+                    <td>{{ memoryInfo.getFreeSize() | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Verwendet:</td>
+                    <td>{{ memoryInfo.getUsedSize() | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Auslastung:</td>
+                    <td>{{ memoryInfo.getUtilisation() }}%</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="ui teal progress" data-total="{{ memoryInfo.getTotalSize() }}" data-value="{{ memoryInfo.getUsedSize() }}" id="progress2">
+                            <div class="bar"></div>
+                            <div class="label">{{ memoryInfo.getUsedSize() | filesize }} von {{ memoryInfo.getTotalSize() | filesize }} verwendet</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">CPU</div></td>
+                </tr>
+                <tr>
+                    <td>Hersteller:</td>
+                    <td>{{ cpuInfo.getVendor() }}</td>
+                </tr>
+                <tr>
+                    <td>Model:</td>
+                    <td>{{ cpuInfo.getModelName() }}</td>
+                </tr>
+                <tr>
+                    <td>Temperatur:</td>
+                    <td>{{ coreTemperature }} &deg;C</td>
+                </tr>
+                {% for coreInfo in cpuInfo.getCores() %}
+                <tr>
+                    <td>Core {{ coreInfo.getId() }}:</td>
+                    <td>
+                        <span style="font-weight: bold;">Min Freq.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ coreInfo.getMinClock() }} MHz <br>
+                        <span style="font-weight: bold;">Aktuelle Freq.:</span> {{ coreInfo.getCurrentClock() }} MHz <br>
+                        <span style="font-weight: bold;">Max Freq.:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ coreInfo.getMaxClock() }} MHz
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div data-tab="database" class="ui bottom attached tab segment">
+            <table class="ui celled table">
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Datenbank Info</div></td>
+                </tr>
+                <tr>
+                    <td>Betriebssystem:</td>
+                    <td>{{ dbOS }}</td>
+                </tr>
+                <tr>
+                    <td>Redis Version:</td>
+                    <td>{{ dbVersion }}</td>
+                </tr>
+                <tr>
+                    <td>Modus:</td>
+                    <td>{{ dbMode }}</td>
+                </tr>
+                <tr>
+                    <td>Laufzeit:</td>
+                    <td>{{ dbUptime | secondformat }}</td>
+                </tr>
+                <tr>
+                    <td>Config Datei:</td>
+                    <td>{{ dbConfigFile }}</td>
+                </tr>
+                <tr>
+                    <td>Speicherbedarf:</td>
+                    <td>{{ dbUsedMemory | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Speicherbedarf (max):</td>
+                    <td>{{ dbMemoryPeak | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>letzte Speicherung:</td>
+                    <td>{{ dbLastSaveTime | datetimeformat }}</td>
+                </tr>
+                <tr>
+                    <td>Speicherstatus:</td>
+                    <td>{{ dbLastSaveState }}</td>
+                </tr>
+                <tr>
+                    <td>Empfangene Daten:</td>
+                    <td>{{ dbTotalInputBytes | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Gesendete Daten:</td>
+                    <td>{{ dbTotalOutputBytes | filesize }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Alle Daten</div></td>
+                </tr>
+                {% for key, value in fullInfo %}
+                <tr>
+                    <td>{{ key }}:</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>
