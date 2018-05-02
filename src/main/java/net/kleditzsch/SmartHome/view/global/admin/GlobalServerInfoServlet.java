@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.view.global.admin;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.util.hardware.Hardware;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.util.time.TimeUtil;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -63,10 +64,8 @@ public class GlobalServerInfoServlet extends HttpServlet {
         model.with("dbUsedMemory", serverInfo.get("used_memory"));
         model.with("dbMemoryPeak", serverInfo.get("used_memory_peak"));
 
-        long lastSaveTime = Long.parseLong(serverInfo.get("rdb_last_save_time")) * 1000;
-        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSaveTime),
-                TimeZone.getDefault().toZoneId());;
-        model.with("dbLastSaveTime", ldt);
+        long lastSaveTime = Long.parseLong(serverInfo.get("rdb_last_save_time"));
+        model.with("dbLastSaveTime", TimeUtil.getLocalDateTimeOfEpochSeconds(lastSaveTime));
 
         model.with("dbLastSaveState", serverInfo.get("rdb_last_bgsave_status"));
         model.with("dbTotalInputBytes", serverInfo.get("total_net_input_bytes"));

@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.TimeZone;
 
 /**
  * Hilfsfunktionen zur Datums und Zeitverarbeitung
@@ -18,19 +19,8 @@ public abstract class TimeUtil {
      */
     public static LocalDateTime getLocalDateTimeOfEpochSeconds(long seconds) {
 
-        return TimeUtil.getLocalDateTimeOfEpochSeconds(seconds, "Europe/Berlin");
-    }
-
-    /**
-     * gibt ein Lokalisiertes DateTime Objekt zum Zeitstempel zurueck
-     *
-     * @param seconds Zeitstempel
-     * @param timeZoneName Zeitzone
-     * @return
-     */
-    public static LocalDateTime getLocalDateTimeOfEpochSeconds(long seconds, String timeZoneName) {
-
-        return LocalDateTime.ofEpochSecond(seconds, 0, LocalDateTime.now().atZone(ZoneId.of(timeZoneName)).getOffset());
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(seconds),
+                TimeZone.getDefault().toZoneId());
     }
 
     /**
