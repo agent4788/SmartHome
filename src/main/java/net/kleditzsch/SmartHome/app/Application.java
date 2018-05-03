@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.app;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
+import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
@@ -23,6 +24,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -105,19 +107,34 @@ public class Application {
             return;
         }
 
-        //Logger initaliiseren
-        LoggerUtil.setLogLevel(Level.INFO);
-        LoggerUtil.setLogFileLevel(Level.OFF);
+        //Logger Konfigurieren
+        if(arguments.contains("-d") || arguments.contains("--debug")) {
+
+            //Standard Log Level
+            LoggerUtil.setLogLevel(Level.CONFIG);
+            LoggerUtil.setLogFileLevel(Level.CONFIG);
+        } else if(arguments.contains("-df") || arguments.contains("--debug-fine")) {
+
+            //Alle Log Daten ausgeben
+            LoggerUtil.setLogLevel(Level.FINEST);
+            LoggerUtil.setLogFileLevel(Level.FINEST);
+        } else {
+
+            //Fehler in Log Datei Schreiben
+            LoggerUtil.setLogLevel(Level.OFF);
+            LoggerUtil.setLogFileLevel(Level.WARNING);
+            LoggerUtil.setLogDir(Paths.get("log"));
+        }
         logger = LoggerUtil.getLogger(Application.class);
 
         try {
 
             //prüfen ob die Datenbankkonfiguration vorhanden ist
             databaseManager = new DatabaseManager();
-            if (!Files.exists(databaseManager.getDbConfigFile())) {
+            if(arguments.contains("-db") || arguments.contains("--Database") || !Files.exists(databaseManager.getDbConfigFile())) {
 
-                logger.severe("Keine Datenbankkonfiguration vorhanden");
-                System.exit(1);
+                CliConfigurator.startDatabaseConfig();
+                return;
             }
 
             //Anwendung initalisieren
