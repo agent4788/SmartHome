@@ -277,7 +277,13 @@ public class Application {
         staticHandler.setContextPath("/static/");
         DefaultServlet defaultServlet = new DefaultServlet();
         ServletHolder holder = new ServletHolder("default", defaultServlet);
-        holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
+        if(Files.exists(Paths.get("./webserver"))) {
+
+            holder.setInitParameter("resourceBase", "./webserver/static/");
+        } else {
+
+            holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
+        }
         staticHandler.addServlet(holder, "/*");
 
         //Dynamische Inhalte
