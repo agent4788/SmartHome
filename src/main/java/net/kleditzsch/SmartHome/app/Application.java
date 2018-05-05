@@ -24,6 +24,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -275,15 +276,16 @@ public class Application {
         //Statische Inhalte
         ServletContextHandler staticHandler = new ServletContextHandler();
         staticHandler.setContextPath("/static/");
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holder = new ServletHolder("default", defaultServlet);
-        if(Files.exists(Paths.get("./webserver"))) {
+        if (Files.exists(Paths.get("./src/main/resources/webserver/static/"))) {
 
-            holder.setInitParameter("resourceBase", "./webserver/static/");
+            staticHandler.setResourceBase("./src/main/resources/webserver/static/");
         } else {
 
-            holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
+            staticHandler.setResourceBase(this.getClass().getClassLoader().getResource("webserver/static").toExternalForm());
         }
+        DefaultServlet defaultServlet = new DefaultServlet();
+        ServletHolder holder = new ServletHolder("default", defaultServlet);
+        //holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
         staticHandler.addServlet(holder, "/*");
 
         //Dynamische Inhalte
