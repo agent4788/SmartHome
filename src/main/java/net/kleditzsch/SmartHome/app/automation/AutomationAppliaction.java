@@ -7,7 +7,10 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorSe
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
+import net.kleditzsch.SmartHome.view.automation.admin.AutomationAdminIndexServlet;
+import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.Timer;
 import java.util.concurrent.Executors;
@@ -80,9 +83,12 @@ public class AutomationAppliaction {
      *
      * @param contextHandler Context Handler
      */
-    public void initWebContext(ContextHandler contextHandler) {
+    public void initWebContext(ServletContextHandler contextHandler) {
 
-
+        contextHandler.addServlet(AutomationIndexServlet.class, "/automation/");
+        contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
+        contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
+        contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
     }
 
     /**

@@ -14,7 +14,7 @@ import net.kleditzsch.SmartHome.view.global.admin.GlobalAdminIndexServlet;
 import net.kleditzsch.SmartHome.view.global.admin.GlobalBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.GlobalServerInfoServlet;
 import net.kleditzsch.SmartHome.view.global.admin.GlobalSettingsServlet;
-import net.kleditzsch.SmartHome.view.global.index.GlobalIndexServlet;
+import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -24,7 +24,6 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

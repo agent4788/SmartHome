@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung Admin</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="manifest" href="/static/manifest/globalmanifest.json">
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {backlink: '/automation/index'} %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div class="ui link cards four column doubling stackable">
+            <div class="card" onclick="window.location = ''">
+                <div class="image">
+                    <img src="/static/img/icon/room.png">
+                </div>
+                <div class="content">
+                    <div class="header">R&auml;me</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = ''">
+                <div class="image">
+                    <img src="/static/img/icon/device.png">
+                </div>
+                <div class="content">
+                    <div class="header">Ger&auml;te</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = ''">
+                <div class="image">
+                    <img src="/static/img/icon/switchserver.png">
+                </div>
+                <div class="content">
+                    <div class="header">Schaltserver</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = ''">
+                <div class="image">
+                    <img src="/static/img/icon/settings.png">
+                </div>
+                <div class="content">
+                    <div class="header">Einstellungen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,23 +1,22 @@
-package net.kleditzsch.SmartHome.view.global.index;
+package net.kleditzsch.SmartHome.view.automation.user;
+
+import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
+import org.eclipse.jetty.io.WriterOutputStream;
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
-import org.eclipse.jetty.io.WriterOutputStream;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-
-public class GlobalIndexServlet extends HttpServlet {
+public class AutomationIndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/index/index.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/user/index.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Template rendern
