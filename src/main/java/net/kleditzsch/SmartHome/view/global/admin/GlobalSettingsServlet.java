@@ -72,12 +72,6 @@ public class GlobalSettingsServlet extends HttpServlet {
 
                 success = false;
             }
-        } catch (NumberFormatException e) {
-
-            success = false;
-        }
-        try {
-
             securePort = Integer.parseInt(strSecurePort);
             if(!(securePort >= 0 && securePort <= 65535)) {
 

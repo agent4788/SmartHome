@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automation Einstellungen</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            {% if fbActive == false %}
+            $('.fritzBox').prop('disabled', true);
+            {% endif %}
+
+            $('.menu .item').tab();
+            $('.checkbox').checkbox();
+            $('#fritzBoxActive').checkbox({
+                onChecked: function() {
+                    $('.fritzBox').prop('disabled', false);
+                },
+                onUnchecked: function() {
+                    $('.fritzBox').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div>
+            <h2 class="ui header">Einstellungen</h2>
+        </div>
+        {% if success is defined %}
+        {% if success %}
+        <div class="ui message success">
+            Die Einstellungen wurden erfolgreich gespeichert
+        </div>
+        {% else %}
+        <div class="ui message error">
+            Die Einstellungen konnten nicht gespeichert werden
+        </div>
+        {% endif %}
+        {% endif %}
+        <div class="ui divider"></div>
+        <form class="ui form" method="post" action="/automation/admin/settings">
+            <div class="ui top attached tabular menu">
+                <div data-tab="locale" class="active item" style="cursor: pointer;">Lokalit&auml;t</div>
+                <div data-tab="fritzBox" class="item" style="cursor: pointer;">FritzBox</div>
+                <div data-tab="energy" class="item" style="cursor: pointer;">Energie</div>
+            </div>
+            <div data-tab="locale" class="ui bottom attached tab segment active">
+                <div class="field required">
+                    <label>Offset Sonnenaufgang [min]</label>
+                    <input name="sunriseOffset" type="number" min="-60" max="60" step="1" value="{{ sunriseOffset | escape }}">
+                </div>
+                <div class="field required">
+                    <label>Offset Sonnenuntergang [min]</label>
+                    <input name="sunsetOffset" type="number" min="-60" max="60" step="1" value="{{ sunsetOffset | escape }}">
+                </div>
+                <div class="field required">
+                    <label>L&auml;ngengrad</label>
+                    <input name="longitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ longitude | escape }}">
+                </div>
+                <div class="field required">
+                    <label>Breitengrad</label>
+                    <input name="latitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ latitude | escape }}">
+                </div>
+            </div>
+            <div data-tab="fritzBox" class="ui bottom attached tab segment">
+                <div class="ui icon info message">
+                    <i class="info icon black"></i>
+                    <div class="content">
+                        <p>Das aktivieren/deaktivieren des FritzBox Supports wird erst nach einem Neustart des Servers übernommen.</p>
+                    </div>
+                </div>
+                <div class="field required">
+                    <div class="ui toggle checkbox" id="fritzBoxActive">
+                        <input type="checkbox" name="fbActive" class="hidden" {% if fbActive %}checked="checked"{% endif %}>
+                        <label>FritzBox Support aktiv</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Adresss</label>
+                    <input name="fbAddress" type="text" value="{{ fbAddress | escape }}" class="fritzBox">
+                </div>
+                <div class="field">
+                    <label>Benutzer</label>
+                    <input name="fbUser" type="text" value="{{ fbUser | escape }}" class="fritzBox">
+                </div>
+                <div class="field">
+                    <label>Passwort</label>
+                    <input name="fbPassword" type="text" value="{{ fbPassword | escape }}" class="fritzBox">
+                </div>
+            </div>
+            <div data-tab="energy" class="ui bottom attached tab segment">
+                <div class="field required">
+                    <label>Strompreis [&euro;/kWh]</label>
+                    <input name="electricPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ electricPrice | escape }}">
+                </div>
+                <div class="field required">
+                    <label>Wasserpreis [&euro;/m<sup>3</sup>]</label>
+                    <input name="waterPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ waterPrice | escape }}">
+                </div>
+            </div>
+            <div class="ui divider"></div>
+            <input type="submit" class="ui button primary" value="speichern">
+            <input type="reset" class="ui button" value="reset">
+        </form>
+    </div>
+</main>
+</body>
+</html>

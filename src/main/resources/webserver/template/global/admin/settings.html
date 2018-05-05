@@ -36,17 +36,15 @@
                 <div data-tab="webserverSave" class="item" style="cursor: pointer;">Webserver (verschl&uuml;sselt)</div>
             </div>
             <div data-tab="webserverUnsave" class="ui bottom attached tab segment active">
-                <h4></h4>
-                <div class="ui divider"></div>
                 <div class="field required">
                     <label>Port des Webservers</label>
-                    <input name="port" type="number" min="0" max="65535" step="1" value="{{ port }}">
+                    <input name="port" type="number" min="0" max="65535" step="1" value="{{ port | escape }}">
                 </div>
             </div>
             <div data-tab="webserverSave" class="ui bottom attached tab segment">
                 <div class="field required">
                     <label>Port des Webservers</label>
-                    <input name="securePort" type="number" min="0" max="65535" step="1" value="{{ securePort }}">
+                    <input name="securePort" type="number" min="0" max="65535" step="1" value="{{ securePort | escape }}">
                 </div>
                 <div class="field">
                     <label>Passwort des Key Store</label>

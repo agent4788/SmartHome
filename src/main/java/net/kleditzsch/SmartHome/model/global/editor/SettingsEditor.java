@@ -35,10 +35,8 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String FB_ADDRESS = "FB_ADDRESS";
     public static final String FB_USER = "FB_USER";
     public static final String FB_PASSWORD = "FB_PASSWORD";
-    public static final String FB_5GHZ_WLAN_ENABLED = "FB_5GHZ_WLAN_ENABLED";
     public static final String ENERGY_ELECTRIC_PRICE = "ENERGY_ELECTRIC_PRICE";
     public static final String ENERGY_WATER_PRICE = "ENERGY_WATER_PRICE";
-    public static final String ENERGY_GAS_PRICE = "ENERGY_GAS_PRICE";
 
     /**
      * Lock objekt
@@ -85,15 +83,11 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(fritzboxUser);
         StringSetting fritzboxPassowrd = new StringSetting(FB_PASSWORD, "", "");
         knownSettings.add(fritzboxPassowrd);
-        BooleanSetting fritzbox5GHzWlan = new BooleanSetting(FB_5GHZ_WLAN_ENABLED, false, false);
-        knownSettings.add(fritzbox5GHzWlan);
 
         DoubleSetting energyElectricPrice = new DoubleSetting(ENERGY_ELECTRIC_PRICE, 0.0, 0.0);
         knownSettings.add(energyElectricPrice);
         DoubleSetting energyWaterPrice = new DoubleSetting(ENERGY_WATER_PRICE, 0.0, 0.0);
         knownSettings.add(energyWaterPrice);
-        DoubleSetting energyGasPrice = new DoubleSetting(ENERGY_GAS_PRICE, 0.0, 0.0);
-        knownSettings.add(energyGasPrice);
     }
 
     /**

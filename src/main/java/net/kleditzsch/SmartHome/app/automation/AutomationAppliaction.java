@@ -8,6 +8,7 @@ import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchT
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.AutomationAdminIndexServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.AutomationSettingsServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -89,6 +90,7 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
+        contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
     }
 
     /**
