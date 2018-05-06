@@ -52,13 +52,13 @@ public class AvmEditor implements DatabaseEditor {
         ReentrantReadWriteLock.ReadLock lock = settingsEditor.getReadWriteLock().readLock();
         lock.lock();
 
-        Optional<BooleanSetting> activeOptional = settingsEditor.getBooleanSetting(SettingsEditor.FB_ACTIVE);
+        Optional<BooleanSetting> activeOptional = settingsEditor.getBooleanSetting(SettingsEditor.AUTOMATION_FB_ACTIVE);
         active = activeOptional.isPresent() ? activeOptional.get().getValue() : false;
-        Optional<StringSetting> addressOptional = settingsEditor.getStringSetting(SettingsEditor.FB_ADDRESS);
+        Optional<StringSetting> addressOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_ADDRESS);
         address = activeOptional.isPresent() ? addressOptional.get().getValue() : "";
-        Optional<StringSetting> userOptional = settingsEditor.getStringSetting(SettingsEditor.FB_USER);
+        Optional<StringSetting> userOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_USER);
         user = activeOptional.isPresent() ? userOptional.get().getValue() : "";
-        Optional<StringSetting> passwordOptional = settingsEditor.getStringSetting(SettingsEditor.FB_PASSWORD);
+        Optional<StringSetting> passwordOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
         password = activeOptional.isPresent() ? passwordOptional.get().getValue() : "";
 
         lock.unlock();

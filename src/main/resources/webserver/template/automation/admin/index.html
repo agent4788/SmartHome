@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Automatisierung Admin</title>
     {% include '/webserver/template/header.html' %}
-    <link rel="manifest" href="/static/manifest/globalmanifest.json">
 </head>
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {backlink: '/automation/index'} %}
@@ -27,7 +26,7 @@
                     <div class="header">Ger&auml;te</div>
                 </div>
             </div>
-            <div class="card" onclick="window.location = ''">
+            <div class="card" onclick="window.location = '/automation/admin/switchserverlist'">
                 <div class="image">
                     <img src="/static/img/icon/switchserver.png">
                 </div>

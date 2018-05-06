@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.global.database.DatabaseEditor;
 import net.kleditzsch.SmartHome.model.global.settings.*;
 import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
@@ -27,16 +26,17 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String SERVER_KEY_MANAGER_PASSWORD = "SERVER_KEY_MANAGER_PASSWORD";
 
     //Smarthome Einstellungen
-    public static final String SUNRISE_OFFSET = "SUNRISE_OFFSET";
-    public static final String SUNSET_OFFSET = "SUNSET_OFFSET";
-    public static final String LATITUDE = "LATITUDE";
-    public static final String LONGITUDE = "LONGITUDE";
-    public static final String FB_ACTIVE = "FB_ACTIVE";
-    public static final String FB_ADDRESS = "FB_ADDRESS";
-    public static final String FB_USER = "FB_USER";
-    public static final String FB_PASSWORD = "FB_PASSWORD";
-    public static final String ENERGY_ELECTRIC_PRICE = "ENERGY_ELECTRIC_PRICE";
-    public static final String ENERGY_WATER_PRICE = "ENERGY_WATER_PRICE";
+    public static final String AUTOMATION_SUNRISE_OFFSET = "AUTOMATION_SUNRISE_OFFSET";
+    public static final String AUTOMATION_SUNSET_OFFSET = "AUTOMATION_SUNSET_OFFSET";
+    public static final String AUTOMATION_LATITUDE = "AUTOMATION_LATITUDE";
+    public static final String AUTOMATION_LONGITUDE = "AUTOMATION_LONGITUDE";
+    public static final String AUTOMATION_FB_ACTIVE = "AUTOMATION_FB_ACTIVE";
+    public static final String AUTOMATION_FB_ADDRESS = "AUTOMATION_FB_ADDRESS";
+    public static final String AUTOMATION_FB_USER = "AUTOMATION_FB_USER";
+    public static final String AUTOMATION_FB_PASSWORD = "AUTOMATION_FB_PASSWORD";
+    public static final String AUTOMATION_ENERGY_ELECTRIC_PRICE = "AUTOMATION_ENERGY_ELECTRIC_PRICE";
+    public static final String AUTOMATION_ENERGY_WATER_PRICE = "AUTOMATION_ENERGY_WATER_PRICE";
+    public static final String AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE = "AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE";
 
     /**
      * Lock objekt
@@ -66,28 +66,31 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(keyManagerPassword);
 
         //Smarthome Einstellungen
-        IntegerSetting sunriseOffset = new IntegerSetting(SUNRISE_OFFSET, 0, 0);
+        IntegerSetting sunriseOffset = new IntegerSetting(AUTOMATION_SUNRISE_OFFSET, 0, 0);
         knownSettings.add(sunriseOffset);
-        IntegerSetting sunsetOffset = new IntegerSetting(SUNSET_OFFSET, 0, 0);
+        IntegerSetting sunsetOffset = new IntegerSetting(AUTOMATION_SUNSET_OFFSET, 0, 0);
         knownSettings.add(sunsetOffset);
-        DoubleSetting latitude = new DoubleSetting(LATITUDE, 50.0, 50.0);
+        DoubleSetting latitude = new DoubleSetting(AUTOMATION_LATITUDE, 50.0, 50.0);
         knownSettings.add(latitude);
-        DoubleSetting longitude = new DoubleSetting(LONGITUDE, 12.0, 12.0);
+        DoubleSetting longitude = new DoubleSetting(AUTOMATION_LONGITUDE, 12.0, 12.0);
         knownSettings.add(longitude);
 
-        BooleanSetting fritzboxActive = new BooleanSetting(FB_ACTIVE, false, false);
+        BooleanSetting fritzboxActive = new BooleanSetting(AUTOMATION_FB_ACTIVE, false, false);
         knownSettings.add(fritzboxActive);
-        StringSetting fritzboxAddress = new StringSetting(FB_ADDRESS, "fritz.box", "fritz.box");
+        StringSetting fritzboxAddress = new StringSetting(AUTOMATION_FB_ADDRESS, "fritz.box", "fritz.box");
         knownSettings.add(fritzboxAddress);
-        StringSetting fritzboxUser = new StringSetting(FB_USER, "", "");
+        StringSetting fritzboxUser = new StringSetting(AUTOMATION_FB_USER, "", "");
         knownSettings.add(fritzboxUser);
-        StringSetting fritzboxPassowrd = new StringSetting(FB_PASSWORD, "", "");
+        StringSetting fritzboxPassowrd = new StringSetting(AUTOMATION_FB_PASSWORD, "", "");
         knownSettings.add(fritzboxPassowrd);
 
-        DoubleSetting energyElectricPrice = new DoubleSetting(ENERGY_ELECTRIC_PRICE, 0.0, 0.0);
+        DoubleSetting energyElectricPrice = new DoubleSetting(AUTOMATION_ENERGY_ELECTRIC_PRICE, 0.0, 0.0);
         knownSettings.add(energyElectricPrice);
-        DoubleSetting energyWaterPrice = new DoubleSetting(ENERGY_WATER_PRICE, 0.0, 0.0);
+        DoubleSetting energyWaterPrice = new DoubleSetting(AUTOMATION_ENERGY_WATER_PRICE, 0.0, 0.0);
         knownSettings.add(energyWaterPrice);
+
+        IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 25, 25);
+        knownSettings.add(paginationElementsAtPage);
     }
 
     /**

@@ -8,8 +8,7 @@
         $(function() {
 
             $('.menu .item').tab();
-            $('#progress1').progress();
-            $('#progress2').progress();
+            $('.progress').progress();
         });
     </script>
 </head>
@@ -72,7 +71,7 @@
                 <tr>
                     <td>Arbeitsspeicher:</td>
                     <td>
-                        <div class="ui teal progress" data-total="{{ javaMemoryTotal }}" data-value="{{ javaMemoryUsed }}" id="progress1">
+                        <div class="ui teal progress" data-total="{{ javaMemoryTotal }}" data-value="{{ javaMemoryUsed }}">
                             <div class="bar">
                                 <div class="progress"></div>
                             </div>
@@ -122,8 +121,10 @@
                 <tr>
                     <td></td>
                     <td>
-                        <div class="ui teal progress" data-total="{{ memoryInfo.getTotalSize() }}" data-value="{{ memoryInfo.getUsedSize() }}" id="progress2">
-                            <div class="bar"></div>
+                        <div class="ui teal progress" data-total="{{ memoryInfo.getTotalSize() }}" data-value="{{ memoryInfo.getUsedSize() }}">
+                            <div class="bar">
+                                <div class="progress"></div>
+                            </div>
                             <div class="label">{{ memoryInfo.getUsedSize() | filesize }} von {{ memoryInfo.getTotalSize() | filesize }} verwendet</div>
                         </div>
                     </td>
@@ -181,6 +182,10 @@
                     <td>{{ dbConfigFile }}</td>
                 </tr>
                 <tr>
+                    <td>Arbeitsspeicher:</td>
+                    <td>{{ dbTotalMemory | filesize }}</td>
+                </tr>
+                <tr>
                     <td>Speicherbedarf:</td>
                     <td>{{ dbUsedMemory | filesize }}</td>
                 </tr>
@@ -189,8 +194,12 @@
                     <td>{{ dbMemoryPeak | filesize }}</td>
                 </tr>
                 <tr>
+                    <td>Anzahl beabeiter Befehle:</td>
+                    <td>{{ dbTotalCommands | numberformat }}</td>
+                </tr>
+                <tr>
                     <td>letzte Speicherung:</td>
-                    <td>{{ dbLastSaveTime | datetimeformat }}</td>
+                    <td>{{ dbLastSaveTime | timeline }}</td>
                 </tr>
                 <tr>
                     <td>Speicherstatus:</td>

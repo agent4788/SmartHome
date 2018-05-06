@@ -19,6 +19,8 @@ public class DateFormatFunction extends SimpleJtwigFunction {
     @Override
     public Object execute(FunctionRequest request) {
 
+        request.minimumNumberOfArguments(1).maximumNumberOfArguments(1);
+
         Object argument = request.getArguments().get(0);
         if(argument instanceof LocalDate) {
 

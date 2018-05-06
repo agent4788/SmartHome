@@ -1,17 +1,20 @@
 package net.kleditzsch.SmartHome.util.jtwig.functions;
 
+import net.kleditzsch.SmartHome.util.file.FileUtil;
 import net.kleditzsch.SmartHome.util.time.TimeUtil;
 import org.jtwig.functions.FunctionRequest;
 import org.jtwig.functions.SimpleJtwigFunction;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
-public class TimeLineFunction extends SimpleJtwigFunction {
+public class SecondFormatFunction extends SimpleJtwigFunction {
 
     @Override
     public String name() {
 
-        return "timeline";
+        return "secondformat";
     }
 
     @Override
@@ -21,13 +24,13 @@ public class TimeLineFunction extends SimpleJtwigFunction {
 
         if (request.getArguments().get(0) instanceof Duration) {
 
-            return TimeUtil.formatDuration(((Duration) request.getArguments().get(0)), false);
+            return TimeUtil.formatSeconds(((Duration) request.getArguments().get(0)).getSeconds(), false);
         } else if (request.getArguments().get(0) instanceof Integer || request.getArguments().get(0) instanceof Long) {
 
-            return TimeUtil.formatDuration(Duration.ofSeconds((long) request.getArguments().get(0)), false);
+            return TimeUtil.formatSeconds(((long) request.getArguments().get(0)), false);
         } else {
 
-            return request.getArguments().get(0);
+            return TimeUtil.formatSeconds(Long.parseLong(request.getArguments().get(0).toString()), false);
         }
     }
 }

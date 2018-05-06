@@ -1,13 +1,13 @@
 {
-  "name": "SmartHome",
-  "short_name": "SmartHome",
+  "name": "Automation",
+  "short_name": "Automation",
   "description": "",
-  "start_url": "/",
+  "start_url": "/automation/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/global.png",
+      "src": "/static/img/icon/smart.png",
       "sizes": "144x144",
       "type": "image/png"
     }

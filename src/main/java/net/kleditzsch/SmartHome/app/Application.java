@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
+import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
@@ -31,6 +32,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -371,6 +373,9 @@ public class Application {
 
         //Scheduler Threadpool
         timerExecutor = Executors.newScheduledThreadPool(5);
+
+        //Speicherdienst aktivieren
+        timerExecutor.scheduleAtFixedRate(new DataDumpTask(), 30, 30, TimeUnit.SECONDS);
 
         //Module starten
         getAutomation().start();

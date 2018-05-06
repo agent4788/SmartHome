@@ -18,6 +18,8 @@ public class DateTimeFormatFunction extends SimpleJtwigFunction {
     @Override
     public Object execute(FunctionRequest request) {
 
+        request.minimumNumberOfArguments(1).maximumNumberOfArguments(1);
+
         LocalDateTime localDateTime = (LocalDateTime) request.getArguments().get(0);
         return localDateTime.format(formatter);
     }

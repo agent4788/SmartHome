@@ -46,6 +46,7 @@
         <form class="ui form" method="post" action="/automation/admin/settings">
             <div class="ui top attached tabular menu">
                 <div data-tab="locale" class="active item" style="cursor: pointer;">Lokalit&auml;t</div>
+                <div data-tab="pagination" class="item" style="cursor: pointer;">Bl&auml;ttern</div>
                 <div data-tab="fritzBox" class="item" style="cursor: pointer;">FritzBox</div>
                 <div data-tab="energy" class="item" style="cursor: pointer;">Energie</div>
             </div>
@@ -65,6 +66,12 @@
                 <div class="field required">
                     <label>Breitengrad</label>
                     <input name="latitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ latitude | escape }}">
+                </div>
+            </div>
+            <div data-tab="pagination" class="ui bottom attached tab segment">
+                <div class="field required">
+                    <label>Elemente pro Seite</label>
+                    <input name="elementsAtPage" type="number" min="5" max="100" step="0" value="{{ elementsAtPage | escape }}">
                 </div>
             </div>
             <div data-tab="fritzBox" class="ui bottom attached tab segment">

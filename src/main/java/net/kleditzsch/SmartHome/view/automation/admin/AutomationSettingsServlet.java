@@ -34,30 +34,31 @@ public class AutomationSettingsServlet extends HttpServlet {
         lock.lock();
 
         //Einstellungen laden
-        Optional<IntegerSetting> sunriseOffsetOptional = se.getIntegerSetting(SettingsEditor.SUNRISE_OFFSET);
+        Optional<IntegerSetting> sunriseOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNRISE_OFFSET);
         sunriseOffsetOptional.ifPresent(setting -> model.with("sunriseOffset", setting.getValue()));
-        Optional<IntegerSetting> sunsetOffsetOptional = se.getIntegerSetting(SettingsEditor.SUNSET_OFFSET);
+        Optional<IntegerSetting> sunsetOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNSET_OFFSET);
         sunsetOffsetOptional.ifPresent(setting -> model.with("sunsetOffset", setting.getValue()));
-        Optional<DoubleSetting> latitudeOptional = se.getDoubleSetting(SettingsEditor.LATITUDE);
+        Optional<DoubleSetting> latitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LATITUDE);
         latitudeOptional.ifPresent(setting -> model.with("latitude", setting.getValue()));
-        Optional<DoubleSetting> longitudeOptional = se.getDoubleSetting(SettingsEditor.LONGITUDE);
+        Optional<DoubleSetting> longitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LONGITUDE);
         longitudeOptional.ifPresent(setting -> model.with("longitude", setting.getValue()));
 
-        Optional<BooleanSetting> fbActiveOptional = se.getBooleanSetting(SettingsEditor.FB_ACTIVE);
+        Optional<BooleanSetting> fbActiveOptional = se.getBooleanSetting(SettingsEditor.AUTOMATION_FB_ACTIVE);
         fbActiveOptional.ifPresent(setting -> model.with("fbActive", setting.getValue()));
-        Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.FB_ADDRESS);
+        Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_ADDRESS);
         fbAddressOptional.ifPresent(setting -> model.with("fbAddress", setting.getValue()));
-        Optional<StringSetting> fbUserOptional = se.getStringSetting(SettingsEditor.FB_USER);
+        Optional<StringSetting> fbUserOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_USER);
         fbUserOptional.ifPresent(setting -> model.with("fbUser", setting.getValue()));
-        Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.FB_PASSWORD);
+        Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
         fbPasswordOptional.ifPresent(setting -> model.with("fbPassword", setting.getValue()));
 
-        Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.ENERGY_ELECTRIC_PRICE);
+        Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_ELECTRIC_PRICE);
         electricPriceOptional.ifPresent(setting -> model.with("electricPrice", setting.getValue()));
-        Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.ENERGY_WATER_PRICE);
+        Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_WATER_PRICE);
         waterPriceOptional.ifPresent(setting -> model.with("waterPrice", setting.getValue()));
 
-        lock.unlock();
+        Optional<IntegerSetting> elementsAtPageOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE);
+        elementsAtPageOptional.ifPresent(setting -> model.with("elementsAtPage", setting.getValue()));
 
         //Meldung
         if(req.getSession().getAttribute("success") != null) {
@@ -70,6 +71,8 @@ public class AutomationSettingsServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);
         template.render(model, new WriterOutputStream(resp.getWriter()));
+
+        lock.unlock();
     }
 
     @Override
@@ -88,8 +91,10 @@ public class AutomationSettingsServlet extends HttpServlet {
         String electricPriceString = req.getParameter("electricPrice");
         String waterPriceString = req.getParameter("waterPrice");
 
+        String elementsAtPageString = req.getParameter("elementsAtPage");
+
         //Daten vorbereiten
-        int sunriseOffset = 0, sunsetOffset = 0;
+        int sunriseOffset = 0, sunsetOffset = 0, elementsAtPage = 0;
         double latitude = 0, longitude = 0, electricPrice = 0, waterPrice = 0;
         boolean fbActive = false;
 
@@ -117,18 +122,21 @@ public class AutomationSettingsServlet extends HttpServlet {
 
                 success = false;
             }
-            fbActive = fbActiveString.equalsIgnoreCase("on");
-            if(!(fbAddress.length() >= 1 && fbAddress.length() <= 100)) {
+            fbActive = fbActiveString != null ? fbActiveString.equalsIgnoreCase("on") : false;
+            if(fbActive) {
 
-                success = false;
-            }
-            if(!(fbUser.length() >= 1 && fbUser.length() <= 100)) {
+                if(!(fbAddress.length() >= 1 && fbAddress.length() <= 100)) {
 
-                success = false;
-            }
-            if(!(fbPassword.length() >= 1 && fbPassword.length() <= 100)) {
+                    success = false;
+                }
+                if(!(fbUser.length() >= 1 && fbUser.length() <= 100)) {
 
-                success = false;
+                    success = false;
+                }
+                if(!(fbPassword.length() >= 1 && fbPassword.length() <= 100)) {
+
+                    success = false;
+                }
             }
             electricPrice = Double.parseDouble(electricPriceString);
             if(!(electricPrice >= 0.1 && electricPrice <= 10.0)) {
@@ -137,6 +145,11 @@ public class AutomationSettingsServlet extends HttpServlet {
             }
             waterPrice = Double.parseDouble(waterPriceString);
             if(!(waterPrice >= 0.1 && waterPrice <= 10.0)) {
+
+                success = false;
+            }
+            elementsAtPage = Integer.parseInt(elementsAtPageString);
+            if(!(elementsAtPage >= 5 && elementsAtPage <= 100)) {
 
                 success = false;
             }
@@ -164,29 +177,36 @@ public class AutomationSettingsServlet extends HttpServlet {
             final String finalFbPassword = fbPassword;
             final double finalElectricPrice = electricPrice;
             final double finalWaterPrice = waterPrice;
+            final int finalElementsAtPage = elementsAtPage;
 
-            Optional<IntegerSetting> sunriseOffsetOptional = se.getIntegerSetting(SettingsEditor.SUNRISE_OFFSET);
+            Optional<IntegerSetting> sunriseOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNRISE_OFFSET);
             sunriseOffsetOptional.ifPresent(setting -> setting.setValue(finalSunriseOffset));
-            Optional<IntegerSetting> sunsetOffsetOptional = se.getIntegerSetting(SettingsEditor.SUNSET_OFFSET);
+            Optional<IntegerSetting> sunsetOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNSET_OFFSET);
             sunsetOffsetOptional.ifPresent(setting -> setting.setValue(finalSunsetOffset));
-            Optional<DoubleSetting> latitudeOptional = se.getDoubleSetting(SettingsEditor.LATITUDE);
+            Optional<DoubleSetting> latitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LATITUDE);
             latitudeOptional.ifPresent(setting -> setting.setValue(finalLatitude));
-            Optional<DoubleSetting> longitudeOptional = se.getDoubleSetting(SettingsEditor.LONGITUDE);
+            Optional<DoubleSetting> longitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LONGITUDE);
             longitudeOptional.ifPresent(setting -> setting.setValue(finalLongitude));
 
-            Optional<BooleanSetting> fbActiveOptional = se.getBooleanSetting(SettingsEditor.FB_ACTIVE);
+            Optional<BooleanSetting> fbActiveOptional = se.getBooleanSetting(SettingsEditor.AUTOMATION_FB_ACTIVE);
             fbActiveOptional.ifPresent(setting -> setting.setValue(finalFbActive));
-            Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.FB_ADDRESS);
-            fbAddressOptional.ifPresent(setting -> setting.setValue(finalFbAddress));
-            Optional<StringSetting> fbUserOptional = se.getStringSetting(SettingsEditor.FB_USER);
-            fbUserOptional.ifPresent(setting -> setting.setValue(finalFbUser));
-            Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.FB_PASSWORD);
-            fbPasswordOptional.ifPresent(setting -> setting.setValue(finalFbPassword));
+            if(fbActive) {
 
-            Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.ENERGY_ELECTRIC_PRICE);
+                Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_ADDRESS);
+                fbAddressOptional.ifPresent(setting -> setting.setValue(finalFbAddress));
+                Optional<StringSetting> fbUserOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_USER);
+                fbUserOptional.ifPresent(setting -> setting.setValue(finalFbUser));
+                Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
+                fbPasswordOptional.ifPresent(setting -> setting.setValue(finalFbPassword));
+            }
+
+            Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_ELECTRIC_PRICE);
             electricPriceOptional.ifPresent(setting -> setting.setValue(finalElectricPrice));
-            Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.ENERGY_WATER_PRICE);
+            Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_WATER_PRICE);
             waterPriceOptional.ifPresent(setting -> setting.setValue(finalWaterPrice));
+
+            Optional<IntegerSetting> elementsAtPageOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE);
+            elementsAtPageOptional.ifPresent(setting -> setting.setValue(finalElementsAtPage));
 
             lock.unlock();
 

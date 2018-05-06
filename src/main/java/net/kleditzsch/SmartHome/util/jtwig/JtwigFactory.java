@@ -13,10 +13,13 @@ public abstract class JtwigFactory {
                 .configuration()
                     .functions()
                         .add(new FilesizeFunction())
-                        .add(new TimeLineFunction())
+                        .add(new SecondFormatFunction())
                         .add(new DateFormatFunction())
                         .add(new TimeFormatFunction())
                         .add(new DateTimeFormatFunction())
+                        .add(new TimeLineFunction())
+                        .add(new NumberFormatFunction())
+                        .add(new RandomStringFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

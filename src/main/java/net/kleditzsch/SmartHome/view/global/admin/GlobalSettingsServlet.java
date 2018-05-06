@@ -37,8 +37,6 @@ public class GlobalSettingsServlet extends HttpServlet {
         Optional<IntegerSetting> securePortOptional = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT);
         securePortOptional.ifPresent(setting -> model.with("securePort", setting.getValue()));
 
-        lock.unlock();
-
         //Meldung
         if(req.getSession().getAttribute("success") != null) {
 
@@ -50,6 +48,8 @@ public class GlobalSettingsServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);
         template.render(model, new WriterOutputStream(resp.getWriter()));
+
+        lock.unlock();
     }
 
     @Override
