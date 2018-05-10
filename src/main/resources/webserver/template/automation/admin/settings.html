@@ -31,6 +31,7 @@
         <div>
             <h2 class="ui header">Einstellungen</h2>
         </div>
+        <div class="ui divider"></div>
         {% if success is defined %}
         {% if success %}
         <div class="ui message success">
@@ -42,7 +43,6 @@
         </div>
         {% endif %}
         {% endif %}
-        <div class="ui divider"></div>
         <form class="ui form" method="post" action="/automation/admin/settings">
             <div class="ui top attached tabular menu">
                 <div data-tab="locale" class="active item" style="cursor: pointer;">Lokalit&auml;t</div>
@@ -53,25 +53,25 @@
             <div data-tab="locale" class="ui bottom attached tab segment active">
                 <div class="field required">
                     <label>Offset Sonnenaufgang [min]</label>
-                    <input name="sunriseOffset" type="number" min="-60" max="60" step="1" value="{{ sunriseOffset | escape }}">
+                    <input name="sunriseOffset" type="number" min="-60" max="60" step="1" value="{{ sunriseOffset | escape }}" required>
                 </div>
                 <div class="field required">
                     <label>Offset Sonnenuntergang [min]</label>
-                    <input name="sunsetOffset" type="number" min="-60" max="60" step="1" value="{{ sunsetOffset | escape }}">
+                    <input name="sunsetOffset" type="number" min="-60" max="60" step="1" value="{{ sunsetOffset | escape }}" required>
                 </div>
                 <div class="field required">
                     <label>L&auml;ngengrad</label>
-                    <input name="longitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ longitude | escape }}">
+                    <input name="longitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ longitude | escape }}" required>
                 </div>
                 <div class="field required">
                     <label>Breitengrad</label>
-                    <input name="latitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ latitude | escape }}">
+                    <input name="latitude" type="number" min="0.0" max="360.0" step="0.00000001" value="{{ latitude | escape }}" required>
                 </div>
             </div>
             <div data-tab="pagination" class="ui bottom attached tab segment">
                 <div class="field required">
                     <label>Elemente pro Seite</label>
-                    <input name="elementsAtPage" type="number" min="5" max="100" step="0" value="{{ elementsAtPage | escape }}">
+                    <input name="elementsAtPage" type="number" min="5" max="100" step="0" value="{{ elementsAtPage | escape }}" required>
                 </div>
             </div>
             <div data-tab="fritzBox" class="ui bottom attached tab segment">
@@ -81,10 +81,12 @@
                         <p>Das aktivieren/deaktivieren des FritzBox Supports wird erst nach einem Neustart des Servers übernommen.</p>
                     </div>
                 </div>
-                <div class="field required">
-                    <div class="ui toggle checkbox" id="fritzBoxActive">
-                        <input type="checkbox" name="fbActive" class="hidden" {% if fbActive %}checked="checked"{% endif %}>
-                        <label>FritzBox Support aktiv</label>
+                <div class="ui segment">
+                    <div class="field required">
+                        <div class="ui toggle checkbox" id="fritzBoxActive">
+                            <input type="checkbox" name="fbActive" class="hidden" {% if fbActive %}checked="checked"{% endif %}>
+                            <label>FritzBox Support aktiv</label>
+                        </div>
                     </div>
                 </div>
                 <div class="field">
@@ -103,11 +105,11 @@
             <div data-tab="energy" class="ui bottom attached tab segment">
                 <div class="field required">
                     <label>Strompreis [&euro;/kWh]</label>
-                    <input name="electricPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ electricPrice | escape }}">
+                    <input name="electricPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ electricPrice | escape }}" required>
                 </div>
                 <div class="field required">
                     <label>Wasserpreis [&euro;/m<sup>3</sup>]</label>
-                    <input name="waterPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ waterPrice | escape }}">
+                    <input name="waterPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ waterPrice | escape }}" required>
                 </div>
             </div>
             <div class="ui divider"></div>

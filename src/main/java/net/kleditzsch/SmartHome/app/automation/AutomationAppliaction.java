@@ -7,9 +7,7 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorSe
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
-import net.kleditzsch.SmartHome.view.automation.admin.AutomationAdminIndexServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.AutomationSettingsServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.AutomationSwitchServerListServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -93,6 +91,8 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
         contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
         contextHandler.addServlet(AutomationSwitchServerListServlet.class, "/automation/admin/switchserverlist");
+        contextHandler.addServlet(AutomationSwitchServerFormServlet.class, "/automation/admin/switchserverform");
+        contextHandler.addServlet(AutomationSwitchServerDeleteServlet.class, "/automation/admin/switchserverdelete");
     }
 
     /**

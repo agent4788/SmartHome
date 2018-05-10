@@ -3,7 +3,6 @@ package net.kleditzsch.SmartHome.view.automation.admin;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.Element;
-import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
 import net.kleditzsch.SmartHome.model.automation.switchserver.SwitchServer;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -36,29 +35,20 @@ public class AutomationSwitchServerListServlet extends HttpServlet {
         ReentrantReadWriteLock.ReadLock lock = sse.readLock();
         lock.lock();
 
-        List<SwitchServer> switchServerList = new ArrayList<>();
-        switchServerList.addAll(sse.getData());
-
-        //Beispieldaten
-        SwitchServer ss = new SwitchServer(ID.create(), "Test 1", "127.0.0.1", 800, false, false);
-        ss.setDescription("123456");
-        switchServerList.add(ss);
-        for (int i = 2; i < 127; i++)
-            switchServerList.add(new SwitchServer(ID.create(), "Test " + i, "127.0.0.1", 800, false, true));
-        //Beispieldaten
+        List<SwitchServer> switchServerList = new ArrayList<>(sse.getData());
 
         //filtern
         String filterStr = null;
         if(req.getParameter("filter") != null) {
 
-            String filter = req.getParameter("filter");
+            String filter = req.getParameter("filter").trim();
             filterStr = filter;
             model.with("filterStr", filterStr);
-            switchServerList = switchServerList.stream().filter(e -> e.getName().contains(filter)).collect(Collectors.toList());
+            switchServerList = switchServerList.stream().filter(e -> e.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
         }
 
         //sortieren
-        Collections.sort(switchServerList, Comparator.comparing(Element::getName));
+        switchServerList.sort(Comparator.comparing(Element::getName));
 
         //Blätterfunktion
         int index = 0;
@@ -87,6 +77,15 @@ public class AutomationSwitchServerListServlet extends HttpServlet {
             pagination.setBaseLink("/automation/admin/switchserverlist?index=");
         }
         model.with("pagination", pagination);
+
+        //Meldung
+        if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
+
+            model.with("success", req.getSession().getAttribute("success"));
+            model.with("message", req.getSession().getAttribute("message"));
+            req.getSession().removeAttribute("success");
+            req.getSession().removeAttribute("message");
+        }
 
         //Template rendern
         resp.setContentType("text/html");

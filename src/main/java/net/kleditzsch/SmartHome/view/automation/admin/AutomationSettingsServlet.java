@@ -122,7 +122,7 @@ public class AutomationSettingsServlet extends HttpServlet {
 
                 success = false;
             }
-            fbActive = fbActiveString != null ? fbActiveString.equalsIgnoreCase("on") : false;
+            fbActive = fbActiveString != null && fbActiveString.equalsIgnoreCase("on");
             if(fbActive) {
 
                 if(!(fbAddress.length() >= 1 && fbAddress.length() <= 100)) {

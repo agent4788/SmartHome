@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung Admin</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.checkbox').checkbox();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div>
+            <h2 class="ui header">Schaltserver {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h2>
+        </div>
+        <div class="ui divider"></div>
+        {% if error is defined %}
+        <div class="ui message error">
+            {{ error }}
+        </div>
+        <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        {% else %}
+        <form class="ui form"  action="/automation/admin/switchserverform?id={{ switchServer.getId().get() | escape }}" method="post">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ switchServer.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if switchServer.getDescription().isPresent() %}{{ switchServer.getDescription().get() | escape }}{% endif %}</textarea>
+            </div>
+            <div class="field required">
+                <label>IP Adresse</label>
+                <input name="ipAddress" type="text" {% if addElement %}value=""{% else %}value="{{ switchServer.getIpAddress() | escape }}"{% endif %} pattern="(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$)" required>
+            </div>
+            <div class="field required">
+                <label>Port</label>
+                <input name="port" type="number" min="0" max="65535" step="1" value="{{ switchServer.getPort() | escape }}" required>
+            </div>
+            <div class="field required">
+                <label>Timeout [ms]</label>
+                <input name="timeout" type="number" min="0" max="10000" step="1" value="{{ switchServer.getTimeout() | escape }}" required>
+            </div>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="enabled" class="hidden" {% if switchServer.isEnabled() %}checked="checked"{% endif %}>
+                        <label>aktiv</label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="field">
+                    <div class="ui toggle checkbox disabled">
+                        <input type="checkbox" class="hidden" {% if switchServer.isSystemSwitchServer() %}checked="checked"{% endif %}>
+                        <label>System Schaltserver</label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui divider"></div>
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </form>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>
