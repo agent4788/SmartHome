@@ -90,7 +90,7 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
         contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
-        contextHandler.addServlet(AutomationSwitchServerListServlet.class, "/automation/admin/switchserverlist");
+        contextHandler.addServlet(AutomationSwitchServerListServlet.class, "/automation/admin/switchserver");
         contextHandler.addServlet(AutomationSwitchServerFormServlet.class, "/automation/admin/switchserverform");
         contextHandler.addServlet(AutomationSwitchServerDeleteServlet.class, "/automation/admin/switchserverdelete");
     }

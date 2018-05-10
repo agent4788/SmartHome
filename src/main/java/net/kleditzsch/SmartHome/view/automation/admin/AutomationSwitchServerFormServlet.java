@@ -176,14 +176,14 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
 
             req.getSession().setAttribute("success", true);
             req.getSession().setAttribute("message", addElement ? "Der Schaltserver wurde erfolgreich hinzugefügt" : "Der Schaltserver wurde erfolgreich bearbeitet");
-            resp.sendRedirect("/automation/admin/switchserverlist");
+            resp.sendRedirect("/automation/admin/switchserver");
 
         } else {
 
             //Eingaben n.i.O.
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
-            resp.sendRedirect("/automation/admin/switchserverlist");
+            resp.sendRedirect("/automation/admin/switchserver");
         }
     }
 }

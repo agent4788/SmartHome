@@ -71,10 +71,10 @@ public class AutomationSwitchServerListServlet extends HttpServlet {
         ListPagination<SwitchServer> pagination = new ListPagination<>(switchServerList, elementsAtPage, index);
         if(filterStr != null) {
 
-            pagination.setBaseLink("/automation/admin/switchserverlist?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
+            pagination.setBaseLink("/automation/admin/switchserver?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
         } else {
 
-            pagination.setBaseLink("/automation/admin/switchserverlist?index=");
+            pagination.setBaseLink("/automation/admin/switchserver?index=");
         }
         model.with("pagination", pagination);
 

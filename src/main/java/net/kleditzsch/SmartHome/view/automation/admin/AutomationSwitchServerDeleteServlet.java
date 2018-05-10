@@ -52,13 +52,13 @@ public class AutomationSwitchServerDeleteServlet extends HttpServlet {
             //löschem i.O.
             req.getSession().setAttribute("success", true);
             req.getSession().setAttribute("message", "Der Schaltserver wurde erfolgreich gelöscht");
-            resp.sendRedirect("/automation/admin/switchserverlist");
+            resp.sendRedirect("/automation/admin/switchserver");
         } else {
 
             //löschem n.i.O.
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Der Schaltserver konnte nicht gelöscht werden");
-            resp.sendRedirect("/automation/admin/switchserverlist");
+            resp.sendRedirect("/automation/admin/switchserver");
         }
     }
 }

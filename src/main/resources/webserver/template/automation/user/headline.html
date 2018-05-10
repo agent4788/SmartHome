@@ -1,14 +1,12 @@
 <header>
     <div class="ui fixed inverted menu large">
-        <a href="/automation/index" class="header item">
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
             <img src="/static/img/icon/smart.png" width="32" height="32" class="logo">
             Automatisierung
         </a>
-        {% if backlink is defined %}
         <div class="right menu">
-            <a href="{{ backlink }}" class="item"><i class="angle up icon large"></i></a>
             <a href="/automation/admin/index" class="item"><i class="setting icon large"></i></a>
         </div>
-        {% endif %}
     </div>
 </header>
+{% include '/webserver/template/sidebar.html' with {module: 'automation'} %}
