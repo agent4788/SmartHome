@@ -74,8 +74,11 @@
                             </div>
                             <div class="label">{{ javaMemoryUsed | filesize }} von {{ javaMemoryTotal | filesize }} verwendet</div>
                         </div>
-                        <span style="font-weight: bold;">Maiximal verf&uuml;gbar:</span>&nbsp;&nbsp;{{ javaMemoryMax | filesize }}
                     </td>
+                </tr>
+                <tr>
+                    <td>Maiximal verf&uuml;gbar:</td>
+                    <td>{{ javaMemoryMax | filesize }}</td>
                 </tr>
             </table>
         </div>
@@ -98,18 +101,6 @@
                 </tr>
                 <tr>
                     <td colspan="2"><div class="ui ribbon label large blue">Arbeitsspeicher</div></td>
-                </tr>
-                <tr>
-                    <td>Gesamt:</td>
-                    <td>{{ memoryInfo.getTotalSize() | filesize }}</td>
-                </tr>
-                <tr>
-                    <td>Frei:</td>
-                    <td>{{ memoryInfo.getFreeSize() | filesize }}</td>
-                </tr>
-                <tr>
-                    <td>Verwendet:</td>
-                    <td>{{ memoryInfo.getUsedSize() | filesize }}</td>
                 </tr>
                 <tr>
                     <td></td>
