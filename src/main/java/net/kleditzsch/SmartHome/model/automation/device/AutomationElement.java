@@ -23,7 +23,7 @@ public abstract class AutomationElement extends Element {
         SWITCHABLE_TPLINK_SOCKET,
         @SerializedName("SWITCHABLE_OUTPUT")
         SWITCHABLE_OUTPUT,
-        @SerializedName("SWITCHABLE_REBOOT_SHUTDOWN")
+        @SerializedName("SWITCHABLE_SCRIPT_SINGLE")
         SWITCHABLE_SCRIPT_SINGLE,
         @SerializedName("SWITCHABLE_SCRIPT_DOUBLE")
         SWITCHABLE_SCRIPT_DOUBLE,
@@ -100,12 +100,6 @@ public abstract class AutomationElement extends Element {
     private boolean disabled = false;
 
     /**
-     * Kommentar
-     */
-    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    private String comment = "";
-
-    /**
      * gibt an ob das ELement deaktiviert ist
      *
      * @return true wenn deaktiviert
@@ -121,25 +115,6 @@ public abstract class AutomationElement extends Element {
      */
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-    }
-
-    /**
-     * gibt den Kommentar zurück
-     *
-     * @return Kommentar
-     */
-    public Optional<String> getComment() {
-        return Optional.ofNullable(comment);
-    }
-
-    /**
-     * setzt den Kommentar
-     *
-     * @param comment Kommentar
-     */
-    public void setComment(String comment) {
-
-        this.comment = comment;
     }
 
     /**

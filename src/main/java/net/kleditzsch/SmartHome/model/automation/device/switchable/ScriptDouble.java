@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +17,8 @@ public class ScriptDouble extends DoubleSwitchable {
     /**
      * Befehle
      */
-    private List<String> onCommand;
-    private List<String> offCommand;
+    private List<String> onCommand = new ArrayList<>();
+    private List<String> offCommand = new ArrayList<>();
 
     /**
      * Pfad zum Arbeitsordner

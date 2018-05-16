@@ -27,23 +27,24 @@
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'settings'} %}
 <main class="ui main container">
-    <div class="ui segment">
-        <div>
-            <h2 class="ui header">Einstellungen</h2>
-        </div>
-        <div class="ui divider"></div>
+    <form class="ui form" method="post" action="/automation/admin/settings">
+        <h1 class="ui header top attached">Einstellungen</h1>
         {% if success is defined %}
-        {% if success %}
-        <div class="ui message success">
-            Die Einstellungen wurden erfolgreich gespeichert
-        </div>
-        {% else %}
-        <div class="ui message error">
-            Die Einstellungen konnten nicht gespeichert werden
+        <div class="ui visible message icon attached {% if success %}success{% else %}error{% endif %}">
+            {% if success %}
+            <i class="check icon green"></i>
+            <div class="content">
+                <p>Die Einstellungen wurden erfolgreich gespeichert</p>
+            </div>
+            {% else %}
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>Die Einstellungen konnten nicht gespeichert werden</p>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
-        {% endif %}
-        <form class="ui form" method="post" action="/automation/admin/settings">
+        <div class="ui segment attached">
             <div class="ui top attached tabular menu">
                 <div data-tab="locale" class="active item" style="cursor: pointer;">Lokalit&auml;t</div>
                 <div data-tab="pagination" class="item" style="cursor: pointer;">Bl&auml;ttern</div>
@@ -76,7 +77,7 @@
             </div>
             <div data-tab="fritzBox" class="ui bottom attached tab segment">
                 <div class="ui icon info message">
-                    <i class="info icon black"></i>
+                    <i class="info circle icon black"></i>
                     <div class="content">
                         <p>Das aktivieren/deaktivieren des FritzBox Supports wird erst nach einem Neustart des Servers übernommen.</p>
                     </div>
@@ -112,11 +113,12 @@
                     <input name="waterPrice" type="number" min="0.01" max="10.0" step="0.01" value="{{ waterPrice | escape }}" required>
                 </div>
             </div>
-            <div class="ui divider"></div>
+        </div>
+        <div class="ui segment bottom attached">
             <input type="submit" class="ui button primary" value="speichern">
             <input type="reset" class="ui button" value="reset">
-        </form>
-    </div>
+        </div>
+    </form>
 </main>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class ScriptSingle extends SingleSwitchable {
     /**
      * Befehle
      */
-    private List<String> command;
+    private List<String> command = new ArrayList<>();
 
     /**
      * Pfad zum Arbeitsordner

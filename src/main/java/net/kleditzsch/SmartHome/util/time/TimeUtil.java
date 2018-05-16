@@ -37,8 +37,8 @@ public abstract class TimeUtil {
     /**
      * formatiert eine Zeitdifferenz
      *
-     * @param diff
-     * @return
+     * @param diff Zeitdifferenz
+     * @return lesbare Zeitdifferenz
      */
     public static String formatDuration(Duration diff) {
 
@@ -48,15 +48,28 @@ public abstract class TimeUtil {
     /**
      * formatiert eine Zeitdifferenz
      *
-     * @param diff
-     * @param useShortNames
-     * @return
+     * @param diff Zeitdifferenz
+     * @param smartShort Smartes kürzen der Angaben
+     * @return lesbare Zeitdifferenz
      */
-    public static String formatDuration(Duration diff, boolean useShortNames) {
+    public static String formatDuration(Duration diff, boolean smartShort) {
 
-        long days = diff.toDays();
-        long hours = diff.minusDays(days).toHours();
-        long minutes = diff.minusHours(hours).toMinutes();
+        long years = 0, month = 0;
+        long days = Math.abs(diff.toDays());
+        if(days > 365) {
+
+            years = (long) Math.floor(days / 365);
+            diff = (!diff.isNegative() ? diff.minusDays(years * 365) : diff.plusDays(years * 365));
+            days = Math.abs(diff.toDays());
+        }
+        if(days > 30) {
+
+            month = (long) Math.floor(days / 30);
+            diff = (!diff.isNegative() ? diff.minusDays(month * 30) : diff.plusDays(month * 30));
+            days = Math.abs(diff.toDays());
+        }
+        long hours = Math.abs(diff.toHoursPart());
+        long minutes = Math.abs(diff.toMinutesPart());
 
         String output = "";
         if(diff.isNegative()) {
@@ -69,38 +82,41 @@ public abstract class TimeUtil {
             output += "in";
         }
 
-        if(useShortNames) {
+        if(years != 0) {
 
-            if(days != 0) {
-
-                output += " " + Math.abs(days) + "T";
+            if(smartShort && month > 6) {
+                years += (!diff.isNegative() ? 1 : -1);
             }
+            output += " " + years + (years == 1 ? " Jahr" : " Jahre");
+        }
 
-            if(hours != 0) {
+        if(month != 0 && (!smartShort || years < 5)) {
 
-                output += " " + Math.abs(hours) + "S";
+            if(smartShort && days > 15) {
+                month += (!diff.isNegative() ? 1 : -1);
             }
+            output += " " + month + (month == 1 ? " Monat" : " Monate");
+        }
 
-            if(minutes != 0) {
+        if(days != 0 && (!smartShort || (years < 1 && month < 6))) {
 
-                output += " " + Math.abs(minutes) + "m";
+            if(smartShort && hours > 12) {
+                days += (!diff.isNegative() ? 1 : -1);
             }
-        } else {
+            output += " " + days + (days == 1 ? " Tag" : " Tagen");
+        }
 
-            if(days != 0) {
+        if(hours != 0 && (!smartShort || (years < 1 && month < 1 && days < 15))) {
 
-                output += " " + Math.abs(days) + (Math.abs(days) == 1 ? " Tag" : " Tagen");
+            if(smartShort && minutes > 30) {
+                hours += (!diff.isNegative() ? 1 : -1);
             }
+            output += " " + hours + (hours == 1 ? " Stunde" : " Stunden");
+        }
 
-            if(hours != 0) {
+        if(minutes != 0 && (!smartShort || (years < 1 && month < 1 && days < 1 && hours < 12))) {
 
-                output += " " + Math.abs(hours) + (Math.abs(hours) == 1 ? " Stunde" : " Stunden");
-            }
-
-            if(minutes != 0) {
-
-                output += " " + Math.abs(minutes) + (Math.abs(minutes) == 1 ? " Minute" : " Minuten");
-            }
+            output += " " + minutes + (minutes == 1 ? " Minute" : " Minuten");
         }
 
         if(days == 0 && hours == 0 && minutes == 0 && diff.isNegative()) {
@@ -117,68 +133,84 @@ public abstract class TimeUtil {
     /**
      * formatiert eine Zeit Angabe in Sekunden
      *
-     * @param seconds
-     * @return
+     * @param seconds Zeitdifferenz in Seknunden
+     * @return lesbare Zeitdifferenz
      */
     public static String formatSeconds(long seconds) {
 
-        return TimeUtil.formatSeconds(seconds, true);
+        return TimeUtil.formatSeconds(seconds, false);
     }
 
     /**
      * formatiert eine Zeit Angabe in Sekunden
      *
-     * @param seconds
-     * @param useShortNames
-     * @return
+     * @param seconds Zeitdifferenz in Seknunden
+     * @param smartShort Smartes kürzen der Angaben
+     * @return lesbare Zeitdifferenz
      */
-    public static String formatSeconds(long seconds, boolean useShortNames) {
+    public static String formatSeconds(long seconds, boolean smartShort) {
 
         Duration diff = Duration.between(Instant.now(), Instant.ofEpochSecond(Instant.now().getEpochSecond() + seconds));
 
-        long days = diff.toDays();
-        long hours = diff.minusDays(days).toHours();
-        long minutes = diff.minusHours(hours).toMinutes();
+        long years = 0, month = 0;
+        long days = Math.abs(diff.toDays());
+        if(days > 365) {
+
+            years = (long) Math.floor(days / 365);
+            diff = (!diff.isNegative() ? diff.minusDays(years * 365) : diff.plusDays(years * 365));
+            days = Math.abs(diff.toDays());
+        }
+        if(days > 30) {
+
+            month = (long) Math.floor(days / 30);
+            diff = (!diff.isNegative() ? diff.minusDays(month * 30) : diff.plusDays(month * 30));
+            days = Math.abs(diff.toDays());
+        }
+        long hours = Math.abs(diff.toHoursPart());
+        long minutes = Math.abs(diff.toMinutesPart());
 
         String output = "";
-        if(useShortNames) {
+        if(years != 0) {
 
-            if(days != 0) {
-
-                output += " " + Math.abs(days) + "T";
+            if(smartShort && month > 6) {
+                years += (!diff.isNegative() ? 1 : -1);
             }
-
-            if(hours != 0) {
-
-                output += " " + Math.abs(hours) + "S";
-            }
-
-            if(minutes != 0) {
-
-                output += " " + Math.abs(minutes) + "m";
-            }
-        } else {
-
-            if(days != 0) {
-
-                output += " " + Math.abs(days) + (Math.abs(days) == 1 ? " Tag" : " Tagen");
-            }
-
-            if(hours != 0) {
-
-                output += " " + Math.abs(hours) + (Math.abs(hours) == 1 ? " Stunde" : " Stunden");
-            }
-
-            if(minutes != 0) {
-
-                output += " " + Math.abs(minutes) + (Math.abs(minutes) == 1 ? " Minute" : " Minuten");
-            }
+            output += " " + years + (years == 1 ? " Jahr" : " Jahre");
         }
 
-        if(days == 0 && hours == 0 && minutes == 0 && diff.isNegative()) {
+        if(month != 0 && (!smartShort || years < 5)) {
+
+            if(smartShort && days > 15) {
+                month += (!diff.isNegative() ? 1 : -1);
+            }
+            output += " " + month + (month == 1 ? " Monat" : " Monate");
+        }
+
+        if(days != 0 && (!smartShort || (years < 1 && month < 6))) {
+
+            if(smartShort && hours > 12) {
+                days += (!diff.isNegative() ? 1 : -1);
+            }
+            output += " " + days + (days == 1 ? " Tag" : " Tagen");
+        }
+
+        if(hours != 0 && (!smartShort || (years < 1 && month < 1 && days < 15))) {
+
+            if(smartShort && minutes > 30) {
+                hours += (!diff.isNegative() ? 1 : -1);
+            }
+            output += " " + hours + (hours == 1 ? " Stunde" : " Stunden");
+        }
+
+        if(minutes != 0 && (!smartShort || (years < 1 && month < 1 && days < 1 && hours < 12))) {
+
+            output += " " + minutes + (minutes == 1 ? " Minute" : " Minuten");
+        }
+
+        if(years == 0 && month == 0 && days == 0 && hours == 0 && minutes == 0 && diff.isNegative()) {
 
             output = "gerade eben";
-        } else if(days == 0 && hours == 0 && minutes == 0 && !diff.isNegative()) {
+        } else if(years == 0 && month == 0 && days == 0 && hours == 0 && minutes == 0 && !diff.isNegative()) {
 
             output = "jetzt";
         }

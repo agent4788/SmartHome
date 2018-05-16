@@ -24,13 +24,13 @@ public class SecondFormatFunction extends SimpleJtwigFunction {
 
         if (request.getArguments().get(0) instanceof Duration) {
 
-            return TimeUtil.formatSeconds(((Duration) request.getArguments().get(0)).getSeconds(), false);
+            return TimeUtil.formatSeconds(((Duration) request.getArguments().get(0)).getSeconds(), true);
         } else if (request.getArguments().get(0) instanceof Integer || request.getArguments().get(0) instanceof Long) {
 
             return TimeUtil.formatSeconds(((long) request.getArguments().get(0)), false);
         } else {
 
-            return TimeUtil.formatSeconds(Long.parseLong(request.getArguments().get(0).toString()), false);
+            return TimeUtil.formatSeconds(Long.parseLong(request.getArguments().get(0).toString()), true);
         }
     }
 }

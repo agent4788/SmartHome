@@ -93,6 +93,14 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationSwitchServerListServlet.class, "/automation/admin/switchserver");
         contextHandler.addServlet(AutomationSwitchServerFormServlet.class, "/automation/admin/switchserverform");
         contextHandler.addServlet(AutomationSwitchServerDeleteServlet.class, "/automation/admin/switchserverdelete");
+        contextHandler.addServlet(AutomationDeviceListServlet.class, "/automation/admin/device");
+        contextHandler.addServlet(AutomationDeviceFormTpLinkServlet.class, "/automation/admin/deviceformtplink");
+        contextHandler.addServlet(AutomationDeviceFormAvmServlet.class, "/automation/admin/deviceformavm");
+        contextHandler.addServlet(AutomationDeviceFormOutputServlet.class, "/automation/admin/deviceformoutput");
+        contextHandler.addServlet(AutomationDeviceFormWolServlet.class, "/automation/admin/deviceformwol");
+        contextHandler.addServlet(AutomationDeviceFormScriptSingleServlet.class, "/automation/admin/deviceformscriptsingle");
+        contextHandler.addServlet(AutomationDeviceFormScriptDoubleServlet.class, "/automation/admin/deviceformscriptdouble");
+        contextHandler.addServlet(AutomationDeviceDeleteServlet.class, "/automation/admin/devicedelete");
     }
 
     /**

@@ -41,43 +41,19 @@ public class SwitchServer extends Element {
     private boolean enabled = true;
 
     /**
-     * System Schaltserver (Kann nicht gelöscht werden)
-     */
-    private boolean isSystemSwitchServer = false;
-
-    /**
      * @param id ID
      * @param name Name
      * @param ipAddress IP Adresse
      * @param port Port
-     * @param isSystemSwitchServer System Schaltserver
-     */
-    public SwitchServer(ID id, String name, String ipAddress, int port, boolean isSystemSwitchServer) {
-
-        setId(id);
-        setName(name);
-        setIpAddress(ipAddress);
-        setPort(port);
-        this.isSystemSwitchServer = isSystemSwitchServer;
-
-    }
-
-    /**
-     * @param id ID
-     * @param name Name
-     * @param ipAddress IP Adresse
-     * @param port Port
-     * @param isSystemSwitchServer System Schaltserver
      * @param enabled Schaltserver aktiviert
      */
-    public SwitchServer(ID id, String name, String ipAddress, int port, boolean isSystemSwitchServer, boolean enabled) {
+    public SwitchServer(ID id, String name, String ipAddress, int port, boolean enabled) {
 
         setId(id);
         setName(name);
         setIpAddress(ipAddress);
         setPort(port);
         setEnabled(enabled);
-        this.isSystemSwitchServer = isSystemSwitchServer;
 
     }
 
@@ -154,14 +130,5 @@ public class SwitchServer extends Element {
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    /**
-     * gibt an ob der Schaltserver ein System Schaltserver ist
-     *
-     * @return Systemschaltserver
-     */
-    public boolean isSystemSwitchServer() {
-        return isSystemSwitchServer;
     }
 }

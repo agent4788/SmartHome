@@ -8,6 +8,7 @@ import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
+import org.jtwig.reflection.util.Optionals;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,7 +33,6 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
         SwitchServerEditor sse = Application.getInstance().getAutomation().getSwitchServerEditor();
         boolean addElement = true;
         SwitchServer switchServer = null;
-
 
         if(req.getParameter("id") != null) {
 
@@ -64,7 +64,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
             }
         } else {
 
-            switchServer = new SwitchServer(ID.create(), "Name ...", "", 1000, false);
+            switchServer = new SwitchServer(ID.create(), "Name ...", "", 1000, true);
         }
         model.with("addElement", addElement);
         model.with("switchServer", switchServer);
@@ -103,8 +103,6 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
             id = ID.of(idStr);
             if(!(addElementStr != null && (addElementStr.equals("1") || addElementStr.equals("0")))) {
 
-                System.out.println("test");
-                System.out.println(addElementStr);
                 success = false;
             } else {
 
@@ -148,35 +146,62 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
             ReentrantReadWriteLock.WriteLock lock = sse.writeLock();
             lock.lock();
 
-            if(addElement) {
+            //prüfen ob Schaltserver schon vorhanden
+            final int finalPort = port;
+            final ID finalId = id;
+            Optional<SwitchServer> ssOptional = sse.getData().stream()
+                    .filter(ss -> {
+                        return ss.getIpAddress().equals(ipAddress)
+                                && ss.getPort() == finalPort
+                                && !ss.getId().equals(finalId);
+                    })
+                    .findFirst();
+            if(ssOptional.isPresent()) {
 
-                //neues Element hinzufügen
-                SwitchServer switchServer = new SwitchServer(ID.create(), name, ipAddress, port, false, enabled);
-                switchServer.setDescription(description);
-                switchServer.setTimeout(timeout);
-                sse.getData().add(switchServer);
+                //Schaltserver bereits vorhanden
+                req.getSession().setAttribute("success", false);
+                req.getSession().setAttribute("message", "Es gibt bereits einen Schaltserver mit der Adresse \"" + ipAddress + ":" + port + "\"");
+                resp.sendRedirect("/automation/admin/switchserver");
             } else {
 
-                //Element bearbeiten
-                final ID finalId = id;
-                Optional<SwitchServer> switchServerOptional = sse.getData().stream().filter(ss -> ss.getId().equals(finalId)).findFirst();
-                if (switchServerOptional.isPresent()) {
+                if(addElement) {
 
-                    SwitchServer switchServer = switchServerOptional.get();
-                    switchServer.setName(name);
+                    //neues Element hinzufügen
+                    SwitchServer switchServer = new SwitchServer(ID.create(), name, ipAddress, port, enabled);
                     switchServer.setDescription(description);
-                    switchServer.setIpAddress(ipAddress);
-                    switchServer.setPort(port);
                     switchServer.setTimeout(timeout);
-                    switchServer.setEnabled(enabled);
+                    sse.getData().add(switchServer);
+
+                    req.getSession().setAttribute("success", true);
+                    req.getSession().setAttribute("message", "Der Schaltserver wurde erfolgreich hinzugefügt");
+                    resp.sendRedirect("/automation/admin/switchserver");
+                } else {
+
+                    //Element bearbeiten
+                    Optional<SwitchServer> switchServerOptional = sse.getById(id);
+                    if (switchServerOptional.isPresent()) {
+
+                        SwitchServer switchServer = switchServerOptional.get();
+                        switchServer.setName(name);
+                        switchServer.setDescription(description);
+                        switchServer.setIpAddress(ipAddress);
+                        switchServer.setPort(port);
+                        switchServer.setTimeout(timeout);
+                        switchServer.setEnabled(enabled);
+
+                        req.getSession().setAttribute("success", true);
+                        req.getSession().setAttribute("message", "Der Schaltserver wurde erfolgreich bearbeitet");
+                        resp.sendRedirect("/automation/admin/switchserver");
+                    } else {
+
+                        req.getSession().setAttribute("success", false);
+                        req.getSession().setAttribute("message", "Der Schaltserver konnte nicht gefunden werden");
+                        resp.sendRedirect("/automation/admin/switchserver");
+                    }
                 }
             }
 
             lock.unlock();
-
-            req.getSession().setAttribute("success", true);
-            req.getSession().setAttribute("message", addElement ? "Der Schaltserver wurde erfolgreich hinzugefügt" : "Der Schaltserver wurde erfolgreich bearbeitet");
-            resp.sendRedirect("/automation/admin/switchserver");
 
         } else {
 

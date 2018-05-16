@@ -14,18 +14,20 @@
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'switchserver'} %}
 <main class="ui main container">
-    <div class="ui segment">
-        <div>
-            <h2 class="ui header">Schaltserver {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h2>
-        </div>
-        <div class="ui divider"></div>
+    <form class="ui form"  action="/automation/admin/switchserverform?id={{ switchServer.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Schaltserver {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
-        <div class="ui message error">
-            {{ error }}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
         </div>
-        <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
         {% else %}
-        <form class="ui form"  action="/automation/admin/switchserverform?id={{ switchServer.getId().get() | escape }}" method="post">
+        <div class="ui segment attached">
             <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
             <div class="field required">
                 <label>Name</label>
@@ -55,20 +57,13 @@
                     </div>
                 </div>
             </div>
-            <div class="ui segment">
-                <div class="field">
-                    <div class="ui toggle checkbox disabled">
-                        <input type="checkbox" class="hidden" {% if switchServer.isSystemSwitchServer() %}checked="checked"{% endif %}>
-                        <label>System Schaltserver</label>
-                    </div>
-                </div>
-            </div>
-            <div class="ui divider"></div>
+        </div>
+        <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
             <button class="ui button primary" type="submit">Speichern</button>
-        </form>
+        </div>
         {% endif %}
-    </div>
+    </form>
 </main>
 </body>
 </html>

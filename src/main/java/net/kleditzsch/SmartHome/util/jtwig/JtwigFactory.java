@@ -20,6 +20,8 @@ public abstract class JtwigFactory {
                         .add(new TimeLineFunction())
                         .add(new NumberFormatFunction())
                         .add(new RandomStringFunction())
+                        .add(new CollectionContainsFunction())
+                        .add(new EqualsFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

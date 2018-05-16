@@ -80,7 +80,7 @@ public class FritzBoxSmarthome {
                     //Geräte
                     if (e.getName().equals("device")) {
 
-                        String identifier = e.getAttribute("identifier").getValue();
+                        String identifier = e.getAttribute("identifier").getValue().replaceAll("\\s", "");
                         Integer functionbitmask = Integer.parseInt(e.getAttribute("functionbitmask").getValue());
                         String fwversion = e.getAttribute("fwversion").getValue();
                         String manufacturer = e.getAttribute("manufacturer").getValue();

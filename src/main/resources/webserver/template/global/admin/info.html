@@ -15,11 +15,8 @@
 <body>
 {% include '/webserver/template/global/admin/headline.html' with {module: 'info'} %}
 <main class="ui main container">
-    <div class="ui segment">
-        <div>
-            <h2 class="ui header">Server Info</h2>
-        </div>
-        <div class="ui divider"></div>
+    <h1 class="ui header top attached">Server Info</h1>
+    <div class="ui segment attached">
         <div class="ui top attached tabular menu">
             <div data-tab="software" class="active item" style="cursor: pointer;">Software</div>
             <div data-tab="hardware" class="item" style="cursor: pointer;">Hardware</div>
@@ -113,10 +110,6 @@
                 <tr>
                     <td>Verwendet:</td>
                     <td>{{ memoryInfo.getUsedSize() | filesize }}</td>
-                </tr>
-                <tr>
-                    <td>Auslastung:</td>
-                    <td>{{ memoryInfo.getUtilisation() }}%</td>
                 </tr>
                 <tr>
                     <td></td>
