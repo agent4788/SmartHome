@@ -20,6 +20,15 @@ public class GlobalAdminIndexServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/index.html");
         JtwigModel model = JtwigModel.newModel();
 
+        //Meldung
+        if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
+
+            model.with("success", req.getSession().getAttribute("success"));
+            model.with("message", req.getSession().getAttribute("message"));
+            req.getSession().removeAttribute("success");
+            req.getSession().removeAttribute("message");
+        }
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

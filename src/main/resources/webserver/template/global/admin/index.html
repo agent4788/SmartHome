@@ -7,7 +7,21 @@
 </head>
 <body>
 {% include '/webserver/template/global/admin/headline.html' with {module: 'admin'} %}
+{% set randomId1 = randomstr() %}
+{% set randomId2 = randomstr() %}
 <main class="ui main container">
+    {% if success is defined %}
+    <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
     <div class="ui segment">
         <div class="ui link cards four column doubling stackable">
             <div class="card" onclick="window.location = '/admin/backup'">
@@ -33,6 +47,60 @@
                 <div class="content">
                     <div class="header">Info</div>
                 </div>
+            </div>
+            <div class="card" onclick="$('#{{ randomId1 }}').modal('show')">
+                <div class="image">
+                    <img src="/static/img/icon/reboot.png">
+                </div>
+                <div class="content">
+                    <div class="header">Neustart</div>
+                </div>
+            </div>
+            <div class="card" onclick="$('#{{ randomId2 }}').modal('show')">
+                <div class="image">
+                    <img src="/static/img/icon/shutdown.png">
+                </div>
+                <div class="content">
+                    <div class="header">Herunterfahren</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui basic modal" id="{{ randomId1 }}">
+        <div class="ui icon header">
+            <i class="redo icon"></i>
+            Server Neustart
+        </div>
+        <div class="content">
+            <p>Bist du sicher das du den Server neu starten m&ouml;chtest?</p>
+        </div>
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                Nein
+            </div>
+            <div class="ui green ok inverted button" onclick="window.location = '/admin/reboot'">
+                <i class="checkmark icon"></i>
+                Ja
+            </div>
+        </div>
+    </div>
+    <div class="ui basic modal" id="{{ randomId2 }}">
+        <div class="ui icon header">
+            <i class="power off icon"></i>
+            Server Herunterfahren
+        </div>
+        <div class="content">
+            <p>Bist du sicher das du den Server herunterfahren m&ouml;chtest?</p>
+        </div>
+        <div class="actions">
+            <div class="ui red basic cancel inverted button">
+                <i class="remove icon"></i>
+                Nein
+            </div>
+            <div class="ui green ok inverted button" onclick="window.location = '/admin/shutdown'">
+                <i class="checkmark icon"></i>
+                Ja
             </div>
         </div>
     </div>

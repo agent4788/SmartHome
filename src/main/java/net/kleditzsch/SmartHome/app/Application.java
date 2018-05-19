@@ -11,10 +11,7 @@ import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
-import net.kleditzsch.SmartHome.view.global.admin.GlobalAdminIndexServlet;
-import net.kleditzsch.SmartHome.view.global.admin.GlobalBackupServlet;
-import net.kleditzsch.SmartHome.view.global.admin.GlobalServerInfoServlet;
-import net.kleditzsch.SmartHome.view.global.admin.GlobalSettingsServlet;
+import net.kleditzsch.SmartHome.view.global.admin.*;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -300,6 +297,8 @@ public class Application {
         dynamicHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
         dynamicHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
         dynamicHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
+        dynamicHandler.addServlet(GlobalRebootServlet.class, "/admin/reboot");
+        dynamicHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
 
         //Automatisierung Seiten
         getAutomation().initWebContext(dynamicHandler);
