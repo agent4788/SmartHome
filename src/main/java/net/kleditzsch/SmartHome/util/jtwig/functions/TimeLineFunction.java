@@ -27,10 +27,10 @@ public class TimeLineFunction extends SimpleJtwigFunction {
             return TimeUtil.formatDuration(((Duration) request.getArguments().get(0)), true);
         } else if (argument instanceof LocalDateTime) {
 
-            return TimeUtil.formatDuration(Duration.between((LocalDateTime) argument, LocalDateTime.now()), true);
+            return TimeUtil.formatDuration(Duration.between(LocalDateTime.now(), (LocalDateTime) argument), true);
         } else if (argument instanceof LocalDate) {
 
-            return TimeUtil.formatDuration(Duration.between((LocalDate) argument, LocalDate.now()), true);
+            return TimeUtil.formatDuration(Duration.between(LocalDate.now(), (LocalDate) argument), true);
         } else if (argument instanceof Integer || argument instanceof Long) {
 
             return TimeUtil.formatDuration(Duration.ofSeconds((long) argument), true);
