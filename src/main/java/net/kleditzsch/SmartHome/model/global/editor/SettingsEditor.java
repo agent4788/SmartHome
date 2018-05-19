@@ -20,8 +20,8 @@ public class SettingsEditor implements DatabaseEditor {
     private static final String DATABASE_KEY = "smarthome:global:settings";
 
     //Globale Einstellungen
-    public static final String SERVER_PORT = "APPLICATION_SERVER_PORT";
-    public static final String SERVER_SECURE_PORT = "APPLICATION_SERVER_SECURE_PORT";
+    public static final String SERVER_PORT = "SERVER_PORT";
+    public static final String SERVER_SECURE_PORT = "SERVER_SECURE_PORT";
     public static final String SERVER_KEY_STORE_PASSWORD = "SERVER_KEY_STORE_PASSWORD";
     public static final String SERVER_KEY_MANAGER_PASSWORD = "SERVER_KEY_MANAGER_PASSWORD";
 
@@ -89,7 +89,7 @@ public class SettingsEditor implements DatabaseEditor {
         DoubleSetting energyWaterPrice = new DoubleSetting(AUTOMATION_ENERGY_WATER_PRICE, 0.0, 0.0);
         knownSettings.add(energyWaterPrice);
 
-        IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 25, 25);
+        IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
         knownSettings.add(paginationElementsAtPage);
     }
 
