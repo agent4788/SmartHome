@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.settings;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -25,7 +25,7 @@ public class AutomationSettingsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/settings.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/settings/settings.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Einstellungen laden

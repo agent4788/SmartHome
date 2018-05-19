@@ -1,8 +1,10 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.model.automation.switchserver.SwitchServer;
 
 import javax.servlet.ServletException;
@@ -13,7 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class AutomationSwitchServerDeleteServlet extends HttpServlet {
+public class AutomationDeviceDeleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,14 +28,14 @@ public class AutomationSwitchServerDeleteServlet extends HttpServlet {
             try {
 
                 ID id = ID.of(idStr);
-                SwitchServerEditor sse = Application.getInstance().getAutomation().getSwitchServerEditor();
-                ReentrantReadWriteLock.WriteLock lock = sse.writeLock();
+                SwitchableEditor swe = Application.getInstance().getAutomation().getSwitchableEditor();
+                ReentrantReadWriteLock.WriteLock lock = swe.writeLock();
                 lock.lock();
 
-                Optional<SwitchServer> switchServerOptional = sse.getData().stream().filter(ss -> ss.getId().equals(id)).findFirst();
+                Optional<Switchable> switchServerOptional = swe.getData().stream().filter(sw -> sw.getId().equals(id)).findFirst();
                 if(switchServerOptional.isPresent()) {
 
-                    sse.getData().remove(switchServerOptional.get());
+                    swe.getData().remove(switchServerOptional.get());
                 } else {
 
                     success = false;
@@ -51,14 +53,14 @@ public class AutomationSwitchServerDeleteServlet extends HttpServlet {
 
             //löschem i.O.
             req.getSession().setAttribute("success", true);
-            req.getSession().setAttribute("message", "Der Schaltserver wurde erfolgreich gelöscht");
-            resp.sendRedirect("/automation/admin/switchserver");
+            req.getSession().setAttribute("message", "Das Gerät wurde erfolgreich gelöscht");
+            resp.sendRedirect("/automation/admin/device");
         } else {
 
             //löschem n.i.O.
             req.getSession().setAttribute("success", false);
-            req.getSession().setAttribute("message", "Der Schaltserver konnte nicht gelöscht werden");
-            resp.sendRedirect("/automation/admin/switchserver");
+            req.getSession().setAttribute("message", "Das Gerät konnte nicht gelöscht werden");
+            resp.sendRedirect("/automation/admin/device");
         }
     }
 }

@@ -1,9 +1,9 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptSingle;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -15,26 +15,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
+public class AutomationDeviceFormScriptDoubleServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/deviceformscriptsingle.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/device/deviceformscriptdouble.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten vorbereiten
         SwitchableEditor swe = Application.getInstance().getAutomation().getSwitchableEditor();
         boolean addElement = true;
-        ScriptSingle script = null;
+        ScriptDouble script = null;
 
         if(req.getParameter("id") != null) {
 
@@ -48,9 +46,9 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
                 lock.lock();
 
                 Optional<Switchable> switchableOptional = swe.getById(id);
-                if(switchableOptional.isPresent() && switchableOptional.get() instanceof ScriptSingle) {
+                if(switchableOptional.isPresent() && switchableOptional.get() instanceof ScriptDouble) {
 
-                    script = (ScriptSingle) switchableOptional.get();
+                    script = (ScriptDouble) switchableOptional.get();
                 } else {
 
                     //Element nicht gefunden
@@ -66,7 +64,7 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
             }
         } else {
 
-            script = new ScriptSingle();
+            script = new ScriptDouble();
             script.setId(ID.create());
         }
         model.with("addElement", addElement);
@@ -85,12 +83,23 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
         String addElementStr = req.getParameter("addElement");
         String name = req.getParameter("name");
         String description = req.getParameter("description");
-        List<String> commands = new ArrayList<>();
+        List<String> onCommands = new ArrayList<>();
         for(int i = 0; i < 100; i++) {
 
-            if(req.getParameter("command_" + i) != null) {
+            if(req.getParameter("on_command_" + i) != null) {
 
-                commands.add(req.getParameter("command_" + i));
+                onCommands.add(req.getParameter("on_command_" + i));
+            } else {
+
+                break;
+            }
+        }
+        List<String> offCommands = new ArrayList<>();
+        for(int i = 0; i < 100; i++) {
+
+            if(req.getParameter("off_command_" + i) != null) {
+
+                offCommands.add(req.getParameter("off_command_" + i));
             } else {
 
                 break;
@@ -131,7 +140,14 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
                 success = false;
             }
             //Befehle
-            for(String command : commands) {
+            for(String command : onCommands) {
+
+                if(!(command != null && command.length() <= 100)) {
+
+                    success = false;
+                }
+            }
+            for(String command : offCommands) {
 
                 if(!(command != null && command.length() <= 100)) {
 
@@ -155,12 +171,14 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
             if(addElement) {
 
                 //neues Element hinzufügen
-                ScriptSingle script = new ScriptSingle();
+                ScriptDouble script = new ScriptDouble();
                 script.setId(ID.create());
                 script.setName(name);
                 script.setDescription(description);
-                script.getCommand().clear();
-                script.getCommand().addAll(commands);
+                script.getOnCommand().clear();
+                script.getOnCommand().addAll(onCommands);
+                script.getOffCommand().clear();
+                script.getOffCommand().addAll(offCommands);
                 script.setDisabled(disabled);
                 swe.getData().add(script);
 
@@ -171,14 +189,16 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
 
                 //Element bearbeiten
                 Optional<Switchable> switchableOptional1 = swe.getById(id);
-                if(switchableOptional1.isPresent() && switchableOptional1.get() instanceof ScriptSingle) {
+                if(switchableOptional1.isPresent() && switchableOptional1.get() instanceof ScriptDouble) {
 
-                    ScriptSingle script = (ScriptSingle) switchableOptional1.get();
+                    ScriptDouble script = (ScriptDouble) switchableOptional1.get();
                     script.setId(id);
                     script.setName(name);
                     script.setDescription(description);
-                    script.getCommand().clear();
-                    script.getCommand().addAll(commands);
+                    script.getOnCommand().clear();
+                    script.getOnCommand().addAll(onCommands);
+                    script.getOffCommand().clear();
+                    script.getOffCommand().addAll(offCommands);
                     script.setDisabled(disabled);
 
                     req.getSession().setAttribute("success", true);

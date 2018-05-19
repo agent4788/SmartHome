@@ -1,11 +1,10 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
-import net.kleditzsch.SmartHome.util.api.tplink.HS110;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -27,7 +26,7 @@ public class AutomationDeviceFormTpLinkServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/deviceformtplink.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/device/deviceformtplink.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten vorbereiten

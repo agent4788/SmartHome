@@ -8,12 +8,14 @@ import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchT
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
+import net.kleditzsch.SmartHome.view.automation.admin.device.*;
+import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerFormServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerListServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import java.util.Timer;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 

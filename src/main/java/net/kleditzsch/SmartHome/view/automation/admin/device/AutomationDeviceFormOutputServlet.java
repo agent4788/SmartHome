@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
@@ -28,7 +28,7 @@ public class AutomationDeviceFormOutputServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/deviceformoutput.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/device/deviceformoutput.html");
         JtwigModel model = JtwigModel.newModel();
 
         SwitchServerEditor sse = Application.getInstance().getAutomation().getSwitchServerEditor();

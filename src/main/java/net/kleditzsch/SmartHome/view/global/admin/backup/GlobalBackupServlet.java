@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.global.admin;
+package net.kleditzsch.SmartHome.view.global.admin.backup;
 
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -17,7 +17,7 @@ public class GlobalBackupServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/backup.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/backup/backup.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Template rendern

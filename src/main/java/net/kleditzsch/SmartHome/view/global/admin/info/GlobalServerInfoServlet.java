@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.global.admin;
+package net.kleditzsch.SmartHome.view.global.admin.info;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.util.hardware.Hardware;
@@ -7,7 +7,6 @@ import net.kleditzsch.SmartHome.util.time.TimeUtil;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import redis.clients.jedis.Jedis;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,11 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Properties;
-import java.util.TimeZone;
 
 public class GlobalServerInfoServlet extends HttpServlet {
 
@@ -27,7 +23,7 @@ public class GlobalServerInfoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/info.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/info/info.html");
         JtwigModel model = JtwigModel.newModel();
 
         //SystemInfo

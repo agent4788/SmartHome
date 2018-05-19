@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.global.admin;
+package net.kleditzsch.SmartHome.view.global.admin.settings;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -23,7 +23,7 @@ public class GlobalSettingsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/settings.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/admin/settings/settings.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Einstellungen laden

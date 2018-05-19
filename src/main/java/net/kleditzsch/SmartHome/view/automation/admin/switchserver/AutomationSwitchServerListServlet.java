@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.switchserver;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
@@ -27,7 +27,7 @@ public class AutomationSwitchServerListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/switchserverlist.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/switchserver/switchserverlist.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten laden

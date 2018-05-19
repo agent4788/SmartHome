@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.automation.admin;
+package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
@@ -30,7 +30,7 @@ public class AutomationDeviceListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/devicelist.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/device/devicelist.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten laden
