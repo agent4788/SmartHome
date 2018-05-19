@@ -60,7 +60,7 @@ public abstract class SensorValue extends AutomationElement {
     public void setIdentifier(String identifier) {
 
         Preconditions.checkNotNull(identifier);
-        Preconditions.checkArgument(identifier.matches("^[a-zA-Z0-9]{3,50}$"), "Ungültige Identifizierung %s", identifier);
+        Preconditions.checkArgument(identifier.matches("^[a-zA-Z0-9\\-]{3,50}$"), "Ungültige Identifizierung %s", identifier);
         this.identifier = identifier;
     }
 
