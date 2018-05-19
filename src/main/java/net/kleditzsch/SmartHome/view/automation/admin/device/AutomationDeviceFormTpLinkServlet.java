@@ -2,8 +2,13 @@ package net.kleditzsch.SmartHome.view.automation.admin.device;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.ActualPowerValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.CurrentValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.EnergyValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.VoltageValue;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -183,9 +188,42 @@ public class AutomationDeviceFormTpLinkServlet extends HttpServlet {
                     socket.setSocketType(type);
                     socket.setDisabled(disabled);
                     socket.setInverse(inverse);
-                    swe.getData().add(socket);
 
-                    //TODO bei HS110 Sensorwerte erstellen
+                    //bei HS110 Sensorwerte erstellen
+                    if(type == TPlinkSocket.SOCKET_TYPE.HS110) {
+
+                        VoltageValue voltageValue = new VoltageValue(ID.create(), ID.create().get(), name);
+                        voltageValue.setSystemValue(true);
+                        voltageValue.setDescription("TP-Link Spannungs Sensor - " + name + " - IP " + ipAddress + ":" + port);
+                        CurrentValue currentValue = new CurrentValue(ID.create(), ID.create().get(), name);
+                        currentValue.setSystemValue(true);
+                        currentValue.setDescription("TP-Link Strom Sensor - " + name + " - IP " + ipAddress + ":" + port);
+                        ActualPowerValue actualPowerValue = new ActualPowerValue(ID.create(), ID.create().get(), name);
+                        actualPowerValue.setSystemValue(true);
+                        actualPowerValue.setDescription("TP-Link Energie Sensor - " + name + " - IP " + ipAddress + ":" + port);;
+                        EnergyValue energyValue = new EnergyValue(ID.create(), ID.create().get(), name);
+                        energyValue.setSystemValue(true);
+                        energyValue.setDescription("TP-Link Energieverbrauch Sensor - " + name + " - IP " + ipAddress + ":" + port);
+
+                        socket.setVoltageSensor(voltageValue.getId());
+                        socket.setCurrentSensor(currentValue.getId());
+                        socket.setPowerSensorId(actualPowerValue.getId());
+                        socket.setEnergySensorId(energyValue.getId());
+
+                        //Sensoren speichern
+                        SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
+                        ReentrantReadWriteLock.WriteLock sensorLock = sensorEditor.writeLock();
+                        sensorLock.lock();
+
+                        sensorEditor.getData().add(voltageValue);
+                        sensorEditor.getData().add(currentValue);
+                        sensorEditor.getData().add(actualPowerValue);
+                        sensorEditor.getData().add(energyValue);
+
+                        sensorLock.unlock();
+                    }
+
+                    swe.getData().add(socket);
 
                     req.getSession().setAttribute("success", true);
                     req.getSession().setAttribute("message", "Die TP-Link Steckdose wurde erfolgreich hinzugefügt");

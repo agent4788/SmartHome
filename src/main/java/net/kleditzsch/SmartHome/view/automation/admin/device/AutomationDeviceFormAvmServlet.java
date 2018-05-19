@@ -3,8 +3,12 @@ package net.kleditzsch.SmartHome.view.automation.admin.device;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.ActualPowerValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.EnergyValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.TemperatureValue;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.util.api.avm.Device.SmarthomeDevice;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
@@ -220,9 +224,35 @@ public class AutomationDeviceFormAvmServlet extends HttpServlet {
                             socket.setIdentifier(identifier);
                             socket.setDisabled(disabled);
                             socket.setInverse(inverse);
-                            swe.getData().add(socket);
 
-                            //TODO Sensorwerte erstellen
+                            //Sensorwerte erstellen
+                            TemperatureValue temperatureValue = new TemperatureValue(ID.create(), ID.create().get(), name);
+                            temperatureValue.setSystemValue(true);
+                            temperatureValue.setDescription("AVM Temperatur Sensor - " + name + " - Identifier " + identifier);
+                            ActualPowerValue actualPowerValue = new ActualPowerValue(ID.create(), ID.create().get(), name);
+                            actualPowerValue.setSystemValue(true);
+                            actualPowerValue.setDescription("AVM Energie Sensor - " + name + " - Identifier " + identifier);
+                            EnergyValue energyValue = new EnergyValue(ID.create(), ID.create().get(), name);
+                            energyValue.setSystemValue(true);
+                            energyValue.setDescription("AVM Energieverbrauchs Sensor - " + name + " - Identifier " + identifier);
+
+                            socket.setTempSensorId(temperatureValue.getId());
+                            socket.setPowerSensorId(actualPowerValue.getId());
+                            socket.setEnergySensorId(energyValue.getId());
+
+                            //Sensoren speichern
+                            SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
+                            ReentrantReadWriteLock.WriteLock sensorLock = sensorEditor.writeLock();
+                            sensorLock.lock();
+
+                            sensorEditor.getData().add(temperatureValue);
+                            sensorEditor.getData().add(actualPowerValue);
+                            sensorEditor.getData().add(energyValue);
+
+                            sensorLock.unlock();
+
+                            //Steckdose Speichern
+                            swe.getData().add(socket);
 
                             req.getSession().setAttribute("success", true);
                             req.getSession().setAttribute("message", "Die AVM Steckdose wurde erfolgreich hinzugefügt");
