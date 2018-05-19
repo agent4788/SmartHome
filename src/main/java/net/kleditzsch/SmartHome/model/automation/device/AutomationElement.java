@@ -68,6 +68,10 @@ public abstract class AutomationElement extends Element {
         SENSORVALUE_VOLTAGE,
         @SerializedName("SENSORVALUE_CURRENT")
         SENSORVALUE_CURRENT,
+        @SerializedName("SENSORVALUE_COUNTER")
+        SENSORVALUE_COUNTER,
+        @SerializedName("SENSORVALUE_BI_STATE")
+        SENSORVALUE_BI_STATE,
 
         @SerializedName("VIRTUALSENSORVALUE_ACTUAL_POWER")
         VIRTUALSENSORVALUE_ACTUAL_POWER,
