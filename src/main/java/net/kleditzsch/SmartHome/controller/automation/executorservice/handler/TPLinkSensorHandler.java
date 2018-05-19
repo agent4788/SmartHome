@@ -1,7 +1,21 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 
 import com.google.common.base.Preconditions;
+import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.ActualPowerValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.CurrentValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.EnergyValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.VoltageValue;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.util.api.tplink.HS110;
+import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TPLinkSensorHandler implements Runnable {
 
@@ -22,6 +36,79 @@ public class TPLinkSensorHandler implements Runnable {
     @Override
     public void run() {
 
-        //TODO implementieren
+        if(socket.getSocketType() == TPlinkSocket.SOCKET_TYPE.HS110) {
+
+            HS110 hs110 = new HS110(socket.getIpAddress(), socket.getPort());
+            try {
+                HS110.EnergyData energyData = hs110.getEnergyData();
+
+                SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
+                ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
+                lock.lock();
+
+                //Spannungssensor
+                Optional<ID> voltageSensorId = socket.getVoltageSensor();
+                if(voltageSensorId.isPresent()) {
+
+                    Optional<SensorValue> sensorValueOptional1 = sensorEditor.getById(voltageSensorId.get());
+                    if(sensorValueOptional1.isPresent() && sensorValueOptional1.get() instanceof VoltageValue) {
+
+                        VoltageValue voltageValue = (VoltageValue) sensorValueOptional1.get();
+                        voltageValue.pushVoltage(energyData.getNowVoltage());
+                    }
+                }
+
+                //Stromsensor
+                Optional<ID> currentSensorId = socket.getCurrentSensor();
+                if(currentSensorId.isPresent()) {
+
+                    Optional<SensorValue> sensorValueOptional2 = sensorEditor.getById(currentSensorId.get());
+                    if(sensorValueOptional2.isPresent() && sensorValueOptional2.get() instanceof CurrentValue) {
+
+                        CurrentValue currentValue = (CurrentValue) sensorValueOptional2.get();
+                        currentValue.pushCurrent(energyData.getNowCurrent());
+                    }
+                }
+
+                //aktualenergie
+                Optional<ID> powerSensorId = socket.getPowerSensorId();
+                if(powerSensorId.isPresent()) {
+
+                    Optional<SensorValue> sensorValueOptional3 = sensorEditor.getById(powerSensorId.get());
+                    if(sensorValueOptional3.isPresent() && sensorValueOptional3.get() instanceof ActualPowerValue) {
+
+                        ActualPowerValue actualPowerValue = (ActualPowerValue) sensorValueOptional3.get();
+                        actualPowerValue.pushActualPower(energyData.getNowPower());
+                    }
+                }
+
+                //aktualenergie
+                Optional<ID> energySensorId = socket.getEnergySensorId();
+                if(energySensorId.isPresent()) {
+
+                    Optional<SensorValue> sensorValueOptional4 = sensorEditor.getById(energySensorId.get());
+                    if(sensorValueOptional4.isPresent() && sensorValueOptional4.get() instanceof EnergyValue) {
+
+                        EnergyValue energyValue = (EnergyValue) sensorValueOptional4.get();
+                        energyValue.pushEnergy(energyData.getEnergy());
+                    }
+                }
+
+                lock.unlock();
+
+            } catch (IOException e) {
+
+                //Steckdose nicht erreichbar
+                LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
+            } catch (NullPointerException e) {
+
+                //keine HS110 Steckdose
+                LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose");
+            }
+        } else {
+
+            //Nicht als HS110 Steckdose markiert
+            LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose");
+        }
     }
 }

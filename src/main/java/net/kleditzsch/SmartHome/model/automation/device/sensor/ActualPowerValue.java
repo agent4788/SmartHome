@@ -54,7 +54,7 @@ public class ActualPowerValue extends SensorValue {
      *
      * @param actualPower Energieverbrauch in W
      */
-    void pushActualPower(double actualPower) {
+    public void pushActualPower(double actualPower) {
 
         setActualPower(actualPower);
         setLastPushTime(LocalDateTime.now());
