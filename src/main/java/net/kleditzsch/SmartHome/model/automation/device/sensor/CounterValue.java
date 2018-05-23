@@ -18,7 +18,7 @@ public class CounterValue extends SensorValue {
      * Zählerwert
      */
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    private BigInteger conterValue = new BigInteger("0");
+    private BigInteger counterValue = new BigInteger("0");
 
     /**
      * @param id ID
@@ -34,17 +34,17 @@ public class CounterValue extends SensorValue {
      *
      * @return Zählerwert
      */
-    public BigInteger getConterValue() {
-        return conterValue;
+    public BigInteger getCounterValue() {
+        return counterValue;
     }
 
     /**
      * setzt den aktuellen Zählerwert
      *
-     * @param conterValue Zählerwert
+     * @param counterValue Zählerwert
      */
-    public void setConterValue(BigInteger conterValue) {
-        this.conterValue = conterValue;
+    public void setCounterValue(BigInteger counterValue) {
+        this.counterValue = counterValue;
     }
 
     /**
@@ -54,7 +54,7 @@ public class CounterValue extends SensorValue {
      */
     public void pushConterValue(BigInteger conterValue) {
 
-        setConterValue(conterValue);
+        setCounterValue(conterValue);
         setLastPushTime(LocalDateTime.now());
     }
 

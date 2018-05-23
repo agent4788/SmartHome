@@ -40,7 +40,7 @@ public class AltitudeValue extends SensorValue {
      *
      * @return Standorthöhe
      */
-    double getAltitude() {
+    public double getAltitude() {
         return this.altitude;
     }
 
@@ -59,7 +59,7 @@ public class AltitudeValue extends SensorValue {
      *
      * @param altitude Standorthöhe
      */
-    void pushAltitude(double altitude) {
+    public void pushAltitude(double altitude) {
 
         setAltitude(altitude);
         setLastPushTime(LocalDateTime.now());

@@ -54,7 +54,7 @@ public class TPLinkSensorHandler implements Runnable {
                     if(sensorValueOptional1.isPresent() && sensorValueOptional1.get() instanceof VoltageValue) {
 
                         VoltageValue voltageValue = (VoltageValue) sensorValueOptional1.get();
-                        voltageValue.pushVoltage(energyData.getNowVoltage());
+                        voltageValue.pushVoltage(energyData.getNowVoltage() * 1000);
                     }
                 }
 
@@ -66,7 +66,7 @@ public class TPLinkSensorHandler implements Runnable {
                     if(sensorValueOptional2.isPresent() && sensorValueOptional2.get() instanceof CurrentValue) {
 
                         CurrentValue currentValue = (CurrentValue) sensorValueOptional2.get();
-                        currentValue.pushCurrent(energyData.getNowCurrent());
+                        currentValue.pushCurrent(energyData.getNowCurrent() * 1000);
                     }
                 }
 
@@ -78,7 +78,7 @@ public class TPLinkSensorHandler implements Runnable {
                     if(sensorValueOptional3.isPresent() && sensorValueOptional3.get() instanceof ActualPowerValue) {
 
                         ActualPowerValue actualPowerValue = (ActualPowerValue) sensorValueOptional3.get();
-                        actualPowerValue.pushActualPower(energyData.getNowPower());
+                        actualPowerValue.pushActualPower(energyData.getNowPower() * 1000);
                     }
                 }
 
@@ -90,7 +90,7 @@ public class TPLinkSensorHandler implements Runnable {
                     if(sensorValueOptional4.isPresent() && sensorValueOptional4.get() instanceof EnergyValue) {
 
                         EnergyValue energyValue = (EnergyValue) sensorValueOptional4.get();
-                        energyValue.pushEnergy(energyData.getEnergy());
+                        energyValue.pushEnergy(energyData.getEnergy() * 1000);
                     }
                 }
 

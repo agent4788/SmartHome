@@ -1,5 +1,6 @@
 package net.kleditzsch.SmartHome.util.jtwig.functions;
 
+import net.kleditzsch.SmartHome.util.formatter.DateTimeFormatUtil;
 import org.jtwig.functions.FunctionRequest;
 import org.jtwig.functions.SimpleJtwigFunction;
 
@@ -7,8 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeFormatFunction extends SimpleJtwigFunction {
-
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     @Override
     public String name() {
@@ -20,7 +19,6 @@ public class DateTimeFormatFunction extends SimpleJtwigFunction {
 
         request.minimumNumberOfArguments(1).maximumNumberOfArguments(1);
 
-        LocalDateTime localDateTime = (LocalDateTime) request.getArguments().get(0);
-        return localDateTime.format(formatter);
+        return DateTimeFormatUtil.format((LocalDateTime) request.getArguments().get(0));
     }
 }

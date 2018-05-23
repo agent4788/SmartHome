@@ -30,7 +30,7 @@ public class AutomationSwitchServerDeleteServlet extends HttpServlet {
                 ReentrantReadWriteLock.WriteLock lock = sse.writeLock();
                 lock.lock();
 
-                Optional<SwitchServer> switchServerOptional = sse.getData().stream().filter(ss -> ss.getId().equals(id)).findFirst();
+                Optional<SwitchServer> switchServerOptional = sse.getById(id);
                 if(switchServerOptional.isPresent()) {
 
                     sse.getData().remove(switchServerOptional.get());

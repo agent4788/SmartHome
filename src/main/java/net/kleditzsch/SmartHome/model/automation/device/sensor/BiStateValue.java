@@ -3,6 +3,8 @@ package net.kleditzsch.SmartHome.model.automation.device.sensor;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 
+import java.time.LocalDateTime;
+
 /**
  * BiState Sensorwert (z.B.: an/aus)
  */
@@ -85,12 +87,23 @@ public class BiStateValue extends SensorValue {
     }
 
     /**
+     * fügt den Status hinzu
+     *
+     * @param state Status
+     */
+    public void pushState(boolean state) {
+
+        setState(state);
+        setLastPushTime(LocalDateTime.now());
+    }
+
+    /**
      * gibt den Typ des Elementes zurück
      *
      * @return Typ ID
      */
     @Override
     public Type getType() {
-        return null;
+        return type;
     }
 }

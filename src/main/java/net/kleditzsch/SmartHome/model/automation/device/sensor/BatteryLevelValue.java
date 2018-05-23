@@ -56,7 +56,7 @@ public class BatteryLevelValue extends SensorValue {
      *
      * @param batteryLevel Ladezustand
      */
-    public void pushBatteryLevel(int batteryLevel) {
+    public void pushBatteryLevel(double batteryLevel) {
 
         setBatteryLevel(batteryLevel);
         setLastPushTime(LocalDateTime.now());

@@ -5,7 +5,7 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Swi
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 /**
- * Schaltbefehl für Doppelschaltelement
+ * Schaltbefehl für Schaltelement
  */
 public class SwitchCommand implements Command {
 

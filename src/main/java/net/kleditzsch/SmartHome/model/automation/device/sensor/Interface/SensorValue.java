@@ -17,7 +17,7 @@ public abstract class SensorValue extends AutomationElement {
      * Identifizierer
      */
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    @ValidatePattern(value = "^[a-zA-Z0-9]{3,50}$", errorCode = 10008, message = "Ungültige Identifizierung")
+    @ValidatePattern(value = "^[a-zA-Z0-9\\-]{3,50}$", errorCode = 10008, message = "Ungültige Identifizierung")
     private String identifier = "";
 
     /**

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.*;
@@ -57,7 +58,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
      * @param identifier Identifizierer
      * @return Element
      */
-    public Optional<SensorValue> getById(String identifier) {
+    public Optional<SensorValue> getByIdentifier(String identifier) {
 
         return getData().stream()
                 .filter(e -> e.getIdentifier().equalsIgnoreCase(identifier))
@@ -101,6 +102,38 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
         lock.unlock();
 
         pipeline.sync();
+    }
+
+    /**
+     * erstellt eine kopie vom Sensorwert
+     *
+     * @param sensorValue Sensorwert
+     * @return Kopie des Sensorwertes
+     */
+    public SensorValue copyOf(SensorValue sensorValue) {
+
+        if(sensorValue instanceof LiveBitValue) {
+
+            LiveBitValue oldSensorValue = (LiveBitValue) sensorValue;
+            LiveBitValue newSensorValue = new LiveBitValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
+            newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
+            newSensorValue.setTimeout(oldSensorValue.getTimeout());
+            newSensorValue.setState(oldSensorValue.getState());
+
+            return newSensorValue;
+        } else if (sensorValue instanceof UserAtHomeValue) {
+
+            UserAtHomeValue oldSensorValue = (UserAtHomeValue) sensorValue;
+            UserAtHomeValue newSensorValue = new UserAtHomeValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
+            newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
+            newSensorValue.setTimeout(oldSensorValue.getTimeout());
+            newSensorValue.setIpAddress(oldSensorValue.getIpAddress());
+            newSensorValue.setUseExternalDataSource(oldSensorValue.isUseExternalDataSource());
+            newSensorValue.setAtHome(oldSensorValue.isAtHome());
+
+            return newSensorValue;
+        }
+        return null;
     }
 
     /**
@@ -189,6 +222,12 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
             case VIRTUALSENSORVALUE_WATER_AMOUNT:
 
                 return VirtualWaterAmountValue.class;
+            case SENSORVALUE_BI_STATE:
+
+                return BiStateValue.class;
+            case SENSORVALUE_COUNTER:
+
+                return CounterValue.class;
             default:
                 throw new IllegalStateException("Ungültiger Typ");
         }

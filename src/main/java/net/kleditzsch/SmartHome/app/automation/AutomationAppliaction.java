@@ -4,11 +4,15 @@ import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
+import net.kleditzsch.SmartHome.controller.automation.sensorservice.LiveBitUpdateService;
+import net.kleditzsch.SmartHome.controller.automation.sensorservice.UserAtHomeUpdateService;
+import net.kleditzsch.SmartHome.controller.automation.sensorservice.VirtualSensorUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
+import net.kleditzsch.SmartHome.view.automation.admin.sensorvalues.*;
 import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerFormServlet;
@@ -103,6 +107,16 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationDeviceFormScriptSingleServlet.class, "/automation/admin/deviceformscriptsingle");
         contextHandler.addServlet(AutomationDeviceFormScriptDoubleServlet.class, "/automation/admin/deviceformscriptdouble");
         contextHandler.addServlet(AutomationDeviceDeleteServlet.class, "/automation/admin/devicedelete");
+        contextHandler.addServlet(AutomationSensorValuesListServlet.class, "/automation/admin/sensorvalues");
+        contextHandler.addServlet(AutomationSensorValuesPushServlet.class, "/automation/admin/sensorvaluespush");
+        contextHandler.addServlet(AutomationSensorValuesDefaultFormServlet.class, "/automation/admin/sensorvaluesdefaultform");
+        contextHandler.addServlet(AutomationSensorValuesBiStateFormServlet.class, "/automation/admin/sensorvaluesbistateform");
+        contextHandler.addServlet(AutomationSensorValuesDistanceFormServlet.class, "/automation/admin/sensorvaluesdistanceform");
+        contextHandler.addServlet(AutomationSensorValuesLiveBitFormServlet.class, "/automation/admin/sensorvalueslivebitform");
+        contextHandler.addServlet(AutomationSensorValuesTemperatureFormServlet.class, "/automation/admin/sensorvaluestemperatureform");
+        contextHandler.addServlet(AutomationSensorValuesUserAtHomeFormServlet.class, "/automation/admin/sensorvaluesuserathomeform");
+        contextHandler.addServlet(AutomationSensorValuesVirtualSensorFormServlet.class, "/automation/admin/sensorvaluevirtualsensorform");
+        contextHandler.addServlet(AutomationSensorValuesDeleteServlet.class, "/automation/admin/sensorvaluesdelete");
     }
 
     /**
@@ -182,6 +196,15 @@ public class AutomationAppliaction {
 
         //Schalt Timer starten
         timerExecutor.scheduleAtFixedRate(new SwitchTimerService(), 15, 15, TimeUnit.SECONDS);
+
+        //LiveBit Sensorwerte überachen
+        timerExecutor.scheduleAtFixedRate(new LiveBitUpdateService(), 15, 5, TimeUnit.SECONDS);
+
+        //Benutzer zu Hause überwachen
+        timerExecutor.scheduleAtFixedRate(new UserAtHomeUpdateService(), 15, 5, TimeUnit.SECONDS);
+
+        //Benutzer zu Hause überwachen
+        timerExecutor.scheduleAtFixedRate(new VirtualSensorUpdateService(), 15, 5, TimeUnit.SECONDS);
     }
 
     /**

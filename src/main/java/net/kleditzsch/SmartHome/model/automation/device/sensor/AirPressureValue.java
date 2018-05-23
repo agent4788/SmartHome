@@ -37,7 +37,7 @@ public class AirPressureValue extends SensorValue {
      *
      * @return Luftdruck
      */
-    double getAirPressure() {
+    public double getAirPressure() {
         return this.airPressure;
     }
 
@@ -56,7 +56,7 @@ public class AirPressureValue extends SensorValue {
      *
      * @param airPressure Luftdruck
      */
-    void pushAirPressure(double airPressure) {
+    public void pushAirPressure(double airPressure) {
 
         setAirPressure(airPressure);
         setLastPushTime(LocalDateTime.now());

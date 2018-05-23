@@ -15,7 +15,7 @@ public class ActualPowerValue extends SensorValue {
     private Type type = Type.SENSORVALUE_ACTUAL_POWER;
 
     /**
-     * Momentaner Energieverbrauch in Watt
+     * Momentaner Energieverbrauch in Milliwatt
      */
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
     @ValidateMin(value = 0, errorCode = 10205, message = "Ungültiger Sensorwert")
@@ -33,7 +33,7 @@ public class ActualPowerValue extends SensorValue {
     /**
      * gibt den aktuellen Energieverbrauch zurück
      *
-     * @return Energieverbrauch in W
+     * @return Energieverbrauch in Milliwatt
      */
     public double getActualPower() {
         return this.actualPower;
@@ -52,7 +52,7 @@ public class ActualPowerValue extends SensorValue {
     /**
      * fügt einen aktuellen Energieverbrauch
      *
-     * @param actualPower Energieverbrauch in W
+     * @param actualPower Energieverbrauch in Milliwatt
      */
     public void pushActualPower(double actualPower) {
 

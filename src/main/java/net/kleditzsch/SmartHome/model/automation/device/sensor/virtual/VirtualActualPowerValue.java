@@ -40,6 +40,7 @@ public class VirtualActualPowerValue extends VirtualSensorValue {
     public void processValues(List<SensorValue> sensorValues) {
 
         int count = 0;
+        this.sum = 0;
         for(SensorValue sensorValue : sensorValues) {
 
             if(sensorValue instanceof ActualPowerValue) {

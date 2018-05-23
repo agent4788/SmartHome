@@ -1,9 +1,12 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice;
 
+import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SensorValueCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.StopCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.handler.*;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.LiveBitValue;
+import net.kleditzsch.SmartHome.model.automation.device.sensor.UserAtHomeValue;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.*;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
@@ -75,6 +78,21 @@ public class ExecutorScheduler implements Runnable {
 
                         //Ausgang
                         OutputHandler handler = new OutputHandler((Output) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
+                        executor.execute(handler);
+                    }
+                } else if(command instanceof SensorValueCommand) {
+
+                    //Sensorwerte aktualisieren
+                    SensorValueCommand sensorValueCommand = (SensorValueCommand) command;
+                    if(sensorValueCommand.getSensorValue() instanceof LiveBitValue) {
+
+                        //Live Bit aktualisieren
+                        LiveBitSensorHandler handler = new LiveBitSensorHandler((LiveBitValue) sensorValueCommand.getSensorValue());
+                        executor.execute(handler);
+                    } else if (sensorValueCommand.getSensorValue() instanceof UserAtHomeValue) {
+
+                        //Benutzer zu Hause aktualisieren
+                        UserAtHomeSensorHandler handler = new UserAtHomeSensorHandler((UserAtHomeValue) sensorValueCommand.getSensorValue());
                         executor.execute(handler);
                     }
                 } else if(command instanceof StopCommand) {

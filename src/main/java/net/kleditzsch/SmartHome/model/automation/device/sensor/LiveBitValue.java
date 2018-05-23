@@ -26,7 +26,13 @@ public class LiveBitValue extends SensorValue {
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
     @ValidateMin(value = 100, errorCode = 10005, message = "Ungültiger Timeout")
     @ValidateMax(value = 86_400_000, errorCode = 10005, message = "Ungültiger Timeout")
-    private int timeout = 10_000;
+    private long timeout = 10_000;
+
+    /**
+     * Statustexte
+     */
+    private String trueText = "";
+    private String falseText = "";
 
     /**
      * @param id ID
@@ -71,7 +77,7 @@ public class LiveBitValue extends SensorValue {
      *
      * @return Timeout
      */
-    public int getTimeout() {
+    public long getTimeout() {
         return timeout;
     }
 
@@ -80,9 +86,45 @@ public class LiveBitValue extends SensorValue {
      *
      * @param timeout Timeout
      */
-    public void setTimeout(int timeout) {
+    public void setTimeout(long timeout) {
 
         this.timeout = timeout;
+    }
+
+    /**
+     * gibt den Text für den "wahr" Fall zurück
+     *
+     * @return Text für den "wahr" Fall
+     */
+    public String getTrueText() {
+        return trueText;
+    }
+
+    /**
+     * setzt den Text für den "wahr" Fall
+     *
+     * @param trueText Text für den "wahr" Fall
+     */
+    public void setTrueText(String trueText) {
+        this.trueText = trueText;
+    }
+
+    /**
+     * gibt den Text für den "falsch" Fall zurück
+     *
+     * @return Text für den "falsch" Fall
+     */
+    public String getFalseText() {
+        return falseText;
+    }
+
+    /**
+     * setzt den Text für den "falsch" Fall
+     *
+     * @param falseText Text für den "falsch" Fall
+     */
+    public void setFalseText(String falseText) {
+        this.falseText = falseText;
     }
 
     /**

@@ -37,7 +37,7 @@ public class AutomationDeviceDeleteServlet extends HttpServlet {
                 ReentrantReadWriteLock.WriteLock lock = swe.writeLock();
                 lock.lock();
 
-                Optional<Switchable> switchServerOptional = swe.getData().stream().filter(sw -> sw.getId().equals(id)).findFirst();
+                Optional<Switchable> switchServerOptional = swe.getById(id);
                 if(switchServerOptional.isPresent()) {
 
                     swe.getData().remove(switchServerOptional.get());

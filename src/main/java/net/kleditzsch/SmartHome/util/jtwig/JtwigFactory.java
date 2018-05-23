@@ -22,6 +22,8 @@ public abstract class JtwigFactory {
                         .add(new RandomStringFunction())
                         .add(new CollectionContainsFunction())
                         .add(new EqualsFunction())
+                        .add(new SensorValueFormatFunction())
+                        .add(new SensorValueTypeFormatFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

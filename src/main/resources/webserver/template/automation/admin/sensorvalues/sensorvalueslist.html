@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung Sensorwerte</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        function search() {
+
+            var value = $('.ui.search input').val();
+            {% if filterType > 0 %}
+            window.location = '/automation/admin/sensorvalues?filter=' + value + '&filtertype=' + {{ filterType }};
+            {% else %}
+            window.location = '/automation/admin/sensorvalues?filter=' + value;
+            {% endif %}
+        }
+
+        $(function () {
+
+            $('.ui.dropdown').dropdown();
+
+            $('.ui.search i').click(function () {
+                search();
+            });
+            $('.ui.search input').keydown(function (e) {
+                if(e.which == 13) {
+                    search();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'sensorvalues'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Sensorwerte verwalten</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui attached menu inverted blue">
+        <div class="ui dropdown item">
+            <i class="plus icon"></i> Sensor hinzuf&uuml;gen
+            <div class="menu">
+                <a class="item" href="/automation/admin/sensorvaluesuserathomeform">
+                    <i class="plus icon"></i> Benutzer zu Hause
+                </a>
+                <div class="divider"></div>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=1">
+                    <i class="plus icon"></i> Virtuelle aktuelle Energie
+                </a>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=2">
+                    <i class="plus icon"></i> Virtueller Energieverbrauch
+                </a>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=3">
+                    <i class="plus icon"></i> Virtueller Gasverbrauch
+                </a>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=4">
+                    <i class="plus icon"></i> Virtuelle Lichtstärke
+                </a>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=5">
+                    <i class="plus icon"></i> Virtuelle Temperatur
+                </a>
+                <a class="item" href="/automation/admin/sensorvaluevirtualsensorform?type=6">
+                    <i class="plus icon"></i> Virtueller Wasserverbrauch
+                </a>
+            </div>
+        </div>
+        <div class="right menu">
+            <div class="ui dropdown item">
+                <i class="filter icon"></i> Typfilter
+                <div class="menu">
+                    <div class="ui dropdown item">
+                        Energie&nbsp;<i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=1{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                aktuelle Energie
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=10{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Energieverbrauch
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=20{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Spannung
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=7{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Strom
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=4{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Akku Ladezustand
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui dropdown item">
+                        Medien&nbsp;<i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=21{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Wassermenge
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=11{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Gas Menge
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui dropdown item">
+                        Umwelt&nbsp;<i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=18{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Temperatur
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=12{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Luftfeuchtigkeit
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=2{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Luftdruck
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=16{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Feuchtigkeit
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=14{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Lichtst&auml;rke
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=3{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Standorth&ouml;he
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui dropdown item">
+                        Allgemein&nbsp;<i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=13{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Eingang
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=5{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Doppelstatus
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=15{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Lebenszeichen
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=19{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Benutzer zu Hause
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=8{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Abstand
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=9{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Laufzeit
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=6{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Z&auml;hler
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=17{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Zeichenkette
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ui dropdown item">
+                        Virtuelle Sensoren&nbsp;<i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=101{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}"">
+                                Virtuelle aktuelle Energie
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=102{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Virtueller Energieverbrauch
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=103{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Virtueller Gasverbrauch
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=104{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Virtuelle Lichtstärke
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=105{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Virtuelle Temperatur
+                            </a>
+                            <a class="item" href="/automation/admin/sensorvalues?filtertype=106{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                                Virtueller Wasserverbrauch
+                            </a>
+                        </div>
+                    </div>
+                    <a class="item" href="/automation/admin/sensorvalues">
+                        alle
+                    </a>
+                </div>
+            </div>
+            <div class="ui right aligned category search item">
+                <div class="ui icon input">
+                    <input class="prompt" type="text" placeholder="Search ..." {% if filterStr is defined %}value="{{ filterStr | escape }}"{% endif %}>
+                    <i class="search link icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if pagination.getSize() > 0 %}
+    <div class="ui segment attached">
+        <div class="ui divided items attached {% if pagination.hasPages() == false %}bottom{% endif %}">
+            {% for element in pagination.getCurrentPageElements() %}
+            {% set randomId = randomstr() %}
+            <div class="item">
+                <div class="content">
+                    <div class="header">{{ element.getName() | escape }}</div>
+                    <div class="meta">
+                        <span>letzte Aktualisierung: {{ element.getLastPushTime() | timeline('nie') | escape }}</span>
+                    </div>
+                    {% if element.getDescription().isPresent() %}
+                    <div class="description">
+                        <p>{{ element.getDescription().get() | escape }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="extra">
+                        <div class="ui right floated">
+                            {% if element.getType() == 'SENSORVALUE_BI_STATE' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluesbistateform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SENSORVALUE_DISTANCE' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluesdistanceform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SENSORVALUE_LIVE_BIT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvalueslivebitform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SENSORVALUE_TEMPERATURE' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluestemperatureform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SENSORVALUE_USER_AT_HOME' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluesuserathomeform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType().toString().contains('VIRTUAL') %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluevirtualsensorform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% else %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/sensorvaluesdefaultform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% endif %}
+                            {% if element.isSystemValue() == false %}
+                            <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
+                            {% endif %}
+                        </div>
+                        <div class="ui label orange">{{ element | formatsensortype | escape }}</div>
+                        <div class="ui label green">{{ element | formatsensorvalue | escape }}</div>
+                        {% if element.isUseExternalDataSource() == true %}
+                        <div class="ui label purple">Extern</div>
+                        {% endif %}
+                        {% if element.isSystemValue() == false %}
+                        <div class="ui basic modal" id="{{ randomId }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Sensorwert l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du den Sensorwert l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/sensorvaluesdelete?id={{ element.getId() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom attached clearing">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/automation/admin/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="ui icon info message bottom attached large">
+        <i class="info circle icon black"></i>
+        <div class="content">
+            <p>keine Sensorwerte gefunden</p>
+        </div>
+    </div>
+    {% endif %}
+    <div style="height: 50px;"></div>
+</main>
+</body>
+</html>
