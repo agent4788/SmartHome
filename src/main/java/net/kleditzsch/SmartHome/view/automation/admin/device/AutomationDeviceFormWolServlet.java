@@ -135,7 +135,7 @@ public class AutomationDeviceFormWolServlet extends HttpServlet {
             //Deaktiviert
             disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
 
-        } catch (NumberFormatException | UnknownHostException e) {
+        } catch (Exception e) {
 
             success = false;
         }

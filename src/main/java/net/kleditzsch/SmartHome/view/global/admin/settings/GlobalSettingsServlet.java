@@ -77,15 +77,15 @@ public class GlobalSettingsServlet extends HttpServlet {
 
                 success = false;
             }
-        } catch (NumberFormatException e) {
+            if(storePassword.length() > 100) {
 
-            success = false;
-        }
-        if(storePassword.length() > 100) {
+                success = false;
+            }
+            if(managerPassword.length() > 100) {
 
-            success = false;
-        }
-        if(managerPassword.length() > 100) {
+                success = false;
+            }
+        } catch (Exception e) {
 
             success = false;
         }

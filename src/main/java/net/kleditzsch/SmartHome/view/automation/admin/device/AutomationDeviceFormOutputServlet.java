@@ -164,7 +164,7 @@ public class AutomationDeviceFormOutputServlet extends HttpServlet {
             disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
             inverse = inverseStr != null && inverseStr.equalsIgnoreCase("on");
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
 
             success = false;
         }

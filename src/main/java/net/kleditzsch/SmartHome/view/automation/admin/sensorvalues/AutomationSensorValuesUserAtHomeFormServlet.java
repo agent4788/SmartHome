@@ -155,7 +155,7 @@ public class AutomationSensorValuesUserAtHomeFormServlet extends HttpServlet {
                 }
             }
 
-        } catch (NumberFormatException | UnknownHostException e) {
+        } catch (Exception e) {
 
             success = false;
         }

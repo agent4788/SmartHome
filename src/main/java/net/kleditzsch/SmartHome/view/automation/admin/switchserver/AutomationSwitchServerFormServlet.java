@@ -134,7 +134,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
             }
             enabled = enabledStr != null && enabledStr.equalsIgnoreCase("on");
 
-        } catch (NumberFormatException | UnknownHostException e) {
+        } catch (Exception e) {
 
             success = false;
         }

@@ -151,7 +151,7 @@ public class AutomationDeviceFormTpLinkServlet extends HttpServlet {
             disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
             inverse = inverseStr != null && inverseStr.equalsIgnoreCase("on");
 
-        } catch (NumberFormatException | UnknownHostException e) {
+        } catch (Exception e) {
 
             success = false;
         }

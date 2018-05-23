@@ -94,7 +94,7 @@ public class AutomationSensorValuesDefaultFormServlet extends HttpServlet {
                 success = false;
             }
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
 
             success = false;
         }

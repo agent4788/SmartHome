@@ -102,7 +102,7 @@ public class AutomationSensorValuesDistanceFormServlet extends HttpServlet {
                 success = false;
             }
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
 
             success = false;
         }
