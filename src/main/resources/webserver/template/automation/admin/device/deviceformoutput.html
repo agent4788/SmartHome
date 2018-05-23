@@ -42,7 +42,7 @@
                 <label>Schaltserver</label>
                 <select class="ui fluid dropdown" {% if addElement == false %}disabled{% endif %} name="switchserver" required>
                     {% for switchServer in switchServerList %}
-                    <option value="{{ switchServer.Id().get() | escape }}" {% if switchServer.getId() | equals(output.getSwitchServerId()) %}selected{% endif %} {% if (switchServer.isEnabled == false and addElement) %}disabled{% endif %}>
+                    <option value="{{ switchServer.Id().get() | escape }}" {% if switchServer.getId() | equals(output.getSwitchServerId()) %}selected{% endif %} {% if (switchServer.isDisabled() == true and addElement) %}disabled{% endif %}>
                         {{ switchServer.getName() | escape }}
                     </option>
                     {% endfor %}

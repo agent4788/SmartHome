@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -84,11 +83,11 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
         String ipAddress = req.getParameter("ipAddress");
         String portStr = req.getParameter("port");
         String timeoutStr = req.getParameter("timeout");
-        String enabledStr = req.getParameter("enabled");
+        String disabledStr = req.getParameter("disabled");
 
         //Daten vorbereiten
         int port = 0, timeout = 0;
-        boolean addElement = true, enabled = true;
+        boolean addElement = true, disabled = true;
         ID id = null;
 
         //Daten prüfen
@@ -132,7 +131,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
 
                 success = false;
             }
-            enabled = enabledStr != null && enabledStr.equalsIgnoreCase("on");
+            disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
 
         } catch (Exception e) {
 
@@ -166,7 +165,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
                 if(addElement) {
 
                     //neues Element hinzufügen
-                    SwitchServer switchServer = new SwitchServer(ID.create(), name, ipAddress, port, enabled);
+                    SwitchServer switchServer = new SwitchServer(ID.create(), name, ipAddress, port, disabled);
                     switchServer.setDescription(description);
                     switchServer.setTimeout(timeout);
                     sse.getData().add(switchServer);
@@ -186,7 +185,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
                         switchServer.setIpAddress(ipAddress);
                         switchServer.setPort(port);
                         switchServer.setTimeout(timeout);
-                        switchServer.setEnabled(enabled);
+                        switchServer.setDisabled(disabled);
 
                         req.getSession().setAttribute("success", true);
                         req.getSession().setAttribute("message", "Der Schaltserver wurde erfolgreich bearbeitet");

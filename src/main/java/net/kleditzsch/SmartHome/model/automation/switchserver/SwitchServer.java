@@ -38,23 +38,22 @@ public class SwitchServer extends Element {
     /**
      * aktiviert?
      */
-    private boolean enabled = true;
+    private boolean disabled = true;
 
     /**
      * @param id ID
      * @param name Name
      * @param ipAddress IP Adresse
      * @param port Port
-     * @param enabled Schaltserver aktiviert
+     * @param disabled Schaltserver aktiviert
      */
-    public SwitchServer(ID id, String name, String ipAddress, int port, boolean enabled) {
+    public SwitchServer(ID id, String name, String ipAddress, int port, boolean disabled) {
 
         setId(id);
         setName(name);
         setIpAddress(ipAddress);
         setPort(port);
-        setEnabled(enabled);
-
+        setDisabled(disabled);
     }
 
     /**
@@ -119,16 +118,16 @@ public class SwitchServer extends Element {
      *
      * @return aktiviert/deaktiviert
      */
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isDisabled() {
+        return disabled;
     }
 
     /**
      * aktiviert/deaktiviert den Schaltserver
      *
-     * @param enabled aktiviert/deaktiviert
+     * @param disabled aktiviert/deaktiviert
      */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

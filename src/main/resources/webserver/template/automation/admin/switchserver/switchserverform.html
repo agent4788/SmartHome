@@ -52,8 +52,8 @@
             <div class="ui segment">
                 <div class="field required">
                     <div class="ui toggle checkbox">
-                        <input type="checkbox" name="enabled" class="hidden" {% if switchServer.isEnabled() %}checked="checked"{% endif %}>
-                        <label>aktiv</label>
+                        <input type="checkbox" name="disabled" class="hidden" {% if switchServer.isDisabled() %}checked="checked"{% endif %}>
+                        <label>deaktiviert</label>
                     </div>
                 </div>
             </div>

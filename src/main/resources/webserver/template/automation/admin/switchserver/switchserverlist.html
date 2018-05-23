@@ -75,7 +75,7 @@
                             <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/switchserverform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
                         </div>
-                        {% if element.isEnabled() == false %}
+                        {% if element.isDisabled() %}
                         <div class="ui label grey">Deaktiviert</div>
                         {% endif %}
                         <div class="ui basic modal" id="{{ randomId }}">
