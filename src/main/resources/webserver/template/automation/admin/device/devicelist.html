@@ -9,7 +9,11 @@
         function search() {
 
             var value = $('.ui.search input').val();
+            {% if filterType > 0 %}
+            window.location = '/automation/admin/device?filter=' + value + '&filtertype=' + {{ filterType }};
+            {% else %}
             window.location = '/automation/admin/device?filter=' + value;
+            {% endif %}
         }
 
         $(function() {
@@ -68,6 +72,32 @@
             </div>
         </div>
         <div class="right menu">
+            <div class="ui dropdown item">
+                <i class="filter icon"></i> Typfilter
+                <div class="menu">
+                    <a class="item" href="/automation/admin/device?filtertype=1{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        TP-Link Steckdose
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=2{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        AVM Steckdose
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=3{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Ausgang
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=4{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Script (einfach)
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=5{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Script (an/aus)
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=6{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Wake on Lan
+                    </a>
+                    <a class="item" href="/automation/admin/device">
+                        alle
+                    </a>
+                </div>
+            </div>
             <div class="ui right aligned category search item">
                 <div class="ui icon input">
                     <input class="prompt" type="text" placeholder="Search ..." {% if filterStr is defined %}value="{{ filterStr | escape }}"{% endif %}>

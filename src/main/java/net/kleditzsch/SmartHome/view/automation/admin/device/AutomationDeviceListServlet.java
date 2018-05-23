@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.view.automation.admin.device;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.Element;
+import net.kleditzsch.SmartHome.model.automation.device.switchable.*;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -42,6 +43,56 @@ public class AutomationDeviceListServlet extends HttpServlet {
 
         //filtern
         String filterStr = null;
+        int filterType = -1;
+
+        //Typ filtern
+        if (req.getParameter("filtertype") != null) {
+
+            try {
+
+                filterType = Integer.parseInt(req.getParameter("filtertype"));
+                switch (filterType) {
+
+                    case 1:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof TPlinkSocket)
+                                .collect(Collectors.toList());
+                        break;
+                    case 2:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof AvmSocket)
+                                .collect(Collectors.toList());
+                        break;
+                    case 3:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof Output)
+                                .collect(Collectors.toList());
+                        break;
+                    case 4:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof ScriptSingle)
+                                .collect(Collectors.toList());
+                        break;
+                    case 5:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof ScriptDouble)
+                                .collect(Collectors.toList());
+                        break;
+                    case 6:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof WakeOnLan)
+                                .collect(Collectors.toList());
+                        break;
+                }
+            } catch (NumberFormatException e) {}
+        }
+
         if(req.getParameter("filter") != null) {
 
             String filter = req.getParameter("filter").trim();
@@ -72,13 +123,21 @@ public class AutomationDeviceListServlet extends HttpServlet {
         settingsLock.unlock();
 
         ListPagination<Switchable> pagination = new ListPagination<>(switchableList, elementsAtPage, index);
-        if(filterStr != null) {
+        if(filterStr != null && filterType > 0) {
 
-            pagination.setBaseLink("/automation/admin/device?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
+            pagination.setBaseLink("/automation/admin/device?filter=" + HtmlEscapers.htmlEscaper() + "&filtertype=" + filterType + "&index=");
+        } else if (filterStr == null && filterType > 0) {
+
+            pagination.setBaseLink("/automation/admin/device?filtertype=" + filterType + "&index=");
+        }  else if (filterStr != null && filterType == -1) {
+
+            pagination.setBaseLink("/automation/admin/device?filter=" + HtmlEscapers.htmlEscaper() + "&index=");
         } else {
 
             pagination.setBaseLink("/automation/admin/device?index=");
         }
+        model.with("filterType", filterType);
+        model.with("filterStr", filterStr);
         model.with("pagination", pagination);
 
         //Meldung
