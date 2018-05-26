@@ -152,11 +152,16 @@
                         {% elseif element.getType() == 'SWITCHABLE_WAKE_ON_LAN' %}
                         <div class="ui label violet">Wake on Lan</div>
                         {% endif %}
+                        {% if element.getState() == 'ON' %}
+                        <div class="ui label green">an</div>
+                        {% elseif element.getState() == 'OFF' %}
+                        <div class="ui label red">aus</div>
+                        {% endif %}
                         {% if element.isDisabled() == true %}
-                        <div class="ui label grey">Deaktiviert</div>
+                        <div class="ui label grey">deaktiviert</div>
                         {% endif %}
                         {% if element.isInverse() == true %}
-                        <div class="ui label brown">Invertiert</div>
+                        <div class="ui label brown">invertiert</div>
                         {% endif %}
                         <div class="ui basic modal" id="{{ randomId }}">
                             <div class="ui icon header">
