@@ -40,7 +40,7 @@ public class AvmDataUpdateService implements Runnable {
             lock.lock();
 
             List<AvmSocket> avmSockets = switchableEditor.getData().stream()
-                    .filter(e -> e instanceof AvmSocket && !e.isDisabled())
+                    .filter(e -> e instanceof AvmSocket)
                     .map(e -> ((AvmSocket) e))
                     .collect(Collectors.toList());
 
@@ -48,21 +48,23 @@ public class AvmDataUpdateService implements Runnable {
             avmLock.lock();
 
             //Schaltstatus aktualisieren
-            avmSockets.forEach(e -> {
+            avmSockets.stream()
+                    .filter(e -> !e.isDisabled())
+                    .forEach(e -> {
 
-                Optional<SmarthomeDevice> deviceOptional = avmEditor.getDeviceByIdentifier(e.getIdentifier());
-                if(deviceOptional.isPresent() && deviceOptional.get().getSwitch().isPresent()) {
+                        Optional<SmarthomeDevice> deviceOptional = avmEditor.getDeviceByIdentifier(e.getIdentifier());
+                        if(deviceOptional.isPresent() && deviceOptional.get().getSwitch().isPresent()) {
 
-                    Switch.STATE state = deviceOptional.get().getSwitch().get().getState();
-                    if((state == Switch.STATE.ON && !e.isInverse()) || (state == Switch.STATE.OFF && e.isInverse())) {
+                            Switch.STATE state = deviceOptional.get().getSwitch().get().getState();
+                            if((state == Switch.STATE.ON && !e.isInverse()) || (state == Switch.STATE.OFF && e.isInverse())) {
 
-                        e.setState(Switchable.State.ON);
-                    } else {
+                                e.setState(Switchable.State.ON);
+                            } else {
 
-                        e.setState(Switchable.State.OFF);
-                    }
-                }
-            });
+                                e.setState(Switchable.State.OFF);
+                            }
+                        }
+                    });
 
             //Sensordaten aktualisieren
             SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();

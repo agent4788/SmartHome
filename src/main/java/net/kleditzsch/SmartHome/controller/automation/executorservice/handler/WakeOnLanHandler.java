@@ -25,6 +25,12 @@ public class WakeOnLanHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(wol.isDisabled()) {
+
+            return;
+        }
+
         net.kleditzsch.SmartHome.util.api.wol.WakeOnLan.send(wol.getIpAddress(), wol.getMac());
     }
 }

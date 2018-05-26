@@ -32,6 +32,12 @@ public class OutputHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(output.isDisabled()) {
+
+            return;
+        }
+
         //TODO implementieren wenn Schnittstelle klar ist
     }
 }

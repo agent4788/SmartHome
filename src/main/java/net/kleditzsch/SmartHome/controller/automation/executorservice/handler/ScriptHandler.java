@@ -71,11 +71,23 @@ public class ScriptHandler implements Runnable {
 
         if(scriptSingle != null) {
 
+            //Befehle für deaktivierte Geräte ignorieren
+            if(scriptSingle.isDisabled()) {
+
+                return;
+            }
+
             //Einfacher Schaltbefehl
             cliCommand = scriptSingle.getCommand();
             workingDir = scriptSingle.getWorkingDir();
 
         } else {
+
+            //Befehle für deaktivierte Geräte ignorieren
+            if(scriptDouble.isDisabled()) {
+
+                return;
+            }
 
             //Doppelter Schaltbefehl
             if((switchCommand == SwitchCommands.on && !scriptDouble.isInverse())

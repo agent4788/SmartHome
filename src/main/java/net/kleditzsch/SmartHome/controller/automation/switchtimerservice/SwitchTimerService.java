@@ -63,13 +63,16 @@ public class SwitchTimerService implements Runnable {
 
                                 //Schaltbefehl an den Schaduler übergeben
                                 Switchable switchable = se.copyOf(switchableOptional.get());
-                                executorService.putCommand(new SwitchCommand(switchable, switchCommand.getCommand()));
+                                if(!switchable.isDisabled()) {
 
-                                //nächste Schaltzeit berechnen
-                                st.setNextExecutionTime(ste.calculateNextExecutionTime(st));
-                                LoggerUtil.getLogger(this).finest("Timer \"" + st.getName() + "\" geschaltet; nächste Ausführung: " + st.getNextExecutionTime());
+                                    executorService.putCommand(new SwitchCommand(switchable, switchCommand.getCommand()));
+                                }
                             }
                         });
+
+                        //nächste Schaltzeit berechnen
+                        st.setNextExecutionTime(ste.calculateNextExecutionTime(st));
+                        LoggerUtil.getLogger(this).finest("Timer \"" + st.getName() + "\" geschaltet; nächste Ausführung: " + st.getNextExecutionTime());
 
                         seLock.unlock();
                     });

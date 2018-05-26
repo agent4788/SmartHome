@@ -48,6 +48,12 @@ public class AvmHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(socket.isDisabled()) {
+
+            return;
+        }
+
         Switch.STATE newState;
         Optional<SmarthomeDevice> deviceOptional = Optional.empty();
 

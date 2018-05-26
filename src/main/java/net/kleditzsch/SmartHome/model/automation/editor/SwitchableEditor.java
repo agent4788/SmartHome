@@ -105,6 +105,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newSocket.setId(ID.of(oldSocket.getId().get()));
+            newSocket.setDisabled(oldSocket.isDisabled());
 
             //Spezifische Daten
             newSocket.setIpAddress(oldSocket.getIpAddress());
@@ -124,6 +125,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newSocket.setId(ID.of(oldSocket.getId().get()));
+            newSocket.setDisabled(oldSocket.isDisabled());
 
             //Spezifische Daten
             newSocket.setIdentifier(oldSocket.getIdentifier());
@@ -140,6 +142,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newOutput.setId(ID.of(oldOutput.getId().get()));
+            newOutput.setDisabled(oldOutput.isDisabled());
 
             //Spezifische Daten
             newOutput.setSwitchServerId(ID.of(oldOutput.getSwitchServerId().get()));
@@ -154,6 +157,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newScript.setId(ID.of(oldScript.getId().get()));
+            newScript.setDisabled(oldScript.isDisabled());
 
             //Spezifische Daten
             newScript.setWorkingDir(oldScript.getWorkingDir());
@@ -169,6 +173,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newScript.setId(ID.of(oldScript.getId().get()));
+            newScript.setDisabled(oldScript.isDisabled());
 
             //Spezifische Daten
             newScript.setWorkingDir(oldScript.getWorkingDir());
@@ -183,6 +188,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             //Allgemeine Daten
             newWol.setId(ID.of(oldWol.getId().get()));
+            newWol.setDisabled(oldWol.isDisabled());
 
             //Spezifische Daten
             newWol.setIpAddress(oldWol.getIpAddress());

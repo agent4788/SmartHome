@@ -30,6 +30,12 @@ public class LiveBitSensorHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(liveBitValue.isDisabled()) {
+
+            return;
+        }
+
         try {
 
             LocalDateTime timeout = liveBitValue.getLastPushTime().plusNanos(liveBitValue.getTimeout() * 1_000_000L);

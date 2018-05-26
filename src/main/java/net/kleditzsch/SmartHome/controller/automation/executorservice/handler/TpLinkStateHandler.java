@@ -32,6 +32,12 @@ public class TpLinkStateHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(socket.isDisabled()) {
+
+            return;
+        }
+
         try {
 
             HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());

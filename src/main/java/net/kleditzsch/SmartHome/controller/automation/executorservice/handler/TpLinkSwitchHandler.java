@@ -50,6 +50,12 @@ public class TpLinkSwitchHandler implements Runnable {
     @Override
     public void run() {
 
+        //Befehle für deaktivierte Geräte ignorieren
+        if(socket.isDisabled()) {
+
+            return;
+        }
+
         try {
 
             //Steckdosenobjekt erzeugen

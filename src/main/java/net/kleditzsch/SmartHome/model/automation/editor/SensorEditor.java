@@ -116,6 +116,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
 
             LiveBitValue oldSensorValue = (LiveBitValue) sensorValue;
             LiveBitValue newSensorValue = new LiveBitValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
+            newSensorValue.setDisabled(oldSensorValue.isDisabled());
             newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
             newSensorValue.setTimeout(oldSensorValue.getTimeout());
             newSensorValue.setState(oldSensorValue.getState());
@@ -125,6 +126,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
 
             UserAtHomeValue oldSensorValue = (UserAtHomeValue) sensorValue;
             UserAtHomeValue newSensorValue = new UserAtHomeValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
+            newSensorValue.setDisabled(oldSensorValue.isDisabled());
             newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
             newSensorValue.setTimeout(oldSensorValue.getTimeout());
             newSensorValue.setIpAddress(oldSensorValue.getIpAddress());
