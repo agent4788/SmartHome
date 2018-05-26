@@ -29,6 +29,7 @@ public class SwitchTimerService implements Runnable {
             //alle Timer durchlaufen und prüfen ob Schaltzeit erreicht
             ExecutorService executorService = Application.getInstance().getAutomation().getExecutorService();
             ste.getData().stream()
+                    .filter(st -> !st.isDisabled())
                     .filter(st -> {
 
                         //prüfen ob schaltzeit erreicht

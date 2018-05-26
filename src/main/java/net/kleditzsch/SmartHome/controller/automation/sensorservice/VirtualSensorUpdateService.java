@@ -45,6 +45,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue.processValues(sensorValues);
+                            virtualSensorValue.updateLastPushTime();
                             break;
                         case VIRTUALSENSORVALUE_ENERGY:
 
@@ -62,6 +63,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue1.processValues(sensorValues1);
+                            virtualSensorValue1.updateLastPushTime();
                             break;
                         case VIRTUALSENSORVALUE_GAS_AMOUNT:
 
@@ -79,6 +81,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue2.processValues(sensorValues2);
+                            virtualSensorValue2.updateLastPushTime();
                             break;
                         case VIRTUALSENSORVALUE_LIGHT_INTENSITY:
 
@@ -96,6 +99,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue3.processValues(sensorValues3);
+                            virtualSensorValue3.updateLastPushTime();
                             break;
                         case VIRTUALSENSORVALUE_TEMPERATURE:
 
@@ -113,6 +117,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue4.processValues(sensorValues4);
+                            virtualSensorValue4.updateLastPushTime();
                             break;
                         case VIRTUALSENSORVALUE_WATER_AMOUNT:
 
@@ -130,6 +135,7 @@ public class VirtualSensorUpdateService implements Runnable {
                             });
 
                             virtualSensorValue5.processValues(sensorValues5);
+                            virtualSensorValue5.updateLastPushTime();
                             break;
                     }
                 });

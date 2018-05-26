@@ -34,6 +34,11 @@ public class SwitchTimer extends Element {
     private LocalDateTime nextExecutionTime;
 
     /**
+     * deaktiviert
+     */
+    private boolean disabled = false;
+
+    /**
      * gibt die Liste mit den Ausführungsmonaten zurück
      *
      * @return Liste mit den Ausführungsmonaten
@@ -103,5 +108,21 @@ public class SwitchTimer extends Element {
      */
     public void setNextExecutionTime(LocalDateTime nextExecutionTime) {
         this.nextExecutionTime = nextExecutionTime;
+    }
+
+    /**
+     * gibt an ob der Timer deaktiviert ist
+     */
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    /**
+     * aktiviert/deaktiviert den Timer
+     *
+     * @param disabled aktiviert/deaktiviert
+     */
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

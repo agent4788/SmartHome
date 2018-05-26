@@ -41,7 +41,7 @@ public class ExecutorScheduler implements Runnable {
                     if(switchCommand.getSwitchable() instanceof TPlinkSocket) {
 
                         //TP Link Steckdosen
-                        if(switchCommand.getSwitchCommands() == SwitchCommands.on || switchCommand.getSwitchCommands() == SwitchCommands.off) {
+                        if(switchCommand.getSwitchCommands() == SwitchCommands.on || switchCommand.getSwitchCommands() == SwitchCommands.off || switchCommand.getSwitchCommands() == SwitchCommands.toggle) {
 
                             TpLinkSwitchHandler handler = new TpLinkSwitchHandler((TPlinkSocket) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                             executor.execute(handler);

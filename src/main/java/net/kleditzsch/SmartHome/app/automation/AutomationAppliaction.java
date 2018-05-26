@@ -17,6 +17,9 @@ import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSetting
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerFormServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerListServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerDeleteServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerFormServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerListServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -117,6 +120,9 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationSensorValuesUserAtHomeFormServlet.class, "/automation/admin/sensorvaluesuserathomeform");
         contextHandler.addServlet(AutomationSensorValuesVirtualSensorFormServlet.class, "/automation/admin/sensorvaluevirtualsensorform");
         contextHandler.addServlet(AutomationSensorValuesDeleteServlet.class, "/automation/admin/sensorvaluesdelete");
+        contextHandler.addServlet(AutomationTimerListServlet.class, "/automation/admin/timer");
+        contextHandler.addServlet(AutomationTimerFormServlet.class, "/automation/admin/timerform");
+        contextHandler.addServlet(AutomationTimerDeleteServlet.class, "/automation/admin/timerdelete");
     }
 
     /**
@@ -215,6 +221,7 @@ public class AutomationAppliaction {
         sensorEditor.dump();
         switchableEditor.dump();
         switchServerEditor.dump();
+        switchTimerEditor.dump();
         roomEditor.dump();
     }
 

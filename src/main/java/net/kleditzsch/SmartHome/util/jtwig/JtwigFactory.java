@@ -24,6 +24,8 @@ public abstract class JtwigFactory {
                         .add(new EqualsFunction())
                         .add(new SensorValueFormatFunction())
                         .add(new SensorValueTypeFormatFunction())
+                        .add(new MonthNameFunction())
+                        .add(new WeekdayNameFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

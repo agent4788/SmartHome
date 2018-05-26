@@ -172,7 +172,6 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
                 if(switchableOptional1.isPresent() && switchableOptional1.get() instanceof ScriptSingle) {
 
                     ScriptSingle script = (ScriptSingle) switchableOptional1.get();
-                    script.setId(id);
                     script.setName(name);
                     script.setDescription(description);
                     script.getCommand().clear();
@@ -185,7 +184,7 @@ public class AutomationDeviceFormScriptSingleServlet extends HttpServlet {
                 } else {
 
                     req.getSession().setAttribute("success", false);
-                    req.getSession().setAttribute("message", "DScript konnte nicht gefunden werden");
+                    req.getSession().setAttribute("message", "Das Script konnte nicht gefunden werden");
                     resp.sendRedirect("/automation/admin/device");
                 }
             }
