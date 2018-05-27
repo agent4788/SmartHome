@@ -271,7 +271,7 @@ public class AutomationDeviceFormAvmServlet extends HttpServlet {
                             socket.setInverse(inverse);
 
                             req.getSession().setAttribute("success", true);
-                            req.getSession().setAttribute("message", "Die TP-Link Steckdose wurde erfolgreich bearbeitet");
+                            req.getSession().setAttribute("message", "Die AVM Steckdose wurde erfolgreich bearbeitet");
                             resp.sendRedirect("/automation/admin/device");
                         } else {
 

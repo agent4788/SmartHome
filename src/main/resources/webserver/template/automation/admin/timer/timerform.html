@@ -102,9 +102,6 @@
                             <div class="item" id="a{{ switchable.getId().get() | escape }}">
                                 <div class="content">
                                     <div class="header">{{ switchable.getName() | escape }}</div>
-                                    <div class="meta">
-                                        <span class="cinema">Befehl: Anaus</span>
-                                    </div>
                                     <div class="extra">
                                         <div class="ui right floated red basic icon button" onclick="removeDoubleSwitchable('{{ switchable.getId().get() | escape }}');">
                                             <i class="remove icon"></i>
@@ -223,9 +220,6 @@
                         '<div class="item" id="a' + selectedId + '">' +
                         '   <div class="content">' +
                         '       <div class="header">' + selectedName + '</div>'+
-                        '       <div class="meta">' +
-                        '           <span class="cinema">Befehl: ' + selectedCommandName + '</span>' +
-                        '       </div>' +
                         '       <div class="extra">' +
                         '           <div class="ui right floated red basic icon button" onclick="removeDoubleSwitchable(\'' + selectedId + '\');">' +
                         '               <i class="remove icon"></i>' +
