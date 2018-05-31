@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
 import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
+import net.kleditzsch.SmartHome.controller.global.webserver.JettyServerStarter;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
@@ -24,6 +25,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -90,7 +92,7 @@ public class Application {
     /**
      * Webserver
      */
-    private volatile Server server;
+    private volatile JettyServerStarter server;
 
     /**
      * Einstieg in die Anwendung
@@ -142,6 +144,13 @@ public class Application {
             //Anwendung initalisieren
             instance = new Application();
             instance.init();
+
+            //Einstellungen
+            if(arguments.contains("-c") || arguments.contains("--config")) {
+
+                CliConfigurator.startApplicationConfig();
+                return;
+            }
 
             //Shutdown Funktion
             Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -238,78 +247,38 @@ public class Application {
      */
     private void initWebserver() {
 
-        //Webserver initalisieren
-        server = new Server();
-
         //Einstellungen laden
         SettingsEditor se = settings;
         ReentrantReadWriteLock.ReadLock lock = se.readLock();
         lock.lock();
 
-        int port = se.getIntegerSetting(SettingsEditor.SERVER_PORT).get().getValue();
         int securePort = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT).get().getValue();
         String keyStorePassword = se.getStringSetting(SettingsEditor.SERVER_KEY_STORE_PASSWORD).get().getValue();
-        String keyManagerPassword = se.getStringSetting(SettingsEditor.SERVER_KEY_MANAGER_PASSWORD).get().getValue();
 
         lock.unlock();
 
-        //Unverschlüsselter Connector
-        ServerConnector defaultConnector = new ServerConnector(server);
-        defaultConnector.setPort(port);
+        try (JettyServerStarter serverStarter = new JettyServerStarter(securePort, Paths.get("KeyStore.jks").toAbsolutePath().toUri().toURL(), keyStorePassword)) {
 
-        //Verschlüsselter Connector
-        /*HttpConfiguration https = new HttpConfiguration();
-        https.addCustomizer(new SecureRequestCustomizer());
+            serverStarter.getRegisterFunctions().add(contextHandler -> {
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
-        sslContextFactory.setKeyStorePath(getClass().getClassLoader().getResource("./webserver/keystore.jks").toExternalForm());
-        sslContextFactory.setKeyStorePassword(keyStorePassword);
-        sslContextFactory.setKeyManagerPassword(keyManagerPassword);
+                contextHandler.addServlet(GlobalIndexServlet.class, "/");
+                contextHandler.addServlet(GlobalIndexServlet.class, "/index");
+                contextHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");
+                contextHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
+                contextHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
+                contextHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
+                contextHandler.addServlet(GlobalRebootServlet.class, "/admin/reboot");
+                contextHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
 
-        ServerConnector sslConnector = new ServerConnector(
-                server,
-                new SslConnectionFactory(sslContextFactory, "http/1.1"),
-                new HttpConnectionFactory(https));
-        sslConnector.setPort(securePort);*/
+                getAutomation().initWebContext(contextHandler);
+            });
 
-        server.setConnectors(new Connector[] {defaultConnector, /*sslConnector*/});
+            serverStarter.config();
+            this.server = serverStarter;
+        } catch (Exception e) {
 
-        //Statische Inhalte
-        ServletContextHandler staticHandler = new ServletContextHandler();
-        staticHandler.setContextPath("/static/");
-        if (Files.exists(Paths.get("./src/main/resources/webserver/static/"))) {
-
-            staticHandler.setResourceBase("./src/main/resources/webserver/static/");
-        } else {
-
-            staticHandler.setResourceBase(this.getClass().getClassLoader().getResource("webserver/static").toExternalForm());
+            LoggerUtil.serveException(logger, e);
         }
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holder = new ServletHolder("default", defaultServlet);
-        //holder.setInitParameter("resourceBase", "./src/main/resources/webserver/static/");
-        staticHandler.addServlet(holder, "/*");
-
-        //Dynamische Inhalte
-        ServletContextHandler dynamicHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        dynamicHandler.setContextPath("/");
-
-        //Globale Seiten
-        dynamicHandler.addServlet(GlobalIndexServlet.class, "/");
-        dynamicHandler.addServlet(GlobalIndexServlet.class, "/index");
-        dynamicHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");
-        dynamicHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
-        dynamicHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
-        dynamicHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
-        dynamicHandler.addServlet(GlobalRebootServlet.class, "/admin/reboot");
-        dynamicHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
-
-        //Automatisierung Seiten
-        getAutomation().initWebContext(dynamicHandler);
-
-        //Contexthandler dem Server bekannt machen
-        ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
-        contextHandlerCollection.setHandlers(new Handler[] {staticHandler, dynamicHandler});
-        server.setHandler(contextHandlerCollection);
     }
 
     /**

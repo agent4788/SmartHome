@@ -32,42 +32,7 @@
         </div>
         {% endif %}
         <div class="ui segment attached">
-            <div class="ui top attached tabular menu">
-                <div data-tab="webserverUnsave" class="active item" style="cursor: pointer;">Webserver (unverschl&uuml;sselt)</div>
-                <div data-tab="webserverSave" class="item" style="cursor: pointer;">Webserver (verschl&uuml;sselt)</div>
-            </div>
-            <div data-tab="webserverUnsave" class="ui bottom attached tab segment active">
-                <div class="ui icon info message">
-                    <i class="info circle icon black"></i>
-                    <div class="content">
-                        <p>&Auml;nderungen an den Einstellungen werden erst nach einem Neustart des Servers &uuml;bernommen.</p>
-                    </div>
-                </div>
-                <div class="field required">
-                    <label>Port des Webservers</label>
-                    <input name="port" type="number" min="0" max="65535" step="1" value="{{ port | escape }}" required>
-                </div>
-            </div>
-            <div data-tab="webserverSave" class="ui bottom attached tab segment">
-                <div class="ui icon info message">
-                    <i class="info circle icon black"></i>
-                    <div class="content">
-                        <p>&Auml;nderungen an den Einstellungen werden erst nach einem Neustart des Servers &uuml;bernommen.</p>
-                    </div>
-                </div>
-                <div class="field required">
-                    <label>Port des Webservers</label>
-                    <input name="securePort" type="number" min="0" max="65535" step="1" value="{{ securePort | escape }}" required>
-                </div>
-                <div class="field">
-                    <label>Passwort des Key Store</label>
-                    <input name="storePassword" type="password" value="">
-                </div>
-                <div class="field">
-                    <label>Passwort des Key Managers</label>
-                    <input name="managerPassword" type="password" value="">
-                </div>
-            </div>
+            <h3>keine Vorhanden</h3>
         </div>
         <div class="ui segment bottom attached">
             <input type="submit" class="ui button primary" value="speichern">

@@ -32,10 +32,7 @@ public class GlobalSettingsServlet extends HttpServlet {
         lock.lock();
 
         //Einstellungen laden
-        Optional<IntegerSetting> portOptional = se.getIntegerSetting(SettingsEditor.SERVER_PORT);
-        portOptional.ifPresent(setting -> model.with("port", setting.getValue()));
-        Optional<IntegerSetting> securePortOptional = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT);
-        securePortOptional.ifPresent(setting -> model.with("securePort", setting.getValue()));
+
 
         //Meldung
         if(req.getSession().getAttribute("success") != null) {
@@ -55,6 +52,7 @@ public class GlobalSettingsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        /**
         String strPort = req.getParameter("port");
         String strSecurePort = req.getParameter("securePort");
         String storePassword = req.getParameter("storePassword");
@@ -124,5 +122,7 @@ public class GlobalSettingsServlet extends HttpServlet {
             req.getSession().setAttribute("success", false);
             resp.sendRedirect("/admin/settings");
         }
+         */
+        resp.sendRedirect("/admin/settings");
     }
 }
