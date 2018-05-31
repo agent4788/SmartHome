@@ -1,7 +1,10 @@
 package net.kleditzsch.SmartHome.model.automation.room.Interface;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.Element;
+
+import java.util.Optional;
 
 public abstract class RoomElement extends Element {
 
@@ -13,8 +16,17 @@ public abstract class RoomElement extends Element {
         @SerializedName("BUTTON_ELEMENT")
         BUTTON_ELEMENT,
         @SerializedName("SENSOR_ELEMENT")
-        SENSOR_ELEMENT
+        SENSOR_ELEMENT,
+        @SerializedName("VIRTUAL_SENSOR_ELEMENT")
+        VIRTUAL_SENSOR_ELEMENT,
+        @SerializedName("DIVIDER_ELEMENT")
+        DIVIDER_ELEMENT
     }
+
+    /**
+     * Anzeigetext
+     */
+    private String displayText = "";
 
     /**
      * Sortierungs ID
@@ -32,6 +44,26 @@ public abstract class RoomElement extends Element {
     private String iconFile = "";
 
     /**
+     * gibt den Anzeigetext zurück
+     *
+     * @return Anzeigetext
+     */
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    /**
+     * setzt den Anzeigetext
+     *
+     * @param text Anzeigetext
+     */
+    public void setDisplayText(String text) {
+
+        Preconditions.checkNotNull(displayText);
+        this.displayText = text;
+    }
+
+    /**
      * gibt die Sortierungs ID zurück
      *
      * @return Sortierungs ID
@@ -46,6 +78,8 @@ public abstract class RoomElement extends Element {
      * @param orderId Sortierungs ID
      */
     public void setOrderId(int orderId) {
+
+        Preconditions.checkNotNull(orderId);
         this.orderId = orderId;
     }
 
@@ -64,6 +98,8 @@ public abstract class RoomElement extends Element {
      * @param disabled aktiviert/deaktiviert
      */
     public void setDisabled(boolean disabled) {
+
+        Preconditions.checkNotNull(disabled);
         this.disabled = disabled;
     }
 
@@ -82,6 +118,8 @@ public abstract class RoomElement extends Element {
      * @param iconFile Pfad zur Icon Datei
      */
     public void setIconFile(String iconFile) {
+
+        Preconditions.checkNotNull(iconFile);
         this.iconFile = iconFile;
     }
 

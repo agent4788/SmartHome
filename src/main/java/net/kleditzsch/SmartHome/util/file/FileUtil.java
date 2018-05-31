@@ -1,10 +1,16 @@
 package net.kleditzsch.SmartHome.util.file;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Hilfsfunktionen zur bearbeitung von Dateien
@@ -149,5 +155,30 @@ public abstract class FileUtil {
             return new String(encoded, charset);
         }
         return "";
+    }
+
+    public static List<String> listResourceFolderFileNames(String folder) throws URISyntaxException, IOException {
+
+        List<String> fileNames = new ArrayList<>();
+        URL resourceUrl = FileUtil.class.getResource(folder);
+        if (resourceUrl == null) {
+
+            throw new IOException("Ordner nicht gefunden");
+        }
+        URI uri = resourceUrl.toURI();
+        try (FileSystem fileSystem = (uri.getScheme().equals("jar") ? FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap()) : null)) {
+
+            Path myPath = Paths.get(uri);
+            Files.walkFileTree(myPath, new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    fileNames.add(file.getFileName().toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+        }
+        return fileNames;
     }
 }

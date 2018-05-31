@@ -1,5 +1,6 @@
 package net.kleditzsch.SmartHome.model.automation.room;
 
+import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 
@@ -9,6 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Room extends Element {
+
+    /**
+     * Anzeigetext
+     */
+    private String displayText = "";
 
     /**
      * Sortierungs ID
@@ -29,6 +35,26 @@ public class Room extends Element {
      * Liste mit den ELementen des Raumes
      */
     private List<RoomElement> roomElements = new ArrayList<>();
+
+    /**
+     * gibt den Anzeigetext zurück
+     *
+     * @return Anzeigetext
+     */
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    /**
+     * setzt den Anzeigetext
+     *
+     * @param text Anzeigetext
+     */
+    public void setDisplayText(String text) {
+
+        Preconditions.checkNotNull(displayText);
+        this.displayText = text;
+    }
 
     /**
      * gibt die Sortierungs ID zurück
@@ -81,6 +107,8 @@ public class Room extends Element {
      * @param iconFile Pfad zur Icon Datei
      */
     public void setIconFile(String iconFile) {
+
+        Preconditions.checkNotNull(iconFile);
         this.iconFile = iconFile;
     }
 

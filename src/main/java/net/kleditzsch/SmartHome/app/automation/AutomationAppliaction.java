@@ -12,6 +12,10 @@ import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdate
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
+import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomDeleteServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomFormServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomListServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomOrderServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.sensorvalues.*;
 import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
@@ -123,6 +127,10 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationTimerListServlet.class, "/automation/admin/timer");
         contextHandler.addServlet(AutomationTimerFormServlet.class, "/automation/admin/timerform");
         contextHandler.addServlet(AutomationTimerDeleteServlet.class, "/automation/admin/timerdelete");
+        contextHandler.addServlet(AutomationRoomListServlet.class, "/automation/admin/room");
+        contextHandler.addServlet(AutomationRoomFormServlet.class, "/automation/admin/roomform");
+        contextHandler.addServlet(AutomationRoomOrderServlet.class, "/automation/admin/roomorder");
+        contextHandler.addServlet(AutomationRoomDeleteServlet.class, "/automation/admin/roomdelete");
     }
 
     /**
@@ -150,6 +158,15 @@ public class AutomationAppliaction {
      */
     public SwitchServerEditor getSwitchServerEditor() {
         return switchServerEditor;
+    }
+
+    /**
+     * gibt den Raum-Editor zurück
+     *
+     * @return Raum-Editor
+     */
+    public RoomEditor getRoomEditor() {
+        return roomEditor;
     }
 
     /**

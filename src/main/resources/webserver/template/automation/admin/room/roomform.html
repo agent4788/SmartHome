@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung R&auml;me</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.checkbox').checkbox();
+            {% if addElement %}
+            $('.dropdown').dropdown();
+            {% else %}
+            $('.dropdown').dropdown().dropdown('set selected', '{{ room.getIconFile() }}');
+            {% endif %}
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+<main class="ui main container">
+    <form class="ui form"  action="/automation/admin/roomform?id={{ room.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Raum {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ room.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field required">
+                <label>Anzeigetext</label>
+                <input name="displayText" type="text" {% if addElement %}value=""{% else %}value="{{ room.getDisplayText() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if room.getDescription().isPresent() %}{{ room.getDescription().get() | escape }}{% endif %}</textarea>
+            </div>
+            <div class="field required">
+                <label>Icon</label>
+                <div class="ui selection dropdown required">
+                    <input type="hidden" name="iconFile" required>
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Icon</div>
+                    <div class="menu">
+                        {% for fileName, displayName in fileNames %}
+                        <div class="item" data-value="{{ fileName | escape }}">
+                            <img class="ui avatar image" src="/static/img/room/{{ fileName | escape }}">
+                            {{ displayName | escape }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="disabled" class="hidden" {% if room.isDisabled() %}checked="checked"{% endif %}>
+                        <label>deaktiviert</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>
