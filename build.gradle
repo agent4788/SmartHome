@@ -37,12 +37,6 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '+'
     // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '+'
-    // https://mvnrepository.com/artifact/org.eclipse.jetty.http2/http2-server
-    compile group: 'org.eclipse.jetty.http2', name: 'http2-server', version: '+'
-    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-alpn-java-server
-    compile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: '+'
-    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlets
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '+'
 
     // https://mvnrepository.com/artifact/org.jtwig/jtwig-web
     compile group: 'org.jtwig', name: 'jtwig-web', version: '+'

@@ -119,13 +119,23 @@ public class CliConfigurator {
 
         try {
 
+            Optional<IntegerSetting> port = settings.getIntegerSetting(SettingsEditor.SERVER_PORT);
+            if(port.isPresent()) {
+
+                Optional<Integer> portOptional = CliUtil.inputIntegerOption("Port", port.get().getValue(), 1000, 65535, 5);
+                if(portOptional.isPresent()) {
+
+                    port.get().setValue(portOptional.get());
+                }
+            }
+
             Optional<IntegerSetting> securePort = settings.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT);
             if(securePort.isPresent()) {
 
-                Optional<Integer> port = CliUtil.inputIntegerOption("SSL Port", securePort.get().getValue(), 1000, 65535, 5);
-                if(port.isPresent()) {
+                Optional<Integer> securePortOptional = CliUtil.inputIntegerOption("SSL Port", securePort.get().getValue(), 1000, 65535, 5);
+                if(securePortOptional.isPresent()) {
 
-                    securePort.get().setValue(port.get());
+                    securePort.get().setValue(securePortOptional.get());
                 }
             }
 

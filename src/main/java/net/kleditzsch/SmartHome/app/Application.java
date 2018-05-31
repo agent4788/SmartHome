@@ -252,12 +252,13 @@ public class Application {
         ReentrantReadWriteLock.ReadLock lock = se.readLock();
         lock.lock();
 
+        int port = se.getIntegerSetting(SettingsEditor.SERVER_PORT).get().getValue();
         int securePort = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT).get().getValue();
         String keyStorePassword = se.getStringSetting(SettingsEditor.SERVER_KEY_STORE_PASSWORD).get().getValue();
 
         lock.unlock();
 
-        try (JettyServerStarter serverStarter = new JettyServerStarter(securePort, Paths.get("KeyStore.jks").toAbsolutePath().toUri().toURL(), keyStorePassword)) {
+        try (JettyServerStarter serverStarter = new JettyServerStarter(port, securePort, Paths.get("KeyStore.jks").toAbsolutePath().toUri().toURL(), keyStorePassword)) {
 
             serverStarter.getRegisterFunctions().add(contextHandler -> {
 
