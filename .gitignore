@@ -24,5 +24,6 @@ hs_err_pid*
 .gradle/
 out/
 build/
+icons/
 db.config.json
 KeyStore.jks

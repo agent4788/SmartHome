@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung R&auml;me</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.checkbox').checkbox();
+            $('.ui.accordion').accordion();
+            $('.dropdown').dropdown();
+            $('#safetyRequestIcon').dropdown().dropdown('set selected', '{{ roomelement.getSafetyRequestIcon() }}');
+            {% if addElement == false %}
+            $('#iconFile.dropdown').dropdown().dropdown('set selected', '{{ roomelement.getIconFile() }}');
+            {% endif %}
+
+            {% if roomelement.isSafetyRequestEnabled() == false %}
+            $('.safetyRequest').prop('disabled', true);
+            $('#safetyRequestIcon').addClass('disabled');
+            {% endif %}
+
+            $('#safetyRequestEnabled').checkbox({
+                onChecked: function() {
+                    $('.safetyRequest').prop('disabled', false);
+                    $('#safetyRequestIcon').removeClass('disabled');
+                },
+                onUnchecked: function() {
+                    $('.safetyRequest').prop('disabled', true);
+                    $('#safetyRequestIcon').addClass('disabled');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'roomelement'} %}
+<main class="ui main container">
+    <form class="ui form"  action="/automation/admin/roombuttonelementform?roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Button {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field required">
+                <label>Anzeigetext</label>
+                <input name="displayText" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getDisplayText() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if roomelement.getDescription().isPresent() %}{{ roomelement.getDescription().get() | escape }}{% endif %}</textarea>
+            </div>
+            <div class="field required">
+                <label>Icon</label>
+                <div class="ui selection dropdown required search" id="iconFile">
+                    <input type="hidden" name="iconFile" required>
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Icon</div>
+                    <div class="menu">
+                        {% for fileName, displayName in fileNames %}
+                        <div class="item" data-value="{{ fileName | escape }}">
+                            <img class="ui huge image" src="/static/img/iconset/{{ fileName | escape }}">
+                            {{ displayName | escape }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="field required">
+                <label>Text "an" Button</label>
+                <input name="onbuttontext" type="text" value="{{ roomelement.onButtonText() | escape }}" pattern=".{1,10}" required>
+            </div>
+            <div class="field required">
+                <label>Text "aus" Button</label>
+                <input name="offbuttontext" type="text" value="{{ roomelement.offButtonText() | escape }}" pattern=".{1,10}" required>
+            </div>
+            <h5 class="ui segment attached top ">schaltbare Elemente</h5>
+            <div class="ui segment attached">
+                <div class="ui divided items" id="switchables">
+                    {% set doubleSwitchableNextIndex = 1 %}
+                    {% set singleSwitchableNextIndex = 1 %}
+                    {% for command in roomelement.getCommands() %}
+                    {% if doubleSwitchables.containsKey(command.getSwitchableId().get()) %}
+                    {% set switchable = doubleSwitchables.get(command.getSwitchableId().get()) %}
+                    <div class="item" id="a{{ switchable.getId().get() | escape }}">
+                        <div class="content">
+                            <div class="header">{{ switchable.getName() | escape }}</div>
+                            <div class="extra">
+                                <div class="ui right floated red basic icon button" onclick="removeDoubleSwitchable('{{ switchable.getId().get() | escape }}');">
+                                    <i class="remove icon"></i>
+                                </div>
+                                {% if command.getCommand() == 'on' %}
+                                <div class="ui label green">an</div>
+                                {% elseif command.getCommand() == 'off' %}
+                                <div class="ui label red">aus</div>
+                                {% else %}
+                                <div class="ui label blue">umschalten</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <input type="hidden" name="doubleSwitchableElement_{{ doubleSwitchableNextIndex }}" value="{{ switchable.getId().get() | escape }}">
+                        <input type="hidden" name="doubleSwitchableCommand_{{ doubleSwitchableNextIndex }}" value="{{ command.getCommand() | escape}}">
+                    </div>
+                    {% set doubleSwitchableNextIndex = doubleSwitchableNextIndex + 1 %}
+                    {% elseif singleSwitchables.containsKey(command.getSwitchableId().get()) %}
+                    {% set switchable = singleSwitchables.get(command.getSwitchableId().get()) %}
+                    <div class="item" id="a{{  switchable.getId().get() | escape }}">
+                        <div class="content">
+                            <div class="header">{{ switchable.getName() | escape }}</div>
+                            <div class="extra">
+                                <div class="ui right floated red basic icon button" onclick="removeSingleSwitchable('{{ switchable.getId().get() | escape }}');">
+                                    <i class="remove icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="singleSwitchableElement_{{ singleSwitchableNextIndex }}" value="{{ switchable.getId().get() | escape }}">
+                    </div>
+                    {% set singleSwitchableNextIndex = singleSwitchableNextIndex + 1 %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="ui segment attached bottom">
+                <div class="ui grid stackable">
+                    <div class="ten wide column">
+                        <div id="doubleSwitchable" class="ui dropdown selection search fluid">
+                            <input name="doubleSwitchable" value="" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">schaltbares Element (an/aus)</div>
+                            <div class="menu">
+                                {% for key, switchable in doubleSwitchables %}
+                                {% if usedElementIds.contains(switchable.getId().get()) %}
+                                <div class="item disabled" data-value="{{ switchable.getId() }}">{{ switchable.getName() | escape }}</div>
+                                {% else %}
+                                <div class="item" data-value="{{ switchable.getId() }}">{{ switchable.getName() | escape }}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="five wide column">
+                        <select id="command"  class="ui dropdown fluid">
+                            <option value="">Befehl</option>
+                            <option value="on">an</option>
+                            <option value="off">aus</option>
+                            <option value="toggle">umschalten</option>
+                        </select>
+                    </div>
+                    <div class="one wide column">
+                        <button class="ui button icon secondary basic" type="button" id="addDoubleSwitchable"><i class="add icon"></i></button>
+                    </div>
+                    <div class="fifteen wide column">
+                        <div id="singleSwitchable" class="ui dropdown selection search fluid">
+                            <input name="singleSwitchable" value="" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">schaltbares Element (einfach)</div>
+                            <div class="menu">
+                                {% for key, switchable in singleSwitchables %}
+                                {% if usedElementIds.contains(switchable.getId().get()) %}
+                                <div class="item disabled" data-value="{{ switchable.getId() }}">{{ switchable.getName() | escape }}</div>
+                                {% else %}
+                                <div class="item" data-value="{{ switchable.getId() }}">{{ switchable.getName() | escape }}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide column">
+                        <button class="ui button icon secondary basic" type="button" id="addSingleSwitchable"><i class="add icon"></i></button>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+
+                function removeDoubleSwitchable(id) {
+
+                    $('#a' + id).remove();
+                    $("#doubleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                }
+                function removeSingleSwitchable(id) {
+
+                    $('#a' + id).remove();
+                    $("#singleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                }
+
+                $(function() {
+
+                    var nextDoubleSwitchableIndex = {{ doubleSwitchableNextIndex }};
+                    var nextSingleSwitchableIndex = {{ singleSwitchableNextIndex }};
+
+                    //Doppelschaltelement
+                    $('#addDoubleSwitchable').click(function() {
+
+                        var selectedId = $("#doubleSwitchable").dropdown('get value');
+                        var selectedName = $("#doubleSwitchable").dropdown('get text');
+                        var selectedCommandValue = $("#command").dropdown('get value');
+                        var selectedCommandName = $("#command").dropdown('get text');
+
+                        if(selectedId.length > 0 && selectedCommandValue.length > 0) {
+
+                            $('#switchables').append(
+                            '<div class="item" id="a' + selectedId + '">' +
+                            '   <div class="content">' +
+                            '       <div class="header">' + selectedName + '</div>'+
+                            '       <div class="extra">' +
+                            '           <div class="ui right floated red basic icon button" onclick="removeDoubleSwitchable(\'' + selectedId + '\');">' +
+                            '               <i class="remove icon"></i>' +
+                            '           </div>' +
+                            '           <div class="ui label ' + (selectedCommandValue == "on" ? "green" : (selectedCommandValue == "toggle" ? "blue" : "red")) + '">' + (selectedCommandValue == "on" ? "an" : (selectedCommandValue == "toggle" ? "umschalten" : "aus")) + '</div>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <input type="hidden" name="doubleSwitchableElement_' + nextDoubleSwitchableIndex + '" value="' + selectedId + '">' +
+                            '   <input type="hidden" name="doubleSwitchableCommand_' + nextDoubleSwitchableIndex + '" value="' + selectedCommandValue + '">' +
+                            '</div>'
+                            );
+                            $("#doubleSwitchable").dropdown('clear');
+                            $("#doubleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
+                            $("#command").dropdown('clear');
+                            nextDoubleSwitchableIndex++;
+                        }
+                    });
+
+                    //Einfachschaltelement
+                    $('#addSingleSwitchable').click(function() {
+
+                        var selectedId = $("#singleSwitchable").dropdown('get value');
+                        var selectedName = $("#singleSwitchable").dropdown('get text');
+
+                        if(selectedId.length > 0) {
+
+                            $('#switchables').append(
+                            '<div class="item" id="a' + selectedId + '">' +
+                            '   <div class="content">' +
+                            '       <div class="header">' + selectedName + '</div>'+
+                            '       <div class="extra">' +
+                            '           <div class="ui right floated red basic icon button" onclick="removeSingleSwitchable(\'' + selectedId + '\');">' +
+                            '               <i class="remove icon"></i>' +
+                            '           </div>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <input type="hidden" name="singleSwitchableElement_' + nextSingleSwitchableIndex + '" value="' + selectedId + '">' +
+                            '</div>'
+                            );
+                            $("#singleSwitchable").dropdown('clear');
+                            $("#singleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
+                            nextSingleSwitchableIndex++;
+                        }
+                    });
+                });
+            </script>
+            <div class="ui inverted segment teal">
+                <div class="ui inverted fluid accordion">
+                    <div class="{% if roomelement.isSafetyRequestEnabled() %}active{% endif %} title">
+                        <i class="dropdown icon"></i>
+                        Sicherheitsabfrage
+                    </div>
+                    <div class="{% if roomelement.isSafetyRequestEnabled() %}active{% endif %} content">
+                        <div class="ui inverted segment teal">
+                            <div class="field required">
+                                <div class="ui toggle checkbox" id="safetyRequestEnabled">
+                                    <input type="checkbox" name="safetyRequestEnabled" class="hidden" {% if roomelement.isSafetyRequestEnabled() %}checked="checked"{% endif %}>
+                                    <label>aktiviert</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field required">
+                            <label>Icon</label>
+                            <div class="ui selection dropdown search" id="safetyRequestIcon">
+                                <input type="hidden" name="safetyRequestIcon">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Icon</div>
+                                <div class="menu">
+                                    {% for icon in fontAwaesomeIcons %}
+                                    <div class="item" data-value="{{ icon | escape }}">
+                                        <i class="{{ icon | escape }} icon"></i> {{ icon | escape }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field required">
+                            <label>Header Text</label>
+                            <input name="safetyRequestHeaderText" type="text" value="{{ roomelement.getSafetyRequestHeaderText() | escape }}" pattern=".{3,20}" class="safetyRequest" required>
+                        </div>
+                        <div class="field required">
+                            <label>Text</label>
+                            <input name="safetyRequestText" type="text" value="{{ roomelement.getSafetyRequestText() | escape }}" pattern=".{3,250}" class="safetyRequest" required>
+                        </div>
+                        <div class="field required">
+                            <label>Ausf&uuml;ung Button Text</label>
+                            <input name="safetyRequestExecuteButtonText" type="text" value="{{ roomelement.getSafetyRequestExecuteButtonText() | escape }}" pattern=".{1,10}" class="safetyRequest" required>
+                        </div>
+                        <div class="field required">
+                            <label>Ausf&uuml;ung Button Text</label>
+                            <input name="safetyRequestCancelButtonText" type="text" value="{{ roomelement.getSafetyRequestCancelButtonText() | escape }}" pattern=".{1,10}" class="safetyRequest" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="disabled" class="hidden" {% if roomelement.isDisabled() %}checked="checked"{% endif %}>
+                        <label>deaktiviert</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

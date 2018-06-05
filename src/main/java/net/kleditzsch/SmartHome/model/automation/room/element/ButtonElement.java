@@ -16,6 +16,17 @@ public class ButtonElement extends RoomElement {
     private List<SwitchCommand> commands = new ArrayList<>();
 
     /**
+     * Button Texte
+     */
+    private String onButtonText = "an";
+    private String offButtonText = "aus";
+
+    /**
+     * gibt an ob es ein an/aus button angezeigt werden soll
+     */
+    private boolean isDoubleButton = true;
+
+    /**
      * Sicherheitsabfrage
      */
     private boolean safetyRequestEnabled = false;
@@ -141,6 +152,60 @@ public class ButtonElement extends RoomElement {
      */
     public void setSafetyRequestCancelButtonText(String safetyRequestCancelButtonText) {
         this.safetyRequestCancelButtonText = safetyRequestCancelButtonText;
+    }
+
+    /**
+     * gibt den Text für den an Button zurück
+     *
+     * @return Text für den an Button
+     */
+    public String getOnButtonText() {
+        return onButtonText;
+    }
+
+    /**
+     * setzt den Text für den an Button
+     *
+     * @param onButtonText Text für den an Button
+     */
+    public void setOnButtonText(String onButtonText) {
+        this.onButtonText = onButtonText;
+    }
+
+    /**
+     * gibt den Text für den aus Button zurück
+     *
+     * @return Text für den aus Button
+     */
+    public String getOffButtonText() {
+        return offButtonText;
+    }
+
+    /**
+     * setzt den Text für den aus Button
+     *
+     * @param offButtonText Text für den aus Button
+     */
+    public void setOffButtonText(String offButtonText) {
+        this.offButtonText = offButtonText;
+    }
+
+    /**
+     * gibt an ob ein an/aus Botton dargestellt werden soll
+     *
+     * @return an/aus Botton dargestellen
+     */
+    public boolean isDoubleButton() {
+        return isDoubleButton;
+    }
+
+    /**
+     * setzt die Datrstellung des an/aus Bottons
+     *
+     * @param doubleButton an/aus Botton Datrstellung
+     */
+    public void setDoubleButton(boolean doubleButton) {
+        isDoubleButton = doubleButton;
     }
 
     /**

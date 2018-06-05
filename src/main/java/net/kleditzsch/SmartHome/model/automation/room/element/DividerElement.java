@@ -13,6 +13,11 @@ public class DividerElement extends RoomElement {
      */
     private String icon = "";
 
+    public DividerElement() {
+
+        this.setIconFile("horizontal-line.png");
+    }
+
     /**
      * gibt das Icon zurück
      *

@@ -118,7 +118,8 @@ public class AutomationTimerFormServlet extends HttpServlet {
             if(req.getParameter("doubleSwitchableElement_" + i) != null && req.getParameter("doubleSwitchableCommand_" + i) != null) {
 
                 commands.put(req.getParameter("doubleSwitchableElement_" + i), req.getParameter("doubleSwitchableCommand_" + i));
-            } else if(req.getParameter("singleSwitchableElement_" + i) != null) {
+            }
+            if(req.getParameter("singleSwitchableElement_" + i) != null) {
 
                 commands.put(req.getParameter("singleSwitchableElement_" + i), "on");
             }

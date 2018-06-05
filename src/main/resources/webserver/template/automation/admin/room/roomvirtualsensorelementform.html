@@ -8,19 +8,22 @@
         $(function() {
 
             $('.checkbox').checkbox();
-            {% if addElement %}
+            $('.ui.accordion').accordion();
             $('.dropdown').dropdown();
-            {% else %}
-            $('.dropdown').dropdown().dropdown('set selected', '{{ room.getIconFile() }}');
+
+
+            {% if addElement == false %}
+            $('#iconFile').dropdown().dropdown('set selected', '{{ roomelement.getIconFile() }}');
+            $('#virtualSensorValueId').dropdown().dropdown('set selected', '{{ roomelement.getVirtualSensorId().get() }}');
             {% endif %}
         });
     </script>
 </head>
 <body>
-{% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'roomelement'} %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/roomform?id={{ room.getId().get() | escape }}" method="post">
-        <h1 class="ui header top attached">Raum {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+    <form class="ui form"  action="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Virtueller Sensor {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
             <i class="remove icon red"></i>
@@ -36,19 +39,19 @@
             <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
             <div class="field required">
                 <label>Name</label>
-                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ room.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
             </div>
             <div class="field required">
                 <label>Anzeigetext</label>
-                <input name="displayText" type="text" {% if addElement %}value=""{% else %}value="{{ room.getDisplayText() | escape }}"{% endif %} pattern=".{3,50}" required>
+                <input name="displayText" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getDisplayText() | escape }}"{% endif %} pattern=".{3,50}" required>
             </div>
             <div class="field">
                 <label>Beschreibung</label>
-                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if room.getDescription().isPresent() %}{{ room.getDescription().get() | escape }}{% endif %}</textarea>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if roomelement.getDescription().isPresent() %}{{ roomelement.getDescription().get() | escape }}{% endif %}</textarea>
             </div>
             <div class="field required">
                 <label>Icon</label>
-                <div class="ui selection dropdown required search">
+                <div class="ui selection dropdown required search" id="iconFile">
                     <input type="hidden" name="iconFile" required>
                     <i class="dropdown icon"></i>
                     <div class="default text">Icon</div>
@@ -62,10 +65,25 @@
                     </div>
                 </div>
             </div>
+            <div class="field required">
+                <label>Virtueller Sensorwert</label>
+                <div class="ui selection dropdown required search" id="virtualSensorValueId">
+                    <input type="hidden" name="virtualSensorValueId" required>
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Icon</div>
+                    <div class="menu">
+                        {% for sensorValue in sensorValues %}
+                        <div class="item" data-value="{{ sensorValue.getId() | escape }}">
+                            {{ sensorValue.getName() | escape }} - ({{ sensorValue | formatsensortype | escape }})
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
             <div class="ui segment">
                 <div class="field required">
                     <div class="ui toggle checkbox">
-                        <input type="checkbox" name="disabled" class="hidden" {% if room.isDisabled() %}checked="checked"{% endif %}>
+                        <input type="checkbox" name="disabled" class="hidden" {% if roomelement.isDisabled() %}checked="checked"{% endif %}>
                         <label>deaktiviert</label>
                     </div>
                 </div>

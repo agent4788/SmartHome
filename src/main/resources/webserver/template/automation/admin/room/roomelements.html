@@ -9,10 +9,12 @@
         function search() {
 
             var value = $('.ui.search input').val();
-            window.location = '/automation/admin/room?filter=' + value;
+            window.location = '/automation/admin/roomelements?roomid={{ room.getId() | escape }}&filter=' + value;
         }
 
         $(function () {
+
+            $('.dropdown').dropdown();
 
             $('.ui.search i').click(function () {
                 search();
@@ -28,7 +30,7 @@
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
 <main class="ui main container">
-    <h1 class="ui header top attached">R&auml;me verwalten</h1>
+    <h1 class="ui header top attached">Elemente des Raumes "{{ room.getName() | escape }}" verwalten</h1>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -42,9 +44,23 @@
     </div>
     {% endif %}
     <div class="ui attached menu inverted blue">
-        <a class="item" href="/automation/admin/roomform">
+        <div class="ui dropdown item">
             <i class="plus icon"></i> hinzuf&uuml;gen
-        </a>
+            <div class="menu">
+                <a class="item" href="/automation/admin/roombuttonelementform?roomid={{ room.getId() }}">
+                    <i class="toggle on icon"></i> Button
+                </a>
+                <a class="item" href="/automation/admin/roomsensorelementform?roomid={{ room.getId() }}">
+                    <i class="tablet thermometer quarter icon"></i> Sensor
+                </a>
+                <a class="item" href="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId() }}">
+                    <i class="thermometer quarter icon"></i> Virtual Sensor
+                </a>
+                <a class="item" href="/automation/admin/roomdividerelementform?roomid={{ room.getId() }}">
+                    <i class="window minimize icon"></i> Trennlinie
+                </a>
+            </div>
+        </div>
         <div class="right menu">
             <div class="ui right aligned category search item">
                 <div class="ui icon input">
@@ -57,7 +73,7 @@
     <form class="ui form" method="post" action="">
         {% if pagination.getSize() > 0 %}
         <div class="ui segment attached">
-            <div class="ui divided items attached {% if pagination.hasPages() == false %}bottom{% endif %}">
+            <div class="ui divided items attached">
                 {% for element in pagination.getCurrentPageElements() %}
                 {% set randomId = randomstr() %}
                 <div class="item">
@@ -77,32 +93,48 @@
                         <div class="extra">
                             <div class="ui right floated">
                                 {% if element.getOrderId() != 0 %}
-                                <a title="nach oben verschieben" class="ui button icon basic" href="/automation/admin/roomorder?direction=up&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
+                                <a title="nach oben verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?direction=up&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
                                 {% endif %}
                                 {% if element.getOrderId() != maxOrderId %}
-                                <a title="nach unten verschieben" class="ui button icon basic" href="/automation/admin/roomorder?direction=down&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
+                                <a title="nach unten verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?direction=down&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
                                 {% endif %}
-                                <a title="Elemente" class="ui button green basic" href="/automation/admin/roomelements?roomid={{ element.getId() }}"><i class="list icon"></i> Elemente</a>
-                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% if element.getType() == 'BUTTON_ELEMENT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roombuttonelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% elseif element.getType() == 'SENSOR_ELEMENT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomsensorelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% elseif element.getType() == 'DIVIDER_ELEMENT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomdividerelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% endif %}
                                 <div title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</div>
                             </div>
                             {% if element.isDisabled() %}
                             <div class="ui label grey">Deaktiviert</div>
                             {% endif %}
+                            {% if element.getType() == 'BUTTON_ELEMENT' %}
+                            <div class="ui label blue">Button</div>
+                            {% elseif element.getType() == 'SENSOR_ELEMENT' %}
+                            <div class="ui label green">Sensor</div>
+                            {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
+                            <div class="ui label orange">Virtueller Sensor</div>
+                            {% elseif element.getType() == 'DIVIDER_ELEMENT' %}
+                            <div class="ui label red">Trennlinie</div>
+                            {% endif %}
                             <div class="ui basic modal" id="{{ randomId }}">
                                 <div class="ui icon header">
                                     <i class="delete icon"></i>
-                                    Raum l&ouml;schen
+                                    Element l&ouml;schen
                                 </div>
                                 <div class="content">
-                                    <p>Bist du sicher das du den Raum l&ouml;schen m&ouml;chtest?</p>
+                                    <p>Bist du sicher das du das Element l&ouml;schen m&ouml;chtest?</p>
                                 </div>
                                 <div class="actions">
                                     <div class="ui red basic cancel inverted button">
                                         <i class="remove icon"></i>
                                         Nein
                                     </div>
-                                    <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/roomdelete?id={{ element.getId() }}'">
+                                    <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/roomelementdelete?roomid={{ room.getId() }}&id={{ element.getId() }}'">
                                         <i class="checkmark icon"></i>
                                         Ja
                                     </div>
@@ -115,7 +147,7 @@
             </div>
         </div>
         {% if pagination.hasPages() %}
-        <div class="ui segment bottom attached clearing">
+        <div class="ui segment attached clearing">
             <div class="ui right floated pagination menu">
                 {% include '/webserver/template/automation/admin/pagination.html' with {pagination: pagination} %}
             </div>
@@ -123,13 +155,16 @@
         {% endif %}
     </form>
     {% else %}
-    <div class="ui icon info message bottom attached large">
+    <div class="ui icon info message attached large">
         <i class="info circle icon black"></i>
         <div class="content">
-            <p>keinen Raum gefunden</p>
+            <p>keine Raumelemente gefunden</p>
         </div>
     </div>
     {% endif %}
+    <div class="ui segment bottom attached">
+        <a class="ui button basic secondary" href="/automation/admin/room">Zurück</a>
+    </div>
     <div style="height: 50px;"></div>
 </main>
 </body>

@@ -12,10 +12,7 @@ import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdate
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
-import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomDeleteServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomFormServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomListServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.room.AutomationRoomOrderServlet;
+import net.kleditzsch.SmartHome.view.automation.admin.room.*;
 import net.kleditzsch.SmartHome.view.automation.admin.sensorvalues.*;
 import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
@@ -130,6 +127,13 @@ public class AutomationAppliaction {
         contextHandler.addServlet(AutomationRoomListServlet.class, "/automation/admin/room");
         contextHandler.addServlet(AutomationRoomFormServlet.class, "/automation/admin/roomform");
         contextHandler.addServlet(AutomationRoomOrderServlet.class, "/automation/admin/roomorder");
+        contextHandler.addServlet(AutomationRoomElementsServlet.class, "/automation/admin/roomelements");
+        contextHandler.addServlet(AutomationRoomButtonElementFormServlet.class, "/automation/admin/roombuttonelementform");
+        contextHandler.addServlet(AutomationRoomDividerElementFormServlet.class, "/automation/admin/roomdividerelementform");
+        contextHandler.addServlet(AutomationRoomSensorElementFormServlet.class, "/automation/admin/roomsensorelementform");
+        contextHandler.addServlet(AutomationRoomVirtualSensorElementFormServlet.class, "/automation/admin/roomvirtualsensorelementform");
+        contextHandler.addServlet(AutomationRoomElementOrderServlet.class, "/automation/admin/roomelementorder");
+        contextHandler.addServlet(AutomationRoomElementDeleteServlet.class, "/automation/admin/roomelementdelete");
         contextHandler.addServlet(AutomationRoomDeleteServlet.class, "/automation/admin/roomdelete");
     }
 

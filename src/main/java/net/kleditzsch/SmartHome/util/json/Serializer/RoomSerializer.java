@@ -60,6 +60,11 @@ public class RoomSerializer implements JsonSerializer<Room>, JsonDeserializer<Ro
                     be.setSafetyRequestExecuteButtonText(joRe.get("safetyRequestExecuteButtonText").getAsString());
                     be.setSafetyRequestCancelButtonText(joRe.get("safetyRequestCancelButtonText").getAsString());
 
+                    //sonstiges
+                    be.setOnButtonText(joRe.get("onButtonText").getAsString());
+                    be.setOffButtonText(joRe.get("offButtonText").getAsString());
+                    be.setDoubleButton(joRe.get("isDoubleButton").getAsBoolean());
+
                     //Schaltbefehle
                     JsonArray jaRe = joRe.get("commands").getAsJsonArray();
                     for(int j = 0; j < jaRe.size(); j++) {
@@ -168,6 +173,10 @@ public class RoomSerializer implements JsonSerializer<Room>, JsonDeserializer<Ro
                 joRe.add("safetyRequestText", new JsonPrimitive(be.getSafetyRequestText()));
                 joRe.add("safetyRequestExecuteButtonText", new JsonPrimitive(be.getSafetyRequestExecuteButtonText()));
                 joRe.add("safetyRequestCancelButtonText", new JsonPrimitive(be.getSafetyRequestCancelButtonText()));
+
+                joRe.add("onButtonText", new JsonPrimitive(be.getOnButtonText()));
+                joRe.add("offButtonText", new JsonPrimitive(be.getOffButtonText()));
+                joRe.add("isDoubleButton", new JsonPrimitive(be.isDoubleButton()));
 
                 JsonArray commands = new JsonArray();
                 for (SwitchCommand sc : be.getCommands()) {
