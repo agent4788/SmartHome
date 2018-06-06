@@ -84,9 +84,9 @@ public class SettingsEditor implements DatabaseEditor {
         StringSetting fritzboxPassowrd = new StringSetting(AUTOMATION_FB_PASSWORD, "", "");
         knownSettings.add(fritzboxPassowrd);
 
-        DoubleSetting energyElectricPrice = new DoubleSetting(AUTOMATION_ENERGY_ELECTRIC_PRICE, 0.0, 0.0);
+        DoubleSetting energyElectricPrice = new DoubleSetting(AUTOMATION_ENERGY_ELECTRIC_PRICE, 0.1, 0.1);
         knownSettings.add(energyElectricPrice);
-        DoubleSetting energyWaterPrice = new DoubleSetting(AUTOMATION_ENERGY_WATER_PRICE, 0.0, 0.0);
+        DoubleSetting energyWaterPrice = new DoubleSetting(AUTOMATION_ENERGY_WATER_PRICE, 0.1, 0.1);
         knownSettings.add(energyWaterPrice);
 
         IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
