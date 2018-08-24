@@ -1,13 +1,13 @@
 {
-  "name": "Automation",
-  "short_name": "Automation",
+  "name": "Bilder",
+  "short_name": "Bilder",
   "description": "",
-  "start_url": "/automation/index",
+  "start_url": "/picture/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/automation.png",
+      "src": "/static/img/icon/picture.png",
       "sizes": "144x144",
       "type": "image/png"
     }

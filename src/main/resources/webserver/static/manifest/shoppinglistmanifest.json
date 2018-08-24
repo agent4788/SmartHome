@@ -1,13 +1,13 @@
 {
-  "name": "Automation",
-  "short_name": "Automation",
+  "name": "Einkaufsliste",
+  "short_name": "Einkaufsliste",
   "description": "",
-  "start_url": "/automation/index",
+  "start_url": "/shoppinglist/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/automation.png",
+      "src": "/static/img/icon/shoppinglist.png",
       "sizes": "144x144",
       "type": "image/png"
     }

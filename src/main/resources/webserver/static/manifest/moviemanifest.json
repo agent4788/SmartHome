@@ -1,13 +1,13 @@
 {
-  "name": "Automation",
-  "short_name": "Automation",
+  "name": "Filme",
+  "short_name": "Filme",
   "description": "",
-  "start_url": "/automation/index",
+  "start_url": "/movie/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/automation.png",
+      "src": "/static/img/icon/movie.png",
       "sizes": "144x144",
       "type": "image/png"
     }

@@ -1,13 +1,13 @@
 {
-  "name": "Automation",
-  "short_name": "Automation",
+  "name": "Kalender",
+  "short_name": "Kalender",
   "description": "",
-  "start_url": "/automation/index",
+  "start_url": "/calendar/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/automation.png",
+      "src": "/static/img/icon/calendar.png",
       "sizes": "144x144",
       "type": "image/png"
     }
