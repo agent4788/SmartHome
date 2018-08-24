@@ -1,0 +1,97 @@
+{% set randomId = randomstr() %}
+{% set randomId1 = randomstr() %}
+{% set randomId2 = randomstr() %}
+<div class="sixteen wide mobile eight wide tablet four wide computer four wide large screen column">
+    <div class="ui items">
+        <div class="item">
+            <div class="ui tiny image middle aligned">
+                <img src="/static/img/iconset/{{ element.getIconFile() | escape }}">
+            </div>
+            <div class="content">
+                <div class="header centered">
+                    {{ element.getDisplayText() | escape }}
+                </div>
+                <div class="extra">
+                    <div class="ui fluid buttons">
+                        {% if element.isDoubleButton() %}
+                            {% if element.isSafetyRequestEnabled() %}
+                                <div class="ui button basic green icon" onclick="$('#{{ randomId }}').modal('show')">
+                                    {{ element.getOnButtonText() | escape }}
+                                </div>
+                                <div class="ui button basic red icon" onclick="$('#{{ randomId1 }}').modal('show')">
+                                    {{ element.getOffButtonText() | escape }}
+                                </div>
+                                <div class="ui basic modal" id="{{ randomId }}">
+                                    <div class="ui icon header">
+                                        <i class="{{ element.getSafetyRequestIcon() | escape }} icon"></i>
+                                        {{ element.getSafetyRequestHeaderText() | escape }}
+                                    </div>
+                                    <div class="content">
+                                        <p>{{ element.getSafetyRequestText() | escape }}</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            {{ element.getSafetyRequestCancelButtonText() | escape }}
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on')">
+                                            <i class="checkmark icon"></i>
+                                            {{ element.getSafetyRequestExecuteButtonText() | escape }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui basic modal" id="{{ randomId1 }}">
+                                    <div class="ui icon header">
+                                        <i class="{{ element.getSafetyRequestIcon() | escape }} icon"></i>
+                                        {{ element.getSafetyRequestHeaderText() | escape }}
+                                    </div>
+                                    <div class="content">
+                                        <p>{{ element.getSafetyRequestText() | escape }}</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            {{ element.getSafetyRequestCancelButtonText() | escape }}
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'off')">
+                                            <i class="checkmark icon"></i>
+                                            {{ element.getSafetyRequestExecuteButtonText() | escape }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="ui button basic green icon" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on');">{{ element.getOnButtonText() | escape }}</div>
+                                <div class="ui button basic red icon" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'off');">{{ element.getOffButtonText() | escape }}</div>
+                            {% endif %}
+                        {% else %}
+                            {% if element.isSafetyRequestEnabled() %}
+                                <div class="ui button basic orange" onclick="$('#{{ randomId2 }}').modal('show')">{{ element.getOnButtonText() | escape }}</div>
+                                <div class="ui basic modal" id="{{ randomId2 }}">
+                                    <div class="ui icon header">
+                                        <i class="{{ element.getSafetyRequestIcon() | escape }} icon"></i>
+                                        {{ element.getSafetyRequestHeaderText() | escape }}
+                                    </div>
+                                    <div class="content">
+                                        <p>{{ element.getSafetyRequestText() | escape }}</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            {{ element.getSafetyRequestCancelButtonText() | escape }}
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on')">
+                                            <i class="checkmark icon"></i>
+                                            {{ element.getSafetyRequestExecuteButtonText() | escape }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="ui button basic orange" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on')">{{ element.getOnButtonText() | escape }}</div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

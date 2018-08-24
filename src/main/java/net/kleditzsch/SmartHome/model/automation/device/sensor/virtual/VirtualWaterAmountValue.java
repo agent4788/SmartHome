@@ -56,6 +56,18 @@ public class VirtualWaterAmountValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt die Summe zurück
+     *
+     * @return Summe
+     */
+    public WaterAmountValue getSumAsSensorValue() {
+
+        WaterAmountValue value = new WaterAmountValue(ID.create(), ID.create().get(), getName());
+        value.pushWaterAmount(getSum());
+        return value;
+    }
+
+    /**
      * gibt den Typ des Elementes zurück
      *
      * @return Typ ID

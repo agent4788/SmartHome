@@ -56,6 +56,18 @@ public class VirtualGasAmountValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt die Summe zurück
+     *
+     * @return Summe
+     */
+    public GasAmountValue getSumAsSensorValue() {
+
+        GasAmountValue value = new GasAmountValue(ID.create(), ID.create().get(), getName());
+        value.pushGasAmount(getSum());
+        return value;
+    }
+
+    /**
      * gibt den Typ des Elementes zurück
      *
      * @return Typ ID

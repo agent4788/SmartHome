@@ -110,6 +110,8 @@ public class RoomSerializer implements JsonSerializer<Room>, JsonDeserializer<Ro
 
                     //ID des Virtuellen Sensors
                     ve.setVirtualSensorId(ID.of(joRe.get("virtualSensorId").getAsString()));
+
+                    room.getRoomElements().add(ve);
                     break;
                 case DIVIDER_ELEMENT:
 
@@ -126,6 +128,8 @@ public class RoomSerializer implements JsonSerializer<Room>, JsonDeserializer<Ro
 
                     //Darstellung
                     de.setIcon(joRe.get("icon").getAsString());
+
+                    room.getRoomElements().add(de);
                     break;
             }
         }

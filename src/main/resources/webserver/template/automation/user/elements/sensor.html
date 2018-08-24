@@ -1,0 +1,25 @@
+<div class="sixteen wide mobile eight wide tablet four wide computer four wide large screen column">
+    <div class="ui items">
+        <div class="item">
+            <div class="ui tiny image middle aligned">
+                <img src="/static/img/iconset/{{ element.getIconFile() | escape }}">
+            </div>
+            <div class="content">
+                <div class="header">
+                    {{ element.getDisplayText() | escape }}
+                </div>
+                <div class="description">
+                    {{ sensorEditor.getById(element.getFirstSensorValueId().get()).get() | formatsensorvalue | escape }}
+                    {% if element.getSecondSensorValueId().isPresent() %}
+                        <br>
+                        {{ sensorEditor.getById(element.getSecondSensorValueId().get()).get() | formatsensorvalue | escape }}
+                    {% endif %}
+                    {% if element.getThirdSensorValueId().isPresent() %}
+                        <br>
+                        {{ sensorEditor.getById(element.getThirdSensorValueId().get()).get() | formatsensorvalue | escape }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

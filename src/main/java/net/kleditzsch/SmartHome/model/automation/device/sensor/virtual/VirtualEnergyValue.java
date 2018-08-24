@@ -61,12 +61,36 @@ public class VirtualEnergyValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt den Mittelwert zurück
+     *
+     * @return Mittelwert
+     */
+    public EnergyValue getAverageAsSensorValue() {
+
+        EnergyValue value = new EnergyValue(ID.create(), ID.create().get(), getName());
+        value.pushEnergy(getAverage());
+        return value;
+    }
+
+    /**
      * gibt die Summe zurück
      *
      * @return Summe
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * gibt die Summe zurück
+     *
+     * @return Summe
+     */
+    public EnergyValue getSumAsSensorValue() {
+
+        EnergyValue value = new EnergyValue(ID.create(), ID.create().get(), getName());
+        value.pushEnergy(getSum());
+        return value;
     }
 
     /**

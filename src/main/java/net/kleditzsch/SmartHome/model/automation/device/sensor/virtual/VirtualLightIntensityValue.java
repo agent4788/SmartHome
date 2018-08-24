@@ -61,6 +61,18 @@ public class VirtualLightIntensityValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt den Mittelwert zurück
+     *
+     * @return Mittelwert
+     */
+    public LightIntensityValue getAverageAsSensorValue() {
+
+        LightIntensityValue value = new LightIntensityValue(ID.create(), ID.create().get(), getName());
+        value.pushLightIntensity(getAverage());
+        return value;
+    }
+
+    /**
      * gibt den Typ des Elementes zurück
      *
      * @return Typ ID

@@ -1,0 +1,38 @@
+<div class="sixteen wide mobile eight wide tablet four wide computer four wide large screen column">
+    <div class="ui items">
+        <div class="item">
+            <div class="ui tiny image middle aligned">
+                <img src="/static/img/iconset/{{ element.getIconFile() | escape }}">
+            </div>
+            <div class="content">
+                <div class="header">
+                    {{ element.getDisplayText() | escape }}
+                </div>
+                <div class="description">
+                    {% set virtualSensor = sensorEditor.getById(element.getVirtualSensorId().get()).get() %}
+                    {% if virtualSensor.getType() == 'VIRTUALSENSORVALUE_ACTUAL_POWER' %}
+                        <span style="font-weight: bold;">avg:</span> {{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}
+                        <br>
+                        <span style="font-weight: bold;">sum:</span> {{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}
+                    {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_ENERGY' %}
+                        <span style="font-weight: bold;">avg:</span> {{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}
+                        <br>
+                        <span style="font-weight: bold;">sum:</span> {{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}
+                    {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_GAS_AMOUNT' %}
+                        <span style="font-weight: bold;">sum:</span> {{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}
+                    {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_LIGHT_INTENSITY' %}
+                        <span style="font-weight: bold;">avg:</span> {{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}
+                    {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_WATER_AMOUNT' %}
+                        <span style="font-weight: bold;">sum:</span> {{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}
+                    {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_TEMPERATURE' %}
+                        <span style="font-weight: bold;">min:</span> {{ virtualSensor.getMinAsSensorValue() | formatsensorvalue | escape }}
+                        <br>
+                        <span style="font-weight: bold;">avg:</span> {{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}
+                        <br>
+                        <span style="font-weight: bold;">max:</span> {{ virtualSensor.getMaxAsSensorValue() | formatsensorvalue | escape }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

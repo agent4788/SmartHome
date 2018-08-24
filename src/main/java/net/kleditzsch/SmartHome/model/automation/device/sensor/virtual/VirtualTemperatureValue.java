@@ -73,12 +73,36 @@ public class VirtualTemperatureValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt den Mittelwert zurück
+     *
+     * @return Mittelwert
+     */
+    public TemperatureValue getAverageAsSensorValue() {
+
+        TemperatureValue value = new TemperatureValue(ID.create(), ID.create().get(), getName());
+        value.pushTemperature(getAverage());
+        return value;
+    }
+
+    /**
      * gibt die Summe zurück
      *
      * @return Summe
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * gibt die Summe zurück
+     *
+     * @return Summe
+     */
+    public TemperatureValue getSumAsSensorValue() {
+
+        TemperatureValue value = new TemperatureValue(ID.create(), ID.create().get(), getName());
+        value.pushTemperature(getSum());
+        return value;
     }
 
     /**
@@ -91,12 +115,36 @@ public class VirtualTemperatureValue extends VirtualSensorValue {
     }
 
     /**
+     * gibt den Minimalwert zurück
+     *
+     * @return Minimalwert
+     */
+    public TemperatureValue getMinAsSensorValue() {
+
+        TemperatureValue value = new TemperatureValue(ID.create(), ID.create().get(), getName());
+        value.pushTemperature(getMin());
+        return value;
+    }
+
+    /**
      * gibt den Maximalwert zurück
      *
      * @return Maximalwert
      */
     public double getMax() {
         return max;
+    }
+
+    /**
+     * gibt den Maximalwert zurück
+     *
+     * @return Maximalwert
+     */
+    public TemperatureValue getMaxAsSensorValue() {
+
+        TemperatureValue value = new TemperatureValue(ID.create(), ID.create().get(), getName());
+        value.pushTemperature(getMax());
+        return value;
     }
 
     /**
