@@ -1,6 +1,8 @@
 package net.kleditzsch.SmartHome.app.automation;
 
+import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
@@ -10,6 +12,8 @@ import net.kleditzsch.SmartHome.controller.automation.sensorservice.VirtualSenso
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
+import net.kleditzsch.SmartHome.model.automation.room.Room;
+import net.kleditzsch.SmartHome.util.json.Serializer.RoomSerializer;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
 import net.kleditzsch.SmartHome.view.automation.admin.room.*;
@@ -29,7 +33,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class AutomationAppliaction {
+/**
+ * Hauptklasse der Automatisierungsanwendung
+ */
+public class AutomationAppliaction implements SubApplication {
 
     /**
      * Sensor Editor
@@ -252,7 +259,7 @@ public class AutomationAppliaction {
     }
 
     /**
-     * Beendet die Automatisierungsanwendung
+     * Beendet die Anwendung
      */
     public void stop() {
 

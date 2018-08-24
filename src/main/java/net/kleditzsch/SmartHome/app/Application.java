@@ -3,6 +3,13 @@ package net.kleditzsch.SmartHome.app;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
+import net.kleditzsch.SmartHome.app.calendar.CalendarApplication;
+import net.kleditzsch.SmartHome.app.contact.ContactApplication;
+import net.kleditzsch.SmartHome.app.movie.MovieApplication;
+import net.kleditzsch.SmartHome.app.music.MusicApplication;
+import net.kleditzsch.SmartHome.app.picture.PictureApplication;
+import net.kleditzsch.SmartHome.app.recipe.RecipeApplication;
+import net.kleditzsch.SmartHome.app.shoppinglist.ShoppingListApplication;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
 import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
 import net.kleditzsch.SmartHome.controller.global.webserver.JettyServerStarter;
@@ -17,15 +24,9 @@ import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.info.GlobalServerInfoServlet;
 import net.kleditzsch.SmartHome.view.global.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
-import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -80,9 +81,44 @@ public class Application {
     private volatile SettingsEditor settings;
 
     /**
-     * Datenverwaltung der Automatisierung
+     * Hauptklasse der Automatisierung
      */
     private volatile AutomationAppliaction automationAppliaction;
+
+    /**
+     * Hauptklasse des Kalenders
+     */
+    private volatile CalendarApplication calendarApplication;
+
+    /**
+     * Hauptklasse der Kontakteverwaltung
+     */
+    private volatile ContactApplication contactApplication;
+
+    /**
+     * Hauptklasse der Filmdatenbank
+     */
+    private volatile MovieApplication movieApplication;
+
+    /**
+     * Hauptklasse der Musikverwaltung
+     */
+    private volatile MusicApplication musicApplication;
+
+    /**
+     * Hauptklasse der Bilderverwaltung
+     */
+    private volatile PictureApplication pictureApplication;
+
+    /**
+     * Hauptklasse der Rezepteverwaltung
+     */
+    private volatile RecipeApplication recipeApplication;
+
+    /**
+     * Hauptklasse der Einkaufsliste
+     */
+    private volatile ShoppingListApplication shoppingListApplication;
 
     /**
      * Scheduler
@@ -190,6 +226,34 @@ public class Application {
         automationAppliaction = new AutomationAppliaction();
         automationAppliaction.init();
 
+        //Kalender initalisieren
+        calendarApplication = new CalendarApplication();
+        calendarApplication.init();
+
+        //Kontakte initalisieren
+        contactApplication = new ContactApplication();
+        contactApplication.init();
+
+        //Filmdatenbank initalisieren
+        movieApplication = new MovieApplication();
+        movieApplication.init();
+
+        //Musikdatenbank initalisieren
+        musicApplication = new MusicApplication();
+        musicApplication.init();
+
+        //Bilderdanetbank initalisieren
+        pictureApplication = new PictureApplication();
+        pictureApplication.init();
+
+        //Rezeptedatenbank initalisieren
+        recipeApplication = new RecipeApplication();
+        recipeApplication.init();
+
+        //Einkaufsliste initalisieren
+        shoppingListApplication = new ShoppingListApplication();
+        shoppingListApplication.init();
+
         initWebserver();
     }
 
@@ -205,6 +269,8 @@ public class Application {
         builder.registerTypeAdapter(LocalDate.class, new LocalDateSerializer());
         builder.registerTypeAdapter(LocalTime.class, new LocalTimeSerializer());
         builder.registerTypeAdapter(ID.class, new IdSerializer());
+
+        //Automatisierung
         builder.registerTypeAdapter(Room.class, new RoomSerializer());
     }
 
@@ -271,7 +337,15 @@ public class Application {
                 contextHandler.addServlet(GlobalRebootServlet.class, "/admin/reboot");
                 contextHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
 
-                getAutomation().initWebContext(contextHandler);
+                //Webseiten der Anwendungen registrieren
+                automationAppliaction.initWebContext(contextHandler);
+                calendarApplication.initWebContext(contextHandler);
+                contactApplication.initWebContext(contextHandler);
+                movieApplication.initWebContext(contextHandler);
+                musicApplication.initWebContext(contextHandler);
+                pictureApplication.initWebContext(contextHandler);
+                recipeApplication.initWebContext(contextHandler);
+                shoppingListApplication.initWebContext(contextHandler);
             });
 
             serverStarter.config();
@@ -334,8 +408,70 @@ public class Application {
      * @return Automatisierungsverwaltung
      */
     public AutomationAppliaction getAutomation() {
-
         return automationAppliaction;
+    }
+
+    /**
+     * gibt den Kalender zurück
+     *
+     * @return Kalender
+     */
+    public CalendarApplication getCalendarApplication() {
+        return calendarApplication;
+    }
+
+    /**
+     * gibt die Kontakteverwaltung zurück
+     *
+     * @return Kontakteverwaltung
+     */
+    public ContactApplication getContactApplication() {
+        return contactApplication;
+    }
+
+    /**
+     * gibt die Filmdatenbank zurück
+     *
+     * @return Filmdatenbank
+     */
+    public MovieApplication getMovieApplication() {
+        return movieApplication;
+    }
+
+    /**
+     * gibt die Musikdatenbank zurück
+     *
+     * @return Musikdatenbank
+     */
+    public MusicApplication getMusicApplication() {
+        return musicApplication;
+    }
+
+    /**
+     * gibt die Bilderdatenbank zurück
+     *
+     * @return Bilderdatenbank
+     */
+    public PictureApplication getPictureApplication() {
+        return pictureApplication;
+    }
+
+    /**
+     * gibt die Rezepteverwaltung zurück
+     *
+     * @return Rezepteverwaltung
+     */
+    public RecipeApplication getRecipeApplication() {
+        return recipeApplication;
+    }
+
+    /**
+     * gibt die Filmdatenbank zurück
+     *
+     * @return Filmdatenbank
+     */
+    public ShoppingListApplication getShoppingListApplication() {
+        return shoppingListApplication;
     }
 
     /**
@@ -349,8 +485,15 @@ public class Application {
         //Speicherdienst aktivieren
         timerExecutor.scheduleAtFixedRate(new DataDumpTask(), 30, 30, TimeUnit.SECONDS);
 
-        //Module starten
-        getAutomation().start();
+        //Anwendungen starten
+        automationAppliaction.start();
+        calendarApplication.start();
+        contactApplication.start();
+        movieApplication.start();
+        musicApplication.start();
+        pictureApplication.start();
+        recipeApplication.start();
+        shoppingListApplication.start();
 
         //Webserver starteb
         try {
@@ -373,6 +516,13 @@ public class Application {
         settings.dump();
 
         automationAppliaction.dump();
+        calendarApplication.dump();
+        contactApplication.dump();
+        movieApplication.dump();
+        musicApplication.dump();
+        pictureApplication.dump();
+        recipeApplication.dump();
+        shoppingListApplication.dump();
     }
 
     /**
@@ -380,12 +530,18 @@ public class Application {
      */
     public void stop() throws Throwable {
 
-        //Editoren speichern
-        automationAppliaction.dump();
+        //Daten speichern
         dump();
 
         //Anwendungen stoppen
         automationAppliaction.stop();
+        calendarApplication.stop();
+        contactApplication.stop();
+        movieApplication.stop();
+        musicApplication.stop();
+        pictureApplication.stop();
+        recipeApplication.stop();
+        shoppingListApplication.stop();
 
         //Scheduler stoppen
         timerExecutor.shutdown();
