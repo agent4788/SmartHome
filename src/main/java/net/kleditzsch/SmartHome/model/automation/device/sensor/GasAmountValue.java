@@ -49,6 +49,7 @@ public class GasAmountValue extends SensorValue {
     public void setGasAmount(double gasAmount) {
 
         this.gasAmount = gasAmount;
+        setChangedData();
     }
 
     /**

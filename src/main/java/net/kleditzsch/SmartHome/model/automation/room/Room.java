@@ -54,6 +54,7 @@ public class Room extends Element {
 
         Preconditions.checkNotNull(displayText);
         this.displayText = text;
+        setChangedData();
     }
 
     /**
@@ -71,7 +72,9 @@ public class Room extends Element {
      * @param orderId Sortierungs ID
      */
     public void setOrderId(int orderId) {
+
         this.orderId = orderId;
+        setChangedData();
     }
 
     /**
@@ -89,7 +92,9 @@ public class Room extends Element {
      * @param disabled aktiviert/deaktiviert
      */
     public void setDisabled(boolean disabled) {
+
         this.disabled = disabled;
+        setChangedData();
     }
 
     /**
@@ -110,6 +115,7 @@ public class Room extends Element {
 
         Preconditions.checkNotNull(iconFile);
         this.iconFile = iconFile;
+        setChangedData();
     }
 
     /**
@@ -119,6 +125,7 @@ public class Room extends Element {
      */
     public List<RoomElement> getRoomElements() {
 
+        setChangedData();
         return roomElements;
     }
 
@@ -129,6 +136,7 @@ public class Room extends Element {
      */
     public List<RoomElement> getRoomElemenstSorted() {
 
+        setChangedData();
         return roomElements.stream()
                 .sorted(Comparator.comparingInt(RoomElement::getOrderId))
                 .collect(Collectors.toList());

@@ -1,23 +1,26 @@
 package net.kleditzsch.SmartHome.model.global.editor;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.database.DatabaseEditor;
 import net.kleditzsch.SmartHome.model.global.settings.*;
 import net.kleditzsch.SmartHome.model.global.settings.Interface.Setting;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SettingsEditor implements DatabaseEditor {
 
-    private static final String DATABASE_KEY = "smarthome:global:settings";
+    private static final String COLLECTION = "global.settings";
 
     //Globale Einstellungen
     public static final String SERVER_PORT = "SERVER_PORT";
@@ -99,23 +102,64 @@ public class SettingsEditor implements DatabaseEditor {
     @Override
     public void load() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        JsonParser jp = new JsonParser();
-        Gson gson = Application.getInstance().getGson();
-
-        List<String> settingsList = db.lrange(DATABASE_KEY, 0, -1);
+        MongoCollection settingsCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = settingsCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         settings.clear();
-        for(String settingJson : settingsList) {
+        iterator.forEach((Block<Document>) document -> {
 
-            JsonObject jo = jp.parse(settingJson).getAsJsonObject();
-            Class clazz = getTypeClass(jo.get("type").getAsString());
-            Setting setting = (Setting) gson.fromJson(settingJson, clazz);
-            settings.add(setting);
-        }
+            switch (Setting.Type.valueOf(document.getString("type"))) {
+
+                case STRING:
+
+                    StringSetting stringSetting = new StringSetting();
+                    stringSetting.setName(document.getString("name"));
+                    stringSetting.setValue(document.getString("value"));
+                    stringSetting.setDefaultValue(document.getString("defaultValue"));
+                    stringSetting.resetChangedData();
+                    settings.add(stringSetting);
+                    break;
+                case BOOLEAN:
+
+                    BooleanSetting booleanSetting = new BooleanSetting();
+                    booleanSetting.setName(document.getString("name"));
+                    booleanSetting.setValue(document.getBoolean("value"));
+                    booleanSetting.setDefaultValue(document.getBoolean("defaultValue"));
+                    booleanSetting.resetChangedData();
+                    settings.add(booleanSetting);
+                    break;
+                case INTEGER:
+
+                    IntegerSetting integerSetting = new IntegerSetting();
+                    integerSetting.setName(document.getString("name"));
+                    integerSetting.setValue(document.getInteger("value"));
+                    integerSetting.setDefaultValue(document.getInteger("defaultValue"));
+                    integerSetting.resetChangedData();
+                    settings.add(integerSetting);
+                    break;
+                case DOUBLE:
+
+                    DoubleSetting doubleSetting = new DoubleSetting();
+                    doubleSetting.setName(document.getString("name"));
+                    doubleSetting.setValue(document.getDouble("value"));
+                    doubleSetting.setDefaultValue(document.getDouble("defaultValue"));
+                    doubleSetting.resetChangedData();
+                    settings.add(doubleSetting);
+                    break;
+                case LIST:
+
+                    ListSetting listSetting = new ListSetting();
+                    listSetting.setName(document.getString("name"));
+                    listSetting.getValue().addAll((Collection<? extends String>) document.get("value"));
+                    listSetting.getDefaultValue().addAll((Collection<? extends String>) document.get("defaultValue"));
+                    listSetting.resetChangedData();
+                    settings.add(listSetting);
+                    break;
+            }
+        });
 
         //mit bekannten Einstellungen falls nötig auffüllen
         for(Setting knownSetting : knownSettings) {
@@ -235,23 +279,94 @@ public class SettingsEditor implements DatabaseEditor {
     @Override
     public void dump() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-
-        Pipeline pipeline = db.pipelined();
-        pipeline.del(DATABASE_KEY);
+        MongoCollection settingsCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
 
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
 
         for(Setting setting : settings) {
 
-            pipeline.lpush(DATABASE_KEY, gson.toJson(setting));
+            if(setting.isChangedData()) {
+
+                switch (setting.getType()) {
+
+                    case STRING:
+
+                        settingsCollection.updateOne(
+                                eq("name", setting.getName()),
+                                combine(
+                                        set("type", setting.getType().toString()),
+                                        set("name", setting.getName()),
+                                        set("value", ((StringSetting)setting).getValue()),
+                                        set("defaultValue", ((StringSetting)setting).getDefaultValue())
+
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case BOOLEAN:
+
+                        settingsCollection.updateOne(
+                                eq("name", setting.getName()),
+                                combine(
+                                        set("type", setting.getType().toString()),
+                                        set("name", setting.getName()),
+                                        set("value", ((BooleanSetting)setting).getValue()),
+                                        set("defaultValue", ((BooleanSetting)setting).getDefaultValue())
+
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case INTEGER:
+
+                        settingsCollection.updateOne(
+                                eq("name", setting.getName()),
+                                combine(
+                                        set("type", setting.getType().toString()),
+                                        set("name", setting.getName()),
+                                        set("value", ((IntegerSetting)setting).getValue()),
+                                        set("defaultValue", ((IntegerSetting)setting).getDefaultValue())
+
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case DOUBLE:
+
+                        settingsCollection.updateOne(
+                                eq("name", setting.getName()),
+                                combine(
+                                        set("type", setting.getType().toString()),
+                                        set("name", setting.getName()),
+                                        set("value", ((DoubleSetting)setting).getValue()),
+                                        set("defaultValue", ((DoubleSetting)setting).getDefaultValue())
+
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case LIST:
+
+                        settingsCollection.updateOne(
+                                eq("name", setting.getName()),
+                                combine(
+                                        set("type", setting.getType().toString()),
+                                        set("name", setting.getName()),
+                                        set("value", ((ListSetting)setting).getValue()),
+                                        set("defaultValue", ((ListSetting)setting).getDefaultValue())
+
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                }
+
+                setting.resetChangedData();
+            }
         }
 
         lock.unlock();
-
-        pipeline.sync();
     }
 
     /**

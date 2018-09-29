@@ -42,6 +42,8 @@ public class ListSetting extends Setting {
      * @return Liste der Zeichenketten
      */
     public List<String> getValue() {
+
+        setChangedData();
         return value;
     }
 
@@ -54,6 +56,7 @@ public class ListSetting extends Setting {
 
         Preconditions.checkNotNull(value);
         this.value = value;
+        setChangedData();
     }
 
     /**
@@ -62,6 +65,8 @@ public class ListSetting extends Setting {
      * @return Standard Liste der Zeichenketten
      */
     public List<String> getDefaultValue() {
+
+        setChangedData();
         return defaultValue;
     }
 
@@ -74,6 +79,7 @@ public class ListSetting extends Setting {
 
         Preconditions.checkNotNull(defaultValue);
         this.defaultValue = defaultValue;
+        setChangedData();
     }
 
     /**

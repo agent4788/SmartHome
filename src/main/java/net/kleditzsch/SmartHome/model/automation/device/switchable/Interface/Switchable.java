@@ -36,7 +36,9 @@ public abstract class Switchable extends AutomationElement {
      * @param state Status
      */
     public void setState(State state) {
+
         this.state = state;
+        setChangedData();
     }
 
     /**
@@ -57,5 +59,6 @@ public abstract class Switchable extends AutomationElement {
 
         Preconditions.checkNotNull(lastToggleTime);
         this.lastToggleTime = lastToggleTime;
+        setChangedData();
     }
 }

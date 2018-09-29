@@ -2,10 +2,6 @@ package net.kleditzsch.SmartHome.model.automation.switchserver;
 
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateIpAddress;
-import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateMax;
-import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateMin;
-import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateNotNull;
 
 /**
  * Schaltserver
@@ -15,30 +11,22 @@ public class SwitchServer extends Element {
     /**
      * IP Adresse
      */
-    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    @ValidateIpAddress(errorCode = 1003, message = "Ungültige IP Adresse %s")
     private String ipAddress;
 
     /**
      * Port
      */
-    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    @ValidateMin(value = 0, errorCode = 10004, message = "Ungültiger Port %s")
-    @ValidateMax(value = 65535, errorCode = 10004, message = "Ungültiger Port %s")
     private int port;
 
     /**
      * Timeout in ms
      */
-    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    @ValidateMin(value = 0, errorCode = 10005, message = "Ungültiger Timeout %s, der Timeout ist kleiner als %sms")
-    @ValidateMax(value = 10_000, errorCode = 10005, message = "Ungültiger Timeout %s, der Timeout ist größer als %sms")
     private int timeout = 500;
 
     /**
      * aktiviert?
      */
-    private boolean disabled = true;
+    private boolean disabled = false;
 
     /**
      * @param id ID
@@ -73,6 +61,7 @@ public class SwitchServer extends Element {
     public void setIpAddress(String ipAddress) {
 
         this.ipAddress = ipAddress;
+        setChangedData();
     }
 
     /**
@@ -92,6 +81,7 @@ public class SwitchServer extends Element {
     public void setPort(int port) {
 
         this.port = port;
+        setChangedData();
     }
 
     /**
@@ -111,6 +101,7 @@ public class SwitchServer extends Element {
     public void setTimeout(int timeout) {
 
         this.timeout = timeout;
+        setChangedData();
     }
 
     /**
@@ -128,6 +119,8 @@ public class SwitchServer extends Element {
      * @param disabled aktiviert/deaktiviert
      */
     public void setDisabled(boolean disabled) {
+
         this.disabled = disabled;
+        setChangedData();
     }
 }

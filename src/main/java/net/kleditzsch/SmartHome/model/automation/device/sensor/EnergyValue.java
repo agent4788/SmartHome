@@ -49,6 +49,7 @@ public class EnergyValue extends SensorValue {
     public void setEnergy(double energy) {
 
         this.energy = energy;
+        setChangedData();
     }
 
     /**

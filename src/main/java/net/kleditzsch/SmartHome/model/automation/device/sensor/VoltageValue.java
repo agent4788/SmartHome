@@ -49,6 +49,7 @@ public class VoltageValue extends SensorValue {
     public void setVoltage(double voltage) {
 
         this.voltage = voltage;
+        setChangedData();
     }
 
     /**

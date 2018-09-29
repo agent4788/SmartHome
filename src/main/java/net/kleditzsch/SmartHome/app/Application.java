@@ -2,6 +2,9 @@ package net.kleditzsch.SmartHome.app;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.app.calendar.CalendarApplication;
 import net.kleditzsch.SmartHome.app.contact.ContactApplication;
@@ -15,6 +18,7 @@ import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
 import net.kleditzsch.SmartHome.controller.global.webserver.JettyServerStarter;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
+import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
@@ -24,8 +28,6 @@ import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.info.GlobalServerInfoServlet;
 import net.kleditzsch.SmartHome.view.global.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -292,7 +294,7 @@ public class Application {
 
             logger.severe("Die Datenbankkonfiguration konnte nicht gelesen werden");
             System.exit(1);
-        } catch(JedisConnectionException e) {
+        } catch(DatabaseException e) {
 
             LoggerUtil.serveException(logger, "Verbindung zur Datenbank ist Fehlgeschlagen", e);
             System.exit(1);
@@ -361,8 +363,18 @@ public class Application {
      *
      * @return Datenbankverbindung
      */
-    public Jedis getDatabaseConnection() {
-        return databaseManager.getConnection();
+    public MongoDatabase getDatabaseConnection() {
+        return databaseManager.getDatabase();
+    }
+
+    /**
+     * gibt das Objekt der angeforderten Collection zurück
+     *
+     * @param collectionName Name der angeforderten Collection
+     * @return Objekt der angeforderten Collection
+     */
+    public MongoCollection getDatabaseCollection(String collectionName) {
+        return databaseManager.getCollection(collectionName);
     }
 
     /**
@@ -547,7 +559,7 @@ public class Application {
         timerExecutor.shutdown();
 
         //Datenbankverbindung aufheben
-        if(databaseManager != null && databaseManager.isConnected()) {
+        if(databaseManager != null) {
 
             databaseManager.disconnectDatabase();
         }

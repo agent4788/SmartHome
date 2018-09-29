@@ -25,27 +25,28 @@ public class AutomationRoomDeleteServlet extends HttpServlet {
         String idStr = req.getParameter("id");
         if(idStr != null) {
 
+            RoomEditor roomEditor = Application.getInstance().getAutomation().getRoomEditor();
+            ReentrantReadWriteLock.WriteLock lock = roomEditor.writeLock();
+            lock.lock();
             try {
 
                 ID id = ID.of(idStr);
-                RoomEditor roomEditor = Application.getInstance().getAutomation().getRoomEditor();
-                ReentrantReadWriteLock.WriteLock lock = roomEditor.writeLock();
-                lock.lock();
 
                 Optional<Room> roomOptional = roomEditor.getById(id);
                 if(roomOptional.isPresent()) {
 
-                    roomEditor.getData().remove(roomOptional.get());
+                    success = roomEditor.delete(roomOptional.get());
                 } else {
 
                     success = false;
                 }
 
-                lock.unlock();
-
             } catch (Exception e) {
 
                 success = false;
+            } finally {
+
+                lock.unlock();
             }
         }
 

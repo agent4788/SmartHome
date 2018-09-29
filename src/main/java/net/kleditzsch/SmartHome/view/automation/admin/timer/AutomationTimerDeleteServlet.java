@@ -35,7 +35,7 @@ public class AutomationTimerDeleteServlet extends HttpServlet {
                 Optional<SwitchTimer> switchTimerOptional = switchTimerEditor.getById(id);
                 if(switchTimerOptional.isPresent()) {
 
-                    switchTimerEditor.getData().remove(switchTimerOptional.get());
+                    success = switchTimerEditor.delete(switchTimerOptional.get());
                 } else {
 
                     success = false;

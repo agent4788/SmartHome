@@ -17,73 +17,40 @@ public abstract class AutomationElement extends Element {
      */
     public enum Type {
 
-        @SerializedName("SWITCHABLE_AVM_SOCKET")
         SWITCHABLE_AVM_SOCKET,
-        @SerializedName("SWITCHABLE_TPLINK_SOCKET")
         SWITCHABLE_TPLINK_SOCKET,
-        @SerializedName("SWITCHABLE_OUTPUT")
         SWITCHABLE_OUTPUT,
-        @SerializedName("SWITCHABLE_SCRIPT_SINGLE")
         SWITCHABLE_SCRIPT_SINGLE,
-        @SerializedName("SWITCHABLE_SCRIPT_DOUBLE")
         SWITCHABLE_SCRIPT_DOUBLE,
-        @SerializedName("SWITCHABLE_WAKE_ON_LAN")
         SWITCHABLE_WAKE_ON_LAN,
 
-        @SerializedName("SENSORVALUE_INPUT")
         SENSORVALUE_INPUT,
-        @SerializedName("SENSORVALUE_USER_AT_HOME")
         SENSORVALUE_USER_AT_HOME,
-        @SerializedName("SENSORVALUE_LIVE_BIT")
         SENSORVALUE_LIVE_BIT,
-        @SerializedName("SENSORVALUE_ACTUAL_POWER")
         SENSORVALUE_ACTUAL_POWER,
-        @SerializedName("SENSORVALUE_AIR_PRESSURE")
         SENSORVALUE_AIR_PRESSURE,
-        @SerializedName("SENSORVALUE_ALTITUDE")
         SENSORVALUE_ALTITUDE,
-        @SerializedName("SENSORVALUE_BATTERY_LEVEL")
         SENSORVALUE_BATTERY_LEVEL,
-        @SerializedName("SENSORVALUE_DISTANCE")
         SENSORVALUE_DISTANCE,
-        @SerializedName("SENSORVALUE_DURATION")
         SENSORVALUE_DURATION,
-        @SerializedName("SENSORVALUE_ENERGY")
         SENSORVALUE_ENERGY,
-        @SerializedName("SENSORVALUE_GAS_AMOUNT")
         SENSORVALUE_GAS_AMOUNT,
-        @SerializedName("SENSORVALUE_HUMIDITY")
         SENSORVALUE_HUMIDITY,
-        @SerializedName("SENSORVALUE_LIGHT_INTENSITY")
         SENSORVALUE_LIGHT_INTENSITY,
-        @SerializedName("SENSORVALUE_MOISTURE")
         SENSORVALUE_MOISTURE,
-        @SerializedName("SENSORVALUE_STRING")
         SENSORVALUE_STRING,
-        @SerializedName("SENSORVALUE_TEMPERATURE")
         SENSORVALUE_TEMPERATURE,
-        @SerializedName("SENSORVALUE_WATER_AMOUNT")
         SENSORVALUE_WATER_AMOUNT,
-        @SerializedName("SENSORVALUE_VOLTAGE")
         SENSORVALUE_VOLTAGE,
-        @SerializedName("SENSORVALUE_CURRENT")
         SENSORVALUE_CURRENT,
-        @SerializedName("SENSORVALUE_COUNTER")
         SENSORVALUE_COUNTER,
-        @SerializedName("SENSORVALUE_BI_STATE")
         SENSORVALUE_BI_STATE,
 
-        @SerializedName("VIRTUALSENSORVALUE_ACTUAL_POWER")
         VIRTUALSENSORVALUE_ACTUAL_POWER,
-        @SerializedName("VIRTUALSENSORVALUE_ENERGY")
         VIRTUALSENSORVALUE_ENERGY,
-        @SerializedName("VIRTUALSENSORVALUE_GAS_AMOUNT")
         VIRTUALSENSORVALUE_GAS_AMOUNT,
-        @SerializedName("VIRTUALSENSORVALUE_LIGHT_INTENSITY")
         VIRTUALSENSORVALUE_LIGHT_INTENSITY,
-        @SerializedName("VIRTUALSENSORVALUE_WATER_AMOUNT")
         VIRTUALSENSORVALUE_WATER_AMOUNT,
-        @SerializedName("VIRTUALSENSORVALUE_TEMPERATURE")
         VIRTUALSENSORVALUE_TEMPERATURE
     }
 
@@ -92,9 +59,7 @@ public abstract class AutomationElement extends Element {
      */
     public enum State {
 
-        @SerializedName("ON")
         ON,
-        @SerializedName("OFF")
         OFF
     }
 
@@ -118,7 +83,9 @@ public abstract class AutomationElement extends Element {
      * @param disabled aktiviert/deaktiviert
      */
     public void setDisabled(boolean disabled) {
+
         this.disabled = disabled;
+        setChangedData();
     }
 
     /**

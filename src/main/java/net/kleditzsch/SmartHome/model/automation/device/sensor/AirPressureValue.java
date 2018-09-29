@@ -49,6 +49,7 @@ public class AirPressureValue extends SensorValue {
     public void setAirPressure(double airPressure) {
 
         this.airPressure = airPressure;
+        setChangedData();
     }
 
     /**

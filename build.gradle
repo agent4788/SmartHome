@@ -27,8 +27,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jdom/jdom2
     compile group: 'org.jdom', name: 'jdom2', version: '+'
 
-    // https://mvnrepository.com/artifact/redis.clients/jedis
-    compile group: 'redis.clients', name: 'jedis', version: '+'
+    // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '+'
 
     // https://mvnrepository.com/artifact/org.snmp4j/snmp4j
     compile group: 'org.snmp4j', name: 'snmp4j', version: '+'

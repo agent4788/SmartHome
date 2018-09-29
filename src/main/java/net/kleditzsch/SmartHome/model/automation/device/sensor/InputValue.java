@@ -41,7 +41,9 @@ public class InputValue extends SensorValue {
      * @param state Status
      */
     public void setState(boolean state) {
+
         this.state = state;
+        setChangedData();
     }
 
     /**

@@ -58,7 +58,9 @@ public class LiveBitValue extends SensorValue {
      * @param state Status
      */
     public void setState(boolean state) {
+
         this.state = state;
+        setChangedData();
     }
 
     /**
@@ -89,6 +91,7 @@ public class LiveBitValue extends SensorValue {
     public void setTimeout(long timeout) {
 
         this.timeout = timeout;
+        setChangedData();
     }
 
     /**
@@ -106,7 +109,9 @@ public class LiveBitValue extends SensorValue {
      * @param trueText Text für den "wahr" Fall
      */
     public void setTrueText(String trueText) {
+
         this.trueText = trueText;
+        setChangedData();
     }
 
     /**
@@ -124,7 +129,9 @@ public class LiveBitValue extends SensorValue {
      * @param falseText Text für den "falsch" Fall
      */
     public void setFalseText(String falseText) {
+
         this.falseText = falseText;
+        setChangedData();
     }
 
     /**

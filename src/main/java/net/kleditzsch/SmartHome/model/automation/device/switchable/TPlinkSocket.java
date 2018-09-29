@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.model.automation.device.switchable;
 
 import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
-import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
 
@@ -20,9 +19,7 @@ public class TPlinkSocket extends DoubleSwitchable {
      */
     public enum SOCKET_TYPE {
 
-        @SerializedName("HS100")
         HS100,
-        @SerializedName("HS110")
         HS110
     }
 
@@ -44,7 +41,7 @@ public class TPlinkSocket extends DoubleSwitchable {
     /**
      * Sensorwerte der Steckdose
      */
-    private ID voltageSensor, currentSensor, powerSensorId, energySensorId;
+    private ID voltageSensorId, currentSensorId, powerSensorId, energySensorId;
 
     public TPlinkSocket() {}
 
@@ -77,6 +74,7 @@ public class TPlinkSocket extends DoubleSwitchable {
         Preconditions.checkNotNull(ipAddress);
         Preconditions.checkArgument(InetAddresses.isInetAddress(ipAddress));
         this.ipAddress = ipAddress;
+        setChangedData();
     }
 
     /**
@@ -98,6 +96,7 @@ public class TPlinkSocket extends DoubleSwitchable {
         Preconditions.checkNotNull(port);
         Preconditions.checkArgument((port >= 0 && port <= 65535));
         this.port = port;
+        setChangedData();
     }
 
     /**
@@ -115,7 +114,9 @@ public class TPlinkSocket extends DoubleSwitchable {
      * @param socketType Steckdosentyp
      */
     public void setSocketType(SOCKET_TYPE socketType) {
+
         this.socketType = socketType;
+        setChangedData();
     }
 
     /**
@@ -123,17 +124,19 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public Optional<ID> getVoltageSensor() {
-        return Optional.ofNullable(voltageSensor);
+    public Optional<ID> getVoltageSensorId() {
+        return Optional.ofNullable(voltageSensorId);
     }
 
     /**
      * setzt die ID des Spannungs Sensorwertes
      *
-     * @param voltageSensor Sensor ID
+     * @param voltageSensorId Sensor ID
      */
-    public void setVoltageSensor(ID voltageSensor) {
-        this.voltageSensor = voltageSensor;
+    public void setVoltageSensorId(ID voltageSensorId) {
+
+        this.voltageSensorId = voltageSensorId;
+        setChangedData();
     }
 
     /**
@@ -141,17 +144,19 @@ public class TPlinkSocket extends DoubleSwitchable {
      *
      * @return Sensor ID
      */
-    public Optional<ID> getCurrentSensor() {
-        return Optional.ofNullable(currentSensor);
+    public Optional<ID> getCurrentSensorId() {
+        return Optional.ofNullable(currentSensorId);
     }
 
     /**
      * setzt die ID des Strom Sensorwertes
      *
-     * @param currentSensor Sensor ID
+     * @param currentSensorId Sensor ID
      */
-    public void setCurrentSensor(ID currentSensor) {
-        this.currentSensor = currentSensor;
+    public void setCurrentSensorId(ID currentSensorId) {
+
+        this.currentSensorId = currentSensorId;
+        setChangedData();
     }
 
     /**
@@ -172,6 +177,7 @@ public class TPlinkSocket extends DoubleSwitchable {
 
         Preconditions.checkNotNull(powerSensorId);
         this.powerSensorId = powerSensorId;
+        setChangedData();
     }
 
     /**
@@ -192,6 +198,7 @@ public class TPlinkSocket extends DoubleSwitchable {
 
         Preconditions.checkNotNull(energySensorId);
         this.energySensorId = energySensorId;
+        setChangedData();
     }
 
     /**

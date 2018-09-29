@@ -29,7 +29,9 @@ public abstract class DoubleSwitchable extends Switchable {
      * @param inverse aktiviert/deaktiviert
      */
     public void setInverse(boolean inverse) {
+
         this.inverse = inverse;
+        setChangedData();
     }
 
     /**
@@ -39,6 +41,7 @@ public abstract class DoubleSwitchable extends Switchable {
 
         setState(inverse ? State.OFF : State.ON);
         setLastToggleTime(LocalDateTime.now());
+        setChangedData();
     }
 
     /**
@@ -48,5 +51,6 @@ public abstract class DoubleSwitchable extends Switchable {
 
         setState(inverse ? State.ON : State.OFF);
         setLastToggleTime(LocalDateTime.now());
+        setChangedData();
     }
 }

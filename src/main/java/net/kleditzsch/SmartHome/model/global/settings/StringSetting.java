@@ -55,6 +55,7 @@ public class StringSetting extends Setting {
 
         Preconditions.checkNotNull(value);
         this.value = value;
+        setChangedData();
     }
 
     /**
@@ -75,6 +76,7 @@ public class StringSetting extends Setting {
 
         Preconditions.checkNotNull(defaultValue);
         this.defaultValue = defaultValue;
+        setChangedData();
     }
 
     /**

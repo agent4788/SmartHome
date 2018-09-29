@@ -143,69 +143,130 @@
         <div data-tab="database" class="ui bottom attached tab segment">
             <table class="ui celled table">
                 <tr>
-                    <td colspan="2"><div class="ui ribbon label large blue">Datenbank Info</div></td>
+                    <td colspan="2"><div class="ui ribbon label large blue">Host Info</div></td>
                 </tr>
                 <tr>
                     <td>Betriebssystem:</td>
-                    <td>{{ dbOS }}</td>
+                    <td>{{ host.get('osType') }} - {{ host.get('osName') }} {{ host.get('osVersion') }}</td>
                 </tr>
                 <tr>
-                    <td>Redis Version:</td>
-                    <td>{{ dbVersion }}</td>
+                    <td>Systemzeit:</td>
+                    <td>{{ host.get('systemCurrentTime') }}</td>
                 </tr>
                 <tr>
-                    <td>Modus:</td>
-                    <td>{{ dbMode }}</td>
+                    <td>Hostname:</td>
+                    <td>{{ host.get('systemHostname') }}</td>
                 </tr>
                 <tr>
-                    <td>Laufzeit:</td>
-                    <td>{{ dbUptime | secondformat }}</td>
+                    <td>Architektur:</td>
+                    <td>{{ host.get('systemCpuArch') }}</td>
                 </tr>
                 <tr>
-                    <td>Config Datei:</td>
-                    <td>{{ dbConfigFile }}</td>
+                    <td>CPU Kerne:</td>
+                    <td>{{ host.get('systemNumCores') }}</td>
                 </tr>
                 <tr>
                     <td>Arbeitsspeicher:</td>
-                    <td>{{ dbTotalMemory | filesize }}</td>
+                    <td>{{ host.get('systemMemSizeMB') | numberformat }} MiB</td>
                 </tr>
                 <tr>
-                    <td>Speicherbedarf:</td>
-                    <td>{{ dbUsedMemory | filesize }}</td>
+                    <td colspan="2"><div class="ui ribbon label large blue">Server Info</div></td>
                 </tr>
                 <tr>
-                    <td>Speicherbedarf (max):</td>
-                    <td>{{ dbMemoryPeak | filesize }}</td>
+                    <td>Version:</td>
+                    <td>{{ server.get('version') }}</td>
                 </tr>
                 <tr>
-                    <td>Anzahl beabeiter Befehle:</td>
-                    <td>{{ dbTotalCommands | numberformat }}</td>
+                    <td>Laufzeit:</td>
+                    <td>{{ server.get('uptime') | secondformat }}</td>
                 </tr>
                 <tr>
-                    <td>letzte Speicherung:</td>
-                    <td>{{ dbLastSaveTime | timeline }}</td>
+                    <td>Systemzeit:</td>
+                    <td>{{ server.get('localTime') }}</td>
                 </tr>
                 <tr>
-                    <td>Speicherstatus:</td>
-                    <td>{{ dbLastSaveState }}</td>
+                    <td>offene Verbindungen:</td>
+                    <td>{{ server.get('connectionsCurrent') | numberformat }}</td>
+                </tr>
+                <tr>
+                    <td>verf&uuml;gbare Verbindungen:</td>
+                    <td>{{ server.get('connectionsAvailable') | numberformat }}</td>
+                </tr>
+                <tr>
+                    <td>gesamte Verbindungen:</td>
+                    <td>{{ server.get('connectionsTotalCreated') | numberformat }}</td>
                 </tr>
                 <tr>
                     <td>Empfangene Daten:</td>
-                    <td>{{ dbTotalInputBytes | filesize }}</td>
+                    <td>{{ server.get('networkBytesIn') | filesize }}</td>
                 </tr>
                 <tr>
-                    <td>Gesendete Daten:</td>
-                    <td>{{ dbTotalOutputBytes | filesize }}</td>
+                    <td>gesendete Daten:</td>
+                    <td>{{ server.get('networkBytesOut') | filesize }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2"><div class="ui ribbon label large blue">Alle Daten</div></td>
+                    <td>Netzwerkanfragen:</td>
+                    <td>{{ server.get('networkNumRequests') | numberformat }}</td>
                 </tr>
-                {% for key, value in fullInfo %}
                 <tr>
-                    <td>{{ key }}:</td>
-                    <td>{{ value }}</td>
+                    <td colspan="2"><div class="ui ribbon label large blue">Datenbank Info</div></td>
                 </tr>
-                {% endfor %}
+                <tr>
+                    <td>Datenbank:</td>
+                    <td>{{ db.get('db') }}</td>
+                </tr>
+                <tr>
+                    <td>Collections:</td>
+                    <td>{{ db.get('collections') | numberformat }}</td>
+                </tr>
+                <tr>
+                    <td>Views:</td>
+                    <td>{{ db.get('views') | numberformat }}</td>
+                </tr>
+                <tr>
+                    <td>Dokumente:</td>
+                    <td>{{ db.get('objects') | numberformat }}</td>
+                </tr>
+                <tr>
+                    <td>&empty; Dokumentengr&ouml;&szlig;e:</td>
+                    <td>{{ db.get('avgObjSize') | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Datenbankgr&ouml;&szlig;e:</td>
+                    <td>{{ db.get('dataSize') | filesize }}</td>
+                </tr>
+                <tr>
+                    <td>Festplattenspeicher:</td>
+                    <td>{{ db.get('storageSize') | filesize }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><div class="ui ribbon label large blue">Collection Info</div></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="ui divided items">
+                            {% for collection in collections %}
+                            <table class="ui celled table">
+                                <tr>
+                                    <td colspan="2"><h3>{{ collection.get('name') }}</h3></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">Dokumente:</td>
+                                    <td style="width: 50%;">{{ collection.get('count') | numberformat }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">&empty; Dokumentengr&ouml;&szlig;e:</td>
+                                    <td style="width: 50%;">{{ collection.get('avgObjSize') | filesize }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">Speicher:</td>
+                                    <td style="width: 50%;">{{ collection.get('size') | filesize }}</td>
+                                </tr>
+                            </table>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

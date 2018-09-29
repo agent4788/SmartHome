@@ -44,6 +44,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Ausführungsmonaten
      */
     public SortedSet<Integer> getMonth() {
+
+        setChangedData();
         return month;
     }
 
@@ -53,6 +55,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Ausführungswochentagen
      */
     public SortedSet<Integer> getWeekday() {
+
+        setChangedData();
         return weekday;
     }
 
@@ -62,6 +66,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Ausführungstagen
      */
     public SortedSet<Integer> getDay() {
+
+        setChangedData();
         return day;
     }
 
@@ -71,6 +77,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Ausführungsstunden
      */
     public SortedSet<Integer> getHour() {
+
+        setChangedData();
         return hour;
     }
 
@@ -80,6 +88,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Ausführungsminuten
      */
     public SortedSet<Integer> getMinute() {
+
+        setChangedData();
         return minute;
     }
 
@@ -89,6 +99,8 @@ public class SwitchTimer extends Element {
      * @return Liste mit den Schaltbefehlen
      */
     public List<SwitchCommand> getCommands() {
+
+        setChangedData();
         return commands;
     }
 
@@ -98,6 +110,8 @@ public class SwitchTimer extends Element {
      * @return nächste Ausführungszeit
      */
     public LocalDateTime getNextExecutionTime() {
+
+        setChangedData();
         return nextExecutionTime;
     }
 
@@ -107,6 +121,8 @@ public class SwitchTimer extends Element {
      * @param nextExecutionTime nächste Ausführungszeit
      */
     public void setNextExecutionTime(LocalDateTime nextExecutionTime) {
+
+        setChangedData();
         this.nextExecutionTime = nextExecutionTime;
     }
 
@@ -123,6 +139,8 @@ public class SwitchTimer extends Element {
      * @param disabled aktiviert/deaktiviert
      */
     public void setDisabled(boolean disabled) {
+
+        setChangedData();
         this.disabled = disabled;
     }
 }

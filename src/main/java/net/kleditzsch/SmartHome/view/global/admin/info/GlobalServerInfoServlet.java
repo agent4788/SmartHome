@@ -44,32 +44,13 @@ public class GlobalServerInfoServlet extends HttpServlet {
         model.with("cpuInfo", Hardware.getCpuInfo());
 
         //Datenbank Info
-        Map<String, String> serverInfo = Application.getInstance().getDatabaseManager().getServerInfo();
+        Map<String, Map<String, Object>> serverInfo = Application.getInstance().getDatabaseManager().getServerInfo();
+        Map<String, Map<String, Object>> collectionInfo = Application.getInstance().getDatabaseManager().getCollectionInfo();
 
-        model.with("dbOS", serverInfo.get("os"));
-        model.with("dbVersion", serverInfo.get("redis_version"));
-        if(serverInfo.containsKey("redis_mode")) {
-
-            model.with("dbMode", serverInfo.get("redis_mode"));
-        } else if(serverInfo.containsKey("role")) {
-
-            model.with("dbMode", serverInfo.get("role"));
-        }
-        model.with("dbUptime", serverInfo.get("uptime_in_seconds"));
-        model.with("dbConfigFile", serverInfo.get("config_file"));
-        model.with("dbTotalMemory", serverInfo.get("total_system_memory"));
-        model.with("dbUsedMemory", serverInfo.get("used_memory"));
-        model.with("dbMemoryPeak", serverInfo.get("used_memory_peak"));
-        model.with("dbTotalCommands", Long.parseLong(serverInfo.get("total_commands_processed")));
-
-        long lastSaveTime = Long.parseLong(serverInfo.get("rdb_last_save_time"));
-        model.with("dbLastSaveTime", Duration.between(LocalDateTime.now(), TimeUtil.getLocalDateTimeOfEpochSeconds(lastSaveTime)));
-
-        model.with("dbLastSaveState", serverInfo.get("rdb_last_bgsave_status"));
-        model.with("dbTotalInputBytes", serverInfo.get("total_net_input_bytes"));
-        model.with("dbTotalOutputBytes", serverInfo.get("total_net_output_bytes"));
-        model.with("fullInfo", serverInfo);
-
+        model.with("host", serverInfo.get("host"));
+        model.with("server", serverInfo.get("server"));
+        model.with("db", serverInfo.get("db"));
+        model.with("collections", collectionInfo);
 
         //Template rendern
         resp.setContentType("text/html");

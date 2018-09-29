@@ -49,6 +49,7 @@ public class HumidityValue extends SensorValue {
     public void setHumidity(double humidity) {
 
         this.humidity = humidity;
+        setChangedData();
     }
 
     /**

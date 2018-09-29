@@ -21,7 +21,7 @@ public class MoistureValue extends SensorValue {
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
     @ValidateMin(value = 0, errorCode = 10205, message = "Ungültiger Sensorwert")
     @ValidateMax(value = 100, errorCode = 10205, message = "Ungültiger Sensorwert")
-    private double moisture = 0;
+    private double moisture = 0.0;
 
     /**
      * @param id ID
@@ -49,6 +49,7 @@ public class MoistureValue extends SensorValue {
     public void setMoisture(double moisture) {
 
         this.moisture = moisture;
+        setChangedData();
     }
 
     /**

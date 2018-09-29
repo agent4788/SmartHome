@@ -51,7 +51,9 @@ public class BooleanSetting extends Setting {
      * @param value Wert
      */
     public void setValue(boolean value) {
+
         this.value = value;
+        setChangedData();
     }
 
     /**
@@ -69,7 +71,9 @@ public class BooleanSetting extends Setting {
      * @param defaultValue Standardwert
      */
     public void setDefaultValue(boolean defaultValue) {
+
         this.defaultValue = defaultValue;
+        setChangedData();
     }
 
     /**

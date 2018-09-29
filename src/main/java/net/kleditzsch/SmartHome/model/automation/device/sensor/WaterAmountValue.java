@@ -49,6 +49,7 @@ public class WaterAmountValue extends SensorValue {
     public void setWaterAmount(double waterAmount) {
 
         this.waterAmount = waterAmount;
+        setChangedData();
     }
 
     /**

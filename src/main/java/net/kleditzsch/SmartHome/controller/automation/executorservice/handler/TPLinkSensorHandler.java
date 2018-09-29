@@ -47,7 +47,7 @@ public class TPLinkSensorHandler implements Runnable {
                 lock.lock();
 
                 //Spannungssensor
-                Optional<ID> voltageSensorId = socket.getVoltageSensor();
+                Optional<ID> voltageSensorId = socket.getVoltageSensorId();
                 if(voltageSensorId.isPresent()) {
 
                     Optional<SensorValue> sensorValueOptional1 = sensorEditor.getById(voltageSensorId.get());
@@ -59,7 +59,7 @@ public class TPLinkSensorHandler implements Runnable {
                 }
 
                 //Stromsensor
-                Optional<ID> currentSensorId = socket.getCurrentSensor();
+                Optional<ID> currentSensorId = socket.getCurrentSensorId();
                 if(currentSensorId.isPresent()) {
 
                     Optional<SensorValue> sensorValueOptional2 = sensorEditor.getById(currentSensorId.get());

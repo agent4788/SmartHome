@@ -12,15 +12,10 @@ public abstract class Setting {
      */
     public enum Type {
 
-        @SerializedName("STRING")
         STRING,
-        @SerializedName("INTEGER")
         INTEGER,
-        @SerializedName("DOUBLE")
         DOUBLE,
-        @SerializedName("BOOLEAN")
         BOOLEAN,
-        @SerializedName("LIST")
         LIST
     }
 
@@ -28,6 +23,11 @@ public abstract class Setting {
      * Name der Einstellung
      */
     private String name;
+
+    /**
+     * gibt an ob Daten seit der letzten Speicherung geändert wurden
+     */
+    private boolean changedData = false;
 
     /**
      * gibt den Namen der Einstellung zurück
@@ -44,7 +44,35 @@ public abstract class Setting {
      * @param name Name
      */
     public void setName(String name) {
+
         this.name = name;
+        setChangedData();
+    }
+
+    /**
+     * gibt an ob die Daten des Objektes geändert wurden
+     *
+     * @return Daten geändert
+     */
+    public boolean isChangedData() {
+
+        return changedData;
+    }
+
+    /**
+     * Daten geäbdert
+     */
+    protected void setChangedData() {
+
+        changedData = true;
+    }
+
+    /**
+     * reset des Daten geändert Flags
+     */
+    public void resetChangedData() {
+
+        changedData = false;
     }
 
     /**

@@ -33,7 +33,7 @@ public class AutomationSwitchServerDeleteServlet extends HttpServlet {
                 Optional<SwitchServer> switchServerOptional = sse.getById(id);
                 if(switchServerOptional.isPresent()) {
 
-                    sse.getData().remove(switchServerOptional.get());
+                    success = sse.delete(switchServerOptional.get());
                 } else {
 
                     success = false;

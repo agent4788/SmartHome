@@ -49,6 +49,7 @@ public class BatteryLevelValue extends SensorValue {
     public void setBatteryLevel(double batteryLevel) {
 
         this.batteryLevel = batteryLevel;
+        setChangedData();
     }
 
     /**

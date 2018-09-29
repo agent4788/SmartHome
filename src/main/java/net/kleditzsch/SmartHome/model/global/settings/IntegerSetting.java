@@ -51,7 +51,9 @@ public class IntegerSetting extends Setting {
      * @param value Wert
      */
     public void setValue(int value) {
+
         this.value = value;
+        setChangedData();
     }
 
     /**
@@ -69,7 +71,9 @@ public class IntegerSetting extends Setting {
      * @param defaultValue Standardwert
      */
     public void setDefaultValue(int defaultValue) {
+
         this.defaultValue = defaultValue;
+        setChangedData();
     }
 
     /**

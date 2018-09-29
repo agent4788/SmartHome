@@ -52,6 +52,7 @@ public class AltitudeValue extends SensorValue {
     public void setAltitude(double altitude) {
 
         this.altitude = altitude;
+        setChangedData();
     }
 
     /**

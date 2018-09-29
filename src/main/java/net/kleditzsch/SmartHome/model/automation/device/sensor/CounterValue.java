@@ -44,7 +44,9 @@ public class CounterValue extends SensorValue {
      * @param counterValue Zählerwert
      */
     public void setCounterValue(BigInteger counterValue) {
+
         this.counterValue = counterValue;
+        setChangedData();
     }
 
     /**

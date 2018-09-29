@@ -62,6 +62,7 @@ public abstract class SensorValue extends AutomationElement {
         Preconditions.checkNotNull(identifier);
         Preconditions.checkArgument(identifier.matches("^[a-zA-Z0-9\\-]{3,50}$"), "Ungültige Identifizierung %s", identifier);
         this.identifier = identifier;
+        setChangedData();
     }
 
     /**
@@ -79,7 +80,9 @@ public abstract class SensorValue extends AutomationElement {
      * @param systemValue Systemwert
      */
     public void setSystemValue(boolean systemValue) {
+
         this.systemValue = systemValue;
+        setChangedData();
     }
 
     /**
@@ -97,13 +100,17 @@ public abstract class SensorValue extends AutomationElement {
      * @param lastPushTime Zeit
      */
     public void setLastPushTime(LocalDateTime lastPushTime) {
+
         this.lastPushTime = lastPushTime;
+        setChangedData();
     }
 
     /**
      * aktualisiert die Zeit des letzten Pushes auf die aktuelle Zeit
      */
     public void updateLastPushTime() {
+
         this.lastPushTime = LocalDateTime.now();
+        setChangedData();
     }
 }

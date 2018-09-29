@@ -62,7 +62,7 @@ public class AutomationSwitchServerFormServlet extends HttpServlet {
             }
         } else {
 
-            switchServer = new SwitchServer(ID.create(), "Name ...", "", 1000, true);
+            switchServer = new SwitchServer(ID.create(), "Name ...", "", 1000, false);
         }
         model.with("addElement", addElement);
         model.with("switchServer", switchServer);

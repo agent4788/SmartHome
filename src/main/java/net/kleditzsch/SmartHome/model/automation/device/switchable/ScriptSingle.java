@@ -42,6 +42,8 @@ public class ScriptSingle extends SingleSwitchable {
      * @return Einschaltbefehl
      */
     public List<String> getCommand() {
+
+        setChangedData();
         return command;
     }
 
@@ -55,6 +57,7 @@ public class ScriptSingle extends SingleSwitchable {
         Preconditions.checkNotNull(command);
         Preconditions.checkArgument(command.size() >= 1, "Ungültiger Befehl %s", command);
         this.command = command;
+        setChangedData();
     }
 
     /**
@@ -72,7 +75,9 @@ public class ScriptSingle extends SingleSwitchable {
      * @param workingDir Pfad zum Arbeitsordner
      */
     public void setWorkingDir(String workingDir) {
+
         this.workingDir = workingDir;
+        setChangedData();
     }
 
     /**

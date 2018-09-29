@@ -43,6 +43,8 @@ public class ScriptDouble extends DoubleSwitchable {
      * @return Ausschaltbefehl
      */
     public List<String> getOffCommand() {
+
+        setChangedData();
         return offCommand;
     }
 
@@ -56,6 +58,7 @@ public class ScriptDouble extends DoubleSwitchable {
         Preconditions.checkNotNull(offCommand);
         Preconditions.checkArgument(offCommand.size() >= 1, "Ungültiger Befehl %s", offCommand);
         this.offCommand = offCommand;
+        setChangedData();
     }
 
     /**
@@ -64,6 +67,8 @@ public class ScriptDouble extends DoubleSwitchable {
      * @return Einschaltbefehl
      */
     public List<String> getOnCommand() {
+
+        setChangedData();
         return onCommand;
     }
 
@@ -77,6 +82,7 @@ public class ScriptDouble extends DoubleSwitchable {
         Preconditions.checkNotNull(onCommand);
         Preconditions.checkArgument(onCommand.size() >= 1, "Ungültiger Befehl %s", onCommand);
         this.onCommand = onCommand;
+        setChangedData();
     }
 
     /**
@@ -94,7 +100,9 @@ public class ScriptDouble extends DoubleSwitchable {
      * @param workingDir Pfad zum Arbeitsordner
      */
     public void setWorkingDir(String workingDir) {
+
         this.workingDir = workingDir;
+        setChangedData();
     }
 
     /**

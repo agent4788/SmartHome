@@ -1,18 +1,23 @@
 package net.kleditzsch.SmartHome.model.automation.editor;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.*;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+import org.bson.Document;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -22,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
-    private static final String DATABASE_KEY = "smarthome:automation:switchable";
+    private static final String COLLECTION = "automation.switchable";
 
     /**
      * schaltbare Elemente aus der Datenbank laden
@@ -30,23 +35,160 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
     @Override
     public void load() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-        JsonParser jp = new JsonParser();
-        List<String> switchableList = db.lrange(DATABASE_KEY, 0, -1);
+        MongoCollection switchableCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = switchableCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<Switchable> data = getData();
         data.clear();
-        for(String switchableJson : switchableList) {
+        iterator.forEach((Block<Document>) document -> {
 
-            JsonObject jo = jp.parse(switchableJson).getAsJsonObject();
-            Class clazz = getTypeClass(jo.get("type").getAsString());
-            Switchable sensorValue = (Switchable) gson.fromJson(switchableJson, clazz);
-            data.add(sensorValue);
-        }
+                    switch (AutomationElement.Type.valueOf(document.getString("type"))) {
+
+                        case SWITCHABLE_AVM_SOCKET:
+
+                            AvmSocket avmSocket = new AvmSocket();
+                            //Element
+                            avmSocket.setId(ID.of(document.getString("_id")));
+                            avmSocket.setName(document.getString("name"));
+                            avmSocket.setDescription(document.getString("description"));
+                            //Automation Element
+                            avmSocket.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                avmSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }
+                            avmSocket.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Double Switchable
+                            avmSocket.setInverse(document.getBoolean("inverse"));
+                            //AVM Steckdose
+                            avmSocket.setIdentifier(document.getString("identifier"));
+                            avmSocket.setTempSensorId(ID.of(document.getString("tempSensorId")));
+                            avmSocket.setPowerSensorId(ID.of(document.getString("powerSensorId")));
+                            avmSocket.setEnergySensorId(ID.of(document.getString("energySensorId")));
+
+                            data.add(avmSocket);
+
+                            break;
+                        case SWITCHABLE_TPLINK_SOCKET:
+
+                            TPlinkSocket tPlinkSocket = new TPlinkSocket();
+                            //Element
+                            tPlinkSocket.setId(ID.of(document.getString("_id")));
+                            tPlinkSocket.setName(document.getString("name"));
+                            tPlinkSocket.setDescription(document.getString("description"));
+                            //Automation Element
+                            tPlinkSocket.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                tPlinkSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }
+                            tPlinkSocket.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Double Switchable
+                            tPlinkSocket.setInverse(document.getBoolean("inverse"));
+                            //TP-Link Steckdose
+                            tPlinkSocket.setIpAddress(document.getString("ipAddress"));
+                            tPlinkSocket.setPort(document.getInteger("port"));
+                            tPlinkSocket.setSocketType(TPlinkSocket.SOCKET_TYPE.valueOf(document.getString("socketType")));
+                            if(document.getString("voltageSensorId") != null) tPlinkSocket.setVoltageSensorId(ID.of(document.getString("voltageSensor")));
+                            if(document.getString("currentSensorId") != null) tPlinkSocket.setCurrentSensorId(ID.of(document.getString("currentSensor")));
+                            if(document.getString("powerSensorId") != null) tPlinkSocket.setPowerSensorId(ID.of(document.getString("powerSensorId")));
+                            if(document.getString("energySensorId") != null) tPlinkSocket.setEnergySensorId(ID.of(document.getString("energySensorId")));
+
+                            data.add(tPlinkSocket);
+                            break;
+                        case SWITCHABLE_OUTPUT:
+
+                            Output output = new Output();
+                            //Element
+                            output.setId(ID.of(document.getString("_id")));
+                            output.setName(document.getString("name"));
+                            output.setDescription(document.getString("description"));
+                            //Automation Element
+                            output.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                output.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }output.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Double Switchable
+                            output.setInverse(document.getBoolean("inverse"));
+                            //Ausgang
+                            output.setSwitchServerId(ID.of(document.getString("switchServerId")));
+                            output.setPin(document.getInteger("pin"));
+
+                            data.add(output);
+                            break;
+                        case SWITCHABLE_SCRIPT_SINGLE:
+
+                            ScriptSingle scriptSingle = new ScriptSingle();
+                            //Element
+                            scriptSingle.setId(ID.of(document.getString("_id")));
+                            scriptSingle.setName(document.getString("name"));
+                            scriptSingle.setDescription(document.getString("description"));
+                            //Automation Element
+                            scriptSingle.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                scriptSingle.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }scriptSingle.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Einfaches Script
+                            scriptSingle.getCommand().addAll((Collection<? extends String>) document.get("command"));
+                            scriptSingle.setWorkingDir(document.getString("workingDir"));
+
+                            data.add(scriptSingle);
+                            break;
+                        case SWITCHABLE_SCRIPT_DOUBLE:
+
+                            ScriptDouble scriptDouble = new ScriptDouble();
+                            //Element
+                            scriptDouble.setId(ID.of(document.getString("_id")));
+                            scriptDouble.setName(document.getString("name"));
+                            scriptDouble.setDescription(document.getString("description"));
+                            //Automation Element
+                            scriptDouble.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                scriptDouble.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }scriptDouble.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Double Switchable
+                            scriptDouble.setInverse(document.getBoolean("inverse"));
+                            //Doppeltes Script
+                            scriptDouble.getOnCommand().addAll((Collection<? extends String>) document.get("onCommand"));
+                            scriptDouble.getOffCommand().addAll((Collection<? extends String>) document.get("offCommand"));
+                            scriptDouble.setWorkingDir(document.getString("workingDir"));
+
+                            data.add(scriptDouble);
+                            break;
+                        case SWITCHABLE_WAKE_ON_LAN:
+
+                            WakeOnLan wakeOnLan = new WakeOnLan();
+                            //Element
+                            wakeOnLan.setId(ID.of(document.getString("_id")));
+                            wakeOnLan.setName(document.getString("name"));
+                            wakeOnLan.setDescription(document.getString("description"));
+                            //Automation Element
+                            wakeOnLan.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                wakeOnLan.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                            }
+                            wakeOnLan.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Wake on Lan
+                            wakeOnLan.setMac(document.getString("mac"));
+                            wakeOnLan.setIpAddress(document.getString("ipAddress"));
+
+                            data.add(wakeOnLan);
+                            break;
+                    }
+        });
 
         lock.unlock();
     }
@@ -60,8 +202,27 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
     public List<Switchable> getSublistByType(Class type) {
 
         return getData().stream()
-                .filter(e -> type.isInstance(e))
+                .filter(type::isInstance)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * löscht ein Element aus dem Datenbestand
+     *
+     * @param switchable ELement
+     * @return erfolgsmeldung
+     */
+    public boolean delete(Switchable switchable) {
+
+        MongoCollection switchableCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        if(getData().contains(switchable) && getData().remove(switchable)) {
+
+            if(switchableCollection.deleteOne(eq("_id", switchable.getId().get())).getDeletedCount() == 1) {
+
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -70,24 +231,194 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
     @Override
     public void dump() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-
-        Pipeline pipeline = db.pipelined();
-        pipeline.del(DATABASE_KEY);
+        MongoCollection switchableCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
 
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
 
         List<Switchable> data = getData();
-        for(Switchable sensorValue : data) {
+        for(Switchable switchable : data) {
 
-            pipeline.lpush(DATABASE_KEY, gson.toJson(sensorValue));
+            if(switchable.isChangedData()) {
+
+                switch (switchable.getType()) {
+
+                    case SWITCHABLE_AVM_SOCKET:
+
+                        AvmSocket avmSocket = (AvmSocket) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", avmSocket.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", avmSocket.getId().get()),
+                                        set("name", avmSocket.getName()),
+                                        set("description", avmSocket.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", avmSocket.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", avmSocket.getLastToggleTime()),
+                                        set("state", avmSocket.getState().toString()),
+                                        //Double Switchable
+                                        set("inverse", avmSocket.isInverse()),
+                                        //AVM Steckdose
+                                        setOnInsert("type", avmSocket.getType().toString()),
+                                        set("identifier", avmSocket.getIdentifier()),
+                                        set("tempSensorId", avmSocket.getTempSensorId().get()),
+                                        set("powerSensorId", avmSocket.getPowerSensorId().get()),
+                                        set("energySensorId", avmSocket.getEnergySensorId().get())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_TPLINK_SOCKET:
+
+                        TPlinkSocket tPlinkSocket = (TPlinkSocket) switchable;
+                        String voltageSensorId = null;
+                        if (tPlinkSocket.getVoltageSensorId().isPresent()) {
+                            voltageSensorId = tPlinkSocket.getVoltageSensorId().get().get();
+                        }
+                        String currentSensorId = null;
+                        if (tPlinkSocket.getCurrentSensorId().isPresent()) {
+                            currentSensorId = tPlinkSocket.getCurrentSensorId().get().get();
+                        }
+                        String powerSensorId = null;
+                        if (tPlinkSocket.getPowerSensorId().isPresent()) {
+                            powerSensorId = tPlinkSocket.getPowerSensorId().get().get();
+                        }
+                        String energySensorId = null;
+                        if (tPlinkSocket.getEnergySensorId().isPresent()) {
+                            energySensorId = tPlinkSocket.getEnergySensorId().get().get();
+                        }
+                        switchableCollection.updateOne(
+                                eq("_id", tPlinkSocket.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", tPlinkSocket.getId().get()),
+                                        set("name", tPlinkSocket.getName()),
+                                        set("description", tPlinkSocket.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", tPlinkSocket.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", tPlinkSocket.getLastToggleTime()),
+                                        set("state", tPlinkSocket.getState().toString()),
+                                        //Double Switchable
+                                        set("inverse", tPlinkSocket.isInverse()),
+                                        //TP-Link Steckdose
+                                        setOnInsert("type", tPlinkSocket.getType().toString()),
+                                        set("ipAddress", tPlinkSocket.getIpAddress()),
+                                        set("port", tPlinkSocket.getPort()),
+                                        set("socketType", tPlinkSocket.getSocketType().toString()),
+                                        set("voltageSensorId", voltageSensorId),
+                                        set("currentSensorId", currentSensorId),
+                                        set("powerSensorId", powerSensorId),
+                                        set("energySensorId", energySensorId)
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_OUTPUT:
+
+                        Output output = (Output) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", output.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", output.getId().get()),
+                                        set("name", output.getName()),
+                                        set("description", output.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", output.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", output.getLastToggleTime()),
+                                        set("state", output.getState().toString()),
+                                        //Double Switchable
+                                        set("inverse", output.isInverse()),
+                                        //Ausgang
+                                        setOnInsert("type", output.getType().toString()),
+                                        set("switchServerId", output.getSwitchServerId().get()),
+                                        set("pin", output.getPin())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_SCRIPT_SINGLE:
+
+                        ScriptSingle scriptSingle = (ScriptSingle) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", scriptSingle.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", scriptSingle.getId().get()),
+                                        set("name", scriptSingle.getName()),
+                                        set("description", scriptSingle.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", scriptSingle.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", scriptSingle.getLastToggleTime()),
+                                        set("state", scriptSingle.getState().toString()),
+                                        //Einfaches Script
+                                        setOnInsert("type", scriptSingle.getType().toString()),
+                                        set("command", scriptSingle.getCommand()),
+                                        set("workingDir", scriptSingle.getWorkingDir())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_SCRIPT_DOUBLE:
+
+                        ScriptDouble scriptDouble = (ScriptDouble) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", scriptDouble.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", scriptDouble.getId().get()),
+                                        set("name", scriptDouble.getName()),
+                                        set("description", scriptDouble.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", scriptDouble.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", scriptDouble.getLastToggleTime()),
+                                        set("state", scriptDouble.getState().toString()),
+                                        //Double Switchable
+                                        set("inverse", scriptDouble.isInverse()),
+                                        //Ausgang
+                                        setOnInsert("type", scriptDouble.getType().toString()),
+                                        set("onCommand", scriptDouble.getOnCommand()),
+                                        set("offCommand", scriptDouble.getOffCommand()),
+                                        set("workingDir", scriptDouble.getWorkingDir())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_WAKE_ON_LAN:
+
+                        WakeOnLan wakeOnLan = (WakeOnLan) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", wakeOnLan.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", wakeOnLan.getId().get()),
+                                        set("name", wakeOnLan.getName()),
+                                        set("description", wakeOnLan.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", wakeOnLan.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", wakeOnLan.getLastToggleTime()),
+                                        set("state", wakeOnLan.getState().toString()),
+                                        //Eingfaches Script
+                                        setOnInsert("type", wakeOnLan.getType().toString()),
+                                        set("mac", wakeOnLan.getMac()),
+                                        set("ipAddress", wakeOnLan.getIpAddress())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                }
+                switchable.resetChangedData();
+            }
         }
 
         lock.unlock();
-
-        pipeline.sync();
     }
 
     /**
@@ -111,8 +442,8 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
             newSocket.setIpAddress(oldSocket.getIpAddress());
             newSocket.setPort(oldSocket.getPort());
             newSocket.setSocketType(oldSocket.getSocketType());
-            if(oldSocket.getCurrentSensor().isPresent()) newSocket.setCurrentSensor(ID.of(oldSocket.getCurrentSensor().get().get()));
-            if(oldSocket.getVoltageSensor().isPresent()) newSocket.setVoltageSensor(ID.of(oldSocket.getVoltageSensor().get().get()));
+            if(oldSocket.getCurrentSensorId().isPresent()) newSocket.setCurrentSensorId(ID.of(oldSocket.getCurrentSensorId().get().get()));
+            if(oldSocket.getVoltageSensorId().isPresent()) newSocket.setVoltageSensorId(ID.of(oldSocket.getVoltageSensorId().get().get()));
             if(oldSocket.getEnergySensorId().isPresent()) newSocket.setEnergySensorId(ID.of(oldSocket.getEnergySensorId().get().get()));
             if(oldSocket.getPowerSensorId().isPresent()) newSocket.setPowerSensorId(ID.of(oldSocket.getPowerSensorId().get().get()));
 

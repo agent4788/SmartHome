@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -205,8 +204,8 @@ public class AutomationDeviceFormTpLinkServlet extends HttpServlet {
                         energyValue.setSystemValue(true);
                         energyValue.setDescription("TP-Link Energieverbrauch Sensor - " + name + " - IP " + ipAddress + ":" + port);
 
-                        socket.setVoltageSensor(voltageValue.getId());
-                        socket.setCurrentSensor(currentValue.getId());
+                        socket.setVoltageSensorId(voltageValue.getId());
+                        socket.setCurrentSensorId(currentValue.getId());
                         socket.setPowerSensorId(actualPowerValue.getId());
                         socket.setEnergySensorId(energyValue.getId());
 

@@ -15,5 +15,6 @@ public abstract class SingleSwitchable extends Switchable {
     public void updateTriggerOn() {
 
         setLastToggleTime(LocalDateTime.now());
+        setChangedData();
     }
 }

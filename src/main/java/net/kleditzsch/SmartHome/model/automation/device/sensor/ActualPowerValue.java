@@ -47,6 +47,7 @@ public class ActualPowerValue extends SensorValue {
     public void setActualPower(double actualPower) {
 
         this.actualPower = actualPower;
+        setChangedData();
     }
 
     /**

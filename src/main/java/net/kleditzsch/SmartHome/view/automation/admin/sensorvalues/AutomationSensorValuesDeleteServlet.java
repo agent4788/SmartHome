@@ -36,7 +36,7 @@ public class AutomationSensorValuesDeleteServlet extends HttpServlet {
                 Optional<SensorValue> sensorValueOptional = sensorEditor.getById(id);
                 if(sensorValueOptional.isPresent() && !sensorValueOptional.get().isSystemValue()) {
 
-                    sensorEditor.getData().remove(sensorValueOptional.get());
+                    success = sensorEditor.delete(sensorValueOptional.get());
                 } else {
 
                     success = false;

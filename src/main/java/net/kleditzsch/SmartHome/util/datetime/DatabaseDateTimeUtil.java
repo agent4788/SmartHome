@@ -1,9 +1,8 @@
 package net.kleditzsch.SmartHome.util.datetime;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Hilfsfunktionen zum Serialisieren und Parsen von Zeiten für die Datenbank
@@ -29,7 +28,7 @@ public abstract class DatabaseDateTimeUtil {
      * erstellt einen Datums und Zeit String aus einem LocalDateTime Objekt
      *
      * @param ldt Datums und Zeit Objekt
-     * @return
+     * @return Datum als Zeichenkette
      */
     public static String getDatabaseDateTimeStr(LocalDateTime ldt) {
 
@@ -51,7 +50,7 @@ public abstract class DatabaseDateTimeUtil {
      * erstellt einen Datums und Zeit String aus einem LocalDate Objekt
      *
      * @param dt Datums Objekt
-     * @return
+     * @return Datum als Zeichenkette
      */
     public static String getDatabaseDateStr(LocalDate dt) {
 
@@ -73,10 +72,79 @@ public abstract class DatabaseDateTimeUtil {
      * erstellt einen Datums und Zeit String aus einem LocalDateTime Objekt
      *
      * @param lt Zeit Objekt
-     * @return
+     * @return Datum als Zeichenkette
      */
     public static String getDatabaseTimeStr(LocalTime lt) {
 
         return lt.format(timeFormatter);
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalDateTime Objekt
+     *
+     * @param date Datumsobjekt
+     * @return LocalDateTime Objekt
+     */
+    public static LocalDateTime dateToLocaleDateTime(Date date) {
+
+        return date.toInstant().atOffset(ZoneOffset.ofHours(0)).toLocalDateTime();
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalDateTime Objekt
+     *
+     * @param date Datumsobjekt
+     * @param zone Zeitzone
+     * @return LocalDateTime Objekt
+     */
+    public static LocalDateTime dateToLocaleDateTime(Date date, ZoneId zone) {
+
+        return date.toInstant().atZone(zone).toLocalDateTime();
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalTime Objekt
+     *
+     * @param date Datumsobjekt
+     * @return LocalTime Objekt
+     */
+    public static LocalTime dateToLocallTime(Date date) {
+
+        return date.toInstant().atOffset(ZoneOffset.ofHours(0)).toLocalTime();
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalTime Objekt
+     *
+     * @param date Datumsobjekt
+     * @param zone Zeitzone
+     * @return LocalTime Objekt
+     */
+    public static LocalTime dateToLocaleTime(Date date, ZoneId zone) {
+
+        return date.toInstant().atZone(zone).toLocalTime();
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalDate Objekt
+     *
+     * @param date Datumsobjekt
+     * @return LocalDate Objekt
+     */
+    public static LocalDate dateToLocallDate(Date date) {
+
+        return date.toInstant().atOffset(ZoneOffset.ofHours(0)).toLocalDate();
+    }
+
+    /**
+     * konvertiert ein Date Objekt zu einen LocalDate Objekt
+     *
+     * @param date Datumsobjekt
+     * @param zone Zeitzone
+     * @return LocalDate Objekt
+     */
+    public static LocalDate dateToLocaleDate(Date date, ZoneId zone) {
+
+        return date.toInstant().atZone(zone).toLocalDate();
     }
 }

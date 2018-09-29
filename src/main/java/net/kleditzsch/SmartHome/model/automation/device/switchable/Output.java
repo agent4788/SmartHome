@@ -51,6 +51,7 @@ public class Output extends DoubleSwitchable {
 
         Preconditions.checkNotNull(switchServerId);
         this.switchServerId = switchServerId;
+        setChangedData();
     }
 
     /**
@@ -72,6 +73,7 @@ public class Output extends DoubleSwitchable {
         Preconditions.checkNotNull(pin);
         Preconditions.checkArgument(pin >= 0 && pin <= 100, "Ungültiger Pin %i", pin);
         this.pin = pin;
+        setChangedData();
     }
 
     /**

@@ -47,7 +47,9 @@ public class DurationValue extends SensorValue {
      * @param duration Laufzeit
      */
     public void setDuration(long duration) {
+
         this.duration = duration;
+        setChangedData();
     }
 
     /**

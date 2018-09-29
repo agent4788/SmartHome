@@ -44,7 +44,7 @@ public class CliConfigurator {
             json = new JsonParser().parse(Files.newBufferedReader(dbConfigFile));
         } catch (IOException e) {
 
-            json = new JsonParser().parse("{\"host\":\"127.0.0.1\",\"port\":6379,\"timeout\":1000,\"pass\":\"\",\"db\":0}");
+            json = new JsonParser().parse("{\"host\":\"127.0.0.1\",\"port\":27017,\"user\":\"\",\"pass\":\"\",\"db\":\"smartHome\"}");
         }
 
         JsonObject config = json.getAsJsonObject();
@@ -52,39 +52,25 @@ public class CliConfigurator {
         try {
 
             //IP Adresse
-            Optional<String> ip = CliUtil.inputIpAddressOption("Redis Server IP Adresse", config.get("host").getAsString(), 5);
-            if(ip.isPresent()) {
-
-                config.addProperty("host", ip.get());
-            }
+            Optional<String> ip = CliUtil.inputIpAddressOption("MongoDB IP Adresse", config.get("host").getAsString(), 5);
+            if(ip.isPresent()) config.addProperty("host", ip.get());
 
             //Port
-            Optional<Integer> port = CliUtil.inputIntegerOption("Redis Server Port", config.get("port").getAsInt(), 0, 65535, 5);
-            if(port.isPresent()) {
-
-                config.addProperty("port", port.get());
-            }
-
-            //Timeout
-            Optional<Integer> timeout = CliUtil.inputIntegerOption("Redis Server Timeout [in ms]", config.get("timeout").getAsInt(), 500, 10000, 5);
-            if(timeout.isPresent()) {
-
-                config.addProperty("timeout", timeout.get());
-            }
+            Optional<Integer> port = CliUtil.inputIntegerOption("MongoDB Port", config.get("port").getAsInt(), 0, 65535, 5);
+            port.ifPresent(integer -> config.addProperty("port", integer));
 
             //Passwort
-            Optional<String> pass = CliUtil.inputIpAddressOption("Redis Server Passwort", config.get("pass").getAsString(), 5);
-            if(pass.isPresent()) {
+            Optional<String> user = CliUtil.inputStringOption("MongoDB Benutzername", config.get("user").getAsString());
+            user.ifPresent(s -> config.addProperty("user", s));
 
-                config.addProperty("pass", pass.get());
-            }
+            //Passwort
+            Optional<String> pass = CliUtil.inputStringOption("MongoDB Passwort", config.get("pass").getAsString());
+            pass.ifPresent(s -> config.addProperty("pass", s));
 
             //Datenbank Index
-            Optional<Integer> db = CliUtil.inputIntegerOption("Redis Server Datenbankindex", config.get("db").getAsInt(), 0, 100, 5);
-            if(db.isPresent()) {
+            Optional<String> db = CliUtil.inputStringOption("MongoDB Datenbank", config.get("db").getAsString());
+            db.ifPresent(string -> config.addProperty("db", string));
 
-                config.addProperty("db", db.get());
-            }
         } catch (IOException e) {
 
             //Debug Ausgabe

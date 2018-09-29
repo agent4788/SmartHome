@@ -1,12 +1,26 @@
 package net.kleditzsch.SmartHome.model.automation.editor;
 
-import com.google.gson.Gson;
-import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
-import net.kleditzsch.SmartHome.model.automation.room.Room;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
 
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
+import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
+import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
+import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
+import net.kleditzsch.SmartHome.model.automation.room.Room;
+import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
+import net.kleditzsch.SmartHome.model.automation.room.element.DividerElement;
+import net.kleditzsch.SmartHome.model.automation.room.element.SensorElement;
+import net.kleditzsch.SmartHome.model.automation.room.element.VirtualSensorElement;
+import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
+import org.bson.Document;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -14,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
-    private static final String DATABASE_KEY = "smarthome:automation:room";
+    private static final String COLLECTION = "automation.room";
 
     /**
      * läd die Räume aus der Datenbank
@@ -22,19 +36,128 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
     @Override
     public void load() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-        List<String> roomList = db.lrange(DATABASE_KEY, 0, -1);
+        MongoCollection roomCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = roomCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<Room> data = getData();
         data.clear();
-        for(String roomJson : roomList) {
+        iterator.forEach((Block<Document>) document -> {
 
-            data.add(gson.fromJson(roomJson, Room.class));
-        }
+            Room element = new Room();
+            element.setId(ID.of(document.getString("_id")));
+            element.setName(document.getString("name"));
+            element.setDescription(document.getString("description"));
+            element.setDisplayText(document.getString("displayText"));
+            element.setOrderId(document.getInteger("orderId"));
+            element.setDisabled(document.getBoolean("disabled"));
+            element.setIconFile(document.getString("iconFile"));
+
+            List<Document> elements = (List<Document>) document.get("elements");
+            for (Document roomElement : elements) {
+
+                RoomElement.Type type = RoomElement.Type.valueOf(roomElement.getString("type"));
+                switch (type) {
+
+                    case BUTTON_ELEMENT:
+
+                        ButtonElement be = new ButtonElement();
+
+                        //Allgemeine Daten
+                        be.setId(ID.of(roomElement.getString("_id")));
+                        be.setName(roomElement.getString("name"));
+                        be.setDescription(roomElement.getString("description"));
+                        be.setDisplayText(roomElement.getString("displayText"));
+                        be.setOrderId(roomElement.getInteger("orderId"));
+                        be.setDisabled(roomElement.getBoolean("disabled"));
+                        be.setIconFile(roomElement.getString("iconFile"));
+
+                        //Sicherheitsabfrage
+                        be.setSafetyRequestEnabled(roomElement.getBoolean("safetyRequestEnabled"));
+                        be.setSafetyRequestIcon(roomElement.getString("safetyRequestIcon"));
+                        be.setSafetyRequestHeaderText(roomElement.getString("safetyRequestHeaderText"));
+                        be.setSafetyRequestText(roomElement.getString("safetyRequestText"));
+                        be.setSafetyRequestExecuteButtonText(roomElement.getString("safetyRequestExecuteButtonText"));
+                        be.setSafetyRequestCancelButtonText(roomElement.getString("safetyRequestCancelButtonText"));
+
+                        //sonstiges
+                        be.setOnButtonText(roomElement.getString("onButtonText"));
+                        be.setOffButtonText(roomElement.getString("offButtonText"));
+                        be.setDoubleButton(roomElement.getBoolean("isDoubleButton"));
+
+                        //Schaltbefehle
+                        List<Document> commands = (List<Document>) roomElement.get("commands");
+                        for(Document command: commands) {
+
+                            be.getCommands().add(new SwitchCommand(ID.of(command.getString("switchableId")), SwitchCommands.valueOf(command.getString("command"))));
+                        }
+
+                        element.getRoomElements().add(be);
+                        break;
+                    case SENSOR_ELEMENT:
+
+                        SensorElement se = new SensorElement();
+
+                        //Allgemeine Daten
+                        se.setId(ID.of(roomElement.getString("_id")));
+                        se.setName(roomElement.getString("name"));
+                        se.setDescription(roomElement.getString("description"));
+                        se.setDisplayText(roomElement.getString("displayText"));
+                        se.setOrderId(roomElement.getInteger("orderId"));
+                        se.setDisabled(roomElement.getBoolean("disabled"));
+                        se.setIconFile(roomElement.getString("iconFile"));
+
+                        //Sensor IDs
+                        se.setFirstSensorValueId(ID.of(roomElement.getString("firstSensorValueId")));
+                        se.setSecondSensorValueId(ID.of(roomElement.getString("secondSensorValueId")));
+                        se.setThirdSensorValueId(ID.of(roomElement.getString("thirdSensorValueId")));
+
+                        element.getRoomElements().add(se);
+                        break;
+                    case VIRTUAL_SENSOR_ELEMENT:
+
+                        VirtualSensorElement ve = new VirtualSensorElement();
+
+                        //Allgemeine Daten
+                        ve.setId(ID.of(roomElement.getString("_id")));
+                        ve.setName(roomElement.getString("name"));
+                        ve.setDescription(roomElement.getString("description"));
+                        ve.setDisplayText(roomElement.getString("displayText"));
+                        ve.setOrderId(roomElement.getInteger("orderId"));
+                        ve.setDisabled(roomElement.getBoolean("disabled"));
+                        ve.setIconFile(roomElement.getString("iconFile"));
+
+                        //ID des Virtuellen Sensors
+                        ve.setVirtualSensorId(ID.of(roomElement.getString("virtualSensorId")));
+
+                        element.getRoomElements().add(ve);
+                        break;
+                    case DIVIDER_ELEMENT:
+
+                        DividerElement de = new DividerElement();
+
+                        //Allgemeine Daten
+                        de.setId(ID.of(roomElement.getString("_id")));
+                        de.setName(roomElement.getString("name"));
+                        de.setDescription(roomElement.getString("description"));
+                        de.setDisplayText(roomElement.getString("displayText"));
+                        de.setOrderId(roomElement.getInteger("orderId"));
+                        de.setDisabled(roomElement.getBoolean("disabled"));
+                        de.setIconFile(roomElement.getString("iconFile"));
+
+                        //Darstellung
+                        de.setIcon(roomElement.getString("icon"));
+
+                        element.getRoomElements().add(de);
+                        break;
+                }
+            }
+            element.resetChangedData();
+
+            data.add(element);
+        });
 
         lock.unlock();
     }
@@ -51,28 +174,117 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
     }
 
     /**
+     * löscht ein Element aus dem Datenbestand
+     *
+     * @param room ELement
+     * @return erfolgsmeldung
+     */
+    public boolean delete(Room room) {
+
+        MongoCollection roomCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        if(getData().contains(room) && getData().remove(room)) {
+
+            if(roomCollection.deleteOne(eq("_id", room.getId().get())).getDeletedCount() == 1) {
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * speichert die Räume in die Datenbank
      */
     @Override
     public void dump() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-
-        Pipeline pipeline = db.pipelined();
-        pipeline.del(DATABASE_KEY);
+        MongoCollection roomCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
 
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
 
         List<Room> data = getData();
-        for(Room sensorValue : data) {
+        for(Room room : data) {
 
-            pipeline.lpush(DATABASE_KEY, gson.toJson(sensorValue));
+            if(room.isChangedData()) {
+
+                //Raumelemente vorbereiten
+                List<Document> roomElements = new ArrayList<>(room.getRoomElements().size());
+                for (RoomElement roomElement : room.getRoomElements()) {
+
+                    Document roomElementDoc = new Document();
+                    roomElementDoc.append("_id", roomElement.getId().get());
+                    roomElementDoc.append("name", roomElement.getName());
+                    roomElementDoc.append("description", roomElement.getDescription().isPresent() ? roomElement.getDescription().get() : "");
+                    roomElementDoc.append("displayText", roomElement.getDisplayText());
+                    roomElementDoc.append("orderId", roomElement.getOrderId());
+                    roomElementDoc.append("disabled", roomElement.isDisabled());
+                    roomElementDoc.append("iconFile", roomElement.getIconFile());
+                    roomElementDoc.append("type", roomElement.getType().toString());
+
+                    if (roomElement instanceof ButtonElement) {
+
+                        //Button Element
+                        ButtonElement be = (ButtonElement) roomElement;
+
+                        roomElementDoc.append("safetyRequestEnabled", be.isSafetyRequestEnabled());
+                        roomElementDoc.append("safetyRequestIcon", be.getSafetyRequestIcon());
+                        roomElementDoc.append("safetyRequestHeaderText", be.getSafetyRequestHeaderText());
+                        roomElementDoc.append("safetyRequestText", be.getSafetyRequestText());
+                        roomElementDoc.append("safetyRequestExecuteButtonText", be.getSafetyRequestExecuteButtonText());
+                        roomElementDoc.append("safetyRequestCancelButtonText", be.getSafetyRequestCancelButtonText());
+
+                        roomElementDoc.append("onButtonText", be.getOnButtonText());
+                        roomElementDoc.append("offButtonText", be.getOffButtonText());
+                        roomElementDoc.append("isDoubleButton", be.isDoubleButton());
+
+                        List<Document> switchCommands = new ArrayList<>(be.getCommands().size());
+                        for (SwitchCommand sc : be.getCommands()) {
+
+                            switchCommands.add(new Document().append("switchableId", sc.getSwitchableId().get()).append("command", sc.getCommand().toString()));
+                        }
+                        roomElementDoc.append("commands", switchCommands);
+                    } else if (roomElement instanceof SensorElement) {
+
+                        //Sensor Element
+                        SensorElement se = (SensorElement) roomElement;
+                        roomElementDoc.append("firstSensorValueId", se.getFirstSensorValueId().isPresent() ? se.getFirstSensorValueId().get().toString() : "");
+                        roomElementDoc.append("secondSensorValueId", se.getSecondSensorValueId().isPresent() ? se.getSecondSensorValueId().get().toString() : "");
+                        roomElementDoc.append("thirdSensorValueId", se.getThirdSensorValueId().isPresent() ? se.getThirdSensorValueId().get().toString() : "");
+                    } else if (roomElement instanceof VirtualSensorElement) {
+
+                        //Virtual Sensor Element
+                        VirtualSensorElement ve = (VirtualSensorElement) roomElement;
+                        roomElementDoc.append("virtualSensorId", ve.getVirtualSensorId().isPresent() ? ve.getVirtualSensorId().get().toString() : "");
+                    } else if (roomElement instanceof DividerElement) {
+
+                        //Divider Element
+                        DividerElement de = (DividerElement) roomElement;
+                        roomElementDoc.append("icon", de.getIcon().isPresent() ? de.getIcon().get() : "");
+                    }
+                    roomElements.add(roomElementDoc);
+                }
+
+                roomCollection.updateOne(
+                        eq("_id", room.getId().get()),
+                        combine(
+                                setOnInsert("_id", room.getId().get()),
+                                set("name", room.getName()),
+                                set("description", room.getDescription().orElseGet(() -> "")),
+                                set("displayText", room.getDisplayText()),
+                                set("description", room.getDescription().isPresent() ? room.getDescription().get() : ""),
+                                set("orderId", room.getOrderId()),
+                                set("disabled", room.isDisabled()),
+                                set("iconFile", room.getIconFile()),
+                                set("elements", roomElements)
+                        ),
+                        new UpdateOptions().upsert(true)
+                );
+
+                room.resetChangedData();
+            }
         }
 
         lock.unlock();
-
-        pipeline.sync();
     }
 }

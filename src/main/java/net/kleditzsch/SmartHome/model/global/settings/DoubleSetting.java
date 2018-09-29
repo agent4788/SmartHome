@@ -51,7 +51,9 @@ public class DoubleSetting extends Setting {
      * @param value Wert
      */
     public void setValue(double value) {
+
         this.value = value;
+        setChangedData();
     }
 
     /**
@@ -69,7 +71,9 @@ public class DoubleSetting extends Setting {
      * @param defaultValue Standardwert
      */
     public void setDefaultValue(double defaultValue) {
+
         this.defaultValue = defaultValue;
+        setChangedData();
     }
 
     /**

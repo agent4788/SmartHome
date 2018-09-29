@@ -35,6 +35,8 @@ public abstract class VirtualSensorValue extends SensorValue {
      * @return Liste der überwachten Sensoren
      */
     public Set<String> getSensorValues() {
+
+        setChangedData();
         return sensorValues;
     }
 

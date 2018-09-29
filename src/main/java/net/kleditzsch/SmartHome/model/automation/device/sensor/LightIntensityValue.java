@@ -49,6 +49,7 @@ public class LightIntensityValue extends SensorValue {
     public void setLightIntensity(double lightIntensity) {
 
         this.lightIntensity = lightIntensity;
+        setChangedData();
     }
 
     /**

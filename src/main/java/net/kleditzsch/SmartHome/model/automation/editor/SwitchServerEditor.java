@@ -1,11 +1,18 @@
 package net.kleditzsch.SmartHome.model.automation.editor;
 
-import com.google.gson.Gson;
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Updates.*;
+
+import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.model.automation.switchserver.SwitchServer;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+import org.bson.Document;
 
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -15,7 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
 
-    private static final String DATABASE_KEY = "smarthome:automation:switchserver";
+    private static final String COLLECTION = "automation.switchServer";
 
     /**
      * Schaltserver aus der Datenbank laden
@@ -23,21 +30,49 @@ public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
     @Override
     public void load() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-        List<String> switchServerList = db.lrange(DATABASE_KEY, 0, -1);
+        MongoCollection switchServerCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = switchServerCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<SwitchServer> data = getData();
         data.clear();
-        for(String switschServerJson : switchServerList) {
+        iterator.forEach((Block<Document>) document -> {
 
-            data.add(gson.fromJson(switschServerJson, SwitchServer.class));
-        }
+            SwitchServer element = new SwitchServer(
+                    ID.of(document.getString("_id")),
+                    document.getString("name"),
+                    document.getString("ipAddress"),
+                    document.getInteger("port"),
+                    document.getBoolean("disabled"));
+            element.setDescription(document.getString("description"));
+            element.setTimeout(document.getInteger("timeout"));
+            element.resetChangedData();
+
+            data.add(element);
+        });
 
         lock.unlock();
+    }
+
+    /**
+     * löscht ein Element aus dem Datenbestand
+     *
+     * @param switchServer ELement
+     * @return erfolgsmeldung
+     */
+    public boolean delete(SwitchServer switchServer) {
+
+        MongoCollection switchServerCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        if(getData().contains(switchServer) && getData().remove(switchServer)) {
+
+            if(switchServerCollection.deleteOne(eq("_id", switchServer.getId().get())).getDeletedCount() == 1) {
+
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -46,11 +81,7 @@ public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
     @Override
     public void dump() {
 
-        Jedis db = Application.getInstance().getDatabaseConnection();
-        Gson gson = Application.getInstance().getGson();
-
-        Pipeline pipeline = db.pipelined();
-        pipeline.del(DATABASE_KEY);
+        MongoCollection switchServerCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
 
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
@@ -58,11 +89,26 @@ public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
         List<SwitchServer> data = getData();
         for(SwitchServer switchServer : data) {
 
-            pipeline.lpush(DATABASE_KEY, gson.toJson(switchServer));
+            if(switchServer.isChangedData()) {
+
+                switchServerCollection.updateOne(
+                        eq("_id", switchServer.getId().get()),
+                        combine(
+                                setOnInsert("_id", switchServer.getId().get()),
+                                set("name", switchServer.getName()),
+                                set("description", switchServer.getDescription().orElseGet(() -> "")),
+                                set("ipAddress", switchServer.getIpAddress()),
+                                set("port", switchServer.getPort()),
+                                set("timeout", switchServer.getTimeout()),
+                                set("disabled", switchServer.isDisabled())
+                        ),
+                        new UpdateOptions().upsert(true)
+                );
+
+                switchServer.resetChangedData();
+            }
         }
 
         lock.unlock();
-
-        pipeline.sync();
     }
 }

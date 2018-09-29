@@ -49,6 +49,7 @@ public class CurrentValue extends SensorValue {
     public void setCurrent(double current) {
 
         this.current = current;
+        setChangedData();
     }
 
     /**

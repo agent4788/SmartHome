@@ -64,7 +64,9 @@ public class DistanceValue extends SensorValue {
      * @param distance Entfernung
      */
     public void setDistance(double distance) {
+
         this.distance = distance;
+        setChangedData();
     }
 
     /**
@@ -95,6 +97,7 @@ public class DistanceValue extends SensorValue {
     public void setOffset(double offset) {
 
         this.offset = offset;
+        setChangedData();
     }
 
     /**

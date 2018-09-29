@@ -67,6 +67,7 @@ public class UserAtHomeValue extends SensorValue {
     public void setIpAddress(String ipAddress) {
 
         this.ipAddress = ipAddress;
+        setChangedData();
     }
 
     /**
@@ -84,7 +85,9 @@ public class UserAtHomeValue extends SensorValue {
      * @param atHome Status ob der Benutzer zu Hause ist
      */
     public void setAtHome(boolean atHome) {
+
         this.atHome = atHome;
+        setChangedData();
     }
 
     /**
@@ -115,6 +118,7 @@ public class UserAtHomeValue extends SensorValue {
     public void setTimeout(int timeout) {
 
         this.timeout = timeout;
+        setChangedData();
     }
 
     /**
@@ -132,7 +136,9 @@ public class UserAtHomeValue extends SensorValue {
      * @param useExternalDataSource externe Datenquelle verwenden
      */
     public void setUseExternalDataSource(boolean useExternalDataSource) {
+
         this.useExternalDataSource = useExternalDataSource;
+        setChangedData();
     }
 
     /**

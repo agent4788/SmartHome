@@ -66,6 +66,7 @@ public class TemperatureValue extends SensorValue {
     public void setTemperature(double temperature) {
 
         this.temperature = temperature;
+        setChangedData();
     }
 
     /**
@@ -96,6 +97,7 @@ public class TemperatureValue extends SensorValue {
     public void setOffset(double offset) {
 
         this.offset = offset;
+        setChangedData();
     }
 
     /**

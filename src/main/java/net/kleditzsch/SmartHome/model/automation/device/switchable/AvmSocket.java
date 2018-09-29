@@ -52,6 +52,7 @@ public class AvmSocket extends DoubleSwitchable {
         Preconditions.checkNotNull(identifier);
         Preconditions.checkArgument(identifier.matches("^[0-9 ]{10,15}$"), "Ungültige Identifizierung %s", identifier);
         this.identifier = identifier.replace(" ", "");
+        setChangedData();
     }
 
     /**
@@ -72,6 +73,7 @@ public class AvmSocket extends DoubleSwitchable {
 
         Preconditions.checkNotNull(tempSensorId);
         this.tempSensorId = tempSensorId;
+        setChangedData();
     }
 
     /**
@@ -92,6 +94,7 @@ public class AvmSocket extends DoubleSwitchable {
 
         Preconditions.checkNotNull(powerSensorId);
         this.powerSensorId = powerSensorId;
+        setChangedData();
     }
 
     /**
@@ -112,6 +115,7 @@ public class AvmSocket extends DoubleSwitchable {
 
         Preconditions.checkNotNull(energySensorId);
         this.energySensorId = energySensorId;
+        setChangedData();
     }
 
     /**

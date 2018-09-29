@@ -53,6 +53,7 @@ public class WakeOnLan extends SingleSwitchable {
         Preconditions.checkNotNull(mac);
         Preconditions.checkArgument(mac.matches("^[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}$"), "Ungültige MAC Adresse %s", mac);
         this.mac = mac;
+        setChangedData();
     }
 
     /**
@@ -74,6 +75,7 @@ public class WakeOnLan extends SingleSwitchable {
         Preconditions.checkNotNull(ipAddress);
         Preconditions.checkArgument(InetAddresses.isInetAddress(ipAddress), "Ungültige IP Adresse %s", ipAddress);
         this.ipAddress = ipAddress;
+        setChangedData();
     }
 
     /**

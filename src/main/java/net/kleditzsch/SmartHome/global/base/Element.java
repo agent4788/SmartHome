@@ -20,14 +20,17 @@ public abstract class Element {
     /**
      * Name des Elements
      */
-    @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
-    @ValidatePattern(value = "^[\\w -_.:!?&%$§#+]{3,25}$", errorCode = 10001, message = "Ungültiger Name")
     private String name = "";
 
     /**
      * Beschreibund des Elements
      */
     private String description = "";
+
+    /**
+     * gibt an ob Daten seit der letzten Speicherung geändert wurden
+     */
+    private boolean changedData = false;
 
     /**
      * gibt die ID des Elements zurück
@@ -73,6 +76,7 @@ public abstract class Element {
         if(name != null && name.trim().length() >= 3) {
 
             this.name = name;
+            setChangedData();
         } else {
 
             throw new IllegalArgumentException("Ungültiger Name");
@@ -97,5 +101,32 @@ public abstract class Element {
     public void setDescription(String description) {
 
         this.description = description;
+        setChangedData();
+    }
+
+    /**
+     * gibt an ob die Daten des Objektes geändert wurden
+     *
+     * @return Daten geändert
+     */
+    public boolean isChangedData() {
+
+        return changedData;
+    }
+
+    /**
+     * Daten geäbdert
+     */
+    protected void setChangedData() {
+
+        changedData = true;
+    }
+
+    /**
+     * reset des Daten geändert Flags
+     */
+    public void resetChangedData() {
+
+        changedData = false;
     }
 }
