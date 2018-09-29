@@ -1,0 +1,12 @@
+<header>
+    <div class="ui fixed inverted menu large">
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
+            <img src="/static/img/icon/contact.png" width="32" height="32" class="logo">
+            Kontakte
+        </a>
+        <div class="right menu">
+            <a href="/contact/admin/index" class="item"><i class="setting icon large"></i></a>
+        </div>
+    </div>
+</header>
+{% include '/webserver/template/sidebar.html' with {module: 'contact'} %}
