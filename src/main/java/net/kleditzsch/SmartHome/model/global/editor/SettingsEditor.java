@@ -41,6 +41,10 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String AUTOMATION_ENERGY_WATER_PRICE = "AUTOMATION_ENERGY_WATER_PRICE";
     public static final String AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE = "AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE";
 
+    //Filme Einstellungen
+    public static final String MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE = "MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE";
+    public static final String MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE = "MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE";
+
     /**
      * Lock objekt
      */
@@ -94,6 +98,12 @@ public class SettingsEditor implements DatabaseEditor {
 
         IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
         knownSettings.add(paginationElementsAtPage);
+
+        //Filme Einstellungen
+        IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
+        knownSettings.add(paginationElementsAtPageAdmin);
+        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE, 25, 25);
+        knownSettings.add(paginationElementsAtPageUser);
     }
 
     /**

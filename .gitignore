@@ -25,5 +25,6 @@ hs_err_pid*
 out/
 build/
 icons/
+upload/
 db.config.json
 KeyStore.jks

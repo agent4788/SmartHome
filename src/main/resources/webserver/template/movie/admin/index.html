@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Admin</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div class="ui link cards four column doubling stackable">
+            <div class="card" onclick="window.location = '/movie/admin/actor'">
+                <div class="image">
+                    <img src="/static/img/icon/person.png">
+                </div>
+                <div class="content">
+                    <div class="header">Schauspieler</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/director'">
+                <div class="image">
+                    <img src="/static/img/icon/person.png">
+                </div>
+                <div class="content">
+                    <div class="header">Regiseure</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/disc'">
+                <div class="image">
+                    <img src="/static/img/icon/disc.png">
+                </div>
+                <div class="content">
+                    <div class="header">Medien</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/fsk'">
+                <div class="image">
+                    <img src="/static/img/icon/fsk.png">
+                </div>
+                <div class="content">
+                    <div class="header">Altersfreigaben</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/genre'">
+                <div class="image">
+                    <img src="/static/img/icon/genre.png">
+                </div>
+                <div class="content">
+                    <div class="header">Genre</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/settings'">
+                <div class="image">
+                    <img src="/static/img/icon/settings.png">
+                </div>
+                <div class="content">
+                    <div class="header">Einstellungen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

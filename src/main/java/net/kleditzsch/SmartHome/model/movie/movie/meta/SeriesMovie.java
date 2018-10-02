@@ -9,9 +9,23 @@ import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 public class SeriesMovie extends Element {
 
     /**
+     * Filmtyp in der Reihe
+     */
+    enum SeriesMovieType {
+        Prequel,    //Vorgeschichte
+        Sequel,     //Fortsetzung
+        Spin_Off    //Nebengeschichte
+    }
+
+    /**
      * Nummer des Films in der Reihe
      */
-    private int seriesNumber = 0;
+    private int seriesOrder = 0;
+
+    /**
+     * Typ des Filme (Vorgeschichte, Fortsetzung ...)
+     */
+    private SeriesMovieType seriesType = SeriesMovieType.Sequel;
 
     /**
      * Film
@@ -23,17 +37,35 @@ public class SeriesMovie extends Element {
      *
      * @return Nummer des Filmes in der Reihe
      */
-    public int getSeriesNumber() {
-        return seriesNumber;
+    public int getSeriesOrder() {
+        return seriesOrder;
     }
 
     /**
      * setzt die Nummer des Filmes in der Reihe
      *
-     * @param seriesNumber Nummer des Filmes in der Reihe
+     * @param seriesOrder Nummer des Filmes in der Reihe
      */
-    public void setSeriesNumber(int seriesNumber) {
-        this.seriesNumber = seriesNumber;
+    public void setSeriesOrder(int seriesOrder) {
+        this.seriesOrder = seriesOrder;
+    }
+
+    /**
+     * gibt den Filmtyp in der Reihe zurück
+     *
+     * @return Filmtyp in der Reihe
+     */
+    public SeriesMovieType getSeriesType() {
+        return seriesType;
+    }
+
+    /**
+     * Filmtyp in der Reihe
+     *
+     * @param seriesType Filmtyp in der Reihe
+     */
+    public void setSeriesType(SeriesMovieType seriesType) {
+        this.seriesType = seriesType;
     }
 
     /**

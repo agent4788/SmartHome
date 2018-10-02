@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filme Altersfreigaben</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        function search() {
+
+            var value = $('.ui.search input').val();
+            window.location = '/movie/admin/fsk?filter=' + value;
+        }
+
+        $(function () {
+
+            $('.ui.search i').click(function () {
+                search();
+            });
+            $('.ui.search input').keydown(function (e) {
+                if(e.which == 13) {
+                    search();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'fsk'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Altersfreigaben verwalten</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui attached menu inverted blue">
+        <a class="item" href="/movie/admin/fskform">
+            <i class="plus icon"></i> hinzuf&uuml;gen
+        </a>
+        <div class="right menu">
+            <div class="ui right aligned category search item">
+                <div class="ui icon input">
+                    <input class="prompt" type="text" placeholder="Suche ..." {% if filterStr is defined %}value="{{ filterStr | escape }}"{% endif %}>
+                    <i class="search link icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if pagination.getSize() > 0 %}
+    <div class="ui segment attached">
+        <div class="ui divided items attached {% if pagination.hasPages() == false %}bottom{% endif %}">
+            {% for element in pagination.getCurrentPageElements() %}
+            {% set randomId = randomstr() %}
+            <div class="item">
+                <div class="ui image tiny">
+                    <img src="/movie/fsklogo?file={{ element.getImageFile() }}">
+                </div>
+                <div class="content">
+                    <div class="header">{{ element.getName() | escape }}</div>
+                    {% if element.getDescription().isPresent() %}
+                    <div class="description">
+                        <p>{{ element.getDescription().get() | escape }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="extra">
+                        <div class="ui right floated">
+                            {% if element.getLevel() != 0 %}
+                            <a title="nach oben verschieben" class="ui button icon basic" href="/movie/admin/fskorder?direction=up&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
+                            {% endif %}
+                            {% if element.getLevel() != maxLevel %}
+                            <a title="nach unten verschieben" class="ui button icon basic" href="/movie/admin/fskorder?direction=down&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
+                            {% endif %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/movie/admin/fskform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
+                        </div>
+                        <div class="ui basic modal" id="{{ randomId }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Altersfreigabe l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du die Altersfreigabe l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/movie/admin/fskdelete?id={{ element.getId() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom attached clearing">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/movie/admin/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="ui icon info message bottom attached large">
+        <i class="info circle icon black"></i>
+        <div class="content">
+            <p>keine Altersfreigaben gefunden</p>
+        </div>
+    </div>
+    {% endif %}
+    <div style="height: 50px;"></div>
+</main>
+</body>
+</html>
