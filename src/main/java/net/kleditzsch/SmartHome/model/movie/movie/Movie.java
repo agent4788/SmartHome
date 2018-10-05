@@ -1,11 +1,13 @@
 package net.kleditzsch.SmartHome.model.movie.movie;
 
 import net.kleditzsch.SmartHome.global.base.Element;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Film
@@ -35,7 +37,7 @@ public class Movie extends Element {
     /**
      * Disc
      */
-    private Disc disc;
+    private ID discId;
 
     /**
      * Preis
@@ -50,12 +52,12 @@ public class Movie extends Element {
     /**
      * Altersfreigabe
      */
-    private FSK fsk;
+    private ID fskId;
 
     /**
      * Genre
      */
-    private Genre genre;
+    private ID genreId;
 
     /**
      * Bewertung
@@ -70,22 +72,22 @@ public class Movie extends Element {
     /**
      * Regiseure
      */
-    private List<Director> directors = new ArrayList<>();
+    private List<ID> directorIds = new ArrayList<>();
 
     /**
      * Schauspieler
      */
-    private List<Actor> actors = new ArrayList<>();
+    private List<ID> actorIds = new ArrayList<>();
 
     /**
      * teil eine Filmbox
      */
-    private boolean inMovieBox = false;
+    private ID boxId = null;
 
     /**
      * teil einer Fimreihe
      */
-    private boolean inMovieSeries = false;
+    private ID seriesId = null;
 
     /**
      * demnächst anschauen
@@ -170,17 +172,17 @@ public class Movie extends Element {
      *
      * @return Disc
      */
-    public Disc getDisc() {
-        return disc;
+    public ID getDiscId() {
+        return discId;
     }
 
     /**
      * setzt die Disc
      *
-     * @param disc Disc
+     * @param discId Disc
      */
-    public void setDisc(Disc disc) {
-        this.disc = disc;
+    public void setDiscId(ID discId) {
+        this.discId = discId;
     }
 
     /**
@@ -224,17 +226,17 @@ public class Movie extends Element {
      *
      * @return Altersfreigabe
      */
-    public FSK getFsk() {
-        return fsk;
+    public ID getFskId() {
+        return fskId;
     }
 
     /**
      * setzt die Altersfreigabe
      *
-     * @param fsk Altersfreigabe
+     * @param fskId Altersfreigabe
      */
-    public void setFsk(FSK fsk) {
-        this.fsk = fsk;
+    public void setFskId(ID fskId) {
+        this.fskId = fskId;
     }
 
     /**
@@ -242,17 +244,17 @@ public class Movie extends Element {
      *
      * @return Genre
      */
-    public Genre getGenre() {
-        return genre;
+    public ID getGenreId() {
+        return genreId;
     }
 
     /**
      * setzt das Genre
      *
-     * @param genre Genre
+     * @param genreId Genre
      */
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setGenreId(ID genreId) {
+        this.genreId = genreId;
     }
 
     /**
@@ -296,8 +298,8 @@ public class Movie extends Element {
      *
      * @return Liste der Regiseure
      */
-    public List<Director> getDirectors() {
-        return directors;
+    public List<ID> getDirectorIds() {
+        return directorIds;
     }
 
     /**
@@ -305,8 +307,17 @@ public class Movie extends Element {
      *
      * @return Liste der Schauspieler
      */
-    public List<Actor> getActors() {
-        return actors;
+    public List<ID> getActorIds() {
+        return actorIds;
+    }
+
+    /**
+     * gibt an ob der Film zu einer Box gehört
+     *
+     * @return gehört zu Filmbox
+     */
+    public Optional<ID> getBoxId() {
+        return Optional.ofNullable(boxId);
     }
 
     /**
@@ -315,16 +326,25 @@ public class Movie extends Element {
      * @return gehört zu Filmbox
      */
     public boolean isInMovieBox() {
-        return inMovieBox;
+        return getBoxId().isPresent();
     }
 
     /**
      * markiert den Film als Teil einer Filmbox
      *
-     * @param inMovieBox Teil einer Filmbox
+     * @param boxId Teil einer Filmbox
      */
-    public void setInMovieBox(boolean inMovieBox) {
-        this.inMovieBox = inMovieBox;
+    public void setInMovieBox(ID boxId) {
+        this.boxId = boxId;
+    }
+
+    /**
+     * gibt an ob der Film zu einer Filmreihe hegört
+     *
+     * @return gehört zu Filmreihe
+     */
+    public Optional<ID> getSeriesId() {
+        return Optional.ofNullable(seriesId);
     }
 
     /**
@@ -333,16 +353,16 @@ public class Movie extends Element {
      * @return gehört zu Filmreihe
      */
     public boolean isInMovieSeries() {
-        return inMovieSeries;
+        return getSeriesId().isPresent();
     }
 
     /**
      * markiert den Film als Teil einer Filmreihe
      *
-     * @param inMovieSeries Teil einer Filmreihe
+     * @param seriesId Teil einer Filmreihe
      */
-    public void setInMovieSeries(boolean inMovieSeries) {
-        this.inMovieSeries = inMovieSeries;
+    public void setInMovieSeries(ID seriesId) {
+        this.seriesId = seriesId;
     }
 
     /**

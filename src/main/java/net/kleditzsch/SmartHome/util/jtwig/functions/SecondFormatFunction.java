@@ -25,7 +25,10 @@ public class SecondFormatFunction extends SimpleJtwigFunction {
         if (request.getArguments().get(0) instanceof Duration) {
 
             return TimeUtil.formatSeconds(((Duration) request.getArguments().get(0)).getSeconds(), true);
-        } else if (request.getArguments().get(0) instanceof Integer || request.getArguments().get(0) instanceof Long) {
+        } else if (request.getArguments().get(0) instanceof Integer) {
+
+            return TimeUtil.formatSeconds(((int) request.getArguments().get(0)), false);
+        } else if (request.getArguments().get(0) instanceof Long) {
 
             return TimeUtil.formatSeconds(((long) request.getArguments().get(0)), false);
         } else {

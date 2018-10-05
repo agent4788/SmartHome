@@ -1,10 +1,133 @@
+<script type="text/javascript">
+    function search() {
+
+        var value = $('.ui.search input').val();
+        window.location = '/movie/search?title=' + value;
+    }
+
+    $(function() {
+
+        $('.ui.dropdown').dropdown();
+
+        $('.ui.search i').click(function () {
+            search();
+        });
+
+        $('.ui.search input').keydown(function (e) {
+            if(e.which == 13) {
+                search();
+                 }
+        });
+    });
+</script>
 <header>
     <div class="ui fixed inverted menu large">
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
             <img src="/static/img/icon/movie.png" width="32" height="32" class="logo">
             Filme
         </a>
-        <div class="right menu">
+        <a class="header item {% if module == 'dash' %}active{% endif %}" href="/movie/index">
+            Dashboard
+        </a>
+        <a class="header item {% if module == 'movie' %}active{% endif %}" href="/movie/movie">
+            Filme
+        </a>
+        <a class="header item {% if module == 'moviebox' %}active{% endif %}" href="/movie/moviebox">
+            Film Boxen
+        </a>
+        <a class="header item {% if module == 'movieseries' %}active{% endif %}" href="/movie/movieseries">
+            Film Reihen
+        </a>
+        <a class="header item {% if module == 'search' %}active{% endif %}" href="/movie/search">
+            Suche
+        </a>
+        <a class="header item {% if module == 'statistics' %}active{% endif %}" href="/movie/statistics">
+            Statistik
+        </a>
+        <div class="right menu attached ">
+            <div class="item">
+                <div class="ui icon input search">
+                    <input placeholder="Suchen..." type="text">
+                    <i class="search link icon"></i>
+                </div>
+            </div>
+            {% if module == 'movie' or module == 'moviebox' or module == 'movieseries' %}
+            <div class="ui icon item dropdown">
+                <i class="pencil alternate icon large"></i>
+                <div class="menu">
+                    {% if module == 'movie' %}
+                        <a class="item" href="/movie/movieform">
+                            <i class="icon plus"></i>
+                            Film hinzuf&uuml;gen
+                        </a>
+                        {% if id %}
+                        <div class="ui divider"></div>
+                        <a class="item" href="/movie/movieform?id={{ id | escape }}">
+                            <i class="icon pencil alternate"></i>
+                            bearbeiten
+                        </a>
+                        <a class="item" onclick="$('#movieDeleteSafetyRequest').modal('show')">
+                            <i class="icon remove"></i>
+                            l&ouml;schen
+                        </a>
+                        <div class="ui basic modal" id="movieDeleteSafetyRequest">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Film l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du den Film l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/movie/moviedelete?id={{ id }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if module == 'moviebox'%}
+                        <a class="item" href="/movie/movieboxform">
+                            <i class="icon plus"></i>
+                            Film Box hinzuf&uuml;gen
+                        </a>
+                        {% if id %}
+                        <div class="ui divider"></div>
+                        <a class="item" href="/movie/movieboxform?id={{ id | escape }}">
+                            <i class="icon pencil alternate"></i>
+                            bearbeiten
+                        </a>
+                        <a class="item" href="/movie/movieboxdelete?id={{ id | escape }}">
+                            <i class="icon remove"></i>
+                            l&ouml;schen
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                    {% if module == 'movieseries' %}
+                        <a class="item" href="/movie/movieseriesform">
+                            <i class="icon plus"></i>
+                            Film Reihe hinzuf&uuml;gen
+                        </a>
+                        {% if id %}
+                        <div class="ui divider"></div>
+                        <a class="item" href="/movie/movieseiesform?id={{ id | escape }}">
+                            <i class="icon pencil alternate"></i>
+                            bearbeiten
+                        </a>
+                        <a class="item" href="/movie/moviedserieselete?id={{ id | escape }}">
+                            <i class="icon remove"></i>
+                            l&ouml;schen
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
             <a href="/movie/admin/index" class="item"><i class="setting icon large"></i></a>
         </div>
     </div>

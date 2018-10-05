@@ -13,6 +13,7 @@ public class SeriesMovie extends Element {
      */
     enum SeriesMovieType {
         Prequel,    //Vorgeschichte
+        Main,       //Hauptfilm
         Sequel,     //Fortsetzung
         Spin_Off    //Nebengeschichte
     }
@@ -20,7 +21,7 @@ public class SeriesMovie extends Element {
     /**
      * Nummer des Films in der Reihe
      */
-    private int seriesOrder = 0;
+    private double seriesOrder = 0;
 
     /**
      * Typ des Filme (Vorgeschichte, Fortsetzung ...)
@@ -37,7 +38,7 @@ public class SeriesMovie extends Element {
      *
      * @return Nummer des Filmes in der Reihe
      */
-    public int getSeriesOrder() {
+    public double getSeriesOrder() {
         return seriesOrder;
     }
 
@@ -46,7 +47,7 @@ public class SeriesMovie extends Element {
      *
      * @param seriesOrder Nummer des Filmes in der Reihe
      */
-    public void setSeriesOrder(int seriesOrder) {
+    public void setSeriesOrder(double seriesOrder) {
         this.seriesOrder = seriesOrder;
     }
 

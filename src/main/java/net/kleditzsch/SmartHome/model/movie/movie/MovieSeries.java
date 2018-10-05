@@ -30,7 +30,7 @@ public class MovieSeries extends Element {
     /**
      * Filme der Filmreihe
      */
-    private SortedSet<SeriesMovie> movies = new TreeSet<>(Comparator.comparingInt(SeriesMovie::getSeriesOrder));
+    private SortedSet<SeriesMovie> movies = new TreeSet<>(Comparator.comparingDouble(SeriesMovie::getSeriesOrder));
 
     /**
      * gibt den Titel zurück

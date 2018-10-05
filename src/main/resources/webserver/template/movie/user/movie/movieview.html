@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ movie.getTitle() | escape }}</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="stylesheet" type="text/css" href="/static/lightbox/css/lightbox.min.css">
+    <script src="/static/lightbox/js/lightbox.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var viewSoonState = {{ movie.isViewSoon() }};
+        function updateViewSoon() {
+
+            $.ajax({
+                url: "/movie/updateviewsoon?id={{ movie.getId().get() }}&viewsoon=" + (viewSoonState == true ? "0" : "1"),
+                context: document.body
+            }).done(function(res) {
+                if(parseInt(res) == 1) {
+
+                    viewSoonState = !viewSoonState;
+                    if(viewSoonState == true) {
+
+                        $('#viewSoonButtonIcon').removeClass('remove');
+                        $('#viewSoonButtonIcon').addClass('check');
+                    } else {
+
+                        $('#viewSoonButtonIcon').removeClass('check');
+                        $('#viewSoonButtonIcon').addClass('remove');
+                    }
+                } else {
+
+                    alert('Die "demnächst Anschauen" Markierung konnte nicht gespeichert werden!');
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'movie', id: movie.getId().get() } %}
+<main class="ui main container">
+    {% if success is defined %}
+    <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if movie %}
+    <div class="ui segment top attached">
+        <div class="ui grid stackable">
+            <div class="four wide column">
+                {% if movie.getCoverFile() != null %}
+                <a href="/movie/cover?file={{ movie.getCoverFile() }}" data-lightbox="{{ randomstr() }}">
+                    <img src="/movie/cover?file={{ movie.getCoverFile() }}" class="ui huge image">
+                </a>
+                {% else %}
+                <img class="ui huge image" src="/static/img/noimage.gif">
+                {% endif %}
+            </div>
+            <div class="twelve wide column">
+                <h1 class="ui header">{{ movie.getTitle() | escape }}</h1>
+                <h3 class="ui header">{{ movie.getSubTitle() | escape }}</h3>
+                <div class="ui divider"></div>
+                <div class="ui grid stackable">
+                    <div class="four wide column">
+                        <h4 class="ui header">Bewertung</h4>
+                        <div class="ui rating star large" id="b{{ movie.getId().get() }}" data-rating="{{ movie.getRating() }}" data-max-rating="5"></div>
+                        <script type="text/javascript">
+                                $(function() {
+                                    $('#b{{ movie.getId().get() }}').rating({
+                                        onRate: function(newRating) {
+                                            $.ajax({
+                                                url: "/movie/updaterating?id={{ movie.getId().get() }}&rating=" + newRating,
+                                                context: document.body
+                                            }).done(function(res) {
+                                                if(parseInt(res) != 1) {
+
+                                                    alert('Die Bewertung konnte nicht gespeichert werden!');
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                        </script>
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Genre</h4>
+                        {{ genreEditor.getById(movie.getGenreId()).get().getName() | escape }}
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Medium</h4>
+                        {{ discEditor.getById(movie.getDiscId()).get().getName() | escape }}
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Preis</h4>
+                        {{ movie.getPrice() | numberformat }} &euro;
+                    </div>
+                </div>
+                <div class="ui grid stackable">
+                    <div class="four wide column">
+                        <h4 class="ui header">FSK</h4>
+                        <img src="/movie/fsklogo?file={{ fskEditor.getById(movie.getFskId()).get().getImageFile() | escape }}" class="ui tiny image">
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Länge</h4>
+                        {{ movie.getDuration() | minuteformat }}
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Jahr</h4>
+                        {{ movie.getYear() }}
+                    </div>
+                    <div class="four wide column">
+                        <h4 class="ui header">Kaufdatum</h4>
+                        {{ movie.getPurchaseDate() | dateformat }}
+                    </div>
+                </div>
+            </div>
+            <div class="sixteen wide column">
+                <h3 class="ui header">Beschreibung</h3>
+                <p>{{ movie.getDescription().get() | escape }}</p>
+                {% if movie.getDirectorIds().size() > 0 %}
+                <h5 class="ui header">Regisseur(e)</h5>
+                {% for directorId in movie.getDirectorIds() %}
+                <div class="ui label green">
+                    <i class="user icon"></i> {{ directorEditor.getById(directorId).get().getName() | escape }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% if movie.getActorIds().size() > 0 %}
+                <h5 class="ui header">Schauspieler</h5>
+                {% for actorId in movie.getActorIds() %}
+                <div class="ui label blue">
+                    <i class="user icon"></i> {{ actorEditor.getById(actorId).get().getName() | escape }}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="ui segment bottom attached">
+        <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+        <div class="ui labeled icon button" onclick="updateViewSoon()">
+            <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon"></i>demn&auml;chst anschauen
+        </div>
+    </div>
+    {% else %}
+    <div class="ui message icon attached error">
+        <i class="remove icon red"></i>
+        <div class="content">
+            <p>Der Film ist nicht bekannt</p>
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>

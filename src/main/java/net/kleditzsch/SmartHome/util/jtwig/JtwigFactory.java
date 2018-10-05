@@ -26,6 +26,8 @@ public abstract class JtwigFactory {
                         .add(new SensorValueTypeFormatFunction())
                         .add(new MonthNameFunction())
                         .add(new WeekdayNameFunction())
+                        .add(new DateFieldFormatFunction())
+                        .add(new MinuteFormatFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

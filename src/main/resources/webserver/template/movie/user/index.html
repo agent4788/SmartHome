@@ -2,14 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filme</title>
+    <title>Filme Dashboard</title>
     {% include '/webserver/template/header.html' %}
     <link rel="manifest" href="/static/manifest/moviemanifest.json">
 </head>
 <body>
-{% include '/webserver/template/movie/user/headline.html' %}
-<main class="ui main container">
-
+{% include '/webserver/template/movie/user/headline.html' with {module: 'dash'} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Filme <a class="ui button right floated" href="/movie/newmovies">alle</a></h1>
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for i in [1, 2, 3, 4] %}
+            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+                <div class="ui card">
+                    <div class="image">
+                        <div class="ui placeholder">
+                            <div class="square image"></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="ui">
+                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="meta">
+                                Horror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                    <span class="right floated">
+                            1h 30min
+                    </span>
+                        <span>
+                            DVD
+                    </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Demn&auml;chst anschauen <a class="ui button right floated" href="/movie/viewsonnmovies">alle</a></h1>
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for i in [1, 2, 3, 4] %}
+            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+                <div class="ui card">
+                    <div class="image">
+                        <div class="ui placeholder">
+                            <div class="square image"></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="ui">
+                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="meta">
+                                Horror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                    <span class="right floated">
+                            1h 30min
+                    </span>
+                        <span>
+                            DVD
+                    </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="ui container">
+        <h1 class="ui header top attached">Beste Bewertung</h1>
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for i in [1, 2, 3, 4] %}
+            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+                <div class="ui card">
+                    <div class="image">
+                        <div class="ui placeholder">
+                            <div class="square image"></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="ui">
+                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="meta">
+                                Horror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                    <span class="right floated">
+                            1h 30min
+                    </span>
+                        <span>
+                            DVD
+                    </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </main>
 </body>
 </html>
