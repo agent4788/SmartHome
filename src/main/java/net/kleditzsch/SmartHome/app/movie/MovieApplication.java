@@ -21,6 +21,7 @@ import net.kleditzsch.SmartHome.view.movie.admin.director.MovieDirectorListServl
 import net.kleditzsch.SmartHome.view.movie.admin.disc.MovieDiscDeleteServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.disc.MovieDiscFormServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.disc.MovieDiscListServlet;
+import net.kleditzsch.SmartHome.view.movie.admin.disc.MovieDiscOrderServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.fsk.MovieFskDeleteServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.fsk.MovieFskFormServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.fsk.MovieFskListServlet;
@@ -69,6 +70,7 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieDiscListServlet.class, "/movie/admin/disc");
         contextHandler.addServlet(MovieDiscFormServlet.class, "/movie/admin/discform");
         contextHandler.addServlet(MovieDiscDeleteServlet.class, "/movie/admin/discdelete");
+        contextHandler.addServlet(MovieDiscOrderServlet.class, "/movie/admin/discorder");
         contextHandler.addServlet(MovieGenreListServlet.class, "/movie/admin/genre");
         contextHandler.addServlet(MovieGenreFormServlet.class, "/movie/admin/genreform");
         contextHandler.addServlet(MovieGenreDeleteServlet.class, "/movie/admin/genredelete");
@@ -98,24 +100,31 @@ public class MovieApplication implements SubApplication {
 
             Disc disc = new Disc();
             disc.setName("DVD");
+            disc.setOrderId(0);
             discEditor.add(disc);
 
             disc.setName("Blu ray");
+            disc.setOrderId(1);
             discEditor.add(disc);
 
             disc.setName("3D Blu ray");
+            disc.setOrderId(2);
             discEditor.add(disc);
 
             disc.setName("4K UHD Blu ray");
+            disc.setOrderId(3);
             discEditor.add(disc);
 
             disc.setName("SD Datei");
+            disc.setOrderId(4);
             discEditor.add(disc);
 
             disc.setName("HD Datei");
+            disc.setOrderId(5);
             discEditor.add(disc);
 
             disc.setName("4K UHD Datei");
+            disc.setOrderId(6);
             discEditor.add(disc);
         }
 
@@ -201,9 +210,12 @@ public class MovieApplication implements SubApplication {
             fskEditor.add(fsk);
         }
 
-        //Beispieldaten einfügen
+        //Filme initallisieren
         if (MovieEditor.countMovies(true) == 0) {
 
+            //TODO Idex für Volltextsuche anlegen
+
+            //Beispieldaten einfügen
             fskEditor.load();
             genreEditor.load();
             discEditor.load();
@@ -224,6 +236,9 @@ public class MovieApplication implements SubApplication {
                 MovieEditor.addMovie(movie);
             }
         }
+
+        //TODO Filmboxen initalisieren
+        //TODO Filmreihen initalisieren
     }
 
     /**

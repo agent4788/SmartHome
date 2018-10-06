@@ -69,6 +69,12 @@
                     {% endif %}
                     <div class="extra">
                         <div class="ui right floated">
+                            {% if element.getOrderId() != 0 %}
+                            <a title="nach oben verschieben" class="ui button icon basic" href="/movie/admin/discorder?direction=up&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
+                            {% endif %}
+                            {% if element.getOrderId() != maxOrderId %}
+                            <a title="nach unten verschieben" class="ui button icon basic" href="/movie/admin/discorder?direction=down&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
+                            {% endif %}
                             <a title="bearbeiten" class="ui button orange basic" href="/movie/admin/discform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
                         </div>

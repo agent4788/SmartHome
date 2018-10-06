@@ -10,7 +10,9 @@ import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import org.bson.Document;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
@@ -59,6 +61,7 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
             element.setId(ID.of(document.getString("_id")));
             element.setName(document.getString("name"));
             element.setDescription(document.getString("description"));
+            element.setOrderId(document.getInteger("orderId"));
             element.resetChangedData();
 
             data.add(element);
@@ -78,7 +81,8 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
         Document document = new Document()
                 .append("_id", disc.getId().get())
                 .append("name", disc.getName())
-                .append("description", disc.getDescription().orElseGet(() -> ""));
+                .append("description", disc.getDescription().orElseGet(() -> ""))
+                .append("orderId", disc.getOrderId());
 
         MongoCollection discCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         discCollection.insertOne(document);
@@ -99,8 +103,9 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
                 eq("_id", disc.getId().get()),
                 combine(
                         set("name", disc.getName()),
-                        set("description", disc.getDescription().orElseGet(() -> ""))
-                )
+                        set("description", disc.getDescription().orElseGet(() -> "")),
+                        set("orderId", disc.getOrderId())
+                        )
         );
 
         return result.wasAcknowledged();
@@ -120,6 +125,18 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
             return true;
         }
         return false;
+    }
+
+    /**
+     * gibt eine Liste mit allen Medien sortiert nach Sortierungs ID zurück
+     *
+     * @return Liste mit allen Medien
+     */
+    public List<Disc> getDiscsSorted() {
+
+        return super.getData().stream()
+                .sorted(Comparator.comparingInt(Disc::getOrderId))
+                .collect(Collectors.toList());
     }
 
     @Override

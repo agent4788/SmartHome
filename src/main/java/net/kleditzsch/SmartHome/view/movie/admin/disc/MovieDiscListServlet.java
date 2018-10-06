@@ -34,7 +34,7 @@ public class MovieDiscListServlet extends HttpServlet {
         JtwigModel model = JtwigModel.newModel();
 
         DiscEditor de = DiscEditor.createAndLoad();
-        List<Disc> discList = new ArrayList<>(de.getData());
+        List<Disc> discList = de.getDiscsSorted();
 
         //filtern
         String filterStr = null;
@@ -45,9 +45,6 @@ public class MovieDiscListServlet extends HttpServlet {
             model.with("filterStr", filterStr);
             discList = discList.stream().filter(e -> e.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
         }
-
-        //sortieren
-        discList.sort(Comparator.comparing(Element::getName));
 
         //Blätterfunktion
         int index = 0;
@@ -76,6 +73,7 @@ public class MovieDiscListServlet extends HttpServlet {
             pagination.setBaseLink("/movie/admin/disc?index=");
         }
         model.with("pagination", pagination);
+        model.with("maxOrderId", discList.stream().mapToInt(Disc::getOrderId).summaryStatistics().getMax());
 
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {

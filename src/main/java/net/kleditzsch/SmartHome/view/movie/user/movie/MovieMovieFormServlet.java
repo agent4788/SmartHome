@@ -76,7 +76,7 @@ public class MovieMovieFormServlet extends HttpServlet {
         //Meta Daten
         model.with("actorList", ActorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Actor::getName)).collect(Collectors.toList()));
         model.with("directorList", DirectorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Director::getName)).collect(Collectors.toList()));
-        model.with("discList", DiscEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Disc::getName)).collect(Collectors.toList()));
+        model.with("discList", DiscEditor.createAndLoad().getData().stream().sorted(Comparator.comparingInt(Disc::getOrderId)).collect(Collectors.toList()));
         model.with("fskList", FskEditor.createAndLoad().getData().stream().sorted(Comparator.comparingInt(FSK::getLevel)).collect(Collectors.toList()));
         model.with("genreList", GenreEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Genre::getName)).collect(Collectors.toList()));
         model.with("yearList", IntStream.rangeClosed(1900, LocalDate.now().getYear()).boxed().sorted(Comparator.reverseOrder()).collect(Collectors.toList()));
