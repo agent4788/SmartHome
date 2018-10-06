@@ -102,7 +102,7 @@ public class SettingsEditor implements DatabaseEditor {
         //Filme Einstellungen
         IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
         knownSettings.add(paginationElementsAtPageAdmin);
-        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE, 25, 25);
+        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE, 20, 20);
         knownSettings.add(paginationElementsAtPageUser);
     }
 

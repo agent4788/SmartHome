@@ -56,7 +56,7 @@ public class MovieFskListServlet extends HttpServlet {
             index = Integer.parseInt(req.getParameter("index"));
         }
 
-        int elementsAtPage = 25;
+        int elementsAtPage = 20;
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
