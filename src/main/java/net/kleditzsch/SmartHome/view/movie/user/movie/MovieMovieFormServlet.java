@@ -296,7 +296,10 @@ public class MovieMovieFormServlet extends HttpServlet {
                         cover.getInputStream().transferTo(outputStream);
 
                         //altes Logo löschen
-                        Files.delete(uploadDir.resolve(movie.getCoverFile()));
+                        if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {
+
+                            Files.delete(uploadDir.resolve(movie.getCoverFile()));
+                        }
 
                         //Dateiname des neuen Logos setzen
                         movie.setCoverFile(filename);

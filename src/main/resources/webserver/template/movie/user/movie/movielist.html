@@ -21,12 +21,22 @@
         </div>
     </div>
     {% endif %}
-    <div class="ui link cards four column doubling stackable attached">
+    <div class="ui link cards four column doubling stackable bottom attached">
         {% if pagination.getSize() > 0 %}
         {% for element in moviesAtPage %}
         <div class="card" onclick="window.location = '/movie/movieview?id={{ element.getId().get() }}#a{{ element.getId().get() }}'">
             <div class="ui card">
                 <div class="image">
+                    {% if newestMovies.contains(element.getId().get()) %}
+                    <a class="ui left corner label blue">
+                        <i class="star yellow icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if viewSoonMovies.contains(element.getId().get()) %}
+                    <a class="ui right corner label orange">
+                        <i class="binoculars icon"></i>
+                    </a>
+                    {% endif %}
                     {% if element.getCoverFile() != null %}
                     <img src="/movie/cover?file={{ element.getCoverFile() }}">
                     {% else %}
@@ -52,13 +62,6 @@
             </div>
         </div>
         {% endfor %}
-        {% if pagination.hasPages() %}
-        <div class="ui segment bottom attached clearing">
-            <div class="ui right floated pagination menu">
-                {% include '/webserver/template/movie/user/pagination.html' with {pagination: pagination} %}
-            </div>
-        </div>
-        {% endif %}
         {% else %}
         {% for i in [1, 2, 3, 4, 5, 6, 7, 8] %}
         <div class="card">
@@ -89,6 +92,13 @@
         {% endfor %}
         {% endif %}
     </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/movie/user/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
 </main>
 </body>
 </html>

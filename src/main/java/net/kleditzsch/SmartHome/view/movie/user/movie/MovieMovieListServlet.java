@@ -2,6 +2,7 @@ package net.kleditzsch.SmartHome.view.movie.user.movie;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.DiscEditor;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class MovieMovieListServlet extends HttpServlet {
 
@@ -54,7 +56,9 @@ public class MovieMovieListServlet extends HttpServlet {
         model.with("pagination", pagination);
         model.with("moviesAtPage", moviesAtPage);
         model.with("discEditor", DiscEditor.createAndLoad());
-
+        model.with("newestMovies", MovieEditor.listNewestMovieIds(25).stream().map(ID::toString).collect(Collectors.toList()));
+        model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::toString).collect(Collectors.toList()));
+MovieEditor.listBestRatedMovies(25);
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
 

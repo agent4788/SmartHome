@@ -5,7 +5,6 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Sorts;
-import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
@@ -19,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
@@ -38,7 +38,7 @@ public abstract class MovieEditor {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         FindIterable iterator = movieCollection.find()
-                .sort(Sorts.ascending("title", "subTitle"));
+                .sort(Sorts.ascending("title"));
 
         List<Movie> movies = new ArrayList<>(50);
         iterator.forEach((Block<Document>) document -> {
@@ -59,7 +59,7 @@ public abstract class MovieEditor {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         FindIterable iterator = movieCollection.find()
-                .sort(Sorts.ascending("title", "subTitle"))
+                .sort(Sorts.ascending("title"))
                 .skip(((Long) start).intValue())
                 .limit(((Long) length).intValue());
 
@@ -79,7 +79,7 @@ public abstract class MovieEditor {
     public static List<Movie> listBoxMovies() {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieCollection.find(eq("boxId", null));
+        FindIterable iterator = movieCollection.find(eq("boxId", not(null)));
 
         List<Movie> movies = new ArrayList<>(50);
         iterator.forEach((Block<Document>) document -> {
@@ -97,7 +97,7 @@ public abstract class MovieEditor {
     public static List<Movie> listSeriesMovies() {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieCollection.find(eq("seriesId", null));
+        FindIterable iterator = movieCollection.find(eq("seriesId", not(null)));
 
         List<Movie> movies = new ArrayList<>(50);
         iterator.forEach((Block<Document>) document -> {
@@ -122,6 +122,102 @@ public abstract class MovieEditor {
             return Optional.of(documentToMovie((Document) iterator.first()));
         }
         return Optional.empty();
+    }
+
+    /**
+     * gibt die Liste mit den neustsen Filmen zurück
+     *
+     * @param length Anzahl der Filme
+     * @return Liste mit den neustsen Filmen
+     */
+    public static List<Movie> listNewestMovies(int length) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find().sort(Sorts.descending("purchaseDate")).limit(length);
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
+     * gibt die Liste mit den IDs der neustsen Filme zurück
+     *
+     * @param length Anzahl der Filme
+     * @return Liste mit den IDs der neustsen Filme
+     */
+    public static List<ID> listNewestMovieIds(int length) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find().sort(Sorts.descending("purchaseDate"))
+                .limit(length)
+                .projection(fields(include("_id")));
+
+        List<ID> movieIds = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movieIds.add(ID.of(document.getString("_id")));
+        });
+        return movieIds;
+    }
+
+    /**
+     * gibt die Liste mit den best bewertesten Filmen zurück
+     *
+     * @param length Anzahl der Filme
+     * @return Liste mit den best bewertesten Filmen
+     */
+    public static List<Movie> listBestRatedMovies(int length) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find().sort(Sorts.descending("rating")).limit(length);
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
+     * gibt eine Liste mit den Filmen zurück die als "demnächst anschauen" markiert sind
+     *
+     * @return Liste mit den Filmen die als "demnächst anschauen" markiert sind
+     */
+    public static List<Movie> listViewSoonMovies() {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(eq("viewSoon", true)).sort(Sorts.ascending("title"));
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
+     * gibt eine Liste mit den Film IDs zurück die als "demnächst anschauen" markiert sind
+     *
+     * @return Liste mit den Film IDs die als "demnächst anschauen" markiert sind
+     */
+    public static List<ID> listViewSoonMovieIds() {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(eq("viewSoon", true))
+                .projection(fields(include("_id")));
+
+        List<ID> movieIds = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movieIds.add(ID.of(document.getString("_id")));
+        });
+        return movieIds;
     }
 
     /**
@@ -280,7 +376,7 @@ public abstract class MovieEditor {
         element.setCoverFile(document.getString("coverFile"));
         element.setYear(document.getInteger("year"));
         element.setDiscId(ID.of(document.getString("discId")));
-        element.setPrice(document.getDouble("price"));
+        element.setPrice(document.get("price") instanceof Integer ? document.getInteger("price").doubleValue(): document.getDouble("price"));
         element.setDuration(document.getInteger("duration"));
         element.setFskId(ID.of(document.getString("fskId")));
         element.setGenreId(ID.of(document.getString("genreId")));
