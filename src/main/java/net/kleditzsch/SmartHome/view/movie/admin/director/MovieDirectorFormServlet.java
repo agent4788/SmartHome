@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.view.movie.admin.director;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.DirectorEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -69,46 +70,18 @@ public class MovieDirectorFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String idStr = req.getParameter("id");
-        String addElementStr = req.getParameter("addElement");
-        String name = req.getParameter("name");
-        String description = req.getParameter("description");
+        //Optionale Parameter
+        ID directorId = null;
 
-        //Daten vorbereiten
-        boolean addElement = true;
-        ID id = null;
-
-        //Daten prüfen
-        boolean success = true;
-        try {
-
-            if(!(idStr != null)) {
-
-                success = false;
-            }
-            id = ID.of(idStr);
-            if(!(addElementStr != null && (addElementStr.equals("1") || addElementStr.equals("0")))) {
-
-                success = false;
-            } else {
-
-                addElement = addElementStr.equals("1");
-            }
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            if(!(description != null && description.length() <= 250)) {
-
-                success = false;
-            }
-
-        } catch (Exception e) {
-
-            success = false;
+        FormValidation form = FormValidation.create(req);
+        boolean addElement = form.getBoolean("addElement", "neues Element");
+        if(!addElement) {
+            directorId = form.getId("id", "ID");
         }
+        String name = form.getString("name", "Titel", 3, 50);
+        String description = form.getString("description", "Titel", 0, 250);
 
-        if (success) {
+        if (form.isSuccessful()) {
 
             DirectorEditor de = DirectorEditor.createAndLoad();
             if(addElement) {
@@ -126,7 +99,7 @@ public class MovieDirectorFormServlet extends HttpServlet {
             } else {
 
                 //Element bearbeiten
-                Optional<Director> directorOptional = de.getById(id);
+                Optional<Director> directorOptional = de.getById(directorId);
                 if (directorOptional.isPresent()) {
 
                     Director director = directorOptional.get();

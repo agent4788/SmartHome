@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.view.movie.admin.fsk;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.FskEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -89,65 +90,23 @@ public class MovieFskFormServlet extends HttpServlet {
                 1024 * 1024 * 5           //Dateigröße ab der in den Temp Ordner geschrieben wird
         ));
 
-        String idStr = req.getParameter("id");
-        String addElementStr = req.getParameter("addElement");
-        String name = req.getParameter("name");
-        String description = req.getParameter("description");
-
-        //Daten vorbereiten
-        boolean addElement = true;
-        ID id = null;
+        //Optionale Parameter
+        ID fskId = null;
         Part logo = null;
 
-        //Daten prüfen
-        boolean success = true;
-        try {
+        FormValidation form = FormValidation.create(req);
+        boolean addElement = form.getBoolean("addElement", "neues Element");
+        if(!addElement) {
+            fskId = form.getId("id", "ID");
+        }
+        String name = form.getString("name", "Titel", 3, 50);
+        String description = form.getString("description", "Titel", 0, 250);
+        if(addElement || form.uploadNotEmpty("logo")) {
 
-            if(!(idStr != null)) {
-
-                success = false;
-            }
-            id = ID.of(idStr);
-            if(!(addElementStr != null && (addElementStr.equals("1") || addElementStr.equals("0")))) {
-
-                success = false;
-            } else {
-
-                addElement = addElementStr.equals("1");
-            }
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            if(!(description != null && description.length() <= 250)) {
-
-                success = false;
-            }
-
-            //Logo Datei
-            if(req.getPart("logo") != null && req.getPart("logo").getSize() > 0) {
-
-                List<String> allowedContentType = Arrays.asList("image/jpeg", "image/png", "image/gif");
-
-                logo = req.getPart("logo");
-                //max. Dateigröße 2 MB und Content Typ prüfen
-                if(logo.getSize() > 2_097_152 || !allowedContentType.contains(logo.getContentType())) {
-
-                    //Falscher Content Typ oder zu große Datei
-                    success = false;
-                }
-            } else if(addElement) {
-
-                //beim erstellen ist das Logo ein Pflichtfeld
-                success = false;
-            }
-
-        } catch (Exception e) {
-
-            success = false;
+            logo = form.getUploadedFile("logo", "Logo", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
         }
 
-        if (success) {
+        if (form.isSuccessful()) {
 
             FskEditor fe = FskEditor.createAndLoad();
             if(addElement) {
@@ -200,7 +159,7 @@ public class MovieFskFormServlet extends HttpServlet {
             } else {
 
                 //Element bearbeiten
-                Optional<FSK> fskOptional = fe.getById(id);
+                Optional<FSK> fskOptional = fe.getById(fskId);
                 if (fskOptional.isPresent()) {
 
                     FSK fsk = fskOptional.get();

@@ -320,14 +320,6 @@ public class MovieMovieFormServlet extends HttpServlet {
 
         } else {
 
-            //Ungültige Fomulareingaben loggen
-            StringBuffer str = new StringBuffer();
-            str.append("Ungültige Formulareingaben\n");
-            form.getErrorMessages().forEach((name, message) -> {
-                str.append(name + " -> " + message + "\n");
-            });
-            LoggerUtil.getLogger(this).warning(str.toString());
-
             //Eingaben n.i.O.
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
