@@ -40,6 +40,7 @@ public class MovieMovieListServlet extends HttpServlet {
         }
 
         int elementsAtPage = 25;
+        int newestMoviesCount = 50;
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
@@ -47,6 +48,11 @@ public class MovieMovieListServlet extends HttpServlet {
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();
+        }
+        Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
+        if (newestMoviesCountOptional.isPresent()) {
+
+            newestMoviesCount = newestMoviesCountOptional.get().getValue();
         }
         settingsLock.unlock();
 
@@ -56,9 +62,9 @@ public class MovieMovieListServlet extends HttpServlet {
         model.with("pagination", pagination);
         model.with("moviesAtPage", moviesAtPage);
         model.with("discEditor", DiscEditor.createAndLoad());
-        model.with("newestMovies", MovieEditor.listNewestMovieIds(25).stream().map(ID::toString).collect(Collectors.toList()));
+        model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
         model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::toString).collect(Collectors.toList()));
-MovieEditor.listBestRatedMovies(25);
+
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
 
