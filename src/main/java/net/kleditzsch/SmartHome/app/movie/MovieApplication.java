@@ -24,9 +24,7 @@ import net.kleditzsch.SmartHome.view.movie.admin.fsk.MovieFskOrderServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreDeleteServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreFormServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreListServlet;
-import net.kleditzsch.SmartHome.view.movie.user.MovieCoverImageServlet;
-import net.kleditzsch.SmartHome.view.movie.user.MovieFskImageServlet;
-import net.kleditzsch.SmartHome.view.movie.user.MovieIndexServlet;
+import net.kleditzsch.SmartHome.view.movie.user.*;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
 import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -55,6 +53,24 @@ public class MovieApplication implements SubApplication {
 
         contextHandler.addServlet(MovieIndexServlet.class, "/movie/");
         contextHandler.addServlet(MovieIndexServlet.class, "/movie/index");
+        contextHandler.addServlet(MovieNewMovieListServlet.class, "/movie/newmovies");
+        contextHandler.addServlet(MovieViewSoonMovieListServlet.class, "/movie/viewsonnmovies");
+        contextHandler.addServlet(MovieFskImageServlet.class, "/movie/fsklogo");
+        contextHandler.addServlet(MovieCoverImageServlet.class, "/movie/cover");
+        contextHandler.addServlet(MovieMovieListServlet.class, "/movie/movie");
+        contextHandler.addServlet(MovieMovieFormServlet.class, "/movie/movieform");
+        contextHandler.addServlet(MovieMovieViewServlet.class, "/movie/movieview");
+        contextHandler.addServlet(MovieMovieDeleteServlet.class, "/movie/moviedelete");
+        contextHandler.addServlet(MovieUpdateRatingServlet.class, "/movie/updaterating");
+        contextHandler.addServlet(MovieUpdateViewSoonServlet.class, "/movie/updateviewsoon");
+        contextHandler.addServlet(MovieMovieBoxListServlet.class, "/movie/moviebox");
+        contextHandler.addServlet(MovieMovieBoxFormServlet.class, "/movie/movieboxform");
+        contextHandler.addServlet(MovieBoxMovieFormServlet.class, "/movie/boxmovieform");
+        contextHandler.addServlet(MovieMovieBoxViewServlet.class, "/movie/movieboxview");
+        contextHandler.addServlet(MovieBoxMovieOrderServlet.class, "/movie/boxmovieorder");
+        contextHandler.addServlet(MovieBoxMovieDeleteServlet.class, "/movie/boxmoviedelete");
+        contextHandler.addServlet(MovieMovieBoxDeleteServlet.class, "/movie/movieboxdelete");
+
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/");
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/index");
         contextHandler.addServlet(MovieActorListServlet.class, "/movie/admin/actor");
@@ -74,22 +90,6 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieFskFormServlet.class, "/movie/admin/fskform");
         contextHandler.addServlet(MovieFskDeleteServlet.class, "/movie/admin/fskdelete");
         contextHandler.addServlet(MovieFskOrderServlet.class, "/movie/admin/fskorder");
-
-        contextHandler.addServlet(MovieFskImageServlet.class, "/movie/fsklogo");
-        contextHandler.addServlet(MovieCoverImageServlet.class, "/movie/cover");
-        contextHandler.addServlet(MovieMovieListServlet.class, "/movie/movie");
-        contextHandler.addServlet(MovieMovieFormServlet.class, "/movie/movieform");
-        contextHandler.addServlet(MovieMovieViewServlet.class, "/movie/movieview");
-        contextHandler.addServlet(MovieMovieDeleteServlet.class, "/movie/moviedelete");
-        contextHandler.addServlet(MovieUpdateRatingServlet.class, "/movie/updaterating");
-        contextHandler.addServlet(MovieUpdateViewSoonServlet.class, "/movie/updateviewsoon");
-        contextHandler.addServlet(MovieMovieBoxListServlet.class, "/movie/moviebox");
-        contextHandler.addServlet(MovieMovieBoxFormServlet.class, "/movie/movieboxform");
-        contextHandler.addServlet(MovieBoxMovieFormServlet.class, "/movie/boxmovieform");
-        contextHandler.addServlet(MovieMovieBoxViewServlet.class, "/movie/movieboxview");
-        contextHandler.addServlet(MovieBoxMovieOrderServlet.class, "/movie/boxmovieorder");
-        contextHandler.addServlet(MovieBoxMovieDeleteServlet.class, "/movie/boxmoviedelete");
-        contextHandler.addServlet(MovieMovieBoxDeleteServlet.class, "/movie/movieboxdelete");
     }
 
     /**

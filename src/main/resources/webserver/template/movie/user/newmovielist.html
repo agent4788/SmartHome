@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>neuste Filme</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'dash'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">neuste Filme</h1>
+    <div class="ui link cards four column doubling stackable bottom attached">
+        {% if pagination.getSize() > 0 %}
+        {% for element in pagination.getCurrentPageElements() %}
+        <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
+            <div class="ui card">
+                <div class="image">
+                    {% if viewSoonMovies.contains(element.getId().get()) %}
+                    <a class="ui right corner label orange">
+                        <i class="binoculars icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            Horror
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                    <span class="right floated">
+                        {{ element.getDuration() | minuteformat }}
+                    </span>
+                    <span>
+                        {{ discEditor.getById(element.getDiscId()).get().getName() | escape }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="ui message icon attached error">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>Es wurden keine neuen Filme gefunden</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/movie/user/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>

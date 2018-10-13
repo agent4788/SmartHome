@@ -12,93 +12,92 @@
     <div class="ui container" style="margin-bottom: 20px;">
         <h1 class="ui header top attached">Filme <a class="ui button right floated" href="/movie/newmovies">alle</a></h1>
         <div class="ui link cards four column doubling stackable bottom attached">
-            {% for i in [1, 2, 3, 4] %}
-            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+            {% for element in newestMovies %}
+            <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
                 <div class="ui card">
                     <div class="image">
-                        <div class="ui placeholder">
-                            <div class="square image"></div>
-                        </div>
+                        {% if element.getCoverFile() != null %}
+                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                        {% else %}
+                        <img src="/static/img/noimage.gif">
+                        {% endif %}
                     </div>
                     <div class="content">
                         <div class="ui">
-                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
                                 Horror
                             </div>
                         </div>
                     </div>
                     <div class="extra content">
-                    <span class="right floated">
-                            1h 30min
-                    </span>
-                        <span>
-                            DVD
-                    </span>
+                        <span class="right floated">
+                            {{ element.getDuration() | minuteformat }}
+                        </span>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    {% if viewSoonMovies.size() > 0 %}
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Demn&auml;chst anschauen <a class="ui button right floated" href="/movie/viewsoonmovies">alle</a></h1>
+        <h1 class="ui header top attached">Demn&auml;chst anschauen {% if viewSoonMoviesCount > 4 %}<a class="ui button right floated" href="/movie/viewsonnmovies">alle</a>{% endif %}</h1>
         <div class="ui link cards four column doubling stackable bottom attached">
-            {% for i in [1, 2, 3, 4] %}
-            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+            {% for element in viewSoonMovies %}
+            <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
                 <div class="ui card">
                     <div class="image">
-                        <div class="ui placeholder">
-                            <div class="square image"></div>
-                        </div>
+                        {% if element.getCoverFile() != null %}
+                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                        {% else %}
+                        <img src="/static/img/noimage.gif">
+                        {% endif %}
                     </div>
                     <div class="content">
                         <div class="ui">
-                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
                                 Horror
                             </div>
                         </div>
                     </div>
                     <div class="extra content">
-                    <span class="right floated">
-                            1h 30min
-                    </span>
-                        <span>
-                            DVD
-                    </span>
+                        <span class="right floated">
+                            {{ element.getDuration() | minuteformat }}
+                        </span>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    {% endif %}
     <div class="ui container">
         <h1 class="ui header top attached">Beste Bewertung</h1>
         <div class="ui link cards four column doubling stackable bottom attached">
-            {% for i in [1, 2, 3, 4] %}
-            <div class="card" onclick="window.location = '/detailView/{{this.id}}#a{{this.id}}'">
+            {% for element in bestRatedMovies %}
+            <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
                 <div class="ui card">
                     <div class="image">
-                        <div class="ui placeholder">
-                            <div class="square image"></div>
-                        </div>
+                        {% if element.getCoverFile() != null %}
+                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                        {% else %}
+                        <img src="/static/img/noimage.gif">
+                        {% endif %}
                     </div>
                     <div class="content">
                         <div class="ui">
-                            <div class="header">Beispiel {{ i }}</div>
+                            <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
                                 Horror
                             </div>
                         </div>
                     </div>
                     <div class="extra content">
-                    <span class="right floated">
-                            1h 30min
-                    </span>
-                        <span>
-                            DVD
-                    </span>
+                        <span class="right floated">
+                            {{ element.getDuration() | minuteformat }}
+                        </span>
                     </div>
                 </div>
             </div>
