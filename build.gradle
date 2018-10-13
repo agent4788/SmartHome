@@ -53,3 +53,17 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+
+//alle Subprojekte in eine Zip Datei packen
+task buildApllicationFile(type: Zip) {
+
+    classifier = 'app'
+    into('.') {
+
+        from project.jar.outputs.files
+        into('upload') {
+
+            from 'upload'
+        }
+    }
+}
