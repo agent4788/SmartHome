@@ -57,10 +57,12 @@ task fatJar(type: Jar) {
 //alle Subprojekte in eine Zip Datei packen
 task buildApllicationFile(type: Zip) {
 
+    dependsOn fatJar
+    
     classifier = 'app'
     into('.') {
 
-        from project.jar.outputs.files
+        from 'build/libs'
         into('upload') {
 
             from 'upload'
