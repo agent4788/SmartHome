@@ -34,8 +34,11 @@ public class MovieMovieDeleteServlet extends HttpServlet {
                     success = MovieEditor.deleteMovie(movieOptional.get().getId());
 
                     //Cover Datei löschen
-                    Path logoFile = Paths.get("upload/cover").resolve(movieOptional.get().getCoverFile());
-                    Files.delete(logoFile);
+                    if(movieOptional.get().getCoverFile() != null && movieOptional.get().getCoverFile().length() > 0) {
+
+                        Path logoFile = Paths.get("upload/cover").resolve(movieOptional.get().getCoverFile());
+                        Files.delete(logoFile);
+                    }
                 } else {
 
                     success = false;
@@ -51,13 +54,13 @@ public class MovieMovieDeleteServlet extends HttpServlet {
 
             //löschem i.O.
             req.getSession().setAttribute("success", true);
-            req.getSession().setAttribute("message", "Der Schauspieler wurde erfolgreich gelöscht");
+            req.getSession().setAttribute("message", "Der Film wurde erfolgreich gelöscht");
             resp.sendRedirect("/movie/movie");
         } else {
 
             //löschem n.i.O.
             req.getSession().setAttribute("success", false);
-            req.getSession().setAttribute("message", "Der Schauspieler konnte nicht gelöscht werden");
+            req.getSession().setAttribute("message", "Der Film konnte nicht gelöscht werden");
             resp.sendRedirect("/movie/movie");
         }
     }

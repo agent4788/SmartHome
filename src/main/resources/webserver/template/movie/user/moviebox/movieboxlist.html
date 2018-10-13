@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filme</title>
+    <title>Film Boxen</title>
     {% include '/webserver/template/header.html' %}
 </head>
 <body>
-{% include '/webserver/template/movie/user/headline.html' with {module: 'movie'} %}
+{% include '/webserver/template/movie/user/headline.html' with {module: 'moviebox'} %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Filme</h1>
+    <h1 class="ui header top attached">Film Boxen</h1>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -23,16 +23,16 @@
     {% endif %}
     <div class="ui link cards four column doubling stackable bottom attached">
         {% if pagination.getSize() > 0 %}
-        {% for element in moviesAtPage %}
-        <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
+        {% for element in movieBoxessAtPage %}
+        <div class="card" onclick="window.location = '/movie/movieboxview?id={{ element.getId().get() }}'">
             <div class="ui card">
                 <div class="image">
-                    {% if newestMovies.contains(element.getId().get()) %}
+                    {% if boxesWithNewMovies.contains(element.getId().get()) %}
                     <a class="ui left corner label blue">
                         <i class="star yellow icon"></i>
                     </a>
                     {% endif %}
-                    {% if viewSoonMovies.contains(element.getId().get()) %}
+                    {% if boxesWithViewSoonMovies.contains(element.getId().get()) %}
                     <a class="ui right corner label orange">
                         <i class="binoculars icon"></i>
                     </a>
@@ -53,7 +53,11 @@
                 </div>
                 <div class="extra content">
                     <span class="right floated">
-                        {{ element.getDuration() | minuteformat }}
+                        {% if element.getBoxMovies().size() == 1 %}
+                        1 Film
+                        {% else %}
+                        {{ element.getBoxMovies().size() | numberformat }} Filme
+                        {% endif %}
                     </span>
                     <span>
                         {{ discEditor.getById(element.getDiscId()).get().getName() | escape }}
@@ -73,19 +77,19 @@
                 </div>
                 <div class="content">
                     <div class="ui">
-                        <div class="header">Beispiel {{ i }}</div>
+                        <div class="header">Beispiel Box {{ i }}</div>
                         <div class="meta">
                             Horror
                         </div>
                     </div>
                 </div>
                 <div class="extra content">
-                        <span class="right floated">
-                            1h 30min
-                        </span>
+                    <span class="right floated">
+                        5 Filme
+                    </span>
                     <span>
-                            DVD
-                        </span>
+                        DVD
+                    </span>
                 </div>
             </div>
         </div>

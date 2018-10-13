@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Film Formular</title>
+    <title>Film Box Film Formular</title>
     {% include '/webserver/template/header.html' %}
 </head>
 <body>
 {% include '/webserver/template/movie/user/headline.html' with {module: 'movie'} %}
-{% if addElement == false %}
 <script type="text/javascript">
+
+   {% if addElement == false %}
 
         $(function() {
 
             $('.ui.form').form('set values', {
                 year        : "{{ movie.getYear() }}",
-                disc        : "{{ movie.getDiscId().get() }}",
+                disc        : "{{ movieBox.getDiscId().get() }}",
                 fsk         : "{{ movie.getFskId().get() }}",
                 genre       : "{{ movie.getGenreId().get() }}",
                 rating      : "{{ movie.getRating() }}",
@@ -22,10 +23,18 @@
                 actors      : [{% for id1 in movie.getActorIds() %}"{{ id1 }}",{% endfor %}]
             });
         });
-    </script>
-{% endif %}
+   {% else %}
+
+        $(function() {
+
+            $('.ui.form').form('set values', {
+                disc        : "{{ movieBox.getDiscId().get() }}"
+            });
+        });
+    {% endif %}
+</script>
 <main class="ui main container">
-    <form class="ui form" action="/movie/movieform?id={{ movie.getId().get() | escape }}" method="post" enctype="multipart/form-data">
+    <form class="ui form" action="/movie/boxmovieform?boxid={{ movieBox.getId().get() | escape }}{% if addElement == false %}&movieid={{ movie.getId().get() | escape }}{% endif %}" method="post" enctype="multipart/form-data">
         <h1 class="ui header top attached">Film {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
@@ -81,16 +90,10 @@
                 </div>
             </div>
             <div class="equal width fields">
-                <div class="field">
-                    <label>Preis</label>
-                    <input name="price" value="{{ movie.getPrice() }}" type="number" min="0" max="250" step="0.01">
-                </div>
                 <div class="field required">
                     <label>Laufzeit</label>
                     <input name="duration" placeholder="0" type="number" min="1" max="15000" step="1" value="{{ movie.getDuration() }}" required>
                 </div>
-            </div>
-            <div class="equal width fields">
                 <div class="field required">
                     <label>Altersfreigabe</label>
                     <select name="fsk" class="ui dropdown search" required>
@@ -100,6 +103,8 @@
                         {% endfor %}
                     </select>
                 </div>
+            </div>
+            <div class="equal width fields">
                 <div class="field required">
                     <label>Genre</label>
                     <select name="genre" class="ui dropdown search" required>
@@ -109,8 +114,6 @@
                         {% endfor %}
                     </select>
                 </div>
-            </div>
-            <div class="equal width fields">
                 <div class="field required">
                     <label>Bewertung</label>
                     <select name="rating" class="ui dropdown search" required>
@@ -121,10 +124,6 @@
                         <option value="4">4</option>
                         <option value="5">5</option>
                     </select>
-                </div>
-                <div class="field required">
-                    <label>Kaufdatum</label>
-                    <input type="date" min="1980-01-01" value="{% if addElement %}{{ today }}{% else %}{{ movie.getPurchaseDate() | datefieldformat }}{% endif %}" name="purchaseDate" required>
                 </div>
             </div>
             <div class="equal width fields">

@@ -72,6 +72,27 @@ public abstract class MovieEditor {
     }
 
     /**
+     * gibt eine Liste mit den Filmen der IDs zurück
+     *
+     * @param idList Liste mit den IDs
+     * @return Liste der Filme
+     */
+    public static List<Movie> listMoviesByIDList(List<ID> idList) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(
+                in("_id", idList.stream().map(ID::toString).collect(Collectors.toList()))
+        );
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
      * gibt eine Liste mit allen Filmen die zu einer Filmbox gehörenzurück
      *
      * @return Liste aller Filme in einer Filmbox
@@ -243,7 +264,7 @@ public abstract class MovieEditor {
      * @return ID des Films
      */
     public static ID addMovie(Movie movie) {
-
+        System.out.println(movie.getBoxId().orElse(null));
         //Neue ID vergeben
         movie.setId(ID.create());
         Document document = new Document()
@@ -262,8 +283,8 @@ public abstract class MovieEditor {
                 .append("purchaseDate", movie.getPurchaseDate())
                 .append("directorIds", movie.getDirectorIds().stream().map(ID::get).collect(Collectors.toList()))
                 .append("actorIds", movie.getActorIds().stream().map(ID::get).collect(Collectors.toList()))
-                .append("boxId", movie.getBoxId().orElse(null))
-                .append("seriesId", movie.getBoxId().orElse(null))
+                .append("boxId", movie.getBoxId().isPresent() ? movie.getBoxId().get().get() : null)
+                .append("seriesId", movie.getSeriesId().isPresent() ? movie.getSeriesId().get().get() : null)
                 .append("viewSoon", movie.isViewSoon());
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
@@ -298,8 +319,8 @@ public abstract class MovieEditor {
                         set("purchaseDate", movie.getPurchaseDate()),
                         set("directorIds", movie.getDirectorIds().stream().map(ID::get).collect(Collectors.toList())),
                         set("actorIds", movie.getActorIds().stream().map(ID::get).collect(Collectors.toList())),
-                        set("boxId", movie.getBoxId().orElse(null)),
-                        set("seriesId", movie.getSeriesId().orElse(null)),
+                        set("boxId", movie.getBoxId().isPresent() ? movie.getBoxId().get().get() : null),
+                        set("seriesId", movie.getSeriesId().isPresent() ? movie.getSeriesId().get().get() : null),
                         set("viewSoon", movie.isViewSoon())
                 )
         );
@@ -388,11 +409,11 @@ public abstract class MovieEditor {
         element.getActorIds().addAll(actorIds.stream().map(ID::of).collect(Collectors.toList()));
         if(document.getString("boxId") != null) {
 
-            element.setGenreId(ID.of(document.getString("boxId")));
+            element.setInMovieBox(ID.of(document.getString("boxId")));
         }
         if(document.getString("seriesId") != null) {
 
-            element.setGenreId(ID.of(document.getString("seriesId")));
+            element.setInMovieSeries(ID.of(document.getString("seriesId")));
         }
         element.setViewSoon(document.getBoolean("viewSoon"));
 

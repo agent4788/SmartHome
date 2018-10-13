@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Box Formular</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'moviebox'} %}
+{% if addElement == false %}
+<script type="text/javascript">
+
+        $(function() {
+
+            $('.ui.form').form('set values', {
+                year        : "{{ movieBox.getYear() }}",
+                disc        : "{{ movieBox.getDiscId().get() }}"
+            });
+        });
+    </script>
+{% endif %}
+<main class="ui main container">
+    <form class="ui form" action="/movie/movieboxform?id={{ movieBox.getId().get() | escape }}" method="post" enctype="multipart/form-data">
+        <h1 class="ui header top attached">Film Box {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Titel</label>
+                    <input name="title" placeholder="Titel ..." type="text" pattern=".{3,50}"  value="{{ movieBox.getTitle() | escape }}" required>
+                </div>
+                <div class="field">
+                    <label>Untertietel</label>
+                    <input name="subtitle" placeholder="Untertietel ..." pattern=".{3,50}"  type="text" value="{{ movieBox.getSubTitle() | escape }}">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Cover</label>
+                    <input name="cover" type="file">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Produktionsjahr</label>
+                    <select name="year" class="ui dropdown search" required>
+                        <option value="">Produktionsjahr</option>
+                        {% for element in yearList %}
+                        <option value="{{ element }}">{{ element }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field required">
+                    <label>Medium</label>
+                    <select name="disc" class="ui dropdown search" required>
+                        <option value="">Medium</option>
+                        {% for element in discList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Preis</label>
+                    <input name="price" value="{{ movieBox.getPrice() }}" type="number" min="0" max="250" step="0.01">
+                </div>
+                <div class="field required">
+                    <label>Kaufdatum</label>
+                    <input type="date" min="1980-01-01" value="{% if addElement %}{{ today }}{% else %}{{ movieBox.getPurchaseDate() | datefieldformat }}{% endif %}" name="purchaseDate" required>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

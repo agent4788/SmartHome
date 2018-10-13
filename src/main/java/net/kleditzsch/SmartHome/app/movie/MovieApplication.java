@@ -1,12 +1,7 @@
 package net.kleditzsch.SmartHome.app.movie;
 
-import com.google.gson.GsonBuilder;
-import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.model.movie.editor.DiscEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.FskEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.GenreEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
+import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
@@ -33,6 +28,7 @@ import net.kleditzsch.SmartHome.view.movie.user.MovieCoverImageServlet;
 import net.kleditzsch.SmartHome.view.movie.user.MovieFskImageServlet;
 import net.kleditzsch.SmartHome.view.movie.user.MovieIndexServlet;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
+import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.time.LocalDate;
@@ -87,6 +83,13 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieMovieDeleteServlet.class, "/movie/moviedelete");
         contextHandler.addServlet(MovieUpdateRatingServlet.class, "/movie/updaterating");
         contextHandler.addServlet(MovieUpdateViewSoonServlet.class, "/movie/updateviewsoon");
+        contextHandler.addServlet(MovieMovieBoxListServlet.class, "/movie/moviebox");
+        contextHandler.addServlet(MovieMovieBoxFormServlet.class, "/movie/movieboxform");
+        contextHandler.addServlet(MovieBoxMovieFormServlet.class, "/movie/boxmovieform");
+        contextHandler.addServlet(MovieMovieBoxViewServlet.class, "/movie/movieboxview");
+        contextHandler.addServlet(MovieBoxMovieOrderServlet.class, "/movie/boxmovieorder");
+        contextHandler.addServlet(MovieBoxMovieDeleteServlet.class, "/movie/boxmoviedelete");
+        contextHandler.addServlet(MovieMovieBoxDeleteServlet.class, "/movie/movieboxdelete");
     }
 
     /**
@@ -205,7 +208,7 @@ public class MovieApplication implements SubApplication {
             fskEditor.add(fsk);
 
             fsk.setName("ab 18 Jahre");
-            fsk.setLevel(3);
+            fsk.setLevel(4);
             fsk.setImageFile("7c0aa02c-3ebf-4f5b-8ad6-9f12cd36a04d.jpg");
             fskEditor.add(fsk);
         }
@@ -214,27 +217,6 @@ public class MovieApplication implements SubApplication {
         if (MovieEditor.countMovies(true) == 0) {
 
             //TODO Idex für Volltextsuche anlegen
-
-            //Beispieldaten einfügen
-            fskEditor.load();
-            genreEditor.load();
-            discEditor.load();
-            for(int i = 1; i <= 120; i++) {
-
-                Movie movie = new Movie();
-                movie.setTitle("Beispiel " + i);
-                movie.setSubTitle("Beispiel Zusatztitel " + i);
-                movie.setDescription("Beispielbeschreibung");
-                movie.setRating(i % 5);
-                movie.setPurchaseDate(LocalDate.now());
-                movie.setDuration(10 + i);
-                movie.setYear(1999);
-                movie.setPrice(9.99);
-                movie.setFskId(fskEditor.getData().get(0).getId());
-                movie.setGenreId(genreEditor.getData().get(0).getId());
-                movie.setDiscId(discEditor.getData().get(0).getId());
-                MovieEditor.addMovie(movie);
-            }
         }
 
         //TODO Filmboxen initalisieren

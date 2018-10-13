@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.movie.movie.meta;
 
 import net.kleditzsch.SmartHome.global.base.Element;
+import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 
 /**
@@ -15,7 +16,8 @@ public class SeriesMovie extends Element {
         Prequel,    //Vorgeschichte
         Main,       //Hauptfilm
         Sequel,     //Fortsetzung
-        Spin_Off    //Nebengeschichte
+        Spin_Off,   //Nebengeschichte
+        Remake      //neuverfilmung
     }
 
     /**
@@ -31,7 +33,7 @@ public class SeriesMovie extends Element {
     /**
      * Film
      */
-    private Movie movie;
+    private ID movieId;
 
     /**
      * gibt die Nummer des Filmes in der Reihe zurück
@@ -70,20 +72,20 @@ public class SeriesMovie extends Element {
     }
 
     /**
-     * gibt den Film zurück
+     * gibt die ID des Films zurück
      *
-     * @return Film
+     * @return ID des Films
      */
-    public Movie getMovie() {
-        return movie;
+    public ID getMovieId() {
+        return movieId;
     }
 
     /**
-     * setzt den Film
+     * setzt die ID des Films
      *
-     * @param movie Film
+     * @param movieId ID des Films
      */
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setMovieId(ID movieId) {
+        this.movieId = movieId;
     }
 }

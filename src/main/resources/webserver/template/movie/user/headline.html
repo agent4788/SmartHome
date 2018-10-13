@@ -58,7 +58,7 @@
                     {% if module == 'movie' %}
                         <a class="item" href="/movie/movieform">
                             <i class="icon plus"></i>
-                            Film hinzuf&uuml;gen
+                            hinzuf&uuml;gen
                         </a>
                         {% if id %}
                         <div class="ui divider"></div>
@@ -94,24 +94,52 @@
                     {% if module == 'moviebox'%}
                         <a class="item" href="/movie/movieboxform">
                             <i class="icon plus"></i>
-                            Film Box hinzuf&uuml;gen
+                            hinzuf&uuml;gen
                         </a>
-                        {% if id %}
-                        <div class="ui divider"></div>
-                        <a class="item" href="/movie/movieboxform?id={{ id | escape }}">
-                            <i class="icon pencil alternate"></i>
-                            bearbeiten
-                        </a>
-                        <a class="item" href="/movie/movieboxdelete?id={{ id | escape }}">
-                            <i class="icon remove"></i>
-                            l&ouml;schen
-                        </a>
-                        {% endif %}
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/movie/boxmovieform?boxid={{ id | escape }}">
+                        <i class="icon plus"></i>
+                        Film hinzuf&uuml;gen
+                    </a>
+                    <a class="item" href="/movie/movieboxview?id={{ id | escape }}&edit=1">
+                        <i class="icon pencil alternate"></i>
+                        Filme bearbeiten
+                    </a>
+                    <div class="ui divider"></div>
+                    <a class="item" href="/movie/movieboxform?id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#movieBoxDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui basic modal" id="movieBoxDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Film Box l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Film Box l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/movie/movieboxdelete?id={{ id }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     {% endif %}
                     {% if module == 'movieseries' %}
                         <a class="item" href="/movie/movieseriesform">
                             <i class="icon plus"></i>
-                            Film Reihe hinzuf&uuml;gen
+                            hinzuf&uuml;gen
                         </a>
                         {% if id %}
                         <div class="ui divider"></div>

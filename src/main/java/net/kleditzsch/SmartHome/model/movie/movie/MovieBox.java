@@ -1,6 +1,8 @@
 package net.kleditzsch.SmartHome.model.movie.movie;
 
 import net.kleditzsch.SmartHome.global.base.Element;
+import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.BoxMovie;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 
 import java.time.LocalDate;
@@ -35,7 +37,7 @@ public class MovieBox extends Element {
     /**
      * Disc
      */
-    private Disc disc;
+    private ID discId;
 
     /**
      * Preis
@@ -50,7 +52,7 @@ public class MovieBox extends Element {
     /**
      * Filme der Box
      */
-    private List<Movie> movies = new ArrayList<>();
+    private List<BoxMovie> boxMovies = new ArrayList<>();
 
     /**
      * gibt den Titel zurück
@@ -126,21 +128,21 @@ public class MovieBox extends Element {
     }
 
     /**
-     * gibt die Disc zurück
+     * gibt die Disc ID zurück
      *
-     * @return Disc
+     * @return Disc ID
      */
-    public Disc getDisc() {
-        return disc;
+    public ID getDiscId() {
+        return discId;
     }
 
     /**
-     * setzt die Disc
+     * setzt die Disc ID
      *
-     * @param disc Disc
+     * @param discId Disc ID
      */
-    public void setDisc(Disc disc) {
-        this.disc = disc;
+    public void setDiscId(ID discId) {
+        this.discId = discId;
     }
 
     /**
@@ -184,7 +186,7 @@ public class MovieBox extends Element {
      *
      * @return Liste mit den Filmen der Box
      */
-    public List<Movie> getMovies() {
-        return movies;
+    public List<BoxMovie> getBoxMovies() {
+        return boxMovies;
     }
 }
