@@ -6,6 +6,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.DiscEditor;
+import net.kleditzsch.SmartHome.model.movie.editor.GenreEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
@@ -62,6 +63,7 @@ public class MovieMovieListServlet extends HttpServlet {
         model.with("pagination", pagination);
         model.with("moviesAtPage", moviesAtPage);
         model.with("discEditor", DiscEditor.createAndLoad());
+        model.with("genreEditor", GenreEditor.createAndLoad());
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
         model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::toString).collect(Collectors.toList()));
 

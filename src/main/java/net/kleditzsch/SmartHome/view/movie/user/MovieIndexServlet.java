@@ -3,6 +3,7 @@ package net.kleditzsch.SmartHome.view.movie.user;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
+import net.kleditzsch.SmartHome.model.movie.editor.GenreEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
@@ -43,6 +44,7 @@ public class MovieIndexServlet extends HttpServlet {
 
         //neuste Filme (vier Zufällige Auswählen)
         List<Movie> newestMoviesAll = MovieEditor.listNewestMovies(newestMoviesCount);
+        model.with("newestMoviesCount", newestMoviesAll.size());
         if(newestMoviesAll.size() > 4) {
 
             List<Movie> newestMovies = new ArrayList<>(4);
@@ -92,6 +94,8 @@ public class MovieIndexServlet extends HttpServlet {
 
             model.with("bestRatedMovies", bestRatedMoviesAll);
         }
+
+        model.with("genreEditor", GenreEditor.createAndLoad());
 
         //Template rendern
         resp.setContentType("text/html");

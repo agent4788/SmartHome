@@ -21,8 +21,8 @@
         </div>
     </div>
     {% endif %}
+    {% if pagination.getSize() > 0 %}
     <div class="ui link cards four column doubling stackable bottom attached">
-        {% if pagination.getSize() > 0 %}
         {% for element in movieBoxessAtPage %}
         <div class="card" onclick="window.location = '/movie/movieboxview?id={{ element.getId().get() }}'">
             <div class="ui card">
@@ -46,9 +46,6 @@
                 <div class="content">
                     <div class="ui">
                         <div class="header">{{ element.getTitle() | escape }}</div>
-                        <div class="meta">
-                            Horror
-                        </div>
                     </div>
                 </div>
                 <div class="extra content">
@@ -66,36 +63,16 @@
             </div>
         </div>
         {% endfor %}
-        {% else %}
-        {% for i in [1, 2, 3, 4, 5, 6, 7, 8] %}
-        <div class="card">
-            <div class="ui card">
-                <div class="image">
-                    <div class="ui placeholder">
-                        <div class="square image"></div>
-                    </div>
-                </div>
-                <div class="content">
-                    <div class="ui">
-                        <div class="header">Beispiel Box {{ i }}</div>
-                        <div class="meta">
-                            Horror
-                        </div>
-                    </div>
-                </div>
-                <div class="extra content">
-                    <span class="right floated">
-                        5 Filme
-                    </span>
-                    <span>
-                        DVD
-                    </span>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
     </div>
+    {% else %}
+    <div class="ui placeholder segment bottom attached">
+        <div class="ui icon header">
+            <i class="pdf file outline icon"></i>
+            Keine Film Boxen gefunden
+        </div>
+        <a class="ui primary button" href="/movie/movieboxform">Film Box hinzuf&uuml;gen</a>
+    </div>
+    {% endif %}
     {% if pagination.hasPages() %}
     <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
         <div class="ui right floated pagination menu">

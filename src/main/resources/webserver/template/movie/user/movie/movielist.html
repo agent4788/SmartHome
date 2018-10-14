@@ -21,8 +21,8 @@
         </div>
     </div>
     {% endif %}
+    {% if pagination.getSize() > 0 %}
     <div class="ui link cards four column doubling stackable bottom attached">
-        {% if pagination.getSize() > 0 %}
         {% for element in moviesAtPage %}
         <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
             <div class="ui card">
@@ -47,7 +47,7 @@
                     <div class="ui">
                         <div class="header">{{ element.getTitle() | escape }}</div>
                         <div class="meta">
-                            Horror
+                            {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
                         </div>
                     </div>
                 </div>
@@ -62,36 +62,16 @@
             </div>
         </div>
         {% endfor %}
-        {% else %}
-        {% for i in [1, 2, 3, 4, 5, 6, 7, 8] %}
-        <div class="card">
-            <div class="ui card">
-                <div class="image">
-                    <div class="ui placeholder">
-                        <div class="square image"></div>
-                    </div>
-                </div>
-                <div class="content">
-                    <div class="ui">
-                        <div class="header">Beispiel {{ i }}</div>
-                        <div class="meta">
-                            Horror
-                        </div>
-                    </div>
-                </div>
-                <div class="extra content">
-                        <span class="right floated">
-                            1h 30min
-                        </span>
-                    <span>
-                            DVD
-                        </span>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
     </div>
+    {% else %}
+    <div class="ui placeholder segment bottom attached">
+        <div class="ui icon header">
+            <i class="pdf file outline icon"></i>
+            Keine Filme gefunden
+        </div>
+        <a class="ui primary button" href="/movie/movieform">Film hinzuf&uuml;gen</a>
+    </div>
+    {% endif %}
     {% if pagination.hasPages() %}
     <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
         <div class="ui right floated pagination menu">

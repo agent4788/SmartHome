@@ -30,7 +30,7 @@
                     <div class="ui">
                         <div class="header">{{ element.getTitle() | escape }}</div>
                         <div class="meta">
-                            Horror
+                            {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
                         </div>
                     </div>
                 </div>

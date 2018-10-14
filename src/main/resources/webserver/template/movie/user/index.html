@@ -10,7 +10,7 @@
 {% include '/webserver/template/movie/user/headline.html' with {module: 'dash'} %}
 <main class="ui main">
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Filme <a class="ui button right floated" href="/movie/newmovies">alle</a></h1>
+        <h1 class="ui header top attached">neuste Filme {% if newestMoviesCount > 4 %}<a class="ui button right floated" href="/movie/newmovies">alle</a>{% endif %}</h1>
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in newestMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
@@ -26,7 +26,7 @@
                         <div class="ui">
                             <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
-                                Horror
+                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="ui">
                             <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
-                                Horror
+                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                         <div class="ui">
                             <div class="header">{{ element.getTitle() | escape }}</div>
                             <div class="meta">
-                                Horror
+                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
                             </div>
                         </div>
                     </div>
