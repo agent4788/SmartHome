@@ -67,6 +67,7 @@
                 <div class="field">
                     <label>Cover</label>
                     <input name="cover" type="file">
+                    <input name="coverPath" type="hidden">
                 </div>
             </div>
             <div class="equal width fields">
@@ -150,6 +151,309 @@
         <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
             <button class="ui button primary" type="submit">Speichern</button>
+            {% if tmdbApiKey.length() > 0 %}
+            <div class="ui button labeled icon right floated basic primary" onclick="$('#tmdbSearchModal').modal('show');"><i class="search icon"></i>Film suchen</div>
+            <div class="ui modal coupled" id="tmdbSearchModal">
+                <div class="header">Film in "The Movie Db" suchen</div>
+                <div class="scrolling content">
+                    <div class="ui basic segments">
+                        <div class="ui segment">
+                            <div class="ui icon input fluid">
+                                <input placeholder="Suchen..." type="search" id="tmdbSearchInput">
+                                <i class="search link icon" id="tmdbSearchButton"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment" id="tmdbSearchResults">
+                            <div class="ui icon info message">
+                                <i class="search icon"></i>
+                                <div class="content">
+                                    <p>Suchbegriffe eingeben</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions" id="tmdbPagination">
+
+                </div>
+            </div>
+            <div class="ui modal" id="tmdbSelectData">
+                <div class="header">Filmdaten &uuml;bernehmen</div>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            <div class="inline field">
+                                <div class="ui checkbox" id="movieTitle">
+                                    <input type="checkbox" class="hidden" checked>
+                                    <label>Titel</label>
+                                </div>
+                            </div>
+                            <div class="inline field">
+                                <div class="ui checkbox" id="movieCover">
+                                    <input type="checkbox" class="hidden" checked>
+                                    <label>Cover</label>
+                                </div>
+                            </div>
+                            <div class="inline field">
+                                <div class="ui checkbox" id="movieDescription">
+                                    <input type="checkbox" class="hidden" checked>
+                                    <label>Beschreibung</label>
+                                </div>
+                            </div>
+                            <div class="inline field">
+                                <div class="ui checkbox" id="movieDuration">
+                                    <input type="checkbox" class="hidden" checked>
+                                    <label>Laufzeit</label>
+                                </div>
+                            </div>
+                            <div class="inline field">
+                                <div class="ui checkbox" id="movieYear">
+                                    <input type="checkbox" class="hidden" checked>
+                                    <label>Produktionsjahr</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <div class="ui cancel button">abbrechen</div>
+                    <div class="ui primary button" onclick="insertMovieFieldsToForm()">&uuml;bernehmen</div>
+                </div>
+            </div>
+            <script type="text/javascript">
+
+                $('#tmdbSelectData')
+                    .modal({
+                        allowMultiple: true
+                    })
+                ;
+
+                function tmdbSearch(page) {
+
+                    var query = $('#tmdbSearchInput').val();
+                    $.ajax({
+                        url: "/movie/tmdbsearch",
+                        method: "POST",
+                        dataType: 'json',
+                        data:{
+                            query: query,
+                            page: page
+                        },
+                        success:function(data) {
+
+                            if(data.resultCount > 0) {
+
+                                var html = '<h3 class="ui header">' + data.resultCount + (data.resultCount == 1 ? ' Film' : ' Filme') + ' gefunden</h3>';;
+                                html += '<div class="ui items divided link">';
+                                for(var i in data.results) {
+
+                                    var movieInfo = data.results[i];
+                                    html += '   <div class="item" onclick="selectDataFields(' + movieInfo.id + ')">';
+                                    if(movieInfo.posterPath) {
+                                        html += '      <div class="image"><img src="' + movieInfo.posterPath + '"></div>';
+                                    }
+                                    html += '      <div class="content">';
+                                    html += '          <div class="header">' + movieInfo.title + '</div>';
+                                    if(movieInfo.releaseDate) {
+                                        html += '      <div class="meta"><span class="price">Kinostart: ' + movieInfo.releaseDate + '</span></div>';
+                                    }
+                                    if(movieInfo.description) {
+                                        html += '          <div class="description"><p>' + movieInfo.description + '</p></div>';
+                                    }
+                                    html += '      </div>';
+                                    html += '   </div>';
+                                }
+                                html += '</div>';
+
+                                //Blättern
+                                var pagination = '';
+                                if(data.resultCount > 0) {
+
+                                    pagination += '<div class="ui pagination menu inverted">';
+                                    if(data.page > 2) {
+                                        pagination += '<a class="icon item" onclick="tmdbSearch(1);"><i class="left chevron icon"></i><i class="left chevron icon"></i></a>';
+                                    }
+                                    if(data.page > 1) {
+                                        pagination += '<a class="icon item" onclick="tmdbSearch(' + (data.page - 1) + ');"><i class="left chevron icon"></i></a>';
+                                    }
+                                    if((data.page - 2) >= 1) {
+                                        pagination += '<a class="item" onclick="tmdbSearch(' + (data.page - 2) + ');">' + (data.page - 2) + '</a>';
+                                    }
+                                    if((data.page - 1) >= 1) {
+                                        pagination += '<a class="item" onclick="tmdbSearch(' + (data.page - 1) + ');">' + (data.page - 1) + '</a>';
+                                    }
+                                    pagination += '<a class="item active" onclick="tmdbSearch(' + data.page + ');">' + data.page + '</a>';
+                                    if((data.page + 1) <= data.pages) {
+                                        pagination += '<a class="item" onclick="tmdbSearch(' + (data.page + 1) + ');">' + (data.page + 1) + '</a>';
+                                    }
+                                    if((data.page + 2) <= data.pages) {
+                                        pagination += '<a class="item" onclick="tmdbSearch(' + (data.page + 2) + ');">' + (data.page + 2) + '</a>';
+                                    }
+                                    if((data.page + 1) <= data.pages) {
+                                        pagination += '<a class="icon item" onclick="tmdbSearch(' + (data.page + 1) + ');"><i class="right chevron icon"></i></a>';
+                                    }
+                                    if(data.pages > 2 && data.page != data.pages) {
+                                        pagination += '<a class="icon item" onclick="tmdbSearch(' + data.pages + ');"><i class="right chevron icon"></i><i class="right chevron icon"></i></a>';
+                                    }
+
+                                    pagination += '</div>';
+                                }
+
+                                $('#tmdbPagination').html(pagination);
+                                $('#tmdbSearchResults').html(html);
+                                $('.scrolling.content').scrollTop(0);
+                                $('#tmdbSearchResults').removeClass('loading');
+                            } else {
+
+                                var message = '<div class="ui icon info message"><i class="search icon"></i><div class="content"><p>Es wurden keine Filme gefunden</p></div></div>';
+                                $('#tmdbPagination').html('');
+                                $('#tmdbSearchResults').html(message);
+                                $('#tmdbSearchResults').removeClass('loading');
+                            }
+                        },
+                        error:function(data) {
+
+                            var message = '<div class="ui icon error message"><i class="remove icon"></i><div class="content"><p>' + data.responseJSON.message + '</p></div></div>';
+                            $('#tmdbPagination').html('');
+                            $('#tmdbSearchResults').html(message);
+                            $('#tmdbSearchResults').removeClass('loading');
+                        }
+                    });
+                }
+
+                var id = 0;
+                var movieInfo = null;
+
+                function selectDataFields(movieId) {
+
+                    id = movieId;
+
+                    $('#tmdbSearchResults').dimmer('show');
+                    $.ajax({
+                        url: "/movie/tmdbmovieinfo",
+                        method: "GET",
+                        dataType: 'json',
+                        data:{
+                            id: id
+                        },
+                        success:function(data) {
+
+                            movieInfo = data;
+
+                            $('#movieTitle').checkbox();
+                            if(data.posterPath) {
+                                $('#movieCover').checkbox('check');
+                                $('#movieCover').checkbox('set enabled');
+                            } else {
+                                $('#movieCover').checkbox('uncheck');
+                                $('#movieCover').checkbox('set disabled');
+                            }
+                            if(data.description) {
+                                $('#movieDescription').checkbox('check');
+                                $('#movieDescription').checkbox('set enabled');
+                            } else {
+                                $('#movieDescription').checkbox('uncheck');
+                                $('#movieDescription').checkbox('set disabled');
+                            }
+                            if(data.posterPath) {
+                                $('#movieDuration').checkbox('check');
+                                $('#movieDuration').checkbox('set enabled');
+                            } else {
+                                $('#movieDuration').checkbox('uncheck');
+                                $('#movieDuration').checkbox('set disabled');
+                            }
+                            if(data.year) {
+                                $('#movieYear').checkbox('check');
+                                $('#movieYear').checkbox('set enabled');
+                            } else {
+                                $('#movieYear').checkbox('uncheck');
+                                $('#movieYear').checkbox('set disabled');
+                            }
+
+                            $('#tmdbSelectData').modal('show');
+                        },
+                        error:function(data) {
+
+                            var message = '<div class="ui icon error message"><i class="remove icon"></i><div class="content"><p>' + data.message + '</p></div></div>';
+                            $('#tmdbSearchResults').html(message);
+                            $('#tmdbSearchResults').dimmer('hide');
+                        }
+                    });
+                }
+
+                function insertMovieFieldsToForm() {
+
+                    if($('#movieTitle').checkbox('is checked')) {
+
+                        if(movieInfo.title.includes(' - ')) {
+
+                            var parts = movieInfo.title.split(' - ')
+                            $('.ui.form').form('set values', {
+                                title : parts[0].trim(),
+                                subtitle : parts[1].trim()
+                            });
+                        } else if(movieInfo.title.includes(': ')) {
+
+                            var parts = movieInfo.title.split(': ')
+                            $('.ui.form').form('set values', {
+                                title : parts[0].trim(),
+                                subtitle : parts[1].trim()
+                            });
+                        } else {
+
+                            $('.ui.form').form('set values', {
+                                title : movieInfo.title
+                            });
+                        }
+                    }
+                    if($('#movieCover').checkbox('is checked')) {
+
+                        $('.ui.form').form('set values', {
+                            coverPath : movieInfo.posterPathPlain
+                        });
+                    }
+                    if($('#movieDescription').checkbox('is checked')) {
+
+                        $('.ui.form').form('set values', {
+                            description : movieInfo.description
+                        });
+                    }
+                    if($('#movieDuration').checkbox('is checked')) {
+
+                        $('.ui.form').form('set values', {
+                            duration : movieInfo.duration
+                        });
+                    }
+                    if($('#movieYear').checkbox('is checked')) {
+
+                        $('.ui.form').form('set values', {
+                            year : movieInfo.year
+                        });
+                    }
+
+                    $('#tmdbSearchResults').dimmer('hide');
+                    $('#tmdbSelectData').modal('hide');
+                    $('#tmdbSearchModal').modal('hide');
+                }
+
+                $(function() {
+
+                    $('#tmdbSearchButton').click(function () {
+
+                        $('#tmdbSearchResults').addClass('loading');
+                        tmdbSearch(1);
+                    });
+
+                    $('#tmdbSearchInput').keydown(function (e) {
+                        if(e.which == 13) {
+
+                            $('#tmdbSearchResults').addClass('loading');
+                            tmdbSearch(1);
+                        }
+                    });
+                });
+            </script>
+            {% endif %}
         </div>
         {% endif %}
     </form>

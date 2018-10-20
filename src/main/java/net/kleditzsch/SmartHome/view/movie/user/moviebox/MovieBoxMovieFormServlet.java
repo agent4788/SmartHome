@@ -1,10 +1,14 @@
 package net.kleditzsch.SmartHome.view.movie.user.moviebox;
 
+import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.settings.StringSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.*;
+import net.kleditzsch.SmartHome.util.api.tmdb.SimpleTmdbRestClient;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -30,6 +34,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -95,6 +100,19 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
         model.with("movieBox", movieBox);
         model.with("movie", movie);
 
+        //Einstellungen laden
+        String tmdbApiKey = "";
+        SettingsEditor settingsEditor = Application.getInstance().getSettings();
+        ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
+        settingsLock.lock();
+        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
+        if (tmdbApiKeyOptional.isPresent()) {
+
+            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
+        }
+        settingsLock.unlock();
+        model.with("tmdbApiKey", tmdbApiKey);
+
         //Meta Daten
         model.with("actorList", ActorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Actor::getName)).collect(Collectors.toList()));
         model.with("directorList", DirectorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Director::getName)).collect(Collectors.toList()));
@@ -121,9 +139,22 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                 1024 * 1024 * 5           //Dateigröße ab der in den Temp Ordner geschrieben wird
         ));
 
+        //Einstellungen laden
+        String tmdbApiKey = "";
+        SettingsEditor settingsEditor = Application.getInstance().getSettings();
+        ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
+        settingsLock.lock();
+        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
+        if (tmdbApiKeyOptional.isPresent()) {
+
+            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
+        }
+        settingsLock.unlock();
+
         //Optionale Parameter
         ID movieId = null;
         Part cover = null;
+        String coverPath = null;
         List<ID> actors = null, directors = null;
 
         FormValidation form = FormValidation.create(req);
@@ -152,6 +183,10 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
         if(form.uploadNotEmpty("cover")) {
 
             cover = form.getUploadedFile("cover", "Cover", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
+        }
+        if(form.fieldNotEmpty("coverPath")) {
+
+            coverPath = form.getString("coverPath", "Cover Pfad", 3, 100);
         }
 
         //IDs prüfen
@@ -227,10 +262,10 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                         movie.getDirectorIds().addAll(directors);
                     }
 
+                    Path uploadDir = Paths.get("upload/cover");
                     if(cover != null) {
 
                         //Cover Datei
-                        Path uploadDir = Paths.get("upload/cover");
                         if(!Files.exists(uploadDir)) {
 
                             Files.createDirectories(uploadDir);
@@ -257,6 +292,54 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                         cover.getInputStream().transferTo(outputStream);
 
                         movie.setCoverFile(filename);
+                    } else if (coverPath != null && !tmdbApiKey.isEmpty()) {
+
+                        //Cover von The Movie DB herunterladen
+                        Path tmpDir = Paths.get("upload/tmp");
+                        if(!Files.exists(tmpDir)) {
+
+                            Files.createDirectories(tmpDir);
+                        }
+
+                        try {
+
+                            //Datei herunterladen
+                            SimpleTmdbRestClient tmdb = SimpleTmdbRestClient.create(tmdbApiKey);
+                            Path file = tmpDir.resolve(coverPath.substring(1));
+                            tmdb.downloadImage(coverPath, file);
+
+                            //neuen Dateinamen erstellen und COntent Type prüfen
+                            String filename = ID.create().get();
+                            switch(Files.probeContentType(file)) {
+
+                                case "image/jpeg":
+
+                                    filename += ".jpeg";
+                                    break;
+                                case "image/png":
+
+                                    filename += ".png";
+                                    break;
+                                case "image/gif":
+
+                                    filename += ".gif";
+                                    break;
+
+                                default:
+
+                                    //Ungültiger Dateityp
+                                    Files.delete(file);
+                                    throw new IllegalStateException();
+                            }
+
+                            //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
+                            Files.move(file, uploadDir.resolve(filename));
+                            movie.setCoverFile(filename);
+
+                        } catch (InterruptedException | IllegalStateException e) {
+
+                            //ungültige Cover Datei
+                        }
                     } else if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
                         //Box Cover übernehmen wenn kein Cover hochgeladen wurde
@@ -305,9 +388,9 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                         }
 
                         //Logo Datei
+                        Path uploadDir = Paths.get("upload/cover");
                         if(cover != null) {
 
-                            Path uploadDir = Paths.get("upload/cover");
                             if(!Files.exists(uploadDir)) {
 
                                 Files.createDirectories(uploadDir);
@@ -341,6 +424,60 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
 
                             //Dateiname des neuen Logos setzen
                             movie.setCoverFile(filename);
+                        } else if (coverPath != null && !tmdbApiKey.isEmpty()) {
+
+                            //Cover von The Movie DB herunterladen
+                            Path tmpDir = Paths.get("upload/tmp");
+                            if(!Files.exists(tmpDir)) {
+
+                                Files.createDirectories(tmpDir);
+                            }
+
+                            try {
+
+                                //Datei herunterladen
+                                SimpleTmdbRestClient tmdb = SimpleTmdbRestClient.create(tmdbApiKey);
+                                Path file = tmpDir.resolve(coverPath.substring(1));
+                                tmdb.downloadImage(coverPath, file);
+
+                                //neuen Dateinamen erstellen und COntent Type prüfen
+                                String filename = ID.create().get();
+                                switch(Files.probeContentType(file)) {
+
+                                    case "image/jpeg":
+
+                                        filename += ".jpeg";
+                                        break;
+                                    case "image/png":
+
+                                        filename += ".png";
+                                        break;
+                                    case "image/gif":
+
+                                        filename += ".gif";
+                                        break;
+
+                                    default:
+
+                                        //Ungültiger Dateityp
+                                        Files.delete(file);
+                                        throw new IllegalStateException();
+                                }
+
+                                //altes Logo löschen
+                                if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {
+
+                                    Files.delete(uploadDir.resolve(movie.getCoverFile()));
+                                }
+
+                                //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
+                                Files.move(file, uploadDir.resolve(filename));
+                                movie.setCoverFile(filename);
+
+                            } catch (InterruptedException | IllegalStateException e) {
+
+                                //ungültige Cover Datei
+                            }
                         } else if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
                             //Box Cover übernehmen wenn kein Cover hochgeladen wurde

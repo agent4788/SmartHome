@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.model.movie.movie.meta;
 
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 
 /**
  * Film einer Filmreihe
@@ -12,7 +11,7 @@ public class SeriesMovie extends Element {
     /**
      * Filmtyp in der Reihe
      */
-    enum SeriesMovieType {
+    public enum SeriesMovieType {
         Prequel,    //Vorgeschichte
         Main,       //Hauptfilm
         Sequel,     //Fortsetzung
@@ -23,7 +22,22 @@ public class SeriesMovie extends Element {
     /**
      * Nummer des Films in der Reihe
      */
-    private double seriesOrder = 0;
+    private int orderId = 0;
+
+    /**
+     * Nummer des Teils der Reihe (1, 2, 3, 3.1 ...)
+     */
+    private double partNumber = 1;
+
+    /**
+     * Beschreibung des Teils der Reihe
+     */
+    private String partDescription = "";
+
+    /**
+     * Zeitliche Sortierung nach der Handlung
+     */
+    private int timeOrder = 1;
 
     /**
      * Typ des Filme (Vorgeschichte, Fortsetzung ...)
@@ -36,21 +50,75 @@ public class SeriesMovie extends Element {
     private ID movieId;
 
     /**
-     * gibt die Nummer des Filmes in der Reihe zurück
+     * gibt die Sortierungs ID zurück
      *
-     * @return Nummer des Filmes in der Reihe
+     * @return Sortierungs ID
      */
-    public double getSeriesOrder() {
-        return seriesOrder;
+    public double getOrderId() {
+        return orderId;
     }
 
     /**
-     * setzt die Nummer des Filmes in der Reihe
+     * setzt die Sortierungs ID
      *
-     * @param seriesOrder Nummer des Filmes in der Reihe
+     * @param orderId Sortierungs ID
      */
-    public void setSeriesOrder(double seriesOrder) {
-        this.seriesOrder = seriesOrder;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    /**
+     * gibt die Nummer des Teils in der Reihe zurück
+     *
+     * @return Nummer des Teils in der Reihe
+     */
+    public double getPartNumber() {
+        return partNumber;
+    }
+
+    /**
+     * setzt die Nummer des Teils in der Reihe
+     *
+     * @param partNumber Nummer des Teils in der Reihe
+     */
+    public void setPartNumber(double partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    /**
+     * gibt die Beschreibung des Teils in der Reihe zurück
+     *
+     * @return Beschreibung des Teils in der Reihe
+     */
+    public String getPartDescription() {
+        return partDescription;
+    }
+
+    /**
+     * setzt die Beschreibung des Teils in der Reihe
+     *
+     * @param partDescription Beschreibung des Teils in der Reihe
+     */
+    public void setPartDescription(String partDescription) {
+        this.partDescription = partDescription;
+    }
+
+    /**
+     * gibt die Zeitliche Reihenfolge tes Teils in der Reihe zurück
+     *
+     * @return Zeitliche Reihenfolge tes Teils in der Reihe
+     */
+    public int getTimeOrder() {
+        return timeOrder;
+    }
+
+    /**
+     * setzt die Zeitliche Reihenfolge tes Teils in der Reihe
+     *
+     * @param timeOrder Zeitliche Reihenfolge tes Teils in der Reihe
+     */
+    public void setTimeOrder(int timeOrder) {
+        this.timeOrder = timeOrder;
     }
 
     /**

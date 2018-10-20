@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.app.movie;
 
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
-import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Genre;
@@ -28,8 +27,6 @@ import net.kleditzsch.SmartHome.view.movie.user.*;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
 import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-
-import java.time.LocalDate;
 
 /**
  * Hauptklasse der Filmdatenbank
@@ -70,6 +67,8 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieBoxMovieOrderServlet.class, "/movie/boxmovieorder");
         contextHandler.addServlet(MovieBoxMovieDeleteServlet.class, "/movie/boxmoviedelete");
         contextHandler.addServlet(MovieMovieBoxDeleteServlet.class, "/movie/movieboxdelete");
+        contextHandler.addServlet(MovieTmdbSearchServlet.class, "/movie/tmdbsearch");
+        contextHandler.addServlet(MovieTmdbMovieInfoServlet.class, "/movie/tmdbmovieinfo");
 
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/");
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/index");

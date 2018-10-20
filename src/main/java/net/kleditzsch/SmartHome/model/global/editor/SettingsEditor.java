@@ -46,6 +46,7 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE = "MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE";
     public static final String MOVIE_NEWEST_MOVIES_COUNT = "MOVIE_NEWEST_MOVIES_COUNT";
     public static final String MOVIE_BEST_MOVIES_COUNT = "MOVIE_BEST_MOVIES_COUNT";
+    public static final String MOVIE_TMDB_API_KEY = "MOVIE_TMDB_API_KEY";
 
     /**
      * Lock objekt
@@ -110,6 +111,8 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(newestMoviesCount);
         IntegerSetting bestMoviesCount = new IntegerSetting(MOVIE_BEST_MOVIES_COUNT, 50, 50);
         knownSettings.add(bestMoviesCount);
+        StringSetting tmdbApiKey = new StringSetting(MOVIE_TMDB_API_KEY, "", "");
+        knownSettings.add(tmdbApiKey);
     }
 
     /**
