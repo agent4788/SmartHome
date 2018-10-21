@@ -261,8 +261,10 @@ public class MovieMovieFormServlet extends HttpServlet {
                             break;
                     }
                     Path uploadFile = uploadDir.resolve(filename);
-                    OutputStream outputStream = new FileOutputStream(uploadFile.toFile());
-                    cover.getInputStream().transferTo(outputStream);
+                    try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
+
+                        cover.getInputStream().transferTo(outputStream);
+                    }
 
                     movie.setCoverFile(filename);
                 } else if (coverPath != null && !tmdbApiKey.isEmpty()) {
@@ -375,8 +377,10 @@ public class MovieMovieFormServlet extends HttpServlet {
                                 break;
                         }
                         Path uploadFile = uploadDir.resolve(filename);
-                        OutputStream outputStream = new FileOutputStream(uploadFile.toFile());
-                        cover.getInputStream().transferTo(outputStream);
+                        try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
+
+                            cover.getInputStream().transferTo(outputStream);
+                        }
 
                         //altes Logo löschen
                         if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {

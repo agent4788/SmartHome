@@ -146,8 +146,10 @@ public class MovieFskFormServlet extends HttpServlet {
                         break;
                 }
                 Path uploadFile = uploadDir.resolve(filename);
-                OutputStream outputStream = new FileOutputStream(uploadFile.toFile());
-                logo.getInputStream().transferTo(outputStream);
+                try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
+
+                    logo.getInputStream().transferTo(outputStream);
+                }
 
                 fsk.setImageFile(filename);
 
@@ -192,8 +194,10 @@ public class MovieFskFormServlet extends HttpServlet {
                                 break;
                         }
                         Path uploadFile = uploadDir.resolve(filename);
-                        OutputStream outputStream = new FileOutputStream(uploadFile.toFile());
-                        logo.getInputStream().transferTo(outputStream);
+                        try(OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
+
+                            logo.getInputStream().transferTo(outputStream);
+                        }
 
                         //altes Logo löschen
                         Files.delete(uploadDir.resolve(fsk.getImageFile()));
