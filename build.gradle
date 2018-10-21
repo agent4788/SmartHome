@@ -69,9 +69,9 @@ task buildApllicationFile(type: Zip) {
     into('.') {
 
         from 'build/libs'
-        into('upload') {
+        into('upload/fskLogo') {
 
-            from 'upload'
+            from 'upload/fskLogo'
         }
     }
 }
