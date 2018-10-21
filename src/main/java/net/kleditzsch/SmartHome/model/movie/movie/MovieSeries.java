@@ -3,9 +3,7 @@ package net.kleditzsch.SmartHome.model.movie.movie;
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.SeriesMovie;
 
-import java.util.Comparator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Filmreihe
@@ -30,7 +28,7 @@ public class MovieSeries extends Element {
     /**
      * Filme der Filmreihe
      */
-    private SortedSet<SeriesMovie> movies = new TreeSet<>(Comparator.comparingDouble(SeriesMovie::getSeriesOrder));
+    private List<SeriesMovie> seriesMovies = new ArrayList<>();
 
     /**
      * gibt den Titel zurück
@@ -92,7 +90,7 @@ public class MovieSeries extends Element {
      *
      * @return Liste der Filme der Reihe
      */
-    public SortedSet<SeriesMovie> getMovies() {
-        return movies;
+    public List<SeriesMovie> getSeriesMovies() {
+        return seriesMovies;
     }
 }

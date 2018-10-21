@@ -50,6 +50,15 @@
         {% else %}
         <div class="ui segment attached">
             <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            {% if tmdbApiKey.length() > 0 %}
+            <div class="field">
+                <label>Film in "The Movie DB" Suchen</label>
+                <div class="ui icon input fluid">
+                    <input placeholder="Suchen..." type="search" id="tmdbInlineSearchInput">
+                    <i class="search link icon" id="tmdbInlineSearchButton"></i>
+                </div>
+            </div>
+            {% endif %}
             <div class="equal width fields">
                 <div class="field required">
                     <label>Titel</label>
@@ -454,11 +463,27 @@
                         $('#tmdbSearchResults').addClass('loading');
                         tmdbSearch(1);
                     });
-
                     $('#tmdbSearchInput').keydown(function (e) {
                         if(e.which == 13) {
 
                             $('#tmdbSearchResults').addClass('loading');
+                            tmdbSearch(1);
+                        }
+                    });
+
+                    $('#tmdbInlineSearchButton').click(function () {
+
+                        $('#tmdbSearchInput').val($('#tmdbInlineSearchInput').val());
+                        $('#tmdbSearchResults').addClass('loading');
+                        $('#tmdbSearchModal').modal('show');
+                        tmdbSearch(1);
+                    });
+                    $('#tmdbInlineSearchInput').keydown(function (e) {
+                        if(e.which == 13) {
+
+                            $('#tmdbSearchInput').val($('#tmdbInlineSearchInput').val());
+                            $('#tmdbSearchResults').addClass('loading');
+                            $('#tmdbSearchModal').modal('show');
                             tmdbSearch(1);
                         }
                     });
