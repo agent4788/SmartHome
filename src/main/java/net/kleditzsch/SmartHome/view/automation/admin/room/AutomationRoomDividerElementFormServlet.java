@@ -200,6 +200,7 @@ public class AutomationRoomDividerElementFormServlet extends HttpServlet {
                     if (roomOptional.get().getRoomElements().size() > 0) {
 
                         nextOrderId = roomOptional.get().getRoomElements().stream().mapToInt(RoomElement::getOrderId).summaryStatistics().getMax() + 1;
+                        nextOrderId = nextOrderId >= 0 ? nextOrderId : 0;
                     }
                     roomElement.setOrderId(nextOrderId);
                     roomElement.setDisabled(disabled);

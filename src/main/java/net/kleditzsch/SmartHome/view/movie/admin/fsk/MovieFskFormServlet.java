@@ -119,6 +119,7 @@ public class MovieFskFormServlet extends HttpServlet {
                 if (fe.getData().size() > 0) {
 
                     int nextLevel = fe.getData().stream().mapToInt(FSK::getLevel).summaryStatistics().getMax() + 1;
+                    nextLevel = nextLevel >= 0 ? nextLevel : 0;
                     fsk.setLevel(nextLevel);
                 }
 

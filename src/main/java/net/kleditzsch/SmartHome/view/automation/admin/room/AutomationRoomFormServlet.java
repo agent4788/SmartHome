@@ -171,6 +171,7 @@ public class AutomationRoomFormServlet extends HttpServlet {
                 if (roomEditor.getData().size() > 0) {
 
                     nextOrderId = roomEditor.getData().stream().mapToInt(Room::getOrderId).summaryStatistics().getMax() + 1;
+                    nextOrderId = nextOrderId >= 0 ? nextOrderId : 0;
                 }
                 room.setOrderId(nextOrderId);
                 room.setDisabled(disabled);
