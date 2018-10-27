@@ -76,7 +76,7 @@
                         {% else %}
                         <img class="ui huge image" src="/static/img/noimage.gif">
                         {% endif %}
-                        <div class="ui labeled icon button basic {% if movie.isViewSoon() %}green{% else %}grey{% endif %}" id="viewSoonButton" onclick="updateViewSoon()">
+                        <div style="margin-top: 15px;" class="ui labeled icon button basic {% if movie.isViewSoon() %}green{% else %}grey{% endif %}" id="viewSoonButton" onclick="updateViewSoon()">
                             <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon"></i>demn&auml;chst anschauen
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                     <div class="ui segment">
                         <h5 class="ui horizontal divider header">Film Infos</h5>
                         <div class="ui two statistics mini stackable">
-                            <div class="statistic orange">
+                            <div class="statistic">
                                 <div class="label">
                                     Laufzeit
                                 </div>
@@ -122,28 +122,12 @@
                                     {{ movie.getDuration() | minuteformat }}
                                 </div>
                             </div>
-                            <div class="statistic orange">
+                            <div class="statistic">
                                 <div class="label">
                                     Genre
                                 </div>
                                 <div class="value">
                                     {{ genreEditor.getById(movie.getGenreId()).get().getName() | escape }}
-                                </div>
-                            </div>
-                            <div class="statistic orange">
-                                <div class="label">
-                                    Medium
-                                </div>
-                                <div class="value">
-                                    {{ discEditor.getById(movie.getDiscId()).get().getName() | escape }}
-                                </div>
-                            </div>
-                            <div class="statistic orange">
-                                <div class="label">
-                                    Jahr
-                                </div>
-                                <div class="value">
-                                    {{ movie.getYear() }}
                                 </div>
                             </div>
                         </div>
@@ -172,7 +156,23 @@
                     {% endif %}
                     <div class="ui segment">
                         <h4 class="ui horizontal divider header">Zusatz Infos</h4>
-                        <div class="ui {% if movie.getPrice() > 0 %}two{% else %}one{% endif %} statistics mini stackable">
+                        <div class="ui two statistics mini stackable">
+                            <div class="statistic">
+                                <div class="label">
+                                    Medium
+                                </div>
+                                <div class="value">
+                                    {{ discEditor.getById(movie.getDiscId()).get().getName() | escape }}
+                                </div>
+                            </div>
+                            <div class="statistic">
+                                <div class="label">
+                                    Jahr
+                                </div>
+                                <div class="value">
+                                    {{ movie.getYear() }}
+                                </div>
+                            </div>
                             <div class="statistic">
                                 <div class="label">
                                     Kaufdatum
