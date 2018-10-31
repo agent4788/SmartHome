@@ -100,7 +100,7 @@
                 </div>
                 <div class="field required">
                     <label>Medium</label>
-                    <select name="disc" class="ui dropdown search" required>
+                    <select name="disc" class="ui dropdown" required>
                         <option value="">Medium</option>
                         {% for element in discList %}
                         <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
@@ -115,7 +115,7 @@
                 </div>
                 <div class="field required">
                     <label>Altersfreigabe</label>
-                    <select name="fsk" class="ui dropdown search" required>
+                    <select name="fsk" class="ui dropdown" required>
                         <option value="">FSK</option>
                         {% for element in fskList %}
                         <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
@@ -135,7 +135,7 @@
                 </div>
                 <div class="field required">
                     <label>Bewertung</label>
-                    <select name="rating" class="ui dropdown search" required>
+                    <select name="rating" class="ui dropdown" required>
                         <option value="0">keine</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
