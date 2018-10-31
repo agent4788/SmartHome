@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
 
-    private static final String COLLECTION = "automation.switchTimer";
+    public static final String COLLECTION = "automation.switchTimer";
 
     @Override
     public void load() {

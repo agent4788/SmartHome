@@ -20,7 +20,7 @@ import static com.mongodb.client.model.Updates.set;
 
 public class FskEditor extends AbstractDatabaseEditor<FSK> {
 
-    private static final String COLLECTION = "movie.meta.fsk";
+    public static final String COLLECTION = "movie.meta.fsk";
 
     /**
      * erstell neinen neuen Editor

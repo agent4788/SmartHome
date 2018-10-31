@@ -113,6 +113,7 @@
             </div>
             <div class="sixteen wide column">
                 <h2 class="ui segment top attached header">Filme</h2>
+                {% if boxMovies.size() > 0 %}
                 {% for movie in boxMovies %}
                 <div class="ui segment {% if loop.last and editMode == false %}bottom{% endif %} attached" id="{{ movie.getId().get() }}">
                     <div class="ui grid stackable">
@@ -127,7 +128,7 @@
                                     <img class="ui huge image" src="/static/img/noimage.gif">
                                     {% endif %}
                                     <div style="margin-top: 15px" class="ui labeled icon button basic {% if movie.isViewSoon() %}green{% else %}grey{% endif %}" id="viewSoonButton_{{ movie.getId().get() }}" onclick="updateViewSoon('{{ movie.getId().get() }}')">
-                                        <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon_{{ movie.getId().get() }}"></i>demn&auml;chst anschauen
+                                        <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon_{{ movie.getId().get() }}"></i>Merkliste
                                     </div>
                                 </div>
                                 <div class="ui segment center aligned">
@@ -185,9 +186,31 @@
                                 <div class="ui segment">
                                     <h4 class="ui horizontal divider header">Beschreibung</h4>
                                     <div class="ui text">
-                                        {{ movie.getDescription().get() | escape }}
+                                        {{ movie.getDescription().get() | escapenl }}
                                     </div>
                                 </div>
+                                {% if movie.isInMovieSeries() %}
+                                <div class="ui segment">
+                                    <h4 class="ui horizontal divider header">Film Reihe</h4>
+                                    <div class="ui items">
+                                        <div class="item">
+                                            {% if movieSeriesMap.get(movie.getSeriesId().get().get()).getPosterFile().length() > 0 %}
+                                            <div class="ui tiny image">
+                                                <a href="/movie/cover?file={{ movieSeriesMap.get(movie.getSeriesId().get().get()).getPosterFile() }}" data-lightbox="{{ randomstr() }}">
+                                                    <img src="/movie/cover?file={{ movieSeriesMap.get(movie.getSeriesId().get().get()).getPosterFile() }}">
+                                                </a>
+                                            </div>
+                                            {% endif %}
+                                            <div class="content">
+                                                <a class="header" href="/movie/movieseriesview?id={{ movieSeriesMap.get(movie.getSeriesId().get().get()).getId().get() | escape }}">{{ movieSeriesMap.get(movie.getSeriesId().get().get()).getTitle() | escape }}{% if movieSeriesMap.get(movie.getSeriesId().get().get()).getSubTitle().length() > 0 %} - {{ movieSeriesMap.get(movie.getSeriesId().get().get()).getSubTitle() | escape }}{% endif %}</a>
+                                                <div class="description">
+                                                    {{ movieSeriesMap.get(movie.getSeriesId().get().get()).getDescription().orElse("") | escape }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
                                 {% if movie.getDirectorIds().size() > 0 or movie.getActorIds().size() > 0 %}
                                 <div class="ui segment">
                                     {% if movie.getDirectorIds().size() > 0 %}
@@ -265,6 +288,15 @@
                 </div>
                 {% endif %}
                 {% endfor %}
+                {% else %}
+                <div class="ui bottom attached placeholder segment">
+                    <div class="ui icon header">
+                        <i class="pdf file outline icon"></i>
+                        keine Filme eingetragen
+                    </div>
+                    <a class="ui primary button" href="/movie/boxmovieform?boxid={{ movieBox.getId().get() }}">Film hinzuf&uuml;gen</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

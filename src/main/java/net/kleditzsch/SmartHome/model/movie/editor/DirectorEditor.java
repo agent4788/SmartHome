@@ -20,7 +20,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public class DirectorEditor extends AbstractDatabaseEditor<Director> {
 
-    private static final String COLLECTION = "movie.meta.director";
+    public static final String COLLECTION = "movie.meta.director";
 
     /**
      * erstell neinen neuen Editor

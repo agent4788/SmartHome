@@ -674,6 +674,28 @@ public class FormValidation {
     }
 
     /**
+     * gibt den Wert eines Enum zurück
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param clazz Enum Class
+     * @return Enum Wert
+     */
+    public <E extends Enum<E>> E getEnum(String name, String displayName, Class<E> clazz) {
+
+        String value = request.getParameter(name);
+        if(value != null) {
+
+            try {
+
+                return Enum.valueOf(clazz, value);
+            } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
      * setzt ein Feld als Invalid
      *
      * @param name Feldname

@@ -21,9 +21,14 @@ import javax.servlet.http.Part;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -101,6 +106,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
         //Optionale Parameter
         ID movieBoxId = null;
         Part cover = null;
+        String coverUrl = null;
 
         FormValidation form = FormValidation.create(req);
         boolean addElement = form.getBoolean("addElement", "neues Element");
@@ -116,6 +122,10 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
         if(form.uploadNotEmpty("cover")) {
 
             cover = form.getUploadedFile("cover", "Cover", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
+        }
+        if(form.fieldNotEmpty("coverUrl")) {
+
+            coverUrl = form.getString("coverUrl", "Cover URL", 3, 1000);
         }
 
         //IDs prüfen
@@ -138,14 +148,13 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                 movieBox.setPrice(price);
                 movieBox.setPurchaseDate(purchaseDate);
 
+                //Cover Datei
+                Path uploadDir = Paths.get("upload/cover");
+                if(!Files.exists(uploadDir)) {
+
+                    Files.createDirectories(uploadDir);
+                }
                 if(cover != null) {
-
-                    //Cover Datei
-                    Path uploadDir = Paths.get("upload/cover");
-                    if(!Files.exists(uploadDir)) {
-
-                        Files.createDirectories(uploadDir);
-                    }
 
                     String filename = ID.create().get();
                     switch (cover.getContentType()) {
@@ -170,6 +179,67 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                     }
 
                     movieBox.setCoverFile(filename);
+                } else if (coverUrl != null) {
+
+                    //Cover aus dem Internet herunterladen
+                    Path tmpDir = Paths.get("upload/tmp");
+                    if(!Files.exists(tmpDir)) {
+
+                        Files.createDirectories(tmpDir);
+                    }
+
+                    try {
+
+                        HttpClient client = HttpClient.newBuilder()
+                                .version(HttpClient.Version.HTTP_2)
+                                .followRedirects(HttpClient.Redirect.NORMAL)
+                                .build();;
+
+                        HttpRequest request = HttpRequest.newBuilder()
+                                .uri(URI.create(coverUrl))
+                                .timeout(Duration.ofSeconds(5))
+                                .GET()
+                                .build();
+
+                        Path tmpFile = tmpDir.resolve("tmpCover");
+                        HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
+                        HttpResponse<Path> response = client.send(request, asFile);
+
+                        if(response.statusCode() == 200) {
+
+                            //neuen Dateinamen erstellen und COntent Type prüfen
+                            String filename = ID.create().get();
+                            switch(response.headers().allValues("Content-Type").get(0)) {
+
+                                case "image/jpeg":
+
+                                    filename += ".jpeg";
+                                    break;
+                                case "image/png":
+
+                                    filename += ".png";
+                                    break;
+                                case "image/gif":
+
+                                    filename += ".gif";
+                                    break;
+
+                                default:
+
+                                    //Ungültiger Dateityp
+                                    Files.delete(tmpFile);
+                                    throw new IllegalStateException();
+                            }
+
+                            //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
+                            Files.move(tmpFile, uploadDir.resolve(filename));
+                            movieBox.setCoverFile(filename);
+                        } else {
+
+                            //Download fehleschlagen
+                            throw new IllegalStateException("Download fehlgeschlagen");
+                        }
+                    } catch (InterruptedException e) {}
                 }
 
                 MovieBoxEditor.addMovieBox(movieBox);
@@ -192,13 +262,13 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                     movieBox.setPurchaseDate(purchaseDate);
 
                     //Logo Datei
+                    //Cover Datei
+                    Path uploadDir = Paths.get("upload/cover");
+                    if(!Files.exists(uploadDir)) {
+
+                        Files.createDirectories(uploadDir);
+                    }
                     if(cover != null) {
-
-                        Path uploadDir = Paths.get("upload/cover");
-                        if(!Files.exists(uploadDir)) {
-
-                            Files.createDirectories(uploadDir);
-                        }
 
                         String filename = ID.create().get();
                         switch (cover.getContentType()) {
@@ -225,11 +295,84 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                         //altes Logo löschen
                         if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
-                            Files.delete(uploadDir.resolve(movieBox.getCoverFile()));
+                            try {
+
+                                Files.delete(uploadDir.resolve(movieBox.getCoverFile()));
+                            } catch (Exception e) {}
                         }
 
                         //Dateiname des neuen Logos setzen
                         movieBox.setCoverFile(filename);
+                    } else if (coverUrl != null) {
+
+                        //Cover aus dem Internet herunterladen
+                        Path tmpDir = Paths.get("upload/tmp");
+                        if(!Files.exists(tmpDir)) {
+
+                            Files.createDirectories(tmpDir);
+                        }
+
+                        try {
+
+                            HttpClient client = HttpClient.newBuilder()
+                                    .version(HttpClient.Version.HTTP_2)
+                                    .followRedirects(HttpClient.Redirect.NORMAL)
+                                    .build();;
+
+                            HttpRequest request = HttpRequest.newBuilder()
+                                    .uri(URI.create(coverUrl))
+                                    .timeout(Duration.ofSeconds(5))
+                                    .GET()
+                                    .build();
+
+                            Path tmpFile = tmpDir.resolve("tmpCover");
+                            HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
+                            HttpResponse<Path> response = client.send(request, asFile);
+
+                            if(response.statusCode() == 200) {
+
+                                //neuen Dateinamen erstellen und COntent Type prüfen
+                                String filename = ID.create().get();
+                                switch(response.headers().allValues("Content-Type").get(0)) {
+
+                                    case "image/jpeg":
+
+                                        filename += ".jpeg";
+                                        break;
+                                    case "image/png":
+
+                                        filename += ".png";
+                                        break;
+                                    case "image/gif":
+
+                                        filename += ".gif";
+                                        break;
+
+                                    default:
+
+                                        //Ungültiger Dateityp
+                                        Files.delete(tmpFile);
+                                        throw new IllegalStateException();
+                                }
+
+                                //altes Logo löschen
+                                if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
+
+                                    try {
+
+                                        Files.delete(uploadDir.resolve(movieBox.getCoverFile()));
+                                    } catch (Exception e) {}
+                                }
+
+                                //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
+                                Files.move(tmpFile, uploadDir.resolve(filename));
+                                movieBox.setCoverFile(filename);
+                            } else {
+
+                                //Download fehleschlagen
+                                throw new IllegalStateException("Download fehlgeschlagen");
+                            }
+                        } catch (InterruptedException e) {}
                     }
 
                     MovieBoxEditor.updateMovieBox(movieBox);

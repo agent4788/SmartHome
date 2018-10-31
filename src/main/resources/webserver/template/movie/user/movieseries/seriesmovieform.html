@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Reihe Film Formular</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+       {% if addElement == false %}
+
+            $(function() {
+
+                $('.ui.form').form('set values', {
+                    type        : "{{ seriesMovie.getSeriesType() }}"
+                });
+            });
+        {% endif %}
+    </script>
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'movieseries'} %}
+<main class="ui main container">
+    <form class="ui form" action="/movie/seriesmovieform?seriesid={{ movieSeries.getId().get() | escape }}{% if addElement == false %}&seriesmovieid={{ seriesMovie.getId().get() | escape }}{% endif %}" method="post" enctype="multipart/form-data">
+        <h1 class="ui header top attached">Film {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field">
+                <label>Film suchen</label>
+                <div class="ui icon input fluid">
+                    <input placeholder="Suchen..." type="search" id="searchInput">
+                    <i class="search link icon" id="searchButton"></i>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Film</label>
+                    <input name="title" type="text" {% if addElement == false %}value="{{ movie.getTitle() }}{% if movie.getSubTitle().length() > 0 %} - {{ movie.getSubTitle() }}{% endif %}"{% endif %} readonly>
+                    <input name="movieid" type="hidden" {% if addElement == false %}value="{{ seriesMovie.getMovieId().get() }}"{% endif %} required>
+                </div>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <input name="partDescription" value="{{ seriesMovie.getPartDescription() | escape }}" type="text" pattern=".{,50}">
+            </div>
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Typ</label>
+                    <select name="type" class="ui dropdown search" required>
+                        <option value="">Typ</option>
+                        <option value="Main">Hauptfilm</option>
+                        <option value="Prequel">Vorgeschichte</option>
+                        <option value="Sequel">Fortsetzung</option>
+                        <option value="Spin_Off">Nebengeschichte</option>
+                        <option value="Remake">Remake</option>
+                    </select>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Nummer des Teils</label>
+                    <input name="partNumber" placeholder="1" type="text" pattern="^\d+(\.\d+)?$" value="{% if addElement == false %}{{ seriesMovie.getPartNumber() }}{% endif %}">
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button labeled icon right floated basic primary" onclick="$('#searchModal').modal('show');"><i class="search icon"></i>Film suchen</div>
+            <div class="ui modal coupled" id="searchModal">
+                <div class="header">Film suchen</div>
+                <div class="scrolling content">
+                    <div class="ui basic segments">
+                        <div class="ui segment">
+                            <div class="ui icon input fluid">
+                                <input placeholder="Suchen..." type="search" id="modalSearchInput">
+                                <i class="search link icon" id="modalSearchButton"></i>
+                            </div>
+                        </div>
+                        <div class="ui segment" id="searchResults">
+                            <div class="ui icon info message">
+                                <i class="search icon"></i>
+                                <div class="content">
+                                    <p>Suchbegriffe eingeben</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        <script type="text/javascript">
+
+            function search() {
+
+                var query = $('#modalSearchInput').val();
+                $.ajax({
+                        url: "/movie/seriesmoviesearch",
+                        method: "POST",
+                        dataType: 'json',
+                        data:{
+                            query: query
+                        },
+                        success:function(data) {
+
+                            if(data.resultCount > 0) {
+
+                                var html = '<h3 class="ui header">' + data.resultCount + (data.resultCount == 1 ? ' Film' : ' Filme') + ' gefunden</h3>';;
+                                html += '<div class="ui items divided link">';
+                                for(var i in data.results) {
+
+                                    var movieInfo = data.results[i];
+                                    html += '   <div class="item" onclick="select(\'' + movieInfo.id + '\')">';
+                                    if(movieInfo.cover) {
+                                        html += '      <div class="image"><img src="/movie/cover?file=' + movieInfo.cover + '"></div>';
+                                    }
+                                    html += '      <div class="content">';
+                                    html += '          <div class="header"  id="a' + movieInfo.id + '">' + movieInfo.title + '</div>';
+                                    if(movieInfo.description) {
+                                        html += '          <div class="description"><p>' + movieInfo.description + '</p></div>';
+                                    }
+                                    html += '           <div class="extra">';
+                                    html += '               <div class="ui label teal">' + movieInfo.duration + '</div>';
+                                    html += '               <div class="ui label orange">' + movieInfo.year + '</div>';
+                                    html += '           </div>';
+                                    html += '      </div>';
+                                    html += '   </div>';
+                                }
+                                html += '</div>';
+
+                                $('#searchResults').html(html);
+                                $('.scrolling.content').scrollTop(0);
+                                $('#searchResults').removeClass('loading');
+                            } else {
+
+                                var message = '<div class="ui icon info message"><i class="search icon"></i><div class="content"><p>Es wurden keine Filme gefunden</p></div></div>';
+                                $('#searchResults').html(message);
+                                $('#searchResults').removeClass('loading');
+                            }
+                        },
+                        error:function(data) {
+
+                            var message = '<div class="ui icon error message"><i class="remove icon"></i><div class="content"><p>' + data.responseJSON.message + '</p></div></div>';
+                            $('#searchResults').html(message);
+                            $('#searchResults').removeClass('loading');
+                        }
+                    });
+            };
+
+            function select(movieId) {
+
+                var title = $('#a' + movieId).text();
+                $('.ui.form').form('set values', {
+                    movieid : movieId,
+                    title, title
+
+                });
+
+                $('#searchResults').dimmer('hide');
+                $('#searchModal').modal('hide');
+            }
+
+            $(function() {
+
+                    $('#modalSearchButton').click(function () {
+
+                        $('#searchResults').addClass('loading');
+                        search();
+                    });
+                    $('#modalSearchInput').keydown(function (e) {
+                        if(e.which == 13) {
+
+                            $('#searchResults').addClass('loading');
+                            search();
+                        }
+                    });
+
+                    $('#searchButton').click(function () {
+
+                        $('#modalSearchInput').val($('#searchInput').val());
+                        $('#searchResults').addClass('loading');
+                        $('#searchModal').modal('show');
+                        search();
+                    });
+                    $('#searchInput').keydown(function (e) {
+                        if(e.which == 13) {
+
+                            $('#modalSearchInput').val($('#searchInput').val());
+                            $('#searchResults').addClass('loading');
+                            $('#searchModal').modal('show');
+                            search();
+                        }
+                    });
+                });
+        </script>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

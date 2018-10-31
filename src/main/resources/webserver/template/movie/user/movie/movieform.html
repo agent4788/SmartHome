@@ -73,11 +73,20 @@
                 <label>Beschreibung</label>
                 <textarea name="description" required minlength="3">{{ movie.getDescription().orElse("") | escape }}</textarea>
             </div>
-            <div class="equal width fields">
+            <div class="fields">
                 <div class="field">
                     <label>Cover</label>
                     <input name="cover" type="file">
-                    <input name="coverPath" type="hidden">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Cover URL</label>
+                    <input name="coverUrl" type="url">
+                </div>
+                <div class="field">
+                    <label>TMDB Cover</label>
+                    <input name="coverPath" type="text" readonly>
                 </div>
             </div>
             <div class="equal width fields">

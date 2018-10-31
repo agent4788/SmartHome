@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
 
-    private static final String COLLECTION = "automation.switchServer";
+    public static final String COLLECTION = "automation.switchServer";
 
     /**
      * Schaltserver aus der Datenbank laden

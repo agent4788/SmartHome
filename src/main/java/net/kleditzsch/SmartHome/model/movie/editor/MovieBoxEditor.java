@@ -25,7 +25,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public abstract class MovieBoxEditor {
 
-    private static final String COLLECTION = "movie.movieBox";
+    public static final String COLLECTION = "movie.movieBox";
 
     /**
      * gibt eine sortierte Liste mit allen Filmboxen zurück
@@ -122,6 +122,7 @@ public abstract class MovieBoxEditor {
                 .append("description", movieBox.getDescription().orElse(""))
                 .append("title", movieBox.getTitle())
                 .append("subTitle", movieBox.getSubTitle())
+                .append("search", movieBox.getTitle() + " " + movieBox.getSubTitle())
                 .append("coverFile", movieBox.getCoverFile())
                 .append("year", movieBox.getYear())
                 .append("discId", movieBox.getDiscId().get())
@@ -159,6 +160,7 @@ public abstract class MovieBoxEditor {
                         set("description", movieBox.getDescription().orElse("")),
                         set("title", movieBox.getTitle()),
                         set("subTitle", movieBox.getSubTitle()),
+                        set("search", movieBox.getTitle() + " " + movieBox.getSubTitle()),
                         set("coverFile", movieBox.getCoverFile()),
                         set("year", movieBox.getYear()),
                         set("discId", movieBox.getDiscId().get()),

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ movieSeries.getTitle() | escape }}</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="stylesheet" type="text/css" href="/static/lightbox/css/lightbox.min.css">
+    <script src="/static/lightbox/js/lightbox.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.ui.rating').rating('disable');
+        });
+    </script>
+    <style type="text/css">
+        .ui.basic.segments {
+            box-shadow: none;
+            border: none;
+        }
+        .ui.basic.segments .ui.segment{
+            box-shadow: none;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'movieseries', id: movieSeries.getId().get() } %}
+<main class="ui main container">
+    {% if success is defined %}
+    <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if movieSeries %}
+    <div class="ui segment top attached">
+        <div class="ui grid stackable">
+            {% if movieSeries.getBannerFile().length() > 0 %}
+            <div class="sixteen wide column">
+                <img src="/movie/cover?file={{ movieSeries.getBannerFile() }}" class="ui fluid image">
+            </div>
+            {% endif %}
+            <div class="sixteen wide column">
+                <div class="ui basic segments">
+                    <div class="ui segment">
+                        <h1 class="ui header">{{ movieSeries.getTitle() | escape }}</h1>
+                        <h3 class="ui header">{{ movieSeries.getSubTitle() | escape }}</h3>
+                    </div>
+                    <div class="ui basic segment">
+                        <h4 class="ui horizontal divider header">Film Infos</h4>
+                        <div class="ui two statistics tiny stackable">
+                            <div class="statistic">
+                                <div class="label">
+                                    Filme
+                                </div>
+                                <div class="value">
+                                    {{ movieSeries.getSeriesMovies().size() }}
+                                </div>
+                            </div>
+                            <div class="statistic">
+                                <div class="label">
+                                    Jahr
+                                </div>
+                                <div class="value">
+                                    {{ minYear }} - {{ maxYear }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui basic segment">
+                        <h4 class="ui horizontal divider header">Beschreibung</h4>
+                        <div class="ui text">
+                            {{ movieSeries.getDescription().get() | escapenl }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sixteen wide column">
+                <h2 class="ui segment top attached header">Filme</h2>
+                <div class="ui segment bottom attached">
+                {% if seriesMovies.size() > 0 %}
+                <div class="ui items divided">
+                    {% for seriesMovie in seriesMovies %}
+                    <div class="item">
+                        {% if movies.get(seriesMovie.getMovieId().get()).getCoverFile() != null %}
+                        <div class="image">
+                            <a href="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}" data-lightbox="{{ randomstr() }}" class="ui small image">
+                                <img src="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}">
+                            </a>
+                        </div>
+                        {% endif %}
+                        <div class="content">
+                            <a class="header" href="{% if movies.get(seriesMovie.getMovieId().get()).isInMovieBox() %}/movie/movieboxview?id={{ movies.get(seriesMovie.getMovieId().get()).getBoxId().get().get() }}#{{ movies.get(seriesMovie.getMovieId().get()).getId().get() }}{% else %}/movie/movieview?id={{ movies.get(seriesMovie.getMovieId().get()).getId().get() }}{% endif %}">
+                                {% if seriesMovie.getPartNumber().length() > 0 %}
+                                Teil: {{ seriesMovie.getPartNumber() | escape }} {% if seriesMovie.getPartDescription().length() > 0 %}{{ seriesMovie.getPartDescription() | escape }}{% endif %}
+                                <br><br>
+                                {% endif %}
+                                {{ movies.get(seriesMovie.getMovieId().get()).getTitle() | escape }} - {{ movies.get(seriesMovie.getMovieId().get()).getSubTitle() | escape }}
+                            </a>
+                            <div class="description">
+                                <p>{{ movies.get(seriesMovie.getMovieId().get()).getDescription().orElse("") | escapenl }}</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui right floated">
+                                    {% if editMode %}
+                                    <a class="ui button icon red basic right floated" onclick="$('#boxMovieDeleteSafetyRequest_{{ seriesMovie.getId().get() }}').modal('show')">
+                                        <i class="icon remove"></i> l&ouml;schen
+                                    </a>
+                                    <div class="ui basic modal" id="boxMovieDeleteSafetyRequest_{{ seriesMovie.getId().get() }}">
+                                        <div class="ui icon header">
+                                            <i class="delete icon"></i>
+                                            Film aus Film Reihe l&ouml;schen
+                                        </div>
+                                        <div class="content">
+                                            <p>Bist du sicher das du den Film aus der Film Reihe l&ouml;schen m&ouml;chtest?</p>
+                                        </div>
+                                        <div class="actions">
+                                            <div class="ui red basic cancel inverted button">
+                                                <i class="remove icon"></i>
+                                                Nein
+                                            </div>
+                                            <div class="ui green ok inverted button" onclick="window.location = '/movie/seriesmoviedelete?movieseriesid={{ movieSeries.getId().get() }}&seriesmovieid={{ seriesMovie.getId().get() }}'">
+                                                <i class="checkmark icon"></i>
+                                                Ja
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a class="ui button icon orange basic right floated" href="/movie/seriesmovieform?seriesid={{ movieSeries.getId().get() }}&seriesmovieid={{ seriesMovie.getId().get() }}">
+                                        <i class="icon pencil alternate"></i> bearbeiten
+                                    </a>
+                                    {{ seriesMoviesOrder.get(movie.getId().get()) }}
+                                    {% if seriesMovie.getOrderId() < maxOrderId %}
+                                    <a title="nach unten verschieben" class="ui button icon basic right floated" href="/movie/seriesmovieorder?direction=down&seriesid={{ movieSeries.getId().get() }}&seriesmovieid={{ seriesMovie.getId().get() }}"><i class="arrow down icon"></i></a>
+                                    {% endif %}
+                                    {% if seriesMovie.getOrderId() > 0 %}
+                                    <a title="nach oben verschieben" class="ui button icon basic right floated" href="/movie/seriesmovieorder?direction=up&seriesid={{ movieSeries.getId().get() }}&seriesmovieid={{ seriesMovie.getId().get() }}"><i class="arrow up icon"></i></a>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="ui label teal">
+                                    <div class="ui rating star large" data-rating="{{ movies.get(seriesMovie.getMovieId().get()).getRating() }}" data-max-rating="5"></div>
+                                </div>
+                                <div class="ui label blue">
+                                    {% if seriesMovie.getSeriesType() == 'Prequel' %}
+                                    Vorgeschichte
+                                    {% elseif seriesMovie.getSeriesType() == 'Main' %}
+                                    Hauptfilm
+                                    {% elseif seriesMovie.getSeriesType() == 'Sequel' %}
+                                    Fortsetzung
+                                    {% elseif seriesMovie.getSeriesType() == 'Spin_Off' %}
+                                    Nebengeschichte
+                                    {% elseif seriesMovie.getSeriesType() == 'Remake' %}
+                                    Neuverfilmung
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="ui bottom attached placeholder segment">
+                        <div class="ui icon header">
+                            <i class="pdf file outline icon"></i>
+                            keine Filme eingetragen
+                        </div>
+                        <a class="ui primary button" href="/movie/seriesmovieform?seriesid={{ movieSeries.getId().get() }}">Film hinzuf&uuml;gen</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui segment bottom attached clearing" style="margin-bottom:30px;">
+        <div class="ui secondary basic button right floated" onclick="window.history.back()">zur&uuml;ck</div>
+    </div>
+    {% else %}
+    <div class="ui message icon attached error">
+        <i class="remove icon red"></i>
+        <div class="content">
+            <p>Die Film Box ist nicht bekannt</p>
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>

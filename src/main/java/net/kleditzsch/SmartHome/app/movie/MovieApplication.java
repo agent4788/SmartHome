@@ -1,7 +1,12 @@
 package net.kleditzsch.SmartHome.app.movie;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
+import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
+import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Genre;
@@ -26,6 +31,7 @@ import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreListServlet;
 import net.kleditzsch.SmartHome.view.movie.user.*;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
 import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
+import net.kleditzsch.SmartHome.view.movie.user.movieseries.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -69,6 +75,14 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieMovieBoxDeleteServlet.class, "/movie/movieboxdelete");
         contextHandler.addServlet(MovieTmdbSearchServlet.class, "/movie/tmdbsearch");
         contextHandler.addServlet(MovieTmdbMovieInfoServlet.class, "/movie/tmdbmovieinfo");
+        contextHandler.addServlet(MovieMovieSeriesListServlet.class, "/movie/movieseries");
+        contextHandler.addServlet(MovieMovieSeriesFormServlet.class, "/movie/movieseriesform");
+        contextHandler.addServlet(MovieMovieSeriesViewServlet.class, "/movie/movieseriesview");
+        contextHandler.addServlet(MovieSeriesMovieFormServlet.class, "/movie/seriesmovieform");
+        contextHandler.addServlet(MovieSeriesMovieOrderServlet.class, "/movie/seriesmovieorder");
+        contextHandler.addServlet(MovieSeriesMovieDeleteServlet.class, "/movie/seriesmoviedelete");
+        contextHandler.addServlet(MovieMovieSeriesDeleteServlet.class, "/movie/movieseriesdelete");
+        contextHandler.addServlet(MovieSeriesMovieSearchServlet.class, "/movie/seriesmoviesearch");
 
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/");
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/index");
@@ -212,14 +226,33 @@ public class MovieApplication implements SubApplication {
             fskEditor.add(fsk);
         }
 
-        //Filme initallisieren
+        //Index anlegen
         if (MovieEditor.countMovies(true) == 0) {
 
-            //TODO Idex für Volltextsuche anlegen
+            MongoCollection collection = Application.getInstance().getDatabaseCollection(MovieEditor.COLLECTION);
+            collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
         }
 
-        //TODO Filmboxen initalisieren
-        //TODO Filmreihen initalisieren
+        if (MovieBoxEditor.countMovieBoxes() == 0) {
+
+            MongoCollection collection = Application.getInstance().getDatabaseCollection(MovieBoxEditor.COLLECTION);
+            collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+        }
+        if (MovieSeriesEditor.countMovieSeries() == 0) {
+
+            MongoCollection collection = Application.getInstance().getDatabaseCollection(MovieSeriesEditor.COLLECTION);
+            collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+        }
+        if (ActorEditor.createAndLoad().getData().size() == 0) {
+
+            MongoCollection collection = Application.getInstance().getDatabaseCollection(ActorEditor.COLLECTION);
+            collection.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
+        }
+        if (DirectorEditor.createAndLoad().getData().size() == 0) {
+
+            MongoCollection collection = Application.getInstance().getDatabaseCollection(DirectorEditor.COLLECTION);
+            collection.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
+        }
     }
 
     /**

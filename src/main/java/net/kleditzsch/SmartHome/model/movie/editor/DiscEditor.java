@@ -23,7 +23,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public class DiscEditor extends AbstractDatabaseEditor<Disc> {
 
-    private static final String COLLECTION = "movie.meta.disc";
+    public static final String COLLECTION = "movie.meta.disc";
 
     /**
      * erstell neinen neuen Editor

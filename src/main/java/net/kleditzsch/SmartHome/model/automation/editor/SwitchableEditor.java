@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
-    private static final String COLLECTION = "automation.switchable";
+    public static final String COLLECTION = "automation.switchable";
 
     /**
      * schaltbare Elemente aus der Datenbank laden

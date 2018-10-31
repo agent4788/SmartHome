@@ -28,6 +28,7 @@ public abstract class JtwigFactory {
                         .add(new WeekdayNameFunction())
                         .add(new DateFieldFormatFunction())
                         .add(new MinuteFormatFunction())
+                        .add(new EscapeNewLineFunction())
                     .and()
                 .build();
         return JtwigTemplate.classpathTemplate(location, configuration);

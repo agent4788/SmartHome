@@ -37,7 +37,10 @@ public class MovieMovieDeleteServlet extends HttpServlet {
                     if(movieOptional.get().getCoverFile() != null && movieOptional.get().getCoverFile().length() > 0) {
 
                         Path logoFile = Paths.get("upload/cover").resolve(movieOptional.get().getCoverFile());
-                        Files.delete(logoFile);
+                        try {
+
+                            Files.delete(logoFile);
+                        } catch (Exception e) {}
                     }
                 } else {
 

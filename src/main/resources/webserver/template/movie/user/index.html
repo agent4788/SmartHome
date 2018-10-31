@@ -11,6 +11,7 @@
 <main class="ui main">
     <div class="ui container" style="margin-bottom: 20px;">
         <h1 class="ui header top attached">neuste Filme {% if newestMoviesCount > 4 %}<a class="ui button right floated" href="/movie/newmovies">alle</a>{% endif %}</h1>
+        {% if newestMovies.size() > 0 %}
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in newestMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
@@ -39,10 +40,18 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="ui placeholder bottom attached segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Keine Filme vohanden
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% if viewSoonMovies.size() > 0 %}
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Demn&auml;chst anschauen {% if viewSoonMoviesCount > 4 %}<a class="ui button right floated" href="/movie/viewsonnmovies">alle</a>{% endif %}</h1>
+        <h1 class="ui header top attached">Merkliste {% if viewSoonMoviesCount > 4 %}<a class="ui button right floated" href="/movie/viewsonnmovies">alle</a>{% endif %}</h1>
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in viewSoonMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
@@ -75,6 +84,7 @@
     {% endif %}
     <div class="ui container">
         <h1 class="ui header top attached">Beste Bewertung</h1>
+        {% if bestRatedMovies.size() > 0 %}
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in bestRatedMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
@@ -103,6 +113,14 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="ui placeholder bottom attached segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Keine Filme vohanden
+            </div>
+        </div>
+        {% endif %}
     </div>
 </main>
 </body>

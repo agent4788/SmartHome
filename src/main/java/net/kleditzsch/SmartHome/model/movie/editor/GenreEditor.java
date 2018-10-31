@@ -21,7 +21,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public class GenreEditor extends AbstractDatabaseEditor<Genre> {
 
-    private static final String COLLECTION = "movie.meta.genre";
+    public static final String COLLECTION = "movie.meta.genre";
 
     /**
      * erstell neinen neuen Editor

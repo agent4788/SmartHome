@@ -17,12 +17,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.in;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
 public abstract class MovieSeriesEditor {
 
-    private static final String COLLECTION = "movie.movieSeries";
+    public static final String COLLECTION = "movie.movieSeries";
 
     /**
      * gibt eine sortierte Liste mit allen Film Reihen zurück
@@ -63,6 +64,27 @@ public abstract class MovieSeriesEditor {
             movies.add(documentToMovieSeries(document));
         });
         return movies;
+    }
+
+    /**
+     * gibt eine Liste mit den Film Reihen der IDs zurück
+     *
+     * @param idList Liste mit den IDs
+     * @return Liste der Film Reihen
+     */
+    public static List<MovieSeries> listMovieSeriesByIDList(List<ID> idList) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(
+                in("_id", idList.stream().map(ID::toString).collect(Collectors.toList()))
+        );
+
+        List<MovieSeries> movieSeriesList = new ArrayList<>(idList.size());
+        iterator.forEach((Block<Document>) document -> {
+
+            movieSeriesList.add(documentToMovieSeries(document));
+        });
+        return movieSeriesList;
     }
 
     /**
@@ -108,6 +130,8 @@ public abstract class MovieSeriesEditor {
         movieSeries.getSeriesMovies().forEach(seriesMovie -> {
 
             Document seriesMovieDocument = new Document();
+            seriesMovieDocument.append("_id", ID.create().get());
+            seriesMovieDocument.append("movieId", seriesMovie.getMovieId().get());
             seriesMovieDocument.append("orderId", seriesMovie.getOrderId());
             seriesMovieDocument.append("partNumber", seriesMovie.getPartNumber());
             seriesMovieDocument.append("partDescription", seriesMovie.getPartDescription());
@@ -121,7 +145,9 @@ public abstract class MovieSeriesEditor {
                 .append("description", movieSeries.getDescription().orElse(""))
                 .append("title", movieSeries.getTitle())
                 .append("subTitle", movieSeries.getSubTitle())
-                .append("coverFile", movieSeries.getCoverFile())
+                .append("search", movieSeries.getTitle() + " " + movieSeries.getSubTitle())
+                .append("posterFile", movieSeries.getPosterFile())
+                .append("bannerFile", movieSeries.getBannerFile())
                 .append("seriesMovies", seriesMovies);
         MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         movieSeriesCollection.insertOne(document);
@@ -142,6 +168,8 @@ public abstract class MovieSeriesEditor {
         movieSeries.getSeriesMovies().forEach(seriesMovie -> {
 
             Document seriesMovieDocument = new Document();
+            seriesMovieDocument.append("_id", seriesMovie.getId().get());
+            seriesMovieDocument.append("movieId", seriesMovie.getMovieId().get());
             seriesMovieDocument.append("orderId", seriesMovie.getOrderId());
             seriesMovieDocument.append("partNumber", seriesMovie.getPartNumber());
             seriesMovieDocument.append("partDescription", seriesMovie.getPartDescription());
@@ -157,7 +185,9 @@ public abstract class MovieSeriesEditor {
                         set("description", movieSeries.getDescription().orElse("")),
                         set("title", movieSeries.getTitle()),
                         set("subTitle", movieSeries.getSubTitle()),
-                        set("coverFile", movieSeries.getCoverFile()),
+                        set("search", movieSeries.getTitle() + " " + movieSeries.getSubTitle()),
+                        set("posterFile", movieSeries.getPosterFile()),
+                        set("bannerFile", movieSeries.getBannerFile()),
                         set("seriesMovies", seriesMovies)
                 )
         );
@@ -193,14 +223,17 @@ public abstract class MovieSeriesEditor {
         element.setDescription(document.getString("description"));
         element.setTitle(document.getString("title"));
         element.setSubTitle(document.getString("subTitle"));
-        element.setCoverFile(document.getString("coverFile"));
+        element.setPosterFile(document.getString("posterFile"));
+        element.setBannerFile(document.getString("bannerFile"));
 
         List<Document> seriesMoviesDocuments = (List<Document>) document.get("seriesMovies");
         for (Document seriesMoviesDocument : seriesMoviesDocuments) {
 
             SeriesMovie seriesMovie = new SeriesMovie();
+            seriesMovie.setId(ID.of(seriesMoviesDocument.getString("_id")));
+            seriesMovie.setMovieId(ID.of(seriesMoviesDocument.getString("movieId")));
             seriesMovie.setOrderId(seriesMoviesDocument.getInteger("orderId"));
-            seriesMovie.setPartNumber(seriesMoviesDocument.getDouble("partNumber"));
+            seriesMovie.setPartNumber(seriesMoviesDocument.getString("partNumber"));
             seriesMovie.setPartDescription(seriesMoviesDocument.getString("partDescription"));
             seriesMovie.setTimeOrder(seriesMoviesDocument.getInteger("timeOrder"));
             seriesMovie.setSeriesType(SeriesMovie.SeriesMovieType.valueOf(seriesMoviesDocument.getString("seriesType")));

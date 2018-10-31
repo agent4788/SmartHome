@@ -77,7 +77,7 @@
                         <img class="ui huge image" src="/static/img/noimage.gif">
                         {% endif %}
                         <div style="margin-top: 15px;" class="ui labeled icon button basic {% if movie.isViewSoon() %}green{% else %}grey{% endif %}" id="viewSoonButton" onclick="updateViewSoon()">
-                            <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon"></i>demn&auml;chst anschauen
+                            <i class="{% if movie.isViewSoon() %}check{% else %}remove{% endif %} icon" id="viewSoonButtonIcon"></i>Merkliste
                         </div>
                     </div>
                     <div class="ui segment center aligned">
@@ -135,9 +135,31 @@
                     <div class="ui segment">
                         <h4 class="ui horizontal divider header">Beschreibung</h4>
                         <div class="ui text">
-                            {{ movie.getDescription().get() | escape }}
+                            {{ movie.getDescription().get() | escapenl }}
                         </div>
                     </div>
+                    {% if movieSeries %}
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Film Reihe</h4>
+                        <div class="ui items">
+                            <div class="item">
+                                {% if movieSeries.getPosterFile().length() > 0 %}
+                                <div class="ui tiny image">
+                                    <a href="/movie/cover?file={{ movieSeries.getPosterFile() }}" data-lightbox="{{ randomstr() }}">
+                                        <img src="/movie/cover?file={{ movieSeries.getPosterFile() }}">
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div class="content">
+                                    <a class="header" href="/movie/movieseriesview?id={{ movieSeries.getId().get() | escape }}">{{ movieSeries.getTitle() | escape }}{% if movieSeries.getSubTitle().length() > 0 %} - {{ movieSeries.getSubTitle() | escape }}{% endif %}</a>
+                                    <div class="description">
+                                        {{ movieSeries.getDescription().orElse("") | escape }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     {% if movie.getDirectorIds().size() > 0 or movie.getActorIds().size() > 0 %}
                     <div class="ui segment">
                         {% if movie.getDirectorIds().size() > 0 %}

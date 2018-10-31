@@ -48,7 +48,10 @@ public class MovieMovieBoxDeleteServlet extends HttpServlet {
                             if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
                                 Path logoFile = Paths.get("upload/cover").resolve(movie.getCoverFile());
-                                Files.delete(logoFile);
+                                try {
+
+                                    Files.delete(logoFile);
+                                } catch (Exception e) {}
                             }
                         }
                     }
@@ -60,7 +63,10 @@ public class MovieMovieBoxDeleteServlet extends HttpServlet {
                     if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
                         Path logoFile = Paths.get("upload/cover").resolve(movieBox.getCoverFile());
-                        Files.delete(logoFile);
+                        try {
+
+                            Files.delete(logoFile);
+                        } catch (Exception e) {}
                     }
                 } else {
 

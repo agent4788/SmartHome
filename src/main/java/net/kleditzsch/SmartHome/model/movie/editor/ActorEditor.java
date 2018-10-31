@@ -21,7 +21,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public class ActorEditor extends AbstractDatabaseEditor<Actor> {
 
-    private static final String COLLECTION = "movie.meta.actor";
+    public static final String COLLECTION = "movie.meta.actor";
 
     /**
      * erstell neinen neuen Editor

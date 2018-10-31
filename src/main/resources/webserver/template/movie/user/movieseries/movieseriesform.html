@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Reihe Formular</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'movieseries'} %}
+<main class="ui main container">
+    <form class="ui form" action="/movie/movieseriesform?id={{ movieSeries.getId().get() | escape }}" method="post" enctype="multipart/form-data">
+        <h1 class="ui header top attached">Film Reihe {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Titel</label>
+                    <input name="title" placeholder="Titel ..." type="text" pattern=".{3,50}"  value="{{ movieSeries.getTitle() | escape }}" required>
+                </div>
+                <div class="field">
+                    <label>Untertietel</label>
+                    <input name="subtitle" placeholder="Untertietel ..." pattern=".{3,50}"  type="text" value="{{ movieSeries.getSubTitle() | escape }}">
+                </div>
+            </div>
+            <div class="field required">
+                <label>Beschreibung</label>
+                <textarea name="description" required minlength="3">{{ movieSeries.getDescription().orElse("") | escape }}</textarea>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Poster</label>
+                    <input name="poster" type="file">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Poster URL</label>
+                    <input name="posterUrl" type="url">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Banner</label>
+                    <input name="banner" type="file">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Banner URL</label>
+                    <input name="bannerUrl" type="url">
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

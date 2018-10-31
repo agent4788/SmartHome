@@ -61,7 +61,10 @@ public class MovieBoxMovieDeleteServlet extends HttpServlet {
                                 if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
                                     Path logoFile = Paths.get("upload/cover").resolve(movieOptional.get().getCoverFile());
-                                    Files.delete(logoFile);
+                                    try {
+
+                                        Files.delete(logoFile);
+                                    } catch (Exception e) {}
                                 }
                             } else {
 

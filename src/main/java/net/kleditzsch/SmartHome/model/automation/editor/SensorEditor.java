@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
 
-    private static final String COLLECTION = "automation.sensor";
+    public static final String COLLECTION = "automation.sensor";
 
     /**
      * läd die Sensoren aus der Datenbank

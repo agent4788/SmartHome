@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
-    private static final String COLLECTION = "automation.room";
+    public static final String COLLECTION = "automation.room";
 
     /**
      * läd die Räume aus der Datenbank

@@ -27,7 +27,7 @@ public class SeriesMovie extends Element {
     /**
      * Nummer des Teils der Reihe (1, 2, 3, 3.1 ...)
      */
-    private double partNumber = 1;
+    private String partNumber = "1";
 
     /**
      * Beschreibung des Teils der Reihe
@@ -42,7 +42,7 @@ public class SeriesMovie extends Element {
     /**
      * Typ des Filme (Vorgeschichte, Fortsetzung ...)
      */
-    private SeriesMovieType seriesType = SeriesMovieType.Sequel;
+    private SeriesMovieType seriesType = SeriesMovieType.Main;
 
     /**
      * Film
@@ -54,7 +54,7 @@ public class SeriesMovie extends Element {
      *
      * @return Sortierungs ID
      */
-    public double getOrderId() {
+    public int getOrderId() {
         return orderId;
     }
 
@@ -72,7 +72,7 @@ public class SeriesMovie extends Element {
      *
      * @return Nummer des Teils in der Reihe
      */
-    public double getPartNumber() {
+    public String getPartNumber() {
         return partNumber;
     }
 
@@ -81,7 +81,7 @@ public class SeriesMovie extends Element {
      *
      * @param partNumber Nummer des Teils in der Reihe
      */
-    public void setPartNumber(double partNumber) {
+    public void setPartNumber(String partNumber) {
         this.partNumber = partNumber;
     }
 

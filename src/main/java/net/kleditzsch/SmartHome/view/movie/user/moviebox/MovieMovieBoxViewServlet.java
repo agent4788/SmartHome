@@ -4,9 +4,11 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
+import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.BoxMovie;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.util.string.StringUtil;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -15,10 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MovieMovieBoxViewServlet extends HttpServlet {
@@ -83,6 +82,22 @@ public class MovieMovieBoxViewServlet extends HttpServlet {
                     }
                 }
 
+                //Filmreihen laden
+                List<ID> movieSeriesIDs = new ArrayList<>();
+                boxMovies.forEach(boxMovie -> {
+                    if(boxMovie.getSeriesId().isPresent()) {
+
+                        movieSeriesIDs.add(boxMovie.getSeriesId().get());
+                    }
+                });
+                List<MovieSeries> movieSeriesList = MovieSeriesEditor.listMovieSeriesByIDList(movieSeriesIDs);
+                Map<String, MovieSeries> movieSeriesMap = new HashMap<>(movieSeriesList.size());
+                movieSeriesList.forEach(movieSeries -> {
+
+                    movieSeries.setDescription(StringUtil.limitTextLength(movieSeries.getDescription().orElse(""), 250));
+                    movieSeriesMap.put(movieSeries.getId().get(), movieSeries);
+                });
+
                 Map<String, Integer> boxMoviesOrder = new HashMap<>(movieBox.getBoxMovies().size());
                 movieBox.getBoxMovies().forEach(boxMovie -> boxMoviesOrder.put(boxMovie.getMovieId().get(), boxMovie.getOrderId()));
 
@@ -93,6 +108,8 @@ public class MovieMovieBoxViewServlet extends HttpServlet {
                 model.with("editMode", editMode);
                 model.with("boxMoviesOrder", boxMoviesOrder);
                 model.with("maxOrderId", movieBox.getBoxMovies().stream().mapToInt(BoxMovie::getOrderId).summaryStatistics().getMax());
+                model.with("movieSeriesList", movieSeriesList);
+                model.with("movieSeriesMap", movieSeriesMap);
 
                 model.with("discEditor", DiscEditor.createAndLoad());
                 model.with("genreEditor", GenreEditor.createAndLoad());

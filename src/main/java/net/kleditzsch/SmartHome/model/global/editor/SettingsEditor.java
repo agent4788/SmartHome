@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SettingsEditor implements DatabaseEditor {
 
-    private static final String COLLECTION = "global.settings";
+    public static final String COLLECTION = "global.settings";
 
     //Globale Einstellungen
     public static final String SERVER_PORT = "SERVER_PORT";

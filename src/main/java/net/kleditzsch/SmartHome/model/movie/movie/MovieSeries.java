@@ -21,9 +21,14 @@ public class MovieSeries extends Element {
     private String subTitle = "";
 
     /**
-     * Dateiname der Cover Datei
+     * Dateiname der Poster Datei
      */
-    private String coverFile = "";
+    private String posterFile = "";
+
+    /**
+     * Dateiname der Banner Datei
+     */
+    private String bannerFile = "";
 
     /**
      * Filme der Filmreihe
@@ -68,21 +73,39 @@ public class MovieSeries extends Element {
     }
 
     /**
-     * gibt den Dateinamen der Cover Datei zurück
+     * gibt den Dateinamen der Poster Datei zurück
      *
      * @return Dateiname der Cover Datei
      */
-    public String getCoverFile() {
-        return coverFile;
+    public String getPosterFile() {
+        return posterFile;
     }
 
     /**
-     * setzt den Dateinamen der Cover Datei
+     * setzt den Dateinamen der Poster Datei
      *
-     * @param coverFile Dateiname der Cover Datei
+     * @param posterFile Dateiname der Cover Datei
      */
-    public void setCoverFile(String coverFile) {
-        this.coverFile = coverFile;
+    public void setPosterFile(String posterFile) {
+        this.posterFile = posterFile;
+    }
+
+    /**
+     * gibt den Dateinamen der Banner Datei zurück
+     *
+     * @return Dateiname der Banner Datei
+     */
+    public String getBannerFile() {
+        return bannerFile;
+    }
+
+    /**
+     * setzt den Dateinamen der Banner Datei
+     *
+     * @param bannerFile Dateiname der Banner Datei
+     */
+    public void setBannerFile(String bannerFile) {
+        this.bannerFile = bannerFile;
     }
 
     /**

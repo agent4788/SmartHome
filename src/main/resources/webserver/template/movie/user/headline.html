@@ -35,9 +35,6 @@
         <a class="header item {% if module == 'movieseries' %}active{% endif %}" href="/movie/movieseries">
             Film Reihen
         </a>
-        <a class="header item {% if module == 'search' %}active{% endif %}" href="/movie/search">
-            Suche
-        </a>
         <a class="header item {% if module == 'statistics' %}active{% endif %}" href="/movie/statistics">
             Statistik
         </a>
@@ -140,14 +137,42 @@
                         </a>
                         {% if id %}
                         <div class="ui divider"></div>
-                        <a class="item" href="/movie/movieseiesform?id={{ id | escape }}">
+                        <a class="item" href="/movie/seriesmovieform?seriesid={{ id | escape }}">
+                            <i class="icon plus"></i>
+                            Film hinzuf&uuml;gen
+                        </a>
+                        <a class="item" href="/movie/movieseriesview?id={{ id | escape }}&edit=1">
+                            <i class="icon pencil alternate"></i>
+                            Filme bearbeiten
+                        </a>
+                        <div class="ui divider"></div>
+                        <a class="item" href="/movie/movieseriesform?id={{ id | escape }}">
                             <i class="icon pencil alternate"></i>
                             bearbeiten
                         </a>
-                        <a class="item" href="/movie/moviedserieselete?id={{ id | escape }}">
+                        <a class="item" onclick="$('#movieSeriesDeleteSafetyRequest').modal('show')">
                             <i class="icon remove"></i>
                             l&ouml;schen
                         </a>
+                        <div class="ui basic modal" id="movieSeriesDeleteSafetyRequest">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Film Reihe l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du die Film Reihe l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/movie/movieseriesdelete?id={{ id }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
                         {% endif %}
                     {% endif %}
                 </div>

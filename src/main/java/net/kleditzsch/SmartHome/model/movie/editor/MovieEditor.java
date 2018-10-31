@@ -4,6 +4,7 @@ package net.kleditzsch.SmartHome.model.movie.editor;
 import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
@@ -27,7 +28,7 @@ import static com.mongodb.client.model.Updates.set;
  */
 public abstract class MovieEditor {
 
-    private static final String COLLECTION = "movie.movie";
+    public static final String COLLECTION = "movie.movie";
 
     /**
      * gibt eine sortierte Liste mit allen Filmen zurück
@@ -84,7 +85,7 @@ public abstract class MovieEditor {
                 in("_id", idList.stream().map(ID::toString).collect(Collectors.toList()))
         );
 
-        List<Movie> movies = new ArrayList<>(50);
+        List<Movie> movies = new ArrayList<>(idList.size());
         iterator.forEach((Block<Document>) document -> {
 
             movies.add(documentToMovie(document));
@@ -143,6 +144,25 @@ public abstract class MovieEditor {
             return Optional.of(documentToMovie((Document) iterator.first()));
         }
         return Optional.empty();
+    }
+
+    /**
+     * gibt eine Liste mit Filmen des Sucheergebnisses zurück
+     *
+     * @param query Suchbegriffe
+     * @return Liste mit Suchergebnissen
+     */
+    public static List<Movie> search(String query) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(Filters.text(query)).sort(Sorts.ascending("title"));
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
     }
 
     /**
@@ -264,7 +284,7 @@ public abstract class MovieEditor {
      * @return ID des Films
      */
     public static ID addMovie(Movie movie) {
-        System.out.println(movie.getBoxId().orElse(null));
+
         //Neue ID vergeben
         movie.setId(ID.create());
         Document document = new Document()
@@ -272,6 +292,7 @@ public abstract class MovieEditor {
                 .append("description", movie.getDescription().orElse(""))
                 .append("title", movie.getTitle())
                 .append("subTitle", movie.getSubTitle())
+                .append("search", movie.getTitle() + " " + movie.getSubTitle())
                 .append("coverFile", movie.getCoverFile())
                 .append("year", movie.getYear())
                 .append("discId", movie.getDiscId().get())
@@ -308,6 +329,7 @@ public abstract class MovieEditor {
                         set("description", movie.getDescription().orElse("")),
                         set("title", movie.getTitle()),
                         set("subTitle", movie.getSubTitle()),
+                        set("search", movie.getTitle() + " " + movie.getSubTitle()),
                         set("coverFile", movie.getCoverFile()),
                         set("year", movie.getYear()),
                         set("discId", movie.getDiscId().get()),
