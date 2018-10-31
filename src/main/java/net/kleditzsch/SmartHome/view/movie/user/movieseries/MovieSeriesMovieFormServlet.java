@@ -152,7 +152,7 @@ public class MovieSeriesMovieFormServlet extends HttpServlet {
 
             partDescription = form.getString("partDescription", "Beschreibung", 1, 50);
         }
-        if(form.fieldNotEmpty("partDescription")) {
+        if(form.fieldNotEmpty("partNumber")) {
 
             partNumber = form.getString("partNumber", "Nummer des Teils", Pattern.compile("^\\d+(\\.\\d+)?$"));
         }
