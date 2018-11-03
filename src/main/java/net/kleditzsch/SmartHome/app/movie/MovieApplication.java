@@ -6,7 +6,6 @@ import com.mongodb.client.model.Indexes;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
-import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Genre;
@@ -32,6 +31,9 @@ import net.kleditzsch.SmartHome.view.movie.user.*;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
 import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
 import net.kleditzsch.SmartHome.view.movie.user.movieseries.*;
+import net.kleditzsch.SmartHome.view.movie.user.search.MovieSearchAllServlet;
+import net.kleditzsch.SmartHome.view.movie.user.search.MovieSearchPersonMoviesServlet;
+import net.kleditzsch.SmartHome.view.movie.user.search.MovieSearchServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -83,6 +85,9 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieSeriesMovieDeleteServlet.class, "/movie/seriesmoviedelete");
         contextHandler.addServlet(MovieMovieSeriesDeleteServlet.class, "/movie/movieseriesdelete");
         contextHandler.addServlet(MovieSeriesMovieSearchServlet.class, "/movie/seriesmoviesearch");
+        contextHandler.addServlet(MovieSearchServlet.class, "/movie/search");
+        contextHandler.addServlet(MovieSearchAllServlet.class, "/movie/searchall");
+        contextHandler.addServlet(MovieSearchPersonMoviesServlet.class, "/movie/serachpersonmovies");
 
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/");
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/index");

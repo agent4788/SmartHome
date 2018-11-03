@@ -95,8 +95,6 @@ public class MovieIndexServlet extends HttpServlet {
             model.with("bestRatedMovies", bestRatedMoviesAll);
         }
 
-        model.with("genreEditor", GenreEditor.createAndLoad());
-
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

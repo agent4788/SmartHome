@@ -166,7 +166,9 @@
                         <h5 class="ui horizontal divider header">Regiseur(e)</h5>
                         {% for directorId in movie.getDirectorIds() %}
                         {% if directorEditor.getById(directorId).isPresent() %}
-                        <i class="user circular icon"></i> {{ directorEditor.getById(directorId).get().getName() | escape }}
+                        <a style="color: black;" href="/movie/serachpersonmovies?directorid={{ directorId }}">
+                            <i class="user circular icon"></i> {{ directorEditor.getById(directorId).get().getName() | escape }}
+                        </a>
                         {% endif %}
                         {% endfor %}
                         {% endif %}
@@ -174,7 +176,9 @@
                         <h5 class="ui horizontal divider header">Schauspieler</h5>
                         {% for actorId in movie.getActorIds() %}
                         {% if actorEditor.getById(actorId).isPresent() %}
-                        <i class="user circular icon"></i> {{ actorEditor.getById(actorId).get().getName() | escape }}
+                        <a style="color: black;" href="/movie/serachpersonmovies?actorId={{ actorId }}">
+                            <i class="user circular icon"></i> {{ actorEditor.getById(actorId).get().getName() | escape }}
+                        </a>
                         {% endif %}
                         {% endfor %}
                         {% endif %}

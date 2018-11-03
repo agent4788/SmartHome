@@ -62,8 +62,6 @@ public class MovieMovieListServlet extends HttpServlet {
         List<Movie> moviesAtPage = MovieEditor.listMovies(pagination.getCurrentPageIndex(), pagination.getElementsAtPage());
         model.with("pagination", pagination);
         model.with("moviesAtPage", moviesAtPage);
-        model.with("discEditor", DiscEditor.createAndLoad());
-        model.with("genreEditor", GenreEditor.createAndLoad());
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
         model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::toString).collect(Collectors.toList()));
 

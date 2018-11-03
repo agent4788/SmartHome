@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filme Suche</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="manifest" href="/static/manifest/moviemanifest.json">
+    <style type="text/css">
+        .card .image.icon {
+              background: #dfdfdf !important;
+        }
+        .card .image.icon {
+        text-align: center;
+            line-height: 200px;
+        }
+        .card .image.icon i {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'search'} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        {% if errorMessage %}
+        <div class="ui message icon error">
+            <i class="remoxe icon red"></i>
+            <div class="content">
+                <p>{{errorMessage | escape }}</p>
+            </div>
+        </div>
+        {% else %}
+        <h1 class="ui header top attached">Filme des {% if director %}Regiseurs {{ director.getName() | escape }}{% elseif actor %}Schauspielers {{ actor.getName() | escape }}{% endif %} ({{ pagination.getSize() | numberformat }})</h1>
+        {% if pagination.getSize() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in pagination.getCurrentPageElements() %}
+            <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                        <span class="right floated">
+                            {{ element.getDuration() | minuteformat }}
+                        </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if pagination.hasPages() %}
+        <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
+            <div class="ui right floated pagination menu">
+                {% include '/webserver/template/movie/user/pagination.html' with {pagination: pagination} %}
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="ui message icon attached info bottom">
+            <i class="question icon red"></i>
+            <div class="content">
+                <p>Es wurden keine Filme gefunden</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

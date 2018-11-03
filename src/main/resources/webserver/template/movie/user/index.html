@@ -15,27 +15,25 @@
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in newestMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
-                <div class="ui card">
-                    <div class="image">
-                        {% if element.getCoverFile() != null %}
-                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
-                        {% else %}
-                        <img src="/static/img/noimage.gif">
-                        {% endif %}
-                    </div>
-                    <div class="content">
-                        <div class="ui">
-                            <div class="header">{{ element.getTitle() | escape }}</div>
-                            <div class="meta">
-                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
-                            </div>
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
                         </div>
                     </div>
-                    <div class="extra content">
+                </div>
+                <div class="extra content">
                         <span class="right floated">
                             {{ element.getDuration() | minuteformat }}
                         </span>
-                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -55,27 +53,25 @@
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in viewSoonMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
-                <div class="ui card">
-                    <div class="image">
-                        {% if element.getCoverFile() != null %}
-                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
-                        {% else %}
-                        <img src="/static/img/noimage.gif">
-                        {% endif %}
-                    </div>
-                    <div class="content">
-                        <div class="ui">
-                            <div class="header">{{ element.getTitle() | escape }}</div>
-                            <div class="meta">
-                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
-                            </div>
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
                         </div>
                     </div>
-                    <div class="extra content">
+                </div>
+                <div class="extra content">
                         <span class="right floated">
                             {{ element.getDuration() | minuteformat }}
                         </span>
-                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -88,27 +84,25 @@
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in bestRatedMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
-                <div class="ui card">
-                    <div class="image">
-                        {% if element.getCoverFile() != null %}
-                        <img src="/movie/cover?file={{ element.getCoverFile() }}">
-                        {% else %}
-                        <img src="/static/img/noimage.gif">
-                        {% endif %}
-                    </div>
-                    <div class="content">
-                        <div class="ui">
-                            <div class="header">{{ element.getTitle() | escape }}</div>
-                            <div class="meta">
-                                {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
-                            </div>
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
                         </div>
                     </div>
-                    <div class="extra content">
+                </div>
+                <div class="extra content">
                         <span class="right floated">
                             {{ element.getDuration() | minuteformat }}
                         </span>
-                    </div>
                 </div>
             </div>
             {% endfor %}

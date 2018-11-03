@@ -5,6 +5,7 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
@@ -155,7 +156,49 @@ public abstract class MovieEditor {
     public static List<Movie> search(String query) {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieCollection.find(Filters.text(query)).sort(Sorts.ascending("title"));
+        FindIterable iterator = movieCollection.find(Filters.text(query))
+                .projection(Projections.metaTextScore("score"))
+                .sort(Sorts.metaTextScore("score"));
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
+     * gibt eine Liste mit allen Filmen des Regiseurs zurück
+     *
+     * @param directorId Regiseur ID
+     * @return Liste der Filme
+     */
+    public static List<Movie> searchMoviesByDirector(ID directorId) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(Filters.in("directorIds", directorId.get()))
+                .sort(Sorts.ascending("title"));
+
+        List<Movie> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovie(document));
+        });
+        return movies;
+    }
+
+    /**
+     * gibt eine Liste mit allen Filmen des Schauspielers zurück
+     *
+     * @param actorId Schauspieler ID
+     * @return Liste der Filme
+     */
+    public static List<Movie> searchMoviesByActor(ID actorId) {
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieCollection.find(Filters.in("actorIds", actorId.get()))
+                .sort(Sorts.ascending("title"));
 
         List<Movie> movies = new ArrayList<>(50);
         iterator.forEach((Block<Document>) document -> {

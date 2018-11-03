@@ -63,7 +63,6 @@ public class MovieMovieBoxListServlet extends HttpServlet {
         List<MovieBox> movieBoxessAtPage = MovieBoxEditor.listMovieBoxes(pagination.getCurrentPageIndex(), pagination.getElementsAtPage());
         model.with("pagination", pagination);
         model.with("movieBoxessAtPage", movieBoxessAtPage);
-        model.with("discEditor", DiscEditor.createAndLoad());
         List<String> newestMovies = MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList());
         List<String> boxesWithNewMovies = new ArrayList<>(newestMoviesCount);
         movieBoxessAtPage.forEach(box -> {

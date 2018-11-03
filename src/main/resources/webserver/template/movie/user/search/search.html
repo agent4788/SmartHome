@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filme Suche</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="manifest" href="/static/manifest/moviemanifest.json">
+    <style type="text/css">
+        .card .image.icon {
+              background: #dfdfdf !important;
+        }
+        .card .image.icon {
+        text-align: center;
+            line-height: 200px;
+        }
+        .card .image.icon i {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+{% include '/webserver/template/movie/user/headline.html' with {module: 'search'} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Filme ({{ resultMoviesCount | numberformat }}) {% if resultMoviesCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=movie&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultMovies.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in resultMovies %}
+            <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                        <span class="right floated">
+                            {{ element.getDuration() | minuteformat }}
+                        </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Filme Boxen ({{ resultBoxesCount | numberformat }}) {% if resultBoxesCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=moviebox&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultBoxes.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in resultBoxes %}
+            <div class="card" onclick="window.location = '/movie/movieboxview?id={{ element.getId().get() }}'">
+                <div class="image">
+                    {% if element.getCoverFile() != null %}
+                    <img src="/movie/cover?file={{ element.getCoverFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                        <span class="right floated">
+                            {% if element.getBoxMovies().size() == 1 %}
+                            1 Film
+                            {% else %}
+                            {{ element.getBoxMovies().size() | numberformat }} Filme
+                            {% endif %}
+                        </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Filme Reihen ({{ resultSeriesCount | numberformat }}) {% if resultSeriesCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=movieseries&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultSeries.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in resultSeries %}
+            <div class="card" onclick="window.location = '/movie/movieseriesview?id={{ element.getId().get() }}'">
+                <div class="image">
+                    {% if element.getPosterFile() != null %}
+                    <img src="/movie/cover?file={{ element.getPosterFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getTitle() | escape }}</div>
+                        <div class="meta">
+                            {{ element.getSubTitle() | escape }}
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                        <span class="right floated">
+                            {% if element.getSeriesMovies().size() == 1 %}
+                            1 Film
+                            {% else %}
+                            {{ element.getSeriesMovies().size() | numberformat }} Filme
+                            {% endif %}
+                        </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Regiseure ({{ resultDirectorsCount | numberformat }}) {% if resultDirectorsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=director&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultDirectors.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in resultDirectors %}
+            <div class="card" onclick="window.location = '/movie/serachpersonmovies?directorid={{ element.getId().get() }}'">
+                <div class="image icon">
+                    <i class="user icon massive"></i>
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getName() | escape }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Schauspieler ({{ resultActorsCount | numberformat }}) {% if resultActorsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=actor&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultActors.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in resultActors %}
+            <div class="card" onclick="window.location = '/movie/serachpersonmovies?actorid={{ element.getId().get() }}'">
+                <div class="image icon">
+                    <i class="user icon massive"></i>
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getName() | escape }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

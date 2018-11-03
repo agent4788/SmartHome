@@ -3,6 +3,8 @@ package net.kleditzsch.SmartHome.model.movie.editor;
 import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
@@ -84,6 +86,27 @@ public abstract class MovieBoxEditor {
             return Optional.of(documentToMovieBox((Document) iterator.first()));
         }
         return Optional.empty();
+    }
+
+    /**
+     * gibt eine Liste mit Film Boxen des Sucheergebnisses zurück
+     *
+     * @param query Suchbegriffe
+     * @return Liste mit Suchergebnissen
+     */
+    public static List<MovieBox> search(String query) {
+
+        MongoCollection movieBoxCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieBoxCollection.find(Filters.text(query))
+                .projection(Projections.metaTextScore("score"))
+                .sort(Sorts.metaTextScore("score"));
+
+        List<MovieBox> movieBoxes = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movieBoxes.add(documentToMovieBox(document));
+        });
+        return movieBoxes;
     }
 
     /**

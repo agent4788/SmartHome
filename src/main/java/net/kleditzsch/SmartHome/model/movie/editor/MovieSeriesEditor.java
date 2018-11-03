@@ -3,6 +3,8 @@ package net.kleditzsch.SmartHome.model.movie.editor;
 import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
@@ -103,6 +105,28 @@ public abstract class MovieSeriesEditor {
         }
         return Optional.empty();
     }
+
+    /**
+     * gibt eine Liste mit Film Reihen des Sucheergebnisses zurück
+     *
+     * @param query Suchbegriffe
+     * @return Liste mit Suchergebnissen
+     */
+    public static List<MovieSeries> search(String query) {
+
+        MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        FindIterable iterator = movieSeriesCollection.find(Filters.text(query))
+                .projection(Projections.metaTextScore("score"))
+                .sort(Sorts.metaTextScore("score"));
+
+        List<MovieSeries> movies = new ArrayList<>(50);
+        iterator.forEach((Block<Document>) document -> {
+
+            movies.add(documentToMovieSeries(document));
+        });
+        return movies;
+    }
+
 
     /**
      * gibt die Anzahl der Filmreihen zurück
