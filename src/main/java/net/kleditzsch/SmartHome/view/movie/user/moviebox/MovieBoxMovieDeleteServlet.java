@@ -55,12 +55,12 @@ public class MovieBoxMovieDeleteServlet extends HttpServlet {
                             if(MovieBoxEditor.updateMovieBox(movieBox)) {
 
                                 //Film löschen
-                                success = MovieEditor.deleteMovie(movieOptional.get().getId());
+                                success = MovieEditor.deleteMovie(movie.getId());
 
                                 //Cover Datei löschen (wenn der Film ein eigenes Cover hatte)
                                 if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
-                                    Path logoFile = Paths.get("upload/cover").resolve(movieOptional.get().getCoverFile());
+                                    Path logoFile = Paths.get("upload/cover").resolve(movie.getCoverFile());
                                     try {
 
                                         Files.delete(logoFile);
