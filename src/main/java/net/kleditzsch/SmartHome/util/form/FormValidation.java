@@ -61,7 +61,22 @@ public class FormValidation {
      */
     public boolean fieldNotEmpty(String name) {
 
-        return request.getParameter(name) != null && request.getParameter(name).length() > 0;
+        return request.getParameter(name) != null && !request.getParameter(name).isBlank();
+    }
+
+    /**
+     * gibt den Wert des Feldes zurück (wenn vorhanden)
+     *
+     * @param name Feldname
+     * @return Wert
+     */
+    public Optional<String> getValue(String name) {
+
+        if(request.getParameter(name) != null) {
+
+            return Optional.of(request.getParameter(name).trim());
+        }
+        return Optional.empty();
     }
 
     /**
@@ -105,12 +120,12 @@ public class FormValidation {
      */
     public ID getId(String name, String displayName) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return ID.of(value);
+                return ID.of(value.get());
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültige %s ID", displayName));
@@ -126,10 +141,10 @@ public class FormValidation {
      */
     public boolean getBoolean(String name, String displayName) {
 
-        String value = request.getParameter(name);
-        if(value != null && (value.equals("1") || value.equals("0"))) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && (value.get().equals("1") || value.get().equals("0"))) {
 
-            return value.equals("1");
+            return value.get().equals("1");
         }
         setInvalid(name, String.format("Ungültige %s ID", displayName));
         return false;
@@ -158,12 +173,12 @@ public class FormValidation {
      */
     public int getInteger(String name, String displayName, int min, int max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                int intValue = Integer.parseInt(value);
+                int intValue = Integer.parseInt(value.get());
                 if(intValue >= min && intValue <= max) {
 
                     return intValue;
@@ -197,12 +212,12 @@ public class FormValidation {
      */
     public long getLong(String name, String displayName, long min, long max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                long longValue = Long.parseLong(value);
+                long longValue = Long.parseLong(value.get());
                 if(longValue >= min && longValue <= max) {
 
                     return longValue;
@@ -236,12 +251,12 @@ public class FormValidation {
      */
     public double getDouble(String name, String displayName, double min, double max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                double doubleValue = Double.parseDouble(value);
+                double doubleValue = Double.parseDouble(value.get());
                 if(doubleValue >= min && doubleValue <= max) {
 
                     return doubleValue;
@@ -275,10 +290,10 @@ public class FormValidation {
      */
     public String getString(String name, String displayName, int minLength, int maxLength) {
 
-        String value = request.getParameter(name);
-        if(value != null && value.length() >= minLength && value.length() <= maxLength) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && value.get().length() >= minLength && value.get().length() <= maxLength) {
 
-            return value;
+            return value.get();
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
@@ -309,10 +324,10 @@ public class FormValidation {
      */
     public String getString(String name, String displayName, Pattern pattern, int minLength, int maxLength) {
 
-        String value = request.getParameter(name);
-        if(value != null && value.length() >= minLength && value.length() <= maxLength && pattern.matcher(value).find()) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && value.get().length() >= minLength && value.get().length() <= maxLength && pattern.matcher(value.get()).find()) {
 
-            return value;
+            return value.get();
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return "";
@@ -328,12 +343,12 @@ public class FormValidation {
      */
     public LocalDate getLocalDate(String name, String displayName, DateTimeFormatter format) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return LocalDate.parse(value, format);
+                return LocalDate.parse(value.get(), format);
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -352,12 +367,12 @@ public class FormValidation {
      */
     public LocalDate getLocalDate(String name, String displayName, DateTimeFormatter format, LocalDate min, LocalDate max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                LocalDate date = LocalDate.parse(value, format);
+                LocalDate date = LocalDate.parse(value.get(), format);
                 if((min.isBefore(date) || min.isEqual(date)) && (max.isAfter(date) || max.isEqual(date))) {
 
                     return date;
@@ -378,12 +393,12 @@ public class FormValidation {
      */
     public LocalTime getLocalTime(String name, String displayName, DateTimeFormatter format) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return LocalTime.parse(value, format);
+                return LocalTime.parse(value.get(), format);
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -402,12 +417,12 @@ public class FormValidation {
      */
     public LocalTime getLocalTime(String name, String displayName, DateTimeFormatter format, LocalTime min, LocalTime max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                LocalTime date = LocalTime.parse(value, format);
+                LocalTime date = LocalTime.parse(value.get(), format);
                 if(min.isBefore(date) && max.isAfter(date)) {
 
                     return date;
@@ -428,12 +443,12 @@ public class FormValidation {
      */
     public LocalDateTime getLocalDateTime(String name, String displayName, DateTimeFormatter format) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return LocalDateTime.parse(value, format);
+                return LocalDateTime.parse(value.get(), format);
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -452,12 +467,12 @@ public class FormValidation {
      */
     public LocalDateTime getLocalDateTime(String name, String displayName, DateTimeFormatter format, LocalDateTime min, LocalDateTime max) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                LocalDateTime date = LocalDateTime.parse(value, format);
+                LocalDateTime date = LocalDateTime.parse(value.get(), format);
                 if((min.isBefore(date) || min.isEqual(date)) && (max.isAfter(date) || max.isEqual(date))) {
 
                     return date;
@@ -477,12 +492,12 @@ public class FormValidation {
      */
     public InetAddress getIpAddress(String name, String displayName) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return InetAddresses.forString(value);
+                return InetAddresses.forString(value.get());
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -522,7 +537,7 @@ public class FormValidation {
 
                     if(value.length() >= minLength && value.length() <= maxLength) {
 
-                        valueList.add(value);
+                        valueList.add(value.trim());
                     } else {
 
                         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -571,7 +586,7 @@ public class FormValidation {
 
                     if(value.length() >= minLength && value.length() <= maxLength && pattern.matcher(value).find()) {
 
-                        valueList.add(value);
+                        valueList.add(value.trim());
                     } else {
 
                         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -602,7 +617,7 @@ public class FormValidation {
 
                 try {
 
-                    valueList.add(ID.of(value));
+                    valueList.add(ID.of(value.trim()));
                 } catch (Exception e) {
 
                     setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
@@ -683,12 +698,12 @@ public class FormValidation {
      */
     public <E extends Enum<E>> E getEnum(String name, String displayName, Class<E> clazz) {
 
-        String value = request.getParameter(name);
-        if(value != null) {
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
 
             try {
 
-                return Enum.valueOf(clazz, value);
+                return Enum.valueOf(clazz, value.get());
             } catch (Exception e) {}
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
