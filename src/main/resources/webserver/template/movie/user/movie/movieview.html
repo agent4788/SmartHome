@@ -163,15 +163,19 @@
                     {% if movie.getDirectorIds().size() > 0 or movie.getActorIds().size() > 0 %}
                     <div class="ui segment">
                         {% if movie.getDirectorIds().size() > 0 %}
-                        <h5 class="ui horizontal divider header">Schauspieler</h5>
+                        <h5 class="ui horizontal divider header">Regiseur(e)</h5>
                         {% for directorId in movie.getDirectorIds() %}
+                        {% if directorEditor.getById(directorId).isPresent() %}
                         <i class="user circular icon"></i> {{ directorEditor.getById(directorId).get().getName() | escape }}
+                        {% endif %}
                         {% endfor %}
                         {% endif %}
                         {% if movie.getActorIds().size() > 0 %}
-                        <h5 class="ui horizontal divider header">Regiseur(e)</h5>
+                        <h5 class="ui horizontal divider header">Schauspieler</h5>
                         {% for actorId in movie.getActorIds() %}
+                        {% if actorEditor.getById(actorId).isPresent() %}
                         <i class="user circular icon"></i> {{ actorEditor.getById(actorId).get().getName() | escape }}
+                        {% endif %}
                         {% endfor %}
                         {% endif %}
                     </div>
