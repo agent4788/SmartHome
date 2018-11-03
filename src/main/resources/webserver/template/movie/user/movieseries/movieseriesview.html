@@ -100,7 +100,7 @@
                                 Teil: {{ seriesMovie.getPartNumber() | escape }} {% if seriesMovie.getPartDescription().length() > 0 %}{{ seriesMovie.getPartDescription() | escape }}{% endif %}
                                 <br><br>
                                 {% endif %}
-                                {{ movies.get(seriesMovie.getMovieId().get()).getTitle() | escape }} - {{ movies.get(seriesMovie.getMovieId().get()).getSubTitle() | escape }}
+                                {{ movies.get(seriesMovie.getMovieId().get()).getTitle() | escape }}{% if movies.get(seriesMovie.getMovieId().get()).getSubTitle().length() > 0 %} - {{ movies.get(seriesMovie.getMovieId().get()).getSubTitle() | escape }}{% endif %}
                             </a>
                             <div class="description">
                                 <p>{{ movies.get(seriesMovie.getMovieId().get()).getDescription().orElse("") | escapenl }}</p>
