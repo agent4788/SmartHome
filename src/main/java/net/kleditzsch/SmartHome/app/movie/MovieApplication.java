@@ -243,16 +243,6 @@ public class MovieApplication implements SubApplication {
             MongoCollection collection = Application.getInstance().getDatabaseCollection(MovieSeriesEditor.COLLECTION);
             collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
         }
-        if (ActorEditor.createAndLoad().getData().size() == 0) {
-
-            MongoCollection collection = Application.getInstance().getDatabaseCollection(ActorEditor.COLLECTION);
-            collection.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
-        }
-        if (DirectorEditor.createAndLoad().getData().size() == 0) {
-
-            MongoCollection collection = Application.getInstance().getDatabaseCollection(DirectorEditor.COLLECTION);
-            collection.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
-        }
     }
 
     /**
