@@ -8,7 +8,42 @@
 <body>
 {% include '/webserver/template/movie/user/headline.html' with {module: 'movie'} %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Filme</h1>
+    <div class="ui text menu top attached">
+        <h1 class="ui item" style="font-weight: bold;line-height: 1.28571429em;color: rgba(0,0,0,.87);">Filme</h1>
+        <div class="ui right dropdown item">
+            <i class="filter icon"></i>
+            filtern
+            <div class="menu">
+                <div class="item {% if durationFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">L&auml;nge</span>
+                    <div class="menu">
+                        <a class="item {% if durationFilter == 'short' %}active{% endif %}" href="/movie/movie?duration=short">kurz</a>
+                        <a class="item {% if durationFilter == 'normal' %}active{% endif %}" href="/movie/movie?duration=normal">mittel</a>
+                        <a class="item {% if durationFilter == 'long' %}active{% endif %}" href="/movie/movie?duration=long">lang</a>
+                    </div>
+                </div>
+                <div class="item {% if genreFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Genre</span>
+                    <div class="menu">
+                        {% for genre in genreList %}
+                        <a class="item {% if genreFilter == genre.getId().get() %}active{% endif %}" href="/movie/movie?genre={{ genre.getId().get() }}">{{ genre.getName() | escape }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="item {% if discFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Medium</span>
+                    <div class="menu">
+                        {% for disc in dicsList %}
+                        <a class="item {% if discFilter == disc.getId().get() %}active{% endif %}" href="/movie/movie?disc={{ disc.getId().get() }}">{{ disc.getName() | escape }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -59,6 +94,14 @@
         {% endfor %}
     </div>
     {% else %}
+    {% if filtered %}
+    <div class="ui message icon bottom attached info">
+        <i class="search icon"></i>
+        <div class="content">
+            <p>Keine Filme zu diesem Filter gefunden</p>
+        </div>
+    </div>
+    {% else %}
     <div class="ui placeholder segment bottom attached">
         <div class="ui icon header">
             <i class="pdf file outline icon"></i>
@@ -66,6 +109,7 @@
         </div>
         <a class="ui primary button" href="/movie/movieform">Film hinzuf&uuml;gen</a>
     </div>
+    {% endif %}
     {% endif %}
     {% if pagination.hasPages() %}
     <div class="ui segment bottom clearing" style="margin-bottom: 30px;">

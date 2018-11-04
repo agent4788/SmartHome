@@ -11,8 +11,10 @@ import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
+import net.kleditzsch.SmartHome.model.movie.movie.MovieFilter;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,62 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         });
+        return movies;
+    }
+
+
+    /**
+     * gibt eine Liste mit den Filmen des Bereiches zurück
+     *
+     * @param filter Filter Konfiguration
+     * @param start start Index
+     * @param length länge
+     * @return Liste der Filme
+     */
+    public static List<Movie> listMovies(MovieFilter filter, long start, long length) {
+
+        Bson bsonFilter = null;
+        if(filter.getMinLength() > 0 || filter.getMaxLength() < Integer.MAX_VALUE) {
+
+            bsonFilter = Filters.and(
+                    Filters.gte("duration", filter.getMinLength()),
+                    Filters.lte("duration", filter.getMaxLength())
+            );
+        } else if(filter.getGenre().isPresent()) {
+
+            bsonFilter = Filters.eq("genreId", filter.getGenre().get().get());
+        } else if(filter.getDisc().isPresent()) {
+
+            bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        }
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        List<Movie> movies = new ArrayList<>(50);
+
+        if(bsonFilter != null) {
+
+            FindIterable iterator = movieCollection.find(bsonFilter)
+                    .sort(Sorts.ascending("title"))
+                    .skip(((Long) start).intValue())
+                    .limit(((Long) length).intValue());
+
+            iterator.forEach((Block<Document>) document -> {
+
+                movies.add(documentToMovie(document));
+            });
+        } else {
+
+            FindIterable iterator = movieCollection.find()
+                    .sort(Sorts.ascending("title"))
+                    .skip(((Long) start).intValue())
+                    .limit(((Long) length).intValue());
+
+            iterator.forEach((Block<Document>) document -> {
+
+                movies.add(documentToMovie(document));
+            });
+        }
+
         return movies;
     }
 
@@ -318,6 +376,47 @@ public abstract class MovieEditor {
             return movieCollection.count();
         }
         return movieCollection.count(eq("boxId", null));
+    }
+
+    /**
+     * gibt die Aznahl der Filme zurück
+     *
+     * @param includeBoxMovies Filme in einer Box mit zählen
+     * @return Anzahl der FIlme
+     */
+    public static long countMovies(MovieFilter filter, boolean includeBoxMovies) {
+
+        Bson bsonFilter = null;
+        if(filter.getMinLength() > 0 || filter.getMaxLength() < Integer.MAX_VALUE) {
+
+            bsonFilter = Filters.and(
+                    Filters.gte("duration", filter.getMinLength()),
+                    Filters.lte("duration", filter.getMaxLength())
+            );
+        } else if(filter.getGenre().isPresent()) {
+
+            bsonFilter = Filters.eq("genreId", filter.getGenre().get().get());
+        } else if(filter.getDisc().isPresent()) {
+
+            bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        }
+
+        MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
+        if(bsonFilter != null) {
+
+            if(includeBoxMovies) {
+
+                return movieCollection.count(bsonFilter);
+            }
+            return movieCollection.count(and(eq("boxId", null), bsonFilter));
+        } else {
+
+            if(includeBoxMovies) {
+
+                return movieCollection.count();
+            }
+            return movieCollection.count(eq("boxId", null));
+        }
     }
 
     /**
