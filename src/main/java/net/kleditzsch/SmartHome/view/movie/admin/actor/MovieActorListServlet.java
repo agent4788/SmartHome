@@ -60,7 +60,7 @@ public class MovieActorListServlet extends HttpServlet {
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE);
+        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();

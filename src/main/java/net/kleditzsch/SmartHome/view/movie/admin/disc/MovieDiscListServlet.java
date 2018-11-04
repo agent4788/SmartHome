@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.view.movie.admin.disc;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.DiscEditor;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -57,7 +54,7 @@ public class MovieDiscListServlet extends HttpServlet {
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE);
+        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();

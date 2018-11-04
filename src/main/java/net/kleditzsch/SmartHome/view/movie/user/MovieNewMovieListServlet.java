@@ -10,7 +10,6 @@ import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.util.pagination.ListPagination;
-import net.kleditzsch.SmartHome.util.pagination.Pagination;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -45,7 +44,7 @@ public class MovieNewMovieListServlet extends HttpServlet {
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE);
+        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE);
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();

@@ -3,7 +3,6 @@ package net.kleditzsch.SmartHome.view.movie.admin.director;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.Element;
-import net.kleditzsch.SmartHome.global.database.DatabaseEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.DirectorEditor;
@@ -61,7 +60,7 @@ public class MovieDirectorListServlet extends HttpServlet {
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE);
+        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();

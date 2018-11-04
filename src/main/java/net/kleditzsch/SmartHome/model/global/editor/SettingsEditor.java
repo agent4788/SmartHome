@@ -42,8 +42,8 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE = "AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE";
 
     //Filme Einstellungen
-    public static final String MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE = "MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE";
-    public static final String MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE = "MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE";
+    public static final String MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE = "MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE";
+    public static final String MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE = "MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE";
     public static final String MOVIE_NEWEST_MOVIES_COUNT = "MOVIE_NEWEST_MOVIES_COUNT";
     public static final String MOVIE_BEST_MOVIES_COUNT = "MOVIE_BEST_MOVIES_COUNT";
     public static final String MOVIE_TMDB_API_KEY = "MOVIE_TMDB_API_KEY";
@@ -103,9 +103,9 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(paginationElementsAtPage);
 
         //Filme Einstellungen
-        IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
+        IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
         knownSettings.add(paginationElementsAtPageAdmin);
-        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
         knownSettings.add(paginationElementsAtPageUser);
         IntegerSetting newestMoviesCount = new IntegerSetting(MOVIE_NEWEST_MOVIES_COUNT, 50, 50);
         knownSettings.add(newestMoviesCount);

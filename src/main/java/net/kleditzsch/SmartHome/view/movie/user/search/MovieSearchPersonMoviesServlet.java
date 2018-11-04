@@ -6,8 +6,6 @@ import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
-import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
-import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
@@ -21,11 +19,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class MovieSearchPersonMoviesServlet extends HttpServlet {
 
@@ -48,7 +44,7 @@ public class MovieSearchPersonMoviesServlet extends HttpServlet {
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGNATION_ELEMENTS_AT_USER_PAGE);
+        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE);
         if (elementsAtPageOptional.isPresent()) {
 
             elementsAtPage = elementsAtPageOptional.get().getValue();
