@@ -491,7 +491,7 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                             }
 
                             //altes Logo löschen
-                            if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {
+                            if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
                                 try {
 
@@ -554,7 +554,7 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                                     }
 
                                     //altes Logo löschen
-                                    if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {
+                                    if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
                                         try {
 
@@ -612,9 +612,12 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                                 }
 
                                 //altes Logo löschen
-                                if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0) {
+                                if(movie.getCoverFile() != null && movie.getCoverFile().length() > 0 && !movieBox.getCoverFile().equals(movie.getCoverFile())) {
 
-                                    Files.delete(uploadDir.resolve(movie.getCoverFile()));
+                                    try {
+
+                                        Files.delete(uploadDir.resolve(movie.getCoverFile()));
+                                    } catch (Exception e) {}
                                 }
 
                                 //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
