@@ -27,6 +27,7 @@ import net.kleditzsch.SmartHome.view.movie.admin.fsk.MovieFskOrderServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreDeleteServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreFormServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.genre.MovieGenreListServlet;
+import net.kleditzsch.SmartHome.view.movie.admin.statistic.MovieStatisticServlet;
 import net.kleditzsch.SmartHome.view.movie.user.*;
 import net.kleditzsch.SmartHome.view.movie.user.movie.*;
 import net.kleditzsch.SmartHome.view.movie.user.moviebox.*;
@@ -108,6 +109,7 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieFskFormServlet.class, "/movie/admin/fskform");
         contextHandler.addServlet(MovieFskDeleteServlet.class, "/movie/admin/fskdelete");
         contextHandler.addServlet(MovieFskOrderServlet.class, "/movie/admin/fskorder");
+        contextHandler.addServlet(MovieStatisticServlet.class, "/movie/admin/statistic");
     }
 
     /**

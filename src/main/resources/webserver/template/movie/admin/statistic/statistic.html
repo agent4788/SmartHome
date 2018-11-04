@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Admin</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'statistic'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Statistik</h1>
+    <table class="ui table celled attached" style="font-size: 1.2em;">
+        <tbody>
+            <tr>
+                <td colspan="2"><div class="ui ribbon label large blue">Allgemein</div></td>
+            </tr>
+            <tr>
+                <td>Filme:</td>
+                <td>{{ movieCount | numberformat }}</td>
+            </tr>
+            <tr>
+                <td>Film Boxen:</td>
+                <td>{{ movieBoxCount | numberformat }}</td>
+            </tr>
+            <tr>
+                <td>Film Reihen:</td>
+                <td>{{ movieSeriesCount | numberformat }}</td>
+            </tr>
+            <tr>
+                <td>Gesamtl&auml;nge:</td>
+                <td>{{ sumDuration | minuteformat }}</td>
+            </tr>
+            <tr>
+                <td>&empty; L&auml;nge:</td>
+                <td>{{ avgDuration | minuteformat }}</td>
+            </tr>
+            <tr>
+                <td>Gesamtpreis:</td>
+                <td>{{ sumPrice | numberformat }} &euro;</td>
+            </tr>
+            <tr>
+                <td>&empty; Preis:</td>
+                <td>{{ avgPrice | numberformat }} &euro;</td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
