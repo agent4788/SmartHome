@@ -4,12 +4,1275 @@
     <meta charset="UTF-8">
     <title>SmartHome Backup</title>
     {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.menu .item').tab();
+            $('.ui.checkbox').checkbox();
+        });
+    </script>
 </head>
 <body>
 {% include '/webserver/template/global/admin/headline.html' with {module: 'backup'} %}
 <main class="ui main container">
-    <div class="ui segment">
-        <h1>Comming soon ...</h1>
+    <h1 class="ui header top attached">Backups</h1>
+    <div class="ui segment attached">
+        <div class="ui top attached tabular menu">
+            <div data-tab="global" class="active item" style="cursor: pointer;">Global</div>
+            <div data-tab="automation" class="item" style="cursor: pointer;">Automatisierung</div>
+            <div data-tab="calendar" class="item" style="cursor: pointer;">Kalender</div>
+            <div data-tab="contact" class="item" style="cursor: pointer;">Konkate</div>
+            <div data-tab="movie" class="item" style="cursor: pointer;">Filme</div>
+            <div data-tab="music" class="item" style="cursor: pointer;">Musik</div>
+            <div data-tab="picture" class="item" style="cursor: pointer;">Bilder</div>
+            <div data-tab="recipe" class="item" style="cursor: pointer;">Rezepte</div>
+            <div data-tab="shoppingList" class="item" style="cursor: pointer;">Einkaufsliste</div>
+        </div>
+        <div data-tab="global" class="ui bottom attached tab segment active">
+            {% if globalBackups.size() > 0 or autoGlobalBackups.size() > 0 %}
+            <table class="ui table">
+                {% if globalBackups.size() > 0 %}
+                <thead>
+                    <tr>
+                        <th colspan="4" class="ui grey">Manuelle Backups</th>
+                    </tr>
+                    <tr>
+                        <th>Dateiname</th>
+                        <th>Datum</th>
+                        <th>Gr&ouml;&szlig;e</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for backupFile in globalBackups %}
+                    <tr>
+                        <td>
+                            <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                                {{ backupFile.getFileName() | escape }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ backupFile.getCreationDateTime() | datetimeformat }}
+                        </td>
+                        <td>
+                            {{ backupFile.getFileSize() | filesize }}
+                        </td>
+                        <td>
+                            <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                            <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                                <div class="ui icon header">
+                                    <i class="delete icon"></i>
+                                    Backup l&ouml;schen
+                                </div>
+                                <div class="content">
+                                    <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui red basic cancel inverted button">
+                                        <i class="remove icon"></i>
+                                        Nein
+                                    </div>
+                                    <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                        <i class="checkmark icon"></i>
+                                        Ja
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                    <tr>
+                        <th colspan="4">keine manuellen Backups vohanden</th>
+                    </tr>
+                </thead>
+                {% endif %}
+                {% if autoGlobalBackups.size() > 0 %}
+                <thead>
+                    <tr>
+                        <th colspan="4" class="ui grey">Automatische Backups</th>
+                    </tr>
+                    <tr>
+                        <th>Dateiname</th>
+                        <th>Datum</th>
+                        <th>Gr&ouml;&szlig;e</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for backupFile in autoGlobalBackups %}
+                    <tr>
+                        <td>
+                            <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                                {{ backupFile.getFileName() | escape }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ backupFile.getCreationDateTime() | datetimeformat }}
+                        </td>
+                        <td>
+                            {{ backupFile.getFileSize() | filesize }}
+                        </td>
+                        <td>
+                            <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                            <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                                <div class="ui icon header">
+                                    <i class="delete icon"></i>
+                                    Backup l&ouml;schen
+                                </div>
+                                <div class="content">
+                                    <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui red basic cancel inverted button">
+                                        <i class="remove icon"></i>
+                                        Nein
+                                    </div>
+                                    <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                        <i class="checkmark icon"></i>
+                                        Ja
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                    <tr>
+                        <th colspan="4">keine automatischen Backups vohanden</th>
+                    </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="automation" class="ui bottom attached tab segment">
+            {% if automationBackups.size() > 0 or autoAutomationBackups.size() > 0 %}
+            <table class="ui table">
+                {% if automationBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in automationBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoAutomationBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoAutomationBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="calendar" class="ui bottom attached tab segment">
+            {% if calendarBackups.size() > 0 or autoCalendarBackups.size() > 0 %}
+            <table class="ui table">
+                {% if calendarBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in calendarBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoCalendarBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoCalendarBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="contact" class="ui bottom attached tab segment">
+            {% if contactBackups.size() > 0 or autoContactBackups.size() > 0 %}
+            <table class="ui table">
+                {% if contactBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in contactBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoContactBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoContactBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="movie" class="ui bottom attached tab segment">
+            {% if movieBackups.size() > 0 or autoMovieBackups.size() > 0 %}
+            <table class="ui table">
+                {% if movieBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in movieBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoMovieBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoMovieBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="music" class="ui bottom attached tab segment">
+            {% if musicBackups.size() > 0 or autoMusicBackups.size() > 0 %}
+            <table class="ui table">
+                {% if musicBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in musicBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoMusicBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoMusicBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="picture" class="ui bottom attached tab segment">
+            {% if pictureBackups.size() > 0 or autoPictureBackups.size() > 0 %}
+            <table class="ui table">
+                {% if pictureBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in pictureBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoPictureBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoPictureBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="recipe" class="ui bottom attached tab segment">
+            {% if recipeBackups.size() > 0 or autoRecipeBackups.size() > 0 %}
+            <table class="ui table">
+                {% if recipeBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in recipeBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoRecipeBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoRecipeBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div data-tab="shoppingList" class="ui bottom attached tab segment">
+            {% if shoppingListBackups.size() > 0 or autoShoppingListBackups.size() > 0 %}
+            <table class="ui table">
+                {% if shoppingListBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Manuelle Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in shoppingListBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine manuellen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+                {% if autoShoppingListBackups.size() > 0 %}
+                <thead>
+                <tr>
+                    <th colspan="4" class="ui grey">Automatische Backups</th>
+                </tr>
+                <tr>
+                    <th>Dateiname</th>
+                    <th>Datum</th>
+                    <th>Gr&ouml;&szlig;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for backupFile in autoShoppingListBackups %}
+                <tr>
+                    <td>
+                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
+                            {{ backupFile.getFileName() | escape }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ backupFile.getCreationDateTime() | datetimeformat }}
+                    </td>
+                    <td>
+                        {{ backupFile.getFileSize() | filesize }}
+                    </td>
+                    <td>
+                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
+                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Backup l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+                {% else %}
+                <thead>
+                <tr>
+                    <th colspan="4">keine automatischen Backups vohanden</th>
+                </tr>
+                </thead>
+                {% endif %}
+            </table>
+            {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="file archive outline icon"></i>
+                    Keine Backup vorhanden
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="ui segment bottom attached">
+        <div class="ui primary button" onclick="$('#backupDialog').modal('show');">Backup erstellen</div>
+        <div class="ui modal" id="backupDialog">
+            <div class="header">
+                Backup erstellen
+            </div>
+            <div class="image content">
+                <div class="description">
+                    <p>W&auml;hle die zu sichernden Module aus. <span style="font-weight: bold;">Dieser Vorgang kann je nach Anzahl der Datensätze mehrere Minuten dauern!</span></p>
+                    <form class="ui form" method="get" action="/admin/runbackup" id="backupConfigForm">
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="all">
+                                <label>Alle Module</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="global">
+                                <label>Global</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="automation">
+                                <label>Automation</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="calendar">
+                                <label>Kalender</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="contact">
+                                <label>Kontakt</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="movie">
+                                <label>Filme</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="music">
+                                <label>Musik</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="picture">
+                                <label>Bilder</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="recipe">
+                                <label>Rezepte</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="shoppinglist">
+                                <label>Einkaufsliste</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    abbrechen
+                </div>
+                <div class="ui positive button" onclick="$('#backupConfigForm').submit();">
+                    starten
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

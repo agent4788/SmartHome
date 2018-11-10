@@ -8,6 +8,13 @@
         $(function() {
 
             $('.menu .item').tab();
+            $('.checkbox').checkbox();
+            $('.dropdown').dropdown();
+
+            $('.ui.form').form('set values', {
+                ftpSecureType   : "{{ ftpSecureType }}",
+                mailSecureType   : "{{ mailSecureType }}"
+            });
         });
     </script>
 </head>
@@ -32,7 +39,108 @@
         </div>
         {% endif %}
         <div class="ui segment attached">
-            <h3>keine Vorhanden</h3>
+            <div class="ui top attached tabular menu">
+                <div data-tab="backup" class="active item" style="cursor: pointer;">Backup</div>
+                <div data-tab="ftp" class="item" style="cursor: pointer;">FTP</div>
+                <div data-tab="mail" class="item" style="cursor: pointer;">Mail</div>
+            </div>
+            <div data-tab="backup" class="ui bottom attached tab segment active">
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="enableAutoBackup" class="hidden" {% if enableAutoBackup %}checked="checked"{% endif %}>
+                            <label>Automatisches Backup</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field required">
+                    <label>Zeit nach der ein Automatisches Backup gelöscht wird [in Tagen]</label>
+                    <input name="backupAutoCleanupDays" type="number" min="1" max="365" step="1" value="{{ backupAutoCleanupDays | escape }}" required>
+                </div>
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="enableBackupSuccessMail" class="hidden" {% if enableBackupSuccessMail %}checked="checked"{% endif %}>
+                            <label>Mail bei erfolgreichem Backup versenden</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="enableBackupErrorMail" class="hidden" {% if enableBackupErrorMail %}checked="checked"{% endif %}>
+                            <label>Mail bei fehlgeschlagenem Backup versenden</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="enableBackupFtpUpload" class="hidden" {% if enableBackupFtpUpload %}checked="checked"{% endif %}>
+                            <label>FTP Upload aktivieren</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-tab="ftp" class="ui bottom attached tab segment">
+                <div class="field">
+                    <label>Host</label>
+                    <input name="ftpHost" type="text" value="{{ ftpHost | escape }}" class="fritzBox">
+                </div>
+                <div class="field">
+                    <label>Port</label>
+                    <input name="ftpPort" type="number" min="0" max="65535" step="1" value="{{ ftpPort | escape }}" >
+                </div>
+                <div class="field">
+                    <label>Verschlüsselung</label>
+                    <select name="ftpSecureType" class="ui dropdown">
+                        <option value="NONE">keine</option>
+                        <option value="TLS">TLS</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Benutzer</label>
+                    <input name="ftpUser" type="text" value="{{ ftpUser | escape }}">
+                </div>
+                <div class="field">
+                    <label>Passwort</label>
+                    <input name="ftpPassword" type="text" value="{{ ftpPassword | escape }}">
+                </div>
+                <div class="field">
+                    <label>Upload Ordner auf dem Server</label>
+                    <input name="ftpUploadDir" type="text" value="{{ ftpUploadDir | escape }}" pattern="^(/[a-zA-Z_+-]+)+">
+                </div>
+            </div>
+            <div data-tab="mail" class="ui bottom attached tab segment">
+                <div class="field">
+                    <label>Host</label>
+                    <input name="mailHost" type="text" value="{{ mailHost | escape }}">
+                </div>
+                <div class="field">
+                    <label>Port</label>
+                    <input name="mailPort" type="number" min="0" max="65535" step="1" value="{{ mailPort | escape }}" >
+                </div>
+                <div class="field">
+                    <label>Verschlüsselung</label>
+                    <select name="mailSecureType" class="ui dropdown">
+                        <option value="NONE">keine</option>
+                        <option value="TLS">TLS</option>
+                        <option value="SSL">SSL</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Benutzer</label>
+                    <input name="mailUser" type="text" value="{{ mailUser | escape }}">
+                </div>
+                <div class="field">
+                    <label>Passwort</label>
+                    <input name="mailPassword" type="text" value="{{ mailPassword | escape }}">
+                </div>
+                <div class="field">
+                    <label>Empf&auml;nger Adresse</label>
+                    <input name="mailReceiverAddress" type="text" value="{{ mailReceiverAddress | escape }}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+                </div>
+            </div>
         </div>
         <div class="ui segment bottom attached">
             <input type="submit" class="ui button primary" value="speichern">

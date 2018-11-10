@@ -26,7 +26,23 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String SERVER_PORT = "SERVER_PORT";
     public static final String SERVER_SECURE_PORT = "SERVER_SECURE_PORT";
     public static final String SERVER_KEY_STORE_PASSWORD = "SERVER_KEY_STORE_PASSWORD";
-    public static final String SERVER_KEY_MANAGER_PASSWORD = "SERVER_KEY_MANAGER_PASSWORD";
+    public static final String BACKUP_ENABLE_AUTO_BACKUP = "BACKUP_ENABLE_AUTO_BACKUP";
+    public static final String BACKUP_AUTO_CLEANUP_DAYS = "BACKUP_AUTO_CLEANUP_DAYS";
+    public static final String BACKUP_AUTO_SUCCESS_MAIL = "BACKUP_AUTO_SUCCESS_MAIL";
+    public static final String BACKUP_AUTO_ERROR_MAIL = "BACKUP_AUTO_ERROR_MAIL";
+    public static final String BACKUP_FTP_UPLOAD = "BACKUP_FTP_UPLOAD";
+    public static final String BACKUP_FTP_UPLOAD_HOST = "BACKUP_FTP_UPLOAD_HOST";
+    public static final String BACKUP_FTP_UPLOAD_PORT = "BACKUP_FTP_UPLOAD_PORT";
+    public static final String BACKUP_FTP_UPLOAD_SECURE_TYPE = "BACKUP_FTP_UPLOAD_SECURE_TYPE";
+    public static final String BACKUP_FTP_UPLOAD_USER = "BACKUP_FTP_UPLOAD_USER";
+    public static final String BACKUP_FTP_UPLOAD_PASSWORD = "BACKUP_FTP_UPLOAD_PASSWORD";
+    public static final String BACKUP_FTP_UPLOAD_DIRECTORY = "BACKUP_FTP_UPLOAD_DIRECTORY";
+    public static final String MAIL_HOST = "MAIL_HOST";
+    public static final String MAIL_PORT = "MAIL_PORT";
+    public static final String MAIL_SECURE_TYPE = "MAIL_SECURE_TYPE";
+    public static final String MAIL_USER = "MAIL_USER";
+    public static final String MAIL_PASSWORD = "MAIL_PASSWORD";
+    public static final String MAIL_RECEIVER_ADDRESS = "MAIL_RECEIVER_ADDRESS";
 
     //Smarthome Einstellungen
     public static final String AUTOMATION_SUNRISE_OFFSET = "AUTOMATION_SUNRISE_OFFSET";
@@ -72,8 +88,44 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(applicationServerSecurePort);
         StringSetting keyStorePassword = new StringSetting(SERVER_KEY_STORE_PASSWORD, "", "");
         knownSettings.add(keyStorePassword);
-        StringSetting keyManagerPassword = new StringSetting(SERVER_KEY_MANAGER_PASSWORD, "", "");
-        knownSettings.add(keyManagerPassword);
+
+        BooleanSetting enableAutoBackup = new BooleanSetting(BACKUP_ENABLE_AUTO_BACKUP, true, true);
+        knownSettings.add(enableAutoBackup);
+        IntegerSetting backupAutoCleanupDays = new IntegerSetting(BACKUP_AUTO_CLEANUP_DAYS, 10, 10);
+        knownSettings.add(backupAutoCleanupDays);
+
+        BooleanSetting enableBackupFtpUpload = new BooleanSetting(BACKUP_FTP_UPLOAD, false, false);
+        knownSettings.add(enableBackupFtpUpload);
+        StringSetting ftpHost = new StringSetting(BACKUP_FTP_UPLOAD_HOST, "", "");
+        knownSettings.add(ftpHost);
+        IntegerSetting ftpPort = new IntegerSetting(BACKUP_FTP_UPLOAD_PORT, 21, 21);
+        knownSettings.add(ftpPort);
+        StringSetting ftpSecureType = new StringSetting(BACKUP_FTP_UPLOAD_SECURE_TYPE, "NONE", "NONE");
+        knownSettings.add(ftpSecureType);
+        StringSetting ftpUser = new StringSetting(BACKUP_FTP_UPLOAD_USER, "", "");
+        knownSettings.add(ftpUser);
+        StringSetting ftpPassword = new StringSetting(BACKUP_FTP_UPLOAD_PASSWORD, "", "");
+        knownSettings.add(ftpPassword);
+        StringSetting ftpUploadDir = new StringSetting(BACKUP_FTP_UPLOAD_DIRECTORY, "/smartHomeBackup", "/smartHomeBackup");
+        knownSettings.add(ftpUploadDir);
+
+        BooleanSetting enableBackupSuccessMail = new BooleanSetting(BACKUP_AUTO_SUCCESS_MAIL, false, false);
+        knownSettings.add(enableBackupSuccessMail);
+        BooleanSetting enableBackupErrorMail = new BooleanSetting(BACKUP_AUTO_ERROR_MAIL, true, true);
+        knownSettings.add(enableBackupErrorMail);
+
+        StringSetting mailHost = new StringSetting(MAIL_HOST, "", "");
+        knownSettings.add(mailHost);
+        IntegerSetting mailPort = new IntegerSetting(MAIL_PORT, 465, 465);
+        knownSettings.add(mailPort);
+        StringSetting mailSecureType = new StringSetting(MAIL_SECURE_TYPE, "SSL", "SSL");
+        knownSettings.add(mailSecureType);
+        StringSetting mailUser = new StringSetting(MAIL_USER, "", "");
+        knownSettings.add(mailUser);
+        StringSetting mailPassword = new StringSetting(MAIL_PASSWORD, "", "");
+        knownSettings.add(mailPassword);
+        StringSetting mailReceiverAddress = new StringSetting(MAIL_RECEIVER_ADDRESS, "", "");
+        knownSettings.add(mailReceiverAddress);
 
         //Smarthome Einstellungen
         IntegerSetting sunriseOffset = new IntegerSetting(AUTOMATION_SUNRISE_OFFSET, 0, 0);

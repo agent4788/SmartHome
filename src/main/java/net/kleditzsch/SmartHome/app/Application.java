@@ -15,16 +15,24 @@ import net.kleditzsch.SmartHome.app.recipe.RecipeApplication;
 import net.kleditzsch.SmartHome.app.shoppinglist.ShoppingListApplication;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
 import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
+import net.kleditzsch.SmartHome.controller.global.backup.BackupCleanupTask;
+import net.kleditzsch.SmartHome.controller.global.backup.BackupTask;
 import net.kleditzsch.SmartHome.controller.global.webserver.JettyServerStarter;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
+import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
+import net.kleditzsch.SmartHome.util.time.TimeUtil;
 import net.kleditzsch.SmartHome.view.global.admin.*;
 import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalBackupServlet;
+import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalDeleteBackupServlet;
+import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalDownloadBackupServlet;
+import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalRunBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.info.GlobalServerInfoServlet;
 import net.kleditzsch.SmartHome.view.global.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
@@ -34,6 +42,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -336,6 +345,9 @@ public class Application {
                 contextHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
                 contextHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
                 contextHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
+                contextHandler.addServlet(GlobalDownloadBackupServlet.class, "/admin/downloadbackup");
+                contextHandler.addServlet(GlobalDeleteBackupServlet.class, "/admin/deletebackup");
+                contextHandler.addServlet(GlobalRunBackupServlet.class, "/admin/runbackup");
                 contextHandler.addServlet(GlobalRebootServlet.class, "/admin/reboot");
                 contextHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
 
@@ -491,11 +503,38 @@ public class Application {
      */
     public void start() {
 
+        //Einstellungen laden
+        boolean enableAutoBackup = true;
+        int autoCleanupDays = 10;
+        ReentrantReadWriteLock.ReadLock lock = settings.readLock();
+        lock.lock();
+
+        Optional<BooleanSetting> enableAutoBackupOptional = settings.getBooleanSetting(SettingsEditor.BACKUP_ENABLE_AUTO_BACKUP);
+        if(enableAutoBackupOptional.isPresent()) {
+
+            enableAutoBackup = enableAutoBackupOptional.get().getValue();
+        }
+        Optional<IntegerSetting> autoCleanupDaysOptional = settings.getIntegerSetting(SettingsEditor.BACKUP_AUTO_CLEANUP_DAYS);
+        if(autoCleanupDaysOptional.isPresent()) {
+
+            autoCleanupDays = autoCleanupDaysOptional.get().getValue();
+        }
+        lock.unlock();
+
         //Scheduler Threadpool
         timerExecutor = Executors.newScheduledThreadPool(5);
 
         //Speicherdienst aktivieren
         timerExecutor.scheduleAtFixedRate(new DataDumpTask(), 30, 30, TimeUnit.SECONDS);
+
+        //Backupdienst aktivieren
+        if (enableAutoBackup) {
+
+            long firstRunDelayBackup = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay().plusHours(1), ChronoUnit.MINUTES);
+            long firstRunDelayCleanup = LocalDateTime.now().until(LocalDate.now().plusDays(1).atStartOfDay().plusHours(2), ChronoUnit.MINUTES);
+            timerExecutor.scheduleAtFixedRate(new BackupTask(), firstRunDelayBackup, 1440, TimeUnit.MINUTES);
+            timerExecutor.scheduleAtFixedRate(new BackupCleanupTask(autoCleanupDays), firstRunDelayCleanup, 1440, TimeUnit.MINUTES);
+        }
 
         //Anwendungen starten
         automationAppliaction.start();
@@ -507,7 +546,7 @@ public class Application {
         recipeApplication.start();
         shoppingListApplication.start();
 
-        //Webserver starteb
+        //Webserver starten
         try {
 
             server.start();

@@ -40,6 +40,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.jtwig/jtwig-web
     compile group: 'org.jtwig', name: 'jtwig-web', version: '+'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-email
+    compile group: 'org.apache.commons', name: 'commons-email', version: '+'
+
+    // https://mvnrepository.com/artifact/commons-net/commons-net
+    compile group: 'commons-net', name: 'commons-net', version: '+'
 }
 
 compileJava {

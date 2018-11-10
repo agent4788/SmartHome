@@ -18,10 +18,19 @@ import java.util.regex.Pattern;
  */
 public class FormValidation {
 
+    /**
+     * HTTP Request
+     */
     private HttpServletRequest request;
 
+    /**
+     * Validierungsstatus
+     */
     private boolean success = true;
 
+    /**
+     * Fehlermeldungen
+     */
     private Map<String, String> errorMessages = new HashMap<>();
 
     /**
@@ -57,11 +66,22 @@ public class FormValidation {
      * pürft ob ein Feld vorhanden ist
      *
      * @param name Feldname
-     * @return Wahrheitswer
+     * @return Wahrheitswert
      */
     public boolean fieldNotEmpty(String name) {
 
         return request.getParameter(name) != null && !request.getParameter(name).isBlank();
+    }
+
+    /**
+     * pürft das Feld leer ist
+     *
+     * @param name Feldname
+     * @return Wahrheitswert
+     */
+    public boolean fieldEmpty(String name) {
+
+        return request.getParameter(name) == null || request.getParameter(name).isBlank();
     }
 
     /**
@@ -128,7 +148,7 @@ public class FormValidation {
                 return ID.of(value.get());
             } catch (Exception e) {}
         }
-        setInvalid(name, String.format("Ungültige %s ID", displayName));
+        setInvalid(name, String.format("Ungültige %s", displayName));
         return null;
     }
 
@@ -142,11 +162,36 @@ public class FormValidation {
     public boolean getBoolean(String name, String displayName) {
 
         Optional<String> value = getValue(name);
-        if(value.isPresent() && (value.get().equals("1") || value.get().equals("0"))) {
+        if(value.isPresent() && (value.get().equals("1") || value.get().equals("0") || value.get().equals("on") || value.get().equals("off"))) {
 
-            return value.get().equals("1");
+            return value.get().equals("1") || value.get().equals("on");
         }
-        setInvalid(name, String.format("Ungültige %s ID", displayName));
+        setInvalid(name, String.format("Ungültige %s", displayName));
+        return false;
+    }
+
+    /**
+     * validiert das Feld als Wahrheitswert
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @return Wahrheitswert
+     */
+    public boolean optBoolean(String name, String displayName, boolean defaultValue) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            if((value.get().equals("1") || value.get().equals("0") || value.get().equals("on") || value.get().equals("off"))) {
+
+                return value.get().equals("1") || value.get().equals("on");
+            }
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültige %s", displayName));
         return false;
     }
 
@@ -194,6 +239,50 @@ public class FormValidation {
      *
      * @param name Feldname
      * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @return Ganzzahl
+     */
+    public int optInteger(String name, String displayName, int defaultValue) {
+
+        return optInteger(name, displayName, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    /**
+     * validiert das Feld als Ganzzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Ganzzahl
+     */
+    public int optInteger(String name, String displayName, int defaultValue, int min, int max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                int intValue = Integer.parseInt(value.get());
+                if(intValue >= min && intValue <= max) {
+
+                    return intValue;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return 0;
+    }
+
+    /**
+     * validiert das Feld als Ganzzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
      * @return Ganzzahl
      */
     public long getLong(String name, String displayName) {
@@ -223,6 +312,50 @@ public class FormValidation {
                     return longValue;
                 }
             } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return 0;
+    }
+
+    /**
+     * validiert das Feld als Ganzzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @return Ganzzahl
+     */
+    public long optLong(String name, String displayName, long defaultValue) {
+
+        return optLong(name, displayName, defaultValue, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    /**
+     * validiert das Feld als Ganzzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Ganzzahl
+     */
+    public long optLong(String name, String displayName, long defaultValue, long min, long max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                long longValue = Long.parseLong(value.get());
+                if(longValue >= min && longValue <= max) {
+
+                    return longValue;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return 0;
@@ -268,6 +401,50 @@ public class FormValidation {
     }
 
     /**
+     * validiert das Feld als Gleitpunktzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @return Gleitpunktzahl
+     */
+    public double optDouble(String name, String displayName, double defaultValue) {
+
+        return optDouble(name, displayName, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE);
+    }
+
+    /**
+     * validiert das Feld als Gleitpunktzahl
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param defaultValue Standard Wert
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Gleitpunktzahl
+     */
+    public double optDouble(String name, String displayName, double defaultValue, double min, double max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                double doubleValue = Double.parseDouble(value.get());
+                if(doubleValue >= min && doubleValue <= max) {
+
+                    return doubleValue;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return 0;
+    }
+
+    /**
      * validiert das Feld als Zeichenkette
      *
      * @param name Feldname
@@ -294,6 +471,44 @@ public class FormValidation {
         if(value.isPresent() && value.get().length() >= minLength && value.get().length() <= maxLength) {
 
             return value.get();
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @return Zeichenkette
+     */
+    public String optString(String name, String displayName, String defaultValue) {
+
+        return optString(name, displayName, defaultValue, 0, Integer.MAX_VALUE);
+    }
+
+    /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param minLength Minimallänge
+     * @param maxLength Maximallänge
+     * @return Zeichenkette
+     */
+    public String optString(String name, String displayName, String defaultValue, int minLength, int maxLength) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            if(value.get().length() >= minLength && value.get().length() <= maxLength) {
+
+                return value.get();
+            }
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
@@ -334,6 +549,97 @@ public class FormValidation {
     }
 
     /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param pattern Suchmuster
+     * @return Zeichenkette
+     */
+    public String optString(String name, String displayName, String defaultValue, Pattern pattern) {
+
+        return optString(name, displayName, defaultValue, pattern, 0, Integer.MAX_VALUE);
+    }
+
+    /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param pattern Suchmuster
+     * @param minLength Minimallänge
+     * @param maxLength Maximallänge
+     * @return Zeichenkette
+     */
+    public String optString(String name, String displayName, String defaultValue, Pattern pattern, int minLength, int maxLength) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            if(value.get().length() >= minLength && value.get().length() <= maxLength && pattern.matcher(value.get()).find()) {
+
+                return value.get();
+            }
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return "";
+    }
+
+    /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param whitelist Wihitelist
+     * @return Zeichenkette
+     */
+    public String getString(String name, String displayName, List<String> whitelist) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent()) {
+
+            for (String whiteElement : whitelist) {
+                if(whiteElement.equalsIgnoreCase(value.get())) {
+
+                    return value.get();
+                }
+            }
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return "";
+    }
+
+    /**
+     * validiert das Feld als Zeichenkette
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param whitelist Wihitelist
+     * @return Zeichenkette
+     */
+    public String optString(String name, String displayName, String defaultValue, List<String> whitelist) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            for (String whiteElement : whitelist) {
+                if(whiteElement.equalsIgnoreCase(value.get())) {
+
+                    return value.get();
+                }
+            }
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return "";
+    }
+
+    /**
      * validiert das Feld als Datum
      *
      * @param name Feldname
@@ -350,6 +656,31 @@ public class FormValidation {
 
                 return LocalDate.parse(value.get(), format);
             } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
+     * validiert das Feld als Datum
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @return Datum
+     */
+    public LocalDate optLocalDate(String name, String displayName, LocalDate defaultValue, DateTimeFormatter format) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                return LocalDate.parse(value.get(), format);
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
@@ -384,6 +715,37 @@ public class FormValidation {
     }
 
     /**
+     * validiert das Feld als Datum
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Datum
+     */
+    public LocalDate optLocalDate(String name, String displayName, LocalDate defaultValue, DateTimeFormatter format, LocalDate min, LocalDate max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                LocalDate date = LocalDate.parse(value.get(), format);
+                if((min.isBefore(date) || min.isEqual(date)) && (max.isAfter(date) || max.isEqual(date))) {
+
+                    return date;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
      * validiert das Feld als Zeit
      *
      * @param name Feldname
@@ -400,6 +762,31 @@ public class FormValidation {
 
                 return LocalTime.parse(value.get(), format);
             } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
+     * validiert das Feld als Zeit
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @return Zeit
+     */
+    public LocalTime optLocalTime(String name, String displayName, LocalTime defaultValue, DateTimeFormatter format) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                return LocalTime.parse(value.get(), format);
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
@@ -434,6 +821,37 @@ public class FormValidation {
     }
 
     /**
+     * validiert das Feld als Zeit
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Zeit
+     */
+    public LocalTime optLocalTime(String name, String displayName, LocalTime defaultValue, DateTimeFormatter format, LocalTime min, LocalTime max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                LocalTime date = LocalTime.parse(value.get(), format);
+                if(min.isBefore(date) && max.isAfter(date)) {
+
+                    return date;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
      * validiert das Feld als Datum und Zeit
      *
      * @param name Feldname
@@ -450,6 +868,31 @@ public class FormValidation {
 
                 return LocalDateTime.parse(value.get(), format);
             } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
+     * validiert das Feld als Datum und Zeit
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @return Datum und Zeit
+     */
+    public LocalDateTime optLocalDateTime(String name, String displayName, LocalDateTime defaultValue, DateTimeFormatter format) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                return LocalDateTime.parse(value.get(), format);
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
@@ -484,6 +927,37 @@ public class FormValidation {
     }
 
     /**
+     * validiert das Feld als Datum und Zeit
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @param format Format
+     * @param min Minimalwert
+     * @param max Maximalwert
+     * @return Datum und Zeit
+     */
+    public LocalDateTime optLocalDateTime(String name, String displayName, LocalDateTime defaultValue, DateTimeFormatter format, LocalDateTime min, LocalDateTime max) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                LocalDateTime date = LocalDateTime.parse(value.get(), format);
+                if((min.isBefore(date) || min.isEqual(date)) && (max.isAfter(date) || max.isEqual(date))) {
+
+                    return date;
+                }
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
      * validiert das Feld als IP Adresse
      *
      * @param name Feldname
@@ -499,6 +973,30 @@ public class FormValidation {
 
                 return InetAddresses.forString(value.get());
             } catch (Exception e) {}
+        }
+        setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
+        return null;
+    }
+
+    /**
+     * validiert das Feld als IP Adresse
+     *
+     * @param name Feldname
+     * @param displayName Anzeigename
+     * @return IP Adresse
+     */
+    public InetAddress optIpAddress(String name, String displayName, InetAddress defaultValue) {
+
+        Optional<String> value = getValue(name);
+        if(value.isPresent() && fieldNotEmpty(name)) {
+
+            try {
+
+                return InetAddresses.forString(value.get());
+            } catch (Exception e) {}
+        } else {
+
+            return defaultValue;
         }
         setInvalid(name, String.format("Ungültiger Wert für %s", displayName));
         return null;
