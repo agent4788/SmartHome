@@ -18,6 +18,10 @@ public class FilesizeFunction extends SimpleJtwigFunction {
     public Object execute(FunctionRequest request) {
 
         request.minimumNumberOfArguments(1).maximumNumberOfArguments(1);
-        return FileUtil.formatFilezizeBinary(Long.parseLong(request.getArguments().get(0).toString()));
+        if(request.getArguments().get(0) != null) {
+
+            return FileUtil.formatFilezizeBinary(Long.parseLong(request.getArguments().get(0).toString()));
+        }
+        return "0 B";
     }
 }
