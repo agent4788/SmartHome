@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.app;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
@@ -16,6 +15,7 @@ import net.kleditzsch.SmartHome.app.shoppinglist.ShoppingListApplication;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
 import net.kleditzsch.SmartHome.controller.global.DataDumpTask;
 import net.kleditzsch.SmartHome.controller.global.backup.BackupCleanupTask;
+import net.kleditzsch.SmartHome.controller.global.CliBackupRestore;
 import net.kleditzsch.SmartHome.controller.global.backup.BackupTask;
 import net.kleditzsch.SmartHome.controller.global.webserver.JettyServerStarter;
 import net.kleditzsch.SmartHome.global.base.ID;
@@ -27,7 +27,6 @@ import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
-import net.kleditzsch.SmartHome.util.time.TimeUtil;
 import net.kleditzsch.SmartHome.view.global.admin.*;
 import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalDeleteBackupServlet;
@@ -155,6 +154,13 @@ public class Application {
         if(arguments.contains("-v") || arguments.contains("--version")) {
 
             System.out.println("Version: " + VERSION);
+            return;
+        }
+
+        //Backup wiederherstellen
+        if(arguments.contains("-r") || arguments.contains("--restore")) {
+
+            CliBackupRestore.restoreBackup();
             return;
         }
 

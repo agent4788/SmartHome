@@ -460,7 +460,7 @@ public class BackupCreator {
 
                 if(document.get(key) instanceof ObjectId) {
 
-                    writer.name(key).value(document.getObjectId(key).toString());
+                    writer.name(key).value("id://" + document.getObjectId(key).toString());
                 } else if(document.get(key) instanceof Integer) {
 
                     writer.name(key).value(document.getInteger(key));
@@ -504,7 +504,7 @@ public class BackupCreator {
                         List<String> documents = (List<String>) document.get(key);
                         for (String subDoc : documents) {
 
-                            writer.value(subDoc);
+                            writer.value("string://" + subDoc);
                         }
                     } catch (ClassCastException e) {}
                     try {
@@ -528,7 +528,7 @@ public class BackupCreator {
                         List<Long> documents = (List<Long>) document.get(key);
                         for (Long subDoc : documents) {
 
-                            writer.value(subDoc);
+                            writer.value("long://" + subDoc);
                         }
                     } catch (ClassCastException e) {}
                     try {
@@ -545,7 +545,7 @@ public class BackupCreator {
                         for (Date subDoc : documents) {
 
                             LocalDateTime localDateTime = DatabaseDateTimeUtil.dateToLocaleDateTime(subDoc);
-                            writer.value(DatabaseDateTimeUtil.getDatabaseDateTimeStr(localDateTime));
+                            writer.value("date://" + DatabaseDateTimeUtil.getDatabaseDateTimeStr(localDateTime));
                         }
                     } catch (ClassCastException e) {}
 
