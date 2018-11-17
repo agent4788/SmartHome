@@ -62,8 +62,6 @@ public class MovieNewMovieListServlet extends HttpServlet {
         pagination.setBaseLink("/movie/newmovies?index=");
         List<Movie> moviesAtPage = MovieEditor.listMovies(pagination.getCurrentPageIndex(), pagination.getElementsAtPage());
         model.with("pagination", pagination);
-        model.with("discEditor", DiscEditor.createAndLoad());
-        model.with("genreEditor", GenreEditor.createAndLoad());
         model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::toString).collect(Collectors.toList()));
 
         //Template rendern

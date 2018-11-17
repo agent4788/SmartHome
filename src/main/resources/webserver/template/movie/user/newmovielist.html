@@ -30,16 +30,13 @@
                     <div class="ui">
                         <div class="header">{{ element.getTitle() | escape }}</div>
                         <div class="meta">
-                            {{ genreEditor.getById(element.getGenreId()).get().getName() | escape }}
+                            {{ element.getSubTitle() | escape }}
                         </div>
                     </div>
                 </div>
                 <div class="extra content">
                     <span class="right floated">
                         {{ element.getDuration() | minuteformat }}
-                    </span>
-                    <span>
-                        {{ discEditor.getById(element.getDiscId()).get().getName() | escape }}
                     </span>
                 </div>
             </div>
