@@ -79,8 +79,15 @@ public class CliBackupRestore {
 
                                 try {
 
-                                    BackupRestore.restoreModule(module, backupFile);
-                                    System.out.println("Wiederherstellung erfolgreich beendet");
+                                    List<String> messages = BackupRestore.restoreModule(module, backupFile);
+                                    if(messages.size() == 0) {
+
+                                        System.out.println("Wiederherstellung erfolgreich beendet");
+                                    } else {
+
+                                        System.err.println("während der Wiederherstellung sind folgende Fehler aufgetreten");
+                                        messages.forEach(message -> System.err.println("\t- " + message));
+                                    }
                                 } catch (Exception e) {
 
                                     System.out.println("Wiederherstellung fehlgeschlagen!");
