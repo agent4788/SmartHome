@@ -157,7 +157,7 @@ public class BackupRestore {
 
                     //Collections auslesen
                     String fileName = entry.getName();
-                    if(!entry.isDirectory() && pattern.matcher(fileName).find() && entry.getName().contains("room")) {
+                    if(!entry.isDirectory() && pattern.matcher(fileName).find()) {
 
                         String collectionName = fileName.substring(0, fileName.length() - 5);
 
