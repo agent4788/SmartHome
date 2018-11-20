@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Automatisierung Schaltserver</title>
     {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.checkbox').checkbox();
+        });
+    </script>
 </head>
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'sensorvalues'} %}
@@ -38,7 +44,7 @@
             <div class="ui segment">
                 <div class="field">
                     <div class="ui toggle checkbox" id="useExternalSource">
-                        <input type="checkbox" name="useExternalSource" class="hidden" {% if sensorValue.isUseExternalDataSource() %}checked="checked"{% endif %} {% if addElement %}disbled{% endif %}>
+                        <input type="checkbox" name="useExternalSource" class="hidden" {% if sensorValue.isUseExternalDataSource() %}checked="checked"{% endif %} {% if addElement == false %}disbled{% endif %}>
                         <label>externe Quelle verwenden</label>
                     </div>
                 </div>
@@ -49,7 +55,7 @@
             </div>
             <div class="field required">
                 <label>Timeout [ms]</label>
-                <input type="number" name="timeout" id="timeout" value="{{ sensorValue.getTimeout() | escape }}" min="10000" max="86400000" step="1" {% if (addElement or sensorValue.isUseExternalDataSource() == false) %}disabled{% endif %} required>
+                <input type="number" name="timeout" id="timeout" value="{{ sensorValue.getTimeout() | escape }}" min="10000" max="86400000" step="1" required>
             </div>
             <div class="field">
                 <label>aktueller Wert</label>

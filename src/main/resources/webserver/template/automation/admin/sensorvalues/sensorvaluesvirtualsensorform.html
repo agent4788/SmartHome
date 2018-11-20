@@ -44,7 +44,7 @@
             </div>
             <div class="field required">
                 <label>Sensorwerte</label>
-                <select name="sensorValues" multiple required class="ui search fluid dropdown">
+                <select name="sensorValues" multiple required class="ui fluid dropdown">
                     {% for value in sensorValues %}
                     <option value="{{ value.getId().get() | escape }}" {% if sensorValue.getSensorValues() | contains(value.getId().get()) %}selected{% endif %}>{{ value.getName() | escape }}</option>
                     {% endfor %}
