@@ -135,6 +135,7 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
             model.with("singleSwitchables", singleSwitchables);
             List<String> usedElementIds = roomElement.getCommands().stream().map(e -> e.getSwitchableId().get()).collect(Collectors.toList());
             model.with("usedElementIds", usedElementIds);
+            model.with("usedElementCount", usedElementIds.size());
 
             switchableLock.unlock();
         }

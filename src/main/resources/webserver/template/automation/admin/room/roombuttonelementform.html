@@ -5,6 +5,9 @@
     <title>Automatisierung R&auml;me</title>
     {% include '/webserver/template/header.html' %}
     <script type="text/javascript">
+
+        var deviceCount = {% if addElement %}0{% else %}{{ usedElementCount }}{% endif %};
+
         $(function() {
 
             $('.checkbox').checkbox();
@@ -30,13 +33,25 @@
                     $('#safetyRequestIcon').addClass('disabled');
                 }
             });
+
+            //Anzahl der ausgewählten Geräte prüfen
+            $('#buttonelement').submit(function() {
+
+                if(deviceCount <= 0) {
+
+                    //keine geräte ausgewählt
+                    alert("Es wurden keine Geräte ausgewählt");
+                    return false;
+                }
+                return true;
+            });
         });
     </script>
 </head>
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'roomelement'} %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/roombuttonelementform?roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
+    <form class="ui form" id="buttonelement" action="/automation/admin/roombuttonelementform?roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
         <h1 class="ui header top attached">Button {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
@@ -189,11 +204,13 @@
 
                     $('#a' + id).remove();
                     $("#doubleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                    deviceCount--;
                 }
                 function removeSingleSwitchable(id) {
 
                     $('#a' + id).remove();
                     $("#singleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                    deviceCount--;
                 }
 
                 $(function() {
@@ -230,6 +247,7 @@
                             $("#doubleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
                             $("#command").dropdown('clear');
                             nextDoubleSwitchableIndex++;
+                            deviceCount++;
                         }
                     });
 
@@ -257,6 +275,7 @@
                             $("#singleSwitchable").dropdown('clear');
                             $("#singleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
                             nextSingleSwitchableIndex++;
+                            deviceCount++;
                         }
                     });
                 });

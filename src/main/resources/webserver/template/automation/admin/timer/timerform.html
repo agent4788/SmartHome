@@ -5,17 +5,32 @@
     <title>Automatisierung Timer</title>
     {% include '/webserver/template/header.html' %}
     <script type="text/javascript">
+
+        var deviceCount = {% if addElement %}0{% else %}{{ usedElementCount }}{% endif %};
+
         $(function() {
 
             $('.checkbox').checkbox();
             $('.dropdown').dropdown();
+
+            //Anzahl der ausgewählten Geräte prüfen
+            $('#timer').submit(function() {
+
+                if(deviceCount <= 0) {
+
+                    //keine geräte ausgewählt
+                    alert("Es wurden keine Geräte ausgewählt");
+                    return false;
+                }
+                return true;
+            });
         });
     </script>
 </head>
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'timer'} %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/timerform?id={{ timer.getId().get() | escape }}" method="post">
+    <form class="ui form" id="timer" action="/automation/admin/timerform?id={{ timer.getId().get() | escape }}" method="post">
         <h1 class="ui header top attached">Timer {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
@@ -194,11 +209,13 @@
 
                 $('#a' + id).remove();
                 $("#doubleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                deviceCount--;
             }
             function removeSingleSwitchable(id) {
 
                 $('#a' + id).remove();
                 $("#singleSwitchable").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                deviceCount--;
             }
 
             $(function() {
@@ -235,6 +252,7 @@
                         $("#doubleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
                         $("#command").dropdown('clear');
                         nextDoubleSwitchableIndex++;
+                        deviceCount++;
                     }
                 });
 
@@ -262,6 +280,7 @@
                         $("#singleSwitchable").dropdown('clear');
                         $("#singleSwitchable").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
                         nextSingleSwitchableIndex++;
+                        deviceCount++;
                     }
                 });
             });

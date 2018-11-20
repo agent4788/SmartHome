@@ -91,6 +91,7 @@ public class AutomationTimerFormServlet extends HttpServlet {
         model.with("singleSwitchables", singleSwitchables);
         List<String> usedElementIds = switchTimer.getCommands().stream().map(e -> e.getSwitchableId().get()).collect(Collectors.toList());
         model.with("usedElementIds", usedElementIds);
+        model.with("usedElementCount", usedElementIds.size());
 
         switchableLock.unlock();
 
