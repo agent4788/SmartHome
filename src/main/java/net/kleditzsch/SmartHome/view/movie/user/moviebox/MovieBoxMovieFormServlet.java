@@ -127,6 +127,15 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
         model.with("yearList", IntStream.rangeClosed(1900, LocalDate.now().getYear()).boxed().sorted(Comparator.reverseOrder()).collect(Collectors.toList()));
         model.with("today", LocalDate.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")));
 
+        //Viewport
+        if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
+
+            model.with("mobileView", true);
+        } else {
+
+            model.with("mobileView", false);
+        }
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

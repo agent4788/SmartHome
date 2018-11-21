@@ -19,6 +19,15 @@ public class GlobalIndexServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/global/user/index.html");
         JtwigModel model = JtwigModel.newModel();
 
+        //Viewport
+        if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
+
+            model.with("mobileView", true);
+        } else {
+
+            model.with("mobileView", false);
+        }
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

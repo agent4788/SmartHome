@@ -64,6 +64,15 @@ public class MovieViewSoonMovieListServlet extends HttpServlet {
         model.with("pagination", pagination);
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
 
+        //Viewport
+        if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
+
+            model.with("mobileView", true);
+        } else {
+
+            model.with("mobileView", false);
+        }
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

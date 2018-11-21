@@ -1,11 +1,59 @@
+<script type="text/javascript">
+
+    var mobileView = {% if mobileView %}true{% else %}false{% endif %};
+    $(function() {
+
+        $('.ui.dropdown').dropdown();
+
+        //Bildschirmorientierung ermitteln
+        var height = $(window).height();
+        var width = $(window).width();
+        if(width < height) {
+
+            //Smallscreen
+            $('#widescreen').hide();
+            $('#smallscreen').show();
+            if(!mobileView) {
+
+                $.get({url: "/mobileview?mobile"});
+            }
+        } else {
+
+            //Widescreen
+            $('#widescreen').show();
+            $('#smallscreen').hide();
+            if(mobileView) {
+
+                $.get({url: "/mobileview"});
+            }
+        }
+    });
+</script>
 <header>
-    <div class="ui fixed inverted menu large">
+    <div class="ui fixed inverted menu large" id="widescreen" {% if mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
             <img src="/static/img/icon/music.png" width="32" height="32" class="logo">
             Musik
         </a>
         <div class="right menu">
             <a href="/music/admin/index" class="item"><i class="setting icon large"></i></a>
+        </div>
+    </div>
+    <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
+            <img src="/static/img/icon/music.png" width="32" height="32" class="logo">
+            Musik
+        </a>
+        <div class="right menu">
+            <div class="ui dropdown item">
+                <i class="bars icon"></i>
+                <div class="menu">
+                    <a href="/music/admin/index" class="item">
+                        <i class="setting icon large"></i>
+                        Einstellungen
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </header>

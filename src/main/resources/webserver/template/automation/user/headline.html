@@ -1,10 +1,36 @@
 <script type="text/javascript">
+
+    var mobileView = {% if mobileView %}true{% else %}false{% endif %};
     $(function() {
+
         $('.ui.dropdown').dropdown();
+
+        //Bildschirmorientierung ermitteln
+        var height = $(window).height();
+        var width = $(window).width();
+        if(width < height) {
+
+            //Smallscreen
+            $('#widescreen').hide();
+            $('#smallscreen').show();
+            if(!mobileView) {
+
+                $.get({url: "/mobileview?mobile"});
+            }
+        } else {
+
+            //Widescreen
+            $('#widescreen').show();
+            $('#smallscreen').hide();
+            if(mobileView) {
+
+                $.get({url: "/mobileview"});
+            }
+        }
     });
 </script>
 <header>
-    <div class="ui fixed inverted menu large">
+    <div class="ui fixed inverted menu large stackable" id="widescreen" {% if mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
             <img src="/static/img/icon/automation.png" width="32" height="32" class="logo">
             Automatisierung
@@ -23,6 +49,35 @@
         </div>
         <div class="right menu">
             <a href="/automation/admin/index" class="item"><i class="setting icon large"></i></a>
+        </div>
+    </div>
+    <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
+            <img src="/static/img/icon/automation.png" width="32" height="32" class="logo">
+            Automatisierung
+        </a>
+        <div class="right menu">
+            <div class="ui dropdown item">
+                <i class="bars icon"></i>
+                <div class="menu">
+                    <div class="ui icon item dropdown">
+                        <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" width="32" height="32" class="ui icon image">
+                        <span style="display: inline-block; margin-top: 8px;">{{ activeRoom.getDisplayText() | escape }}</span>
+                        <div class="menu">
+                            {% for room in rooms %}
+                            <a class="item {% if room.getId().equals(activeRoom.getId()) %}active{% endif %}" href="/automation/index?id={{ room.getId().get() | escape }}">
+                                <img class="icon image" src="/static/img/iconset/{{ room.getIconFile() | escape }}">
+                                <span style="display: inline-block; margin-top: 8px;">{{ room.getDisplayText() | escape }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <a href="/automation/admin/index" class="item">
+                        <i class="setting icon large"></i>
+                        Einstellungen
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </header>

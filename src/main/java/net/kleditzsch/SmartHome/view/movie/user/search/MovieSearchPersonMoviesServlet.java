@@ -103,6 +103,15 @@ public class MovieSearchPersonMoviesServlet extends HttpServlet {
             //kein Suchbegriff eingegeben
         }
 
+        //Viewport
+        if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
+
+            model.with("mobileView", true);
+        } else {
+
+            model.with("mobileView", false);
+        }
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

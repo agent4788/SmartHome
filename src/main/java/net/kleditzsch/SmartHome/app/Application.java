@@ -35,6 +35,7 @@ import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalRunBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.info.GlobalServerInfoServlet;
 import net.kleditzsch.SmartHome.view.global.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
+import net.kleditzsch.SmartHome.view.global.user.GlobalMobileViewServlet;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -347,6 +348,7 @@ public class Application {
 
                 contextHandler.addServlet(GlobalIndexServlet.class, "/");
                 contextHandler.addServlet(GlobalIndexServlet.class, "/index");
+                contextHandler.addServlet(GlobalMobileViewServlet.class, "/mobileview");
                 contextHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");
                 contextHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
                 contextHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
