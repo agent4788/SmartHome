@@ -108,16 +108,23 @@ public class AutomationSwitchServlet extends HttpServlet {
                                     comm = SwitchCommands.toggle;
                                 }
 
-                                executorService.putCommand(new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
-                                        switchableEditor.copyOf(switchableOptional.get()),
-                                        comm
-                                        ));
+                                executorService.putCommand(
+                                        new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
+                                            switchableEditor.copyOf(switchableOptional.get()),
+                                            comm
+                                        )
+                                );
                             } else {
 
-                                executorService.putCommand(new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
-                                        switchableEditor.copyOf(switchableOptional.get()),
-                                        SwitchCommands.on
-                                        ));
+                                if(command.equals("on")) {
+
+                                    executorService.putCommand(
+                                            new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
+                                                switchableEditor.copyOf(switchableOptional.get()),
+                                                SwitchCommands.on
+                                            )
+                                    );
+                                }
                             }
                         } else {
 
