@@ -180,12 +180,12 @@ public abstract class SensorValueFormatUtil {
         } else if (sensorValue instanceof VirtualEnergyValue) {
 
             double energy = ((VirtualEnergyValue) sensorValue).getSum();
-            if((energy / 1000) > 1.0) {
+            if((energy / 1000000) > 1.0) {
 
-                formatedValue = NumberFormatUtil.numberFormat((energy / 1000), 2) + " kWh";
+                formatedValue = NumberFormatUtil.numberFormat((energy / 1000000), 2) + " kWh";
             } else {
 
-                formatedValue = NumberFormatUtil.numberFormat(energy, 0) + " Wh";
+                formatedValue = NumberFormatUtil.numberFormat(energy / 1000, 0) + " Wh";
             }
         } else if (sensorValue instanceof VirtualGasAmountValue) {
 
