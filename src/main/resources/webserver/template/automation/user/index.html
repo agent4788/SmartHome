@@ -29,54 +29,196 @@
                     $.notify("Der Befehl konnte nicht ausgeführt werden", "error");
                 });
         }
+
+        function sync() {
+
+            if (window.EventSource) {
+
+                var eventSource = new EventSource('/automation/ssesync?roomid={{ activeRoom.getId().get() }}', { withCredentials : true });
+                eventSource.onmessage = function(entry) {
+
+                    //JOSN parsen
+                    var data = jQuery.parseJSON(entry.data.trim());
+
+                    //Buttons aktualisieren
+                    if(data.buttons && data.buttons.length > 0) {
+
+                        for(var i = 0; i < data.buttons.length; i++) {
+
+                            var e = data.buttons[i];
+                            if(e.state) {
+
+                                //an
+                                var buttonOn = $('#a' + e.id + '_on');
+                                var buttonOff = $('#a' + e.id + '_off');
+                                var onText = buttonOn.text();
+                                var offText = buttonOff.text();
+                                buttonOn.html('<i class="check icon"></i>' + onText);
+                                buttonOff.html(offText);
+                            } else {
+
+                                //aus
+                                var buttonOn = $('#a' + e.id + '_on');
+                                var buttonOff = $('#a' + e.id + '_off');
+                                var onText = buttonOn.text();
+                                var offText = buttonOff.text();
+                                buttonOn.html(onText);
+                                buttonOff.html('<i class="check icon"></i>' + offText);
+                            }
+                        }
+                    }
+
+                    //Sensorwerte aktualisieren
+                    if(data.sensors && data.sensors.length > 0) {
+                         for(var i = 0; i < data.sensors.length; i++) {
+
+                             var e = data.sensors[i];
+                             $('#a' + e.id).text(e.value);
+                        }
+                    }
+
+                    //Virtuelle Sensorwerte aktualisieren
+                    if(data.vSensors && data.vSensors.length > 0) {
+
+                        for(var i = 0; i < data.vSensors.length; i++) {
+
+                            var e = data.vSensors[i];
+                            if(e.avg) {
+
+                                $('#a' + e.id + '_avg').text(e.avg);
+                            }
+                            if(e.sum) {
+
+                                $('#a' + e.id + '_sum').text(e.sum);
+                            }
+                            if(e.min) {
+
+                                $('#a' + e.id + '_min').text(e.min);
+                            }
+                            if(e.max) {
+
+                                $('#a' + e.id + '_max').text(e.max);
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                $.getJSON('/automation/sync?roomid={{ activeRoom.getId().get() }}')
+                .done(function(data, textStatus) {
+
+                    if(textStatus == 'success' && data.success == true) {
+
+                        //Buttons aktualisieren
+                        if(data.buttons && data.buttons.length > 0) {
+
+                            for(var i = 0; i < data.buttons.length; i++) {
+
+                                var e = data.buttons[i];
+                                if(e.state) {
+
+                                    //an
+                                    var buttonOn = $('#a' + e.id + '_on');
+                                    var buttonOff = $('#a' + e.id + '_off');
+                                    var onText = buttonOn.text();
+                                    var offText = buttonOff.text();
+                                    buttonOn.html('<i class="check icon"></i>' + onText);
+                                    buttonOff.html(offText);
+                                } else {
+
+                                    //aus
+                                    var buttonOn = $('#a' + e.id + '_on');
+                                    var buttonOff = $('#a' + e.id + '_off');
+                                    var onText = buttonOn.text();
+                                    var offText = buttonOff.text();
+                                    buttonOn.html(onText);
+                                    buttonOff.html('<i class="check icon"></i>' + offText);
+                                }
+                            }
+                        }
+
+                        //Sensorwerte aktualisieren
+                        if(data.sensors && data.sensors.length > 0) {
+
+                            for(var i = 0; i < data.sensors.length; i++) {
+
+                                var e = data.sensors[i];
+                                $('#a' + e.id).text(e.value);
+                            }
+                        }
+
+                        //Virtuelle Sensorwerte aktualisieren
+                        if(data.vSensors && data.vSensors.length > 0) {
+
+                            for(var i = 0; i < data.vSensors.length; i++) {
+
+                                var e = data.vSensors[i];
+                                if(e.avg) {
+
+                                    $('#a' + e.id + '_avg').text(e.avg);
+                                }
+                                if(e.sum) {
+
+                                    $('#a' + e.id + '_sum').text(e.sum);
+                                }
+                                if(e.min) {
+
+                                    $('#a' + e.id + '_min').text(e.min);
+                                }
+                                if(e.max) {
+
+                                    $('#a' + e.id + '_max').text(e.max);
+                                }
+                            }
+                        }
+                    } else {
+
+                        //Fehler
+                        if(data.message) {
+
+                            $.notify('Synchronisationsfehler "' + data.message + '"', "error");
+                        } else {
+
+                            $.notify('Synchronisationsfehler', "error");
+                        }
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $.notify("Die Synchronisation ist fehlgeschlagen", "error");
+                });
+                setTimeout('sync()', 500);
+            }
+        }
+
+        $(function() {
+            sync();
+        });
     </script>
 </head>
 <body>
-{% include '/webserver/template/automation/user/headline.html' %}
-<main class="ui main" style="padding: 0 10px;">
-    <div class="ui grid relaxed">
-        <div class="four wide computer only column">
-            <div class="ui link divided items">
-                {% for room in rooms %}
-                <div class="item" onclick="window.location='/automation/index?id={{ room.getId().get() | escape }}'">
-                    <div class="ui mini image middle aligned">
-                        <img src="/static/img/iconset/{{ room.getIconFile() | escape }}">
-                    </div>
-                    <div class="content middle aligned">
-                        <div class="header" style="width: 100%;">
-                            {% if room.getId().equals(activeRoom.getId()) %}
-                            <div class="ui grid">
-                                <div class="fourteen wide column">
-                                    {{ room.getDisplayText() | escape }}
-                                </div>
-                                <div class="two wide column">
-                                    <i class="arrow right icon"></i>
-                                </div>
-                            </div>
-                            {% else %}
-                            {{ room.getName() | escape }}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+{% include '/webserver/template/automation/user/headline.html' with {rooms: rooms, activeRoom: activeRoom} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">
+            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" class="ui image">
+            {{ activeRoom.getDisplayText() | escape }}
+        </h1>
+        {% if success is defined %}
+        <div class="ui attached message icon {% if success %}success{% else %}error{% endif %}">
+            {% if success %}
+            <i class="check icon green"></i>
+            {% else %}
+            <i class="remove icon red"></i>
+            {% endif %}
+            <div class="content">
+                <p>{{ message | escape }}</p>
             </div>
         </div>
-        <div class="sixteen wide mobile tablet twelve wide computer column">
-            <h1 class="ui header">{{ activeRoom.getName() | escape }}</h1>
-            {% if success is defined %}
-            <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
-                {% if success %}
-                <i class="check icon green"></i>
-                {% else %}
-                <i class="remove icon red"></i>
-                {% endif %}
-                <div class="content">
-                    <p>{{ message | escape }}</p>
-                </div>
-            </div>
-            {% endif %}
-            <div class="ui relaxed grid" style="margin-top: 10px;">
+        {% endif %}
+        <div class="ui segment bottom attached">
+            <div class="ui grid relaxed stackable doubling">
                 {% for element in activeRoom.getRoomElemenstSorted() %}
                     {% if element.getType() == 'DIVIDER_ELEMENT' %}
                         {% include '/webserver/template/automation/user/elements/divider.html' %}

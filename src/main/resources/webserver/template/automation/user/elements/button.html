@@ -1,13 +1,13 @@
 {% set randomId = randomstr() %}
 {% set randomId1 = randomstr() %}
 {% set randomId2 = randomstr() %}
-<div class="sixteen wide mobile eight wide tablet four wide computer four wide large screen column">
-    <div class="ui items">
+<div class="eight wide column">
+    <div class="ui unstackable items">
         <div class="item">
-            <div class="ui tiny image middle aligned">
+            <div class="ui image tiny middle aligned">
                 <img src="/static/img/iconset/{{ element.getIconFile() | escape }}">
             </div>
-            <div class="content">
+            <div class="content middle aligned ">
                 <div class="header centered">
                     {{ element.getDisplayText() | escape }}
                 </div>
@@ -15,10 +15,10 @@
                     <div class="ui fluid buttons">
                         {% if element.isDoubleButton() %}
                             {% if element.isSafetyRequestEnabled() %}
-                                <div class="ui button basic green icon" onclick="$('#{{ randomId }}').modal('show')">
+                                <div class="ui button basic green" onclick="$('#{{ randomId }}').modal('show')" id="a{{ element.getId().get() }}_on">
                                     {{ element.getOnButtonText() | escape }}
                                 </div>
-                                <div class="ui button basic red icon" onclick="$('#{{ randomId1 }}').modal('show')">
+                                <div class="ui button basic red" onclick="$('#{{ randomId1 }}').modal('show')" id="a{{ element.getId().get() }}_off">
                                     {{ element.getOffButtonText() | escape }}
                                 </div>
                                 <div class="ui basic modal" id="{{ randomId }}">
@@ -60,8 +60,8 @@
                                     </div>
                                 </div>
                             {% else %}
-                                <div class="ui button basic green icon" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on');">{{ element.getOnButtonText() | escape }}</div>
-                                <div class="ui button basic red icon" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'off');">{{ element.getOffButtonText() | escape }}</div>
+                                <div class="ui button basic green" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'on');" id="a{{ element.getId().get() }}_on">{{ element.getOnButtonText() | escape }}</div>
+                                <div class="ui button basic red" onclick="switchDevice('{{ activeRoom.getId().get() | escape }}', '{{ element.getId().get() | escape }}', 'off');" id="a{{ element.getId().get() }}_off">{{ element.getOffButtonText() | escape }}</div>
                             {% endif %}
                         {% else %}
                             {% if element.isSafetyRequestEnabled() %}

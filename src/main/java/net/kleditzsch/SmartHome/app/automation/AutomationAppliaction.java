@@ -26,6 +26,7 @@ import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerDelet
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerFormServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerListServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
+import net.kleditzsch.SmartHome.view.automation.user.AutomationSseSyncServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationSwitchServlet;
 import net.kleditzsch.SmartHome.view.automation.user.AutomationSyncServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -108,6 +109,7 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
         contextHandler.addServlet(AutomationSwitchServlet.class, "/automation/switch");
         contextHandler.addServlet(AutomationSyncServlet.class, "/automation/sync");
+        contextHandler.addServlet(AutomationSseSyncServlet.class, "/automation/ssesync");
 
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
