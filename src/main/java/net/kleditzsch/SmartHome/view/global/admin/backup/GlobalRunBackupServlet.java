@@ -23,11 +23,10 @@ public class GlobalRunBackupServlet extends HttpServlet {
 
             config.setBackupGlobalDataEnabled(true);
             config.setBackupAutomationDataEnabled(true);
-            config.setBackupCalendarDataEnabled(true);
             config.setBackupContactDataEnabled(true);
+            config.setBackupContractDataEnabled(true);
             config.setBackupMovieDataEnabled(true);
-            config.setBackupMusicDataEnabled(true);
-            config.setBackupPictureDataEnabled(true);
+            config.setBackupNetworkDataEnabled(true);
             config.setBackupRecipeDataEnabled(true);
             config.setBackupShoppingListDataEnabled(true);
             runCount++;
@@ -42,9 +41,9 @@ public class GlobalRunBackupServlet extends HttpServlet {
             config.setBackupAutomationDataEnabled(true);
             runCount++;
         }
-        if(req.getParameter("calendar") != null && req.getParameter("calendar").trim().equals("on")) {
+        if(req.getParameter("contract") != null && req.getParameter("contract").trim().equals("on")) {
 
-            config.setBackupCalendarDataEnabled(true);
+            config.setBackupContractDataEnabled(true);
             runCount++;
         }
         if(req.getParameter("contact") != null && req.getParameter("contact").trim().equals("on")) {
@@ -57,14 +56,9 @@ public class GlobalRunBackupServlet extends HttpServlet {
             config.setBackupMovieDataEnabled(true);
             runCount++;
         }
-        if(req.getParameter("music") != null && req.getParameter("music").trim().equals("on")) {
+        if(req.getParameter("network") != null && req.getParameter("network").trim().equals("on")) {
 
-            config.setBackupMusicDataEnabled(true);
-            runCount++;
-        }
-        if(req.getParameter("picture") != null && req.getParameter("picture").trim().equals("on")) {
-
-            config.setBackupPictureDataEnabled(true);
+            config.setBackupNetworkDataEnabled(true);
             runCount++;
         }
         if(req.getParameter("recipe") != null && req.getParameter("recipe").trim().equals("on")) {

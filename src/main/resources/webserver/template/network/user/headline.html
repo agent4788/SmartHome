@@ -32,23 +32,23 @@
 <header>
     <div class="ui fixed inverted menu large" id="widescreen" {% if mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
-            <img src="/static/img/icon/picture.png" width="32" height="32" class="logo">
-            Bilder
+            <img src="/static/img/icon/network.png" width="32" height="32" class="logo">
+            Netzwerk
         </a>
         <div class="right menu">
-            <a href="/picture/admin/index" class="item"><i class="setting icon large"></i></a>
+            <a href="/network/admin/index" class="item"><i class="setting icon large"></i></a>
         </div>
     </div>
     <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
-            <img src="/static/img/icon/picture.png" width="32" height="32" class="logo">
-            Bilder
+            <img src="/static/img/icon/network.png" width="32" height="32" class="logo">
+            Netzwerk
         </a>
         <div class="right menu">
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
-                    <a href="/picture/admin/index" class="item">
+                    <a href="/network/admin/index" class="item">
                         <i class="setting icon large"></i>
                         Einstellungen
                     </a>
@@ -57,4 +57,4 @@
         </div>
     </div>
 </header>
-{% include '/webserver/template/sidebar.html' with {module: 'picture'} %}
+{% include '/webserver/template/sidebar.html' with {module: 'network'} %}

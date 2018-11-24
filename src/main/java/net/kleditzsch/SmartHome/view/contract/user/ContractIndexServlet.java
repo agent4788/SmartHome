@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.picture.user;
+package net.kleditzsch.SmartHome.view.contract.user;
 
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class PictureIndexServlet extends HttpServlet {
+public class ContractIndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/picture/user/index.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/contract/user/index.html");
         JtwigModel model = JtwigModel.newModel();
 
 

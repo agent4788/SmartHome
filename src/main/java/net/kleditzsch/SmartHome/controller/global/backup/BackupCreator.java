@@ -111,13 +111,13 @@ public class BackupCreator {
                 });
                 futureList.add(future);
             }
-            if(config.isBackupCalendarDataEnabled()) {
+            if(config.isBackupContractDataEnabled()) {
 
                 Future<Path> future = executor.submit(() -> {
 
                     try {
 
-                        return backupCalendarData();
+                        return backupContractData();
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
@@ -156,28 +156,13 @@ public class BackupCreator {
                 });
                 futureList.add(future);
             }
-            if(config.isBackupMusicDataEnabled()) {
+            if(config.isBackupNetworkDataEnabled()) {
 
                 Future<Path> future = executor.submit(() -> {
 
                     try {
 
-                        return backupMusicData();
-                    } catch (Exception e) {
-
-                        LoggerUtil.serveException(logger, e);
-                        return null;
-                    }
-                });
-                futureList.add(future);
-            }
-            if(config.isBackupPictureDataEnabled()) {
-
-                Future<Path> future = executor.submit(() -> {
-
-                    try {
-
-                        return backupPictureData();
+                        return backupNetworkData();
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
@@ -272,13 +257,13 @@ public class BackupCreator {
     }
 
     /**
-     * erstellt ein BackupCreator der Kelender Daten
+     * erstellt ein BackupCreator der Verträge Daten
      */
-    private Path backupCalendarData() throws Exception {
+    private Path backupContractData() throws Exception {
 
-        List<String> collectionNames = listCollectionNames("calendar");
+        List<String> collectionNames = listCollectionNames("contract");
 
-        Path zipFile = config.getDestinationDirectory().resolve("calendar").resolve(baseFilename + "calendar.zip");
+        Path zipFile = config.getDestinationDirectory().resolve("contract").resolve(baseFilename + "contract.zip");
         Files.createDirectories(zipFile.getParent());
         ZipArchiveCreator zip = ZipArchiveCreator.create(zipFile);
         for (String collectionName : collectionNames) {
@@ -332,31 +317,13 @@ public class BackupCreator {
     }
 
     /**
-     * erstellt ein BackupCreator der Musik Daten
+     * erstellt ein BackupCreator der Netzwerk Daten
      */
-    private Path backupMusicData() throws Exception {
+    private Path backupNetworkData() throws Exception {
 
-        List<String> collectionNames = listCollectionNames("music");
+        List<String> collectionNames = listCollectionNames("network");
 
-        Path zipFile = config.getDestinationDirectory().resolve("music").resolve(baseFilename + "music.zip");
-        Files.createDirectories(zipFile.getParent());
-        ZipArchiveCreator zip = ZipArchiveCreator.create(zipFile);
-        for (String collectionName : collectionNames) {
-
-            dumpCollectionZipToFile(collectionName, zip, collectionName + ".json");
-        }
-        zip.close();
-        return zipFile;
-    }
-
-    /**
-     * erstellt ein BackupCreator der Bilder Daten
-     */
-    private Path backupPictureData() throws Exception {
-
-        List<String> collectionNames = listCollectionNames("picture");
-
-        Path zipFile = config.getDestinationDirectory().resolve("picture").resolve(baseFilename + "picture.zip");
+        Path zipFile = config.getDestinationDirectory().resolve("network").resolve(baseFilename + "network.zip");
         Files.createDirectories(zipFile.getParent());
         ZipArchiveCreator zip = ZipArchiveCreator.create(zipFile);
         for (String collectionName : collectionNames) {

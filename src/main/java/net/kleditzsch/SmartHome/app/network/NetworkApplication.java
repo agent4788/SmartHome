@@ -1,14 +1,13 @@
-package net.kleditzsch.SmartHome.app.picture;
+package net.kleditzsch.SmartHome.app.network;
 
-import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.view.picture.user.PictureIndexServlet;
+import net.kleditzsch.SmartHome.view.network.user.NetworkIndexServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
- * Hauptklasse der Bilderverwaltung
+ * Hauptklasse der Netzwerkverwaltung
  */
-public class PictureApplication implements SubApplication {
+public class NetworkApplication implements SubApplication {
 
     /**
      * Initlisiert die Anwendungsdaten
@@ -25,8 +24,8 @@ public class PictureApplication implements SubApplication {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(PictureIndexServlet.class, "/picture/");
-        contextHandler.addServlet(PictureIndexServlet.class, "/picture/index");
+        contextHandler.addServlet(NetworkIndexServlet.class, "/network/");
+        contextHandler.addServlet(NetworkIndexServlet.class, "/network/index");
     }
 
     /**

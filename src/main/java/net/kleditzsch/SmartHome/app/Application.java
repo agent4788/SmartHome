@@ -5,11 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
-import net.kleditzsch.SmartHome.app.calendar.CalendarApplication;
+import net.kleditzsch.SmartHome.app.contract.ContractApplication;
 import net.kleditzsch.SmartHome.app.contact.ContactApplication;
 import net.kleditzsch.SmartHome.app.movie.MovieApplication;
-import net.kleditzsch.SmartHome.app.music.MusicApplication;
-import net.kleditzsch.SmartHome.app.picture.PictureApplication;
+import net.kleditzsch.SmartHome.app.network.NetworkApplication;
 import net.kleditzsch.SmartHome.app.recipe.RecipeApplication;
 import net.kleditzsch.SmartHome.app.shoppinglist.ShoppingListApplication;
 import net.kleditzsch.SmartHome.controller.global.CliConfigurator;
@@ -99,10 +98,10 @@ public class Application {
     /**
      * Hauptklasse des Kalenders
      */
-    private volatile CalendarApplication calendarApplication;
+    private volatile ContractApplication contractApplication;
 
     /**
-     * Hauptklasse der Kontakteverwaltung
+     * Hauptklasse der Verträgeverwaltung
      */
     private volatile ContactApplication contactApplication;
 
@@ -114,12 +113,7 @@ public class Application {
     /**
      * Hauptklasse der Musikverwaltung
      */
-    private volatile MusicApplication musicApplication;
-
-    /**
-     * Hauptklasse der Bilderverwaltung
-     */
-    private volatile PictureApplication pictureApplication;
+    private volatile NetworkApplication networkApplication;
 
     /**
      * Hauptklasse der Rezepteverwaltung
@@ -244,9 +238,9 @@ public class Application {
         automationAppliaction = new AutomationAppliaction();
         automationAppliaction.init();
 
-        //Kalender initalisieren
-        calendarApplication = new CalendarApplication();
-        calendarApplication.init();
+        //Verträge initalisieren
+        contractApplication = new ContractApplication();
+        contractApplication.init();
 
         //Kontakte initalisieren
         contactApplication = new ContactApplication();
@@ -256,13 +250,9 @@ public class Application {
         movieApplication = new MovieApplication();
         movieApplication.init();
 
-        //Musikdatenbank initalisieren
-        musicApplication = new MusicApplication();
-        musicApplication.init();
-
-        //Bilderdanetbank initalisieren
-        pictureApplication = new PictureApplication();
-        pictureApplication.init();
+        //Netzwerk initalisieren
+        networkApplication = new NetworkApplication();
+        networkApplication.init();
 
         //Rezeptedatenbank initalisieren
         recipeApplication = new RecipeApplication();
@@ -361,11 +351,10 @@ public class Application {
 
                 //Webseiten der Anwendungen registrieren
                 automationAppliaction.initWebContext(contextHandler);
-                calendarApplication.initWebContext(contextHandler);
                 contactApplication.initWebContext(contextHandler);
+                contractApplication.initWebContext(contextHandler);
                 movieApplication.initWebContext(contextHandler);
-                musicApplication.initWebContext(contextHandler);
-                pictureApplication.initWebContext(contextHandler);
+                networkApplication.initWebContext(contextHandler);
                 recipeApplication.initWebContext(contextHandler);
                 shoppingListApplication.initWebContext(contextHandler);
             });
@@ -444,21 +433,21 @@ public class Application {
     }
 
     /**
-     * gibt den Kalender zurück
-     *
-     * @return Kalender
-     */
-    public CalendarApplication getCalendarApplication() {
-        return calendarApplication;
-    }
-
-    /**
      * gibt die Kontakteverwaltung zurück
      *
      * @return Kontakteverwaltung
      */
     public ContactApplication getContactApplication() {
         return contactApplication;
+    }
+
+    /**
+     * gibt die Verträgeverwaltung zurück
+     *
+     * @return Verträgeverwaltung
+     */
+    public ContractApplication getContractApplication() {
+        return contractApplication;
     }
 
     /**
@@ -475,17 +464,8 @@ public class Application {
      *
      * @return Musikdatenbank
      */
-    public MusicApplication getMusicApplication() {
-        return musicApplication;
-    }
-
-    /**
-     * gibt die Bilderdatenbank zurück
-     *
-     * @return Bilderdatenbank
-     */
-    public PictureApplication getPictureApplication() {
-        return pictureApplication;
+    public NetworkApplication getNetworkApplication() {
+        return networkApplication;
     }
 
     /**
@@ -546,11 +526,10 @@ public class Application {
 
         //Anwendungen starten
         automationAppliaction.start();
-        calendarApplication.start();
         contactApplication.start();
+        contractApplication.start();
         movieApplication.start();
-        musicApplication.start();
-        pictureApplication.start();
+        networkApplication.start();
         recipeApplication.start();
         shoppingListApplication.start();
 
@@ -575,11 +554,10 @@ public class Application {
         settings.dump();
 
         automationAppliaction.dump();
-        calendarApplication.dump();
         contactApplication.dump();
+        contractApplication.dump();
         movieApplication.dump();
-        musicApplication.dump();
-        pictureApplication.dump();
+        networkApplication.dump();
         recipeApplication.dump();
         shoppingListApplication.dump();
     }
@@ -594,11 +572,10 @@ public class Application {
 
         //Anwendungen stoppen
         automationAppliaction.stop();
-        calendarApplication.stop();
         contactApplication.stop();
+        contractApplication.stop();
         movieApplication.stop();
-        musicApplication.stop();
-        pictureApplication.stop();
+        networkApplication.stop();
         recipeApplication.stop();
         shoppingListApplication.stop();
 

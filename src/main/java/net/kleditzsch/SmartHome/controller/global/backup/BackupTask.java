@@ -127,11 +127,10 @@ public class BackupTask implements Runnable {
         config.setAutoBackup(true);
         config.setBackupGlobalDataEnabled(true);
         config.setBackupAutomationDataEnabled(true);
-        config.setBackupCalendarDataEnabled(true);
+        config.setBackupContractDataEnabled(true);
         config.setBackupContactDataEnabled(true);
         config.setBackupMovieDataEnabled(true);
-        config.setBackupMusicDataEnabled(true);
-        config.setBackupPictureDataEnabled(true);
+        config.setBackupNetworkDataEnabled(true);
         config.setBackupRecipeDataEnabled(true);
         config.setBackupShoppingListDataEnabled(true);
 

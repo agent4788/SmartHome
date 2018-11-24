@@ -24,11 +24,10 @@ public class BackupEditor {
 
         Global,
         Automation,
-        Calendar,
         Contact,
+        Contract,
         Movie,
-        Music,
-        Picture,
+        Network,
         Recipe,
         ShoppingList
     };
@@ -46,11 +45,10 @@ public class BackupEditor {
         //Dateien
         map.put(Module.Global, listModuleBackups(backupDir.resolve("global")));
         map.put(Module.Automation, listModuleBackups(backupDir.resolve("automation")));
-        map.put(Module.Calendar, listModuleBackups(backupDir.resolve("calendar")));
         map.put(Module.Contact, listModuleBackups(backupDir.resolve("contact")));
+        map.put(Module.Contract, listModuleBackups(backupDir.resolve("contract")));
         map.put(Module.Movie, listModuleBackups(backupDir.resolve("movie")));
-        map.put(Module.Music, listModuleBackups(backupDir.resolve("music")));
-        map.put(Module.Picture, listModuleBackups(backupDir.resolve("picture")));
+        map.put(Module.Network, listModuleBackups(backupDir.resolve("network")));
         map.put(Module.Recipe, listModuleBackups(backupDir.resolve("recipe")));
         map.put(Module.ShoppingList, listModuleBackups(backupDir.resolve("shoppinglist")));
 

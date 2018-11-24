@@ -21,13 +21,12 @@
         <div class="ui top attached tabular menu">
             <div data-tab="global" class="active item" style="cursor: pointer;">Global</div>
             <div data-tab="automation" class="item" style="cursor: pointer;">Automatisierung</div>
-            <div data-tab="calendar" class="item" style="cursor: pointer;">Kalender</div>
             <div data-tab="contact" class="item" style="cursor: pointer;">Konkate</div>
             <div data-tab="movie" class="item" style="cursor: pointer;">Filme</div>
-            <div data-tab="music" class="item" style="cursor: pointer;">Musik</div>
-            <div data-tab="picture" class="item" style="cursor: pointer;">Bilder</div>
             <div data-tab="recipe" class="item" style="cursor: pointer;">Rezepte</div>
             <div data-tab="shoppingList" class="item" style="cursor: pointer;">Einkaufsliste</div>
+            <div data-tab="contract" class="item" style="cursor: pointer;">Vertr&auml;ge</div>
+            <div data-tab="network" class="item" style="cursor: pointer;">Netzwerk</div>
         </div>
         <div data-tab="global" class="ui bottom attached tab segment active">
             {% if globalBackups.size() > 0 or autoGlobalBackups.size() > 0 %}
@@ -287,10 +286,10 @@
             </div>
             {% endif %}
         </div>
-        <div data-tab="calendar" class="ui bottom attached tab segment">
-            {% if calendarBackups.size() > 0 or autoCalendarBackups.size() > 0 %}
+        <div data-tab="contract" class="ui bottom attached tab segment">
+            {% if contractBackups.size() > 0 or autoContractBackups.size() > 0 %}
             <table class="ui table">
-                {% if calendarBackups.size() > 0 %}
+                {% if contractBackups.size() > 0 %}
                 <thead>
                 <tr>
                     <th colspan="4" class="ui grey">Manuelle Backups</th>
@@ -303,7 +302,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for backupFile in calendarBackups %}
+                {% for backupFile in contractBackups %}
                 <tr>
                     <td>
                         <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
@@ -348,7 +347,7 @@
                 </tr>
                 </thead>
                 {% endif %}
-                {% if autoCalendarBackups.size() > 0 %}
+                {% if autoContractBackups.size() > 0 %}
                 <thead>
                 <tr>
                     <th colspan="4" class="ui grey">Automatische Backups</th>
@@ -361,7 +360,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for backupFile in autoCalendarBackups %}
+                {% for backupFile in autoContractBackups %}
                 <tr>
                     <td>
                         <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
@@ -674,10 +673,10 @@
             </div>
             {% endif %}
         </div>
-        <div data-tab="music" class="ui bottom attached tab segment">
-            {% if musicBackups.size() > 0 or autoMusicBackups.size() > 0 %}
+        <div data-tab="network" class="ui bottom attached tab segment">
+            {% if networkBackups.size() > 0 or autoNetworkBackups.size() > 0 %}
             <table class="ui table">
-                {% if musicBackups.size() > 0 %}
+                {% if networkBackups.size() > 0 %}
                 <thead>
                 <tr>
                     <th colspan="4" class="ui grey">Manuelle Backups</th>
@@ -690,7 +689,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for backupFile in musicBackups %}
+                {% for backupFile in networkBackups %}
                 <tr>
                     <td>
                         <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
@@ -735,7 +734,7 @@
                 </tr>
                 </thead>
                 {% endif %}
-                {% if autoMusicBackups.size() > 0 %}
+                {% if autoNetworkBackups.size() > 0 %}
                 <thead>
                 <tr>
                     <th colspan="4" class="ui grey">Automatische Backups</th>
@@ -748,136 +747,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for backupFile in autoMusicBackups %}
-                <tr>
-                    <td>
-                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
-                            {{ backupFile.getFileName() | escape }}
-                        </a>
-                    </td>
-                    <td>
-                        {{ backupFile.getCreationDateTime() | datetimeformat }}
-                    </td>
-                    <td>
-                        {{ backupFile.getFileSize() | filesize }}
-                    </td>
-                    <td>
-                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
-                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
-                            <div class="ui icon header">
-                                <i class="delete icon"></i>
-                                Backup l&ouml;schen
-                            </div>
-                            <div class="content">
-                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
-                            </div>
-                            <div class="actions">
-                                <div class="ui red basic cancel inverted button">
-                                    <i class="remove icon"></i>
-                                    Nein
-                                </div>
-                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
-                                    <i class="checkmark icon"></i>
-                                    Ja
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-                {% else %}
-                <thead>
-                <tr>
-                    <th colspan="4">keine automatischen Backups vohanden</th>
-                </tr>
-                </thead>
-                {% endif %}
-            </table>
-            {% else %}
-            <div class="ui placeholder segment">
-                <div class="ui icon header">
-                    <i class="file archive outline icon"></i>
-                    Keine Backup vorhanden
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        <div data-tab="picture" class="ui bottom attached tab segment">
-            {% if pictureBackups.size() > 0 or autoPictureBackups.size() > 0 %}
-            <table class="ui table">
-                {% if pictureBackups.size() > 0 %}
-                <thead>
-                <tr>
-                    <th colspan="4" class="ui grey">Manuelle Backups</th>
-                </tr>
-                <tr>
-                    <th>Dateiname</th>
-                    <th>Datum</th>
-                    <th>Gr&ouml;&szlig;e</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for backupFile in pictureBackups %}
-                <tr>
-                    <td>
-                        <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
-                            {{ backupFile.getFileName() | escape }}
-                        </a>
-                    </td>
-                    <td>
-                        {{ backupFile.getCreationDateTime() | datetimeformat }}
-                    </td>
-                    <td>
-                        {{ backupFile.getFileSize() | filesize }}
-                    </td>
-                    <td>
-                        <div class="ui icon button basic red" title="l&ouml;schen" onclick="$('#a{{ backupFile.getHash() }}').modal('show');"><i class="ui icon remove"></i></div>
-                        <div class="ui basic modal" id="a{{ backupFile.getHash() }}">
-                            <div class="ui icon header">
-                                <i class="delete icon"></i>
-                                Backup l&ouml;schen
-                            </div>
-                            <div class="content">
-                                <p>Bist du sicher das du das Backup l&ouml;schen m&ouml;chtest?</p>
-                            </div>
-                            <div class="actions">
-                                <div class="ui red basic cancel inverted button">
-                                    <i class="remove icon"></i>
-                                    Nein
-                                </div>
-                                <div class="ui green ok inverted button" onclick="window.location = '/admin/deletebackup?hash={{ backupFile.getHash() }}'">
-                                    <i class="checkmark icon"></i>
-                                    Ja
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-                {% else %}
-                <thead>
-                <tr>
-                    <th colspan="4">keine manuellen Backups vohanden</th>
-                </tr>
-                </thead>
-                {% endif %}
-                {% if autoPictureBackups.size() > 0 %}
-                <thead>
-                <tr>
-                    <th colspan="4" class="ui grey">Automatische Backups</th>
-                </tr>
-                <tr>
-                    <th>Dateiname</th>
-                    <th>Datum</th>
-                    <th>Gr&ouml;&szlig;e</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for backupFile in autoPictureBackups %}
+                {% for backupFile in autoNetworkBackups %}
                 <tr>
                     <td>
                         <a href="/admin/downloadbackup?hash={{ backupFile.getHash() }}">
@@ -1221,12 +1091,6 @@
                         </div>
                         <div class="inline field">
                             <div class="ui checkbox">
-                                <input type="checkbox" tabindex="0" class="hidden" name="calendar">
-                                <label>Kalender</label>
-                            </div>
-                        </div>
-                        <div class="inline field">
-                            <div class="ui checkbox">
                                 <input type="checkbox" tabindex="0" class="hidden" name="contact">
                                 <label>Kontakt</label>
                             </div>
@@ -1239,18 +1103,6 @@
                         </div>
                         <div class="inline field">
                             <div class="ui checkbox">
-                                <input type="checkbox" tabindex="0" class="hidden" name="music">
-                                <label>Musik</label>
-                            </div>
-                        </div>
-                        <div class="inline field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" tabindex="0" class="hidden" name="picture">
-                                <label>Bilder</label>
-                            </div>
-                        </div>
-                        <div class="inline field">
-                            <div class="ui checkbox">
                                 <input type="checkbox" tabindex="0" class="hidden" name="recipe">
                                 <label>Rezepte</label>
                             </div>
@@ -1259,6 +1111,18 @@
                             <div class="ui checkbox">
                                 <input type="checkbox" tabindex="0" class="hidden" name="shoppinglist">
                                 <label>Einkaufsliste</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="contract">
+                                <label>Vertr&auml;ge</label>
+                            </div>
+                        </div>
+                        <div class="inline field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden" name="network">
+                                <label>Netzwerk</label>
                             </div>
                         </div>
                     </form>

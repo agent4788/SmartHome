@@ -1,14 +1,13 @@
-package net.kleditzsch.SmartHome.app.music;
+package net.kleditzsch.SmartHome.app.contract;
 
-import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.view.music.user.MusicIndexServlet;
+import net.kleditzsch.SmartHome.view.contract.user.ContractIndexServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
- * Hauptklasse der Musikverwaltung
+ * Hauptklasse der Verträgeverwaltung
  */
-public class MusicApplication implements SubApplication {
+public class ContractApplication implements SubApplication {
 
     /**
      * Initlisiert die Anwendungsdaten
@@ -25,8 +24,8 @@ public class MusicApplication implements SubApplication {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(MusicIndexServlet.class, "/music/");
-        contextHandler.addServlet(MusicIndexServlet.class, "/music/index");
+        contextHandler.addServlet(ContractIndexServlet.class, "/contract/");
+        contextHandler.addServlet(ContractIndexServlet.class, "/contract/index");
     }
 
     /**

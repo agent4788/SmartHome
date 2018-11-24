@@ -63,19 +63,16 @@ public class BackupRestore {
             case Automation:
 
                 return restoreAutomationData(backupFile);
-            case Calendar:
+            case Contact:
 
                 //TODO implimentieren
-            case Contact:
+            case Contract:
 
                 //TODO implimentieren
             case Movie:
 
                 return restoreMovieData(backupFile);
-            case Music:
-
-                //TODO implimentieren
-            case Picture:
+            case Network:
 
                 //TODO implimentieren
             case Recipe:

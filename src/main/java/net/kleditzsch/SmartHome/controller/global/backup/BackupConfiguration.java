@@ -15,11 +15,10 @@ public class BackupConfiguration {
      */
     private boolean backupGlobalData = false;
     private boolean backupAutomationData = false;
-    private boolean backupCalendarData = false;
     private boolean backupContactData = false;
+    private boolean backupContractData = false;
     private boolean backupMovieData = false;
-    private boolean backupMusicData = false;
-    private boolean backupPictureData = false;
+    private boolean backupNetworkData = false;
     private boolean backupRecipeData = false;
     private boolean backupShoppingListData = false;
 
@@ -98,24 +97,6 @@ public class BackupConfiguration {
     }
 
     /**
-     * gibt an ob das BackupCreator der Kalender Daten aktiviert ist
-     *
-     * @return aktiviert
-     */
-    public boolean isBackupCalendarDataEnabled() {
-        return backupCalendarData;
-    }
-
-    /**
-     * aktiviert das BackupCreator der Kalender Daten
-     *
-     * @param backupCalendarData aktiviert
-     */
-    public void setBackupCalendarDataEnabled(boolean backupCalendarData) {
-        this.backupCalendarData = backupCalendarData;
-    }
-
-    /**
      * gibt an ob das BackupCreator der Kontakte Daten aktiviert ist
      *
      * @return aktiviert
@@ -131,6 +112,24 @@ public class BackupConfiguration {
      */
     public void setBackupContactDataEnabled(boolean backupContactData) {
         this.backupContactData = backupContactData;
+    }
+
+    /**
+     * gibt an ob das BackupCreator der Verträge Daten aktiviert ist
+     *
+     * @return aktiviert
+     */
+    public boolean isBackupContractDataEnabled() {
+        return backupContractData;
+    }
+
+    /**
+     * aktiviert das BackupCreator der Verträge Daten
+     *
+     * @param backupContractData aktiviert
+     */
+    public void setBackupContractDataEnabled(boolean backupContractData) {
+        this.backupContractData = backupContractData;
     }
 
     /**
@@ -152,39 +151,21 @@ public class BackupConfiguration {
     }
 
     /**
-     * gibt an ob das BackupCreator der Musik Daten aktiviert ist
+     * gibt an ob das BackupCreator der Netzwerk Daten aktiviert ist
      *
      * @return aktiviert
      */
-    public boolean isBackupMusicDataEnabled() {
-        return backupMusicData;
+    public boolean isBackupNetworkDataEnabled() {
+        return backupNetworkData;
     }
 
     /**
-     * aktiviert das BackupCreator der Musik Daten
+     * aktiviert das BackupCreator der Netzwerk Daten
      *
-     * @param backupMusicData aktiviert
+     * @param backupNetworkData aktiviert
      */
-    public void setBackupMusicDataEnabled(boolean backupMusicData) {
-        this.backupMusicData = backupMusicData;
-    }
-
-    /**
-     * gibt an ob das BackupCreator der Bilder Daten aktiviert ist
-     *
-     * @return aktiviert
-     */
-    public boolean isBackupPictureDataEnabled() {
-        return backupPictureData;
-    }
-
-    /**
-     * aktiviert das BackupCreator der Bilder Daten
-     *
-     * @param backupPictureData aktiviert
-     */
-    public void setBackupPictureDataEnabled(boolean backupPictureData) {
-        this.backupPictureData = backupPictureData;
+    public void setBackupNetworkDataEnabled(boolean backupNetworkData) {
+        this.backupNetworkData = backupNetworkData;
     }
 
     /**
