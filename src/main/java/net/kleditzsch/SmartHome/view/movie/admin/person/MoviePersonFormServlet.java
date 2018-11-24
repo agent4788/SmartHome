@@ -1,8 +1,8 @@
-package net.kleditzsch.SmartHome.view.movie.admin.director;
+package net.kleditzsch.SmartHome.view.movie.admin.person;
 
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.movie.editor.DirectorEditor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
+import net.kleditzsch.SmartHome.model.movie.editor.PersonEditor;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -16,19 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-public class MovieDirectorFormServlet extends HttpServlet {
+public class MoviePersonFormServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/director/directorform.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/person/personform.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten vorbereiten
-        DirectorEditor de = DirectorEditor.createAndLoad();
+        PersonEditor ae = PersonEditor.createAndLoad();
         boolean addElement = true;
-        Director director = null;
+        Person person = null;
 
         if(req.getParameter("id") != null) {
 
@@ -39,10 +39,10 @@ public class MovieDirectorFormServlet extends HttpServlet {
 
                 ID id = ID.of(req.getParameter("id").trim());
 
-                Optional<Director> directorOptional = de.getById(id);
-                if(directorOptional.isPresent()) {
+                Optional<Person> personOptional = ae.getById(id);
+                if(personOptional.isPresent()) {
 
-                    director = directorOptional.get();
+                    person = personOptional.get();
                 } else {
 
                     //Element nicht gefunden
@@ -51,15 +51,15 @@ public class MovieDirectorFormServlet extends HttpServlet {
 
             } catch (Exception e) {
 
-                model.with("error", "Der Regiseur wurde nicht gefunden");
+                model.with("error", "Die Person wurde nicht gefunden");
             }
         } else {
 
-            director = new Director();
-            director.setId(ID.create());
+            person = new Person();
+            person.setId(ID.create());
         }
         model.with("addElement", addElement);
-        model.with("director", director);
+        model.with("person", person);
 
         //Template rendern
         resp.setContentType("text/html");
@@ -71,50 +71,50 @@ public class MovieDirectorFormServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //Optionale Parameter
-        ID directorId = null;
+        ID actorId = null;
 
         FormValidation form = FormValidation.create(req);
         boolean addElement = form.getBoolean("addElement", "neues Element");
         if(!addElement) {
-            directorId = form.getId("id", "ID");
+            actorId = form.getId("id", "ID");
         }
         String name = form.getString("name", "Titel", 3, 50);
         String description = form.getString("description", "Titel", 0, 250);
 
         if (form.isSuccessful()) {
 
-            DirectorEditor de = DirectorEditor.createAndLoad();
+            PersonEditor ae = PersonEditor.createAndLoad();
             if(addElement) {
 
                 //neues Element hinzufügen
-                Director director = new Director();
-                director.setId(ID.create());
-                director.setName(name);
-                director.setDescription(description);
-                de.add(director);
+                Person person = new Person();
+                person.setId(ID.create());
+                person.setName(name);
+                person.setDescription(description);
+                ae.add(person);
 
                 req.getSession().setAttribute("success", true);
-                req.getSession().setAttribute("message", "Der Regiseur wurde erfolgreich hinzugefügt");
-                resp.sendRedirect("/movie/admin/director");
+                req.getSession().setAttribute("message", "Die Person wurde erfolgreich hinzugefügt");
+                resp.sendRedirect("/movie/admin/person");
             } else {
 
                 //Element bearbeiten
-                Optional<Director> directorOptional = de.getById(directorId);
-                if (directorOptional.isPresent()) {
+                Optional<Person> personOptional = ae.getById(actorId);
+                if (personOptional.isPresent()) {
 
-                    Director director = directorOptional.get();
-                    director.setName(name);
-                    director.setDescription(description);
-                    de.update(director);
+                    Person person = personOptional.get();
+                    person.setName(name);
+                    person.setDescription(description);
+                    ae.update(person);
 
                     req.getSession().setAttribute("success", true);
-                    req.getSession().setAttribute("message", "Der Regiseur wurde erfolgreich bearbeitet");
-                    resp.sendRedirect("/movie/admin/director");
+                    req.getSession().setAttribute("message", "Die Person wurde erfolgreich bearbeitet");
+                    resp.sendRedirect("/movie/admin/person");
                 } else {
 
                     req.getSession().setAttribute("success", false);
-                    req.getSession().setAttribute("message", "Der Regiseur konnte nicht gefunden werden");
-                    resp.sendRedirect("/movie/admin/director");
+                    req.getSession().setAttribute("message", "Die Person konnte nicht gefunden werden");
+                    resp.sendRedirect("/movie/admin/person");
                 }
             }
 
@@ -123,7 +123,7 @@ public class MovieDirectorFormServlet extends HttpServlet {
             //Eingaben n.i.O.
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
-            resp.sendRedirect("/movie/admin/director");
+            resp.sendRedirect("/movie/admin/person");
         }
     }
 }

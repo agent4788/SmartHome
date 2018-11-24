@@ -150,7 +150,7 @@
                     <label>Regisseur</label>
                     <select name="directors" class="ui fluid search dropdown" multiple>
                         <option value="">Regisseur</option>
-                        {% for element in directorList %}
+                        {% for element in personList %}
                         <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
                         {% endfor %}
                     </select>
@@ -159,7 +159,7 @@
                     <label>Schauspieler</label>
                     <select name="actors" class="ui fluid search dropdown" multiple>
                         <option value="">Schauspieler</option>
-                        {% for element in actorList %}
+                        {% for element in personList %}
                         <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
                         {% endfor %}
                     </select>

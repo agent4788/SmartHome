@@ -5,4 +5,4 @@ import net.kleditzsch.SmartHome.global.base.Element;
 /**
  * Schauspieler
  */
-public class Actor extends Element {}
+public class Person extends Element {}

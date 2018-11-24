@@ -8,8 +8,7 @@ import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.util.pagination.ListPagination;
@@ -92,29 +91,17 @@ public class MovieSearchAllServlet extends HttpServlet {
                     model.with("movieSeriesCount", resultMovieSeries.size());
                     model.with("movieSeriesPagination", movieSeriesPagination);
                     break;
-                case "director":
+                case "person":
 
                     //Nach Regiseuren suchen
-                    List<Director> resultDirectors = DirectorEditor.createAndLoad().getData().stream()
+                    List<Person> resultPersons = PersonEditor.createAndLoad().getData().stream()
                             .filter(director -> director.getName().toLowerCase().contains(query.toLowerCase()))
-                            .sorted(Comparator.comparing(Director::getName))
+                            .sorted(Comparator.comparing(Person::getName))
                             .collect(Collectors.toList());
-                    ListPagination<Director> directorsPagination = new ListPagination<>(resultDirectors, elementsAtPage, index);
-                    directorsPagination.setBaseLink("/movie/searchall?type=director&query=" + HtmlEscapers.htmlEscaper().escape(query) + "&index=");
-                    model.with("directorsCount", resultDirectors.size());
-                    model.with("directorsPagination", directorsPagination);
-                    break;
-                case "actor":
-
-                    //Nach Schauspielern suchen
-                    List<Actor> resultActors = ActorEditor.createAndLoad().getData().stream()
-                            .filter(actor -> actor.getName().toLowerCase().contains(query.toLowerCase()))
-                            .sorted(Comparator.comparing(Actor::getName))
-                            .collect(Collectors.toList());
-                    ListPagination<Actor> actorsPagination = new ListPagination<>(resultActors, elementsAtPage, index);
-                    actorsPagination.setBaseLink("/movie/searchall?type=director&query=" + HtmlEscapers.htmlEscaper().escape(query) + "&index=");
-                    model.with("actorsCount", resultActors.size());
-                    model.with("actorsPagination", actorsPagination);
+                    ListPagination<Person> directorsPagination = new ListPagination<>(resultPersons, elementsAtPage, index);
+                    directorsPagination.setBaseLink("/movie/searchall?type=person&query=" + HtmlEscapers.htmlEscaper().escape(query) + "&index=");
+                    model.with("personsCount", resultPersons.size());
+                    model.with("personsPagination", directorsPagination);
                     break;
                 default:
 

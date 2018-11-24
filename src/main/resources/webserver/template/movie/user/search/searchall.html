@@ -162,13 +162,13 @@
         </div>
         {% endif %}
     </div>
-    {% elseif directorsPagination %}
+    {% elseif personsPagination %}
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Regiseure ({{ directorsCount | numberformat }})</h1>
-        {% if directorsCount > 0 %}
+        <h1 class="ui header top attached">Personen ({{ personsCount | numberformat }})</h1>
+        {% if personsCount > 0 %}
         <div class="ui link cards four column doubling stackable bottom attached">
-            {% for element in directorsPagination.getCurrentPageElements() %}
-            <div class="card" onclick="window.location = '/movie/serachpersonmovies?directorid={{ element.getId().get() }}'">
+            {% for element in personsPagination.getCurrentPageElements() %}
+            <div class="card" onclick="window.location = '/movie/serachpersonmovies?id={{ element.getId().get() }}'">
                 <div class="image icon">
                     <i class="user icon massive"></i>
                 </div>
@@ -183,7 +183,7 @@
         {% if directorsPagination.hasPages() %}
         <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
             <div class="ui right floated pagination menu">
-                {% include '/webserver/template/movie/user/pagination.html' with {pagination: directorsPagination} %}
+                {% include '/webserver/template/movie/user/pagination.html' with {pagination: personsPagination} %}
             </div>
         </div>
         {% endif %}
@@ -191,41 +191,7 @@
         <div class="ui message icon attached info bottom">
             <i class="question icon red"></i>
             <div class="content">
-                <p>Es wurden keine Regiseure gefunden</p>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    {% elseif actorsPagination %}
-    <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Schauspieler ({{ resultActorsCount | numberformat }}) {% if resultActorsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=actor&query={{ query | escape }}">alle</a>{% endif %}</h1>
-        {% if resultActors.size() > 0 %}
-        <div class="ui link cards four column doubling stackable bottom attached">
-            {% for element in actorsPagination.getCurrentPageElements() %}
-            <div class="card" onclick="window.location = '/movie/serachpersonmovies?actorid={{ element.getId().get() }}'">
-                <div class="image icon">
-                    <i class="user icon massive"></i>
-                </div>
-                <div class="content">
-                    <div class="ui">
-                        <div class="header">{{ element.getName() | escape }}</div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% if actorsPagination.hasPages() %}
-        <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
-            <div class="ui right floated pagination menu">
-                {% include '/webserver/template/movie/user/pagination.html' with {pagination: actorsPagination} %}
-            </div>
-        </div>
-        {% endif %}
-        {% else %}
-        <div class="ui message icon attached info bottom">
-            <i class="question icon red"></i>
-            <div class="content">
-                <p>Es wurden keine Schauspieler gefunden</p>
+                <p>Es wurden keine Personen gefunden</p>
             </div>
         </div>
         {% endif %}

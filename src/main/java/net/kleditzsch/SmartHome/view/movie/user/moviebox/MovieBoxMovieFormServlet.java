@@ -119,8 +119,7 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
         model.with("tmdbApiKey", tmdbApiKey);
 
         //Meta Daten
-        model.with("actorList", ActorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Actor::getName)).collect(Collectors.toList()));
-        model.with("directorList", DirectorEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Director::getName)).collect(Collectors.toList()));
+        model.with("personList", PersonEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Person::getName)).collect(Collectors.toList()));
         model.with("discList", DiscEditor.createAndLoad().getData().stream().sorted(Comparator.comparingInt(Disc::getOrderId)).collect(Collectors.toList()));
         model.with("fskList", FskEditor.createAndLoad().getData().stream().sorted(Comparator.comparingInt(FSK::getLevel)).collect(Collectors.toList()));
         model.with("genreList", GenreEditor.createAndLoad().getData().stream().sorted(Comparator.comparing(Genre::getName)).collect(Collectors.toList()));
@@ -220,12 +219,12 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
 
             form.setInvalid("disc", "Ungültige Disc ID");
         }
+        PersonEditor personEditor = PersonEditor.createAndLoad();
         if(actors != null && actors.size() > 0) {
 
-            ActorEditor actorEditor = ActorEditor.createAndLoad();
             for(ID actorId : actors) {
 
-                if(!actorEditor.getById(actorId).isPresent()) {
+                if(!personEditor.getById(actorId).isPresent()) {
 
                     form.setInvalid("actors", "Ungültige Schauspieler ID");
                     break;
@@ -234,10 +233,9 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
         }
         if(directors != null && directors.size() > 0) {
 
-            DirectorEditor directorEditor = DirectorEditor.createAndLoad();
             for(ID directorId : directors) {
 
-                if(!directorEditor.getById(directorId).isPresent()) {
+                if(!personEditor.getById(directorId).isPresent()) {
 
                     form.setInvalid("directors", "Ungültige Regiseur ID");
                     break;

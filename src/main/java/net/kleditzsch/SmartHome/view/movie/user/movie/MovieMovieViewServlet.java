@@ -37,8 +37,7 @@ public class MovieMovieViewServlet extends HttpServlet {
                 model.with("discEditor", DiscEditor.createAndLoad());
                 model.with("genreEditor", GenreEditor.createAndLoad());
                 model.with("fskEditor", FskEditor.createAndLoad());
-                model.with("directorEditor", DirectorEditor.createAndLoad());
-                model.with("actorEditor", ActorEditor.createAndLoad());
+                model.with("personEditor", PersonEditor.createAndLoad());
 
                 //Filmreihe laden
                 if(movie.getSeriesId().isPresent()) {

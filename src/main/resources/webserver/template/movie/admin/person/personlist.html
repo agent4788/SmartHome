@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filme Regiseure</title>
+    <title>Filme Personen</title>
     {% include '/webserver/template/header.html' %}
     <script type="text/javascript">
 
         function search() {
 
             var value = $('.ui.search input').val();
-            window.location = '/movie/admin/director?filter=' + value;
+            window.location = '/movie/admin/person?filter=' + value;
         }
 
         $(function () {
@@ -26,9 +26,9 @@
     </script>
 </head>
 <body>
-{% include '/webserver/template/movie/admin/headline.html' with {module: 'director'} %}
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'person'} %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Regiseure verwalten</h1>
+    <h1 class="ui header top attached">Personen verwalten</h1>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -42,7 +42,7 @@
     </div>
     {% endif %}
     <div class="ui attached menu inverted blue">
-        <a class="item" href="/movie/admin/directorform">
+        <a class="item" href="/movie/admin/personform">
             <i class="plus icon"></i> hinzuf&uuml;gen
         </a>
         <div class="right menu">
@@ -69,23 +69,23 @@
                     {% endif %}
                     <div class="extra">
                         <div class="ui right floated">
-                            <a title="bearbeiten" class="ui button orange basic" href="/movie/admin/directorform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            <a title="bearbeiten" class="ui button orange basic" href="/movie/admin/personform?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
                         </div>
                         <div class="ui basic modal" id="{{ randomId }}">
                             <div class="ui icon header">
                                 <i class="delete icon"></i>
-                                Regiseur l&ouml;schen
+                                Person l&ouml;schen
                             </div>
                             <div class="content">
-                                <p>Bist du sicher das du den Regiseur l&ouml;schen m&ouml;chtest?</p>
+                                <p>Bist du sicher das du die Person l&ouml;schen m&ouml;chtest?</p>
                             </div>
                             <div class="actions">
                                 <div class="ui red basic cancel inverted button">
                                     <i class="remove icon"></i>
                                     Nein
                                 </div>
-                                <div class="ui green ok inverted button" onclick="window.location = '/movie/admin/directordelete?id={{ element.getId() }}'">
+                                <div class="ui green ok inverted button" onclick="window.location = '/movie/admin/persondelete?id={{ element.getId() }}'">
                                     <i class="checkmark icon"></i>
                                     Ja
                                 </div>
@@ -108,7 +108,7 @@
     <div class="ui icon info message bottom attached large">
         <i class="info circle icon black"></i>
         <div class="content">
-            <p>keine Regiseure gefunden</p>
+            <p>keine Personen gefunden</p>
         </div>
     </div>
     {% endif %}

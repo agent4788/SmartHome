@@ -1,9 +1,8 @@
-package net.kleditzsch.SmartHome.view.movie.admin.actor;
+package net.kleditzsch.SmartHome.view.movie.admin.person;
 
-import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.movie.editor.ActorEditor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
+import net.kleditzsch.SmartHome.model.movie.editor.PersonEditor;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-public class MovieActorDeleteServlet extends HttpServlet {
+public class MoviePersonDeleteServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,12 +24,12 @@ public class MovieActorDeleteServlet extends HttpServlet {
             try {
 
                 ID id = ID.of(idStr);
-                ActorEditor ae = ActorEditor.createAndLoad();
+                PersonEditor ae = PersonEditor.createAndLoad();
 
-                Optional<Actor> actorOptional = ae.getById(id);
-                if(actorOptional.isPresent()) {
+                Optional<Person> personOptional = ae.getById(id);
+                if(personOptional.isPresent()) {
 
-                    success = ae.delete(actorOptional.get());
+                    success = ae.delete(personOptional.get());
                 } else {
 
                     success = false;
@@ -46,14 +45,14 @@ public class MovieActorDeleteServlet extends HttpServlet {
 
             //löschem i.O.
             req.getSession().setAttribute("success", true);
-            req.getSession().setAttribute("message", "Der Schauspieler wurde erfolgreich gelöscht");
-            resp.sendRedirect("/movie/admin/actor");
+            req.getSession().setAttribute("message", "Die Person wurde erfolgreich gelöscht");
+            resp.sendRedirect("/movie/admin/person");
         } else {
 
             //löschem n.i.O.
             req.getSession().setAttribute("success", false);
-            req.getSession().setAttribute("message", "Der Schauspieler konnte nicht gelöscht werden");
-            resp.sendRedirect("/movie/admin/actor");
+            req.getSession().setAttribute("message", "Die Person konnte nicht gelöscht werden");
+            resp.sendRedirect("/movie/admin/person");
         }
     }
 }

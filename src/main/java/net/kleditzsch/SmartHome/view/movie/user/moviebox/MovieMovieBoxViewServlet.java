@@ -114,8 +114,7 @@ public class MovieMovieBoxViewServlet extends HttpServlet {
                 model.with("discEditor", DiscEditor.createAndLoad());
                 model.with("genreEditor", GenreEditor.createAndLoad());
                 model.with("fskEditor", fskEditor);
-                model.with("directorEditor", DirectorEditor.createAndLoad());
-                model.with("actorEditor", ActorEditor.createAndLoad());
+                model.with("personEditor", PersonEditor.createAndLoad());
             } else {
 
                 //Element nicht gefunden

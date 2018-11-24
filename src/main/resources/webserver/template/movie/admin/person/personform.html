@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filme Schauspieler</title>
+    <title>Filme Personen</title>
     {% include '/webserver/template/header.html' %}
 </head>
 <body>
-{% include '/webserver/template/movie/admin/headline.html' with {module: 'actor'} %}
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'person'} %}
 <main class="ui main container">
-    <form class="ui form"  action="/movie/admin/actorform?id={{ actor.getId().get() | escape }}" method="post">
-        <h1 class="ui header top attached">Schauspieler {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+    <form class="ui form"  action="/movie/admin/personform?id={{ actor.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Person {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
             <i class="remove icon red"></i>
@@ -25,11 +25,11 @@
             <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
             <div class="field required">
                 <label>Name</label>
-                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ actor.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ person.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
             </div>
             <div class="field">
                 <label>Beschreibung</label>
-                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if actor.getDescription().isPresent() %}{{ actor.getDescription().get() | escape }}{% endif %}</textarea>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{{ person.getDescription().orElse("") | escape }}</textarea>
             </div>
         </div>
         <div class="ui segment bottom attached">

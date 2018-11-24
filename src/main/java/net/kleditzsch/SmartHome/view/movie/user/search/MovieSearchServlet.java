@@ -1,15 +1,10 @@
 package net.kleditzsch.SmartHome.view.movie.user.search;
 
-import com.google.common.collect.Comparators;
-import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -22,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class MovieSearchServlet extends HttpServlet {
@@ -66,25 +59,14 @@ public class MovieSearchServlet extends HttpServlet {
             }
 
             //Regiseure suchen
-            List<Director> resultDirectors = DirectorEditor.createAndLoad().getData().stream()
+            List<Person> resultDirectors = PersonEditor.createAndLoad().getData().stream()
                     .filter(director -> director.getName().toLowerCase().contains(query.toLowerCase()))
-                    .sorted(Comparator.comparing(Director::getName))
+                    .sorted(Comparator.comparing(Person::getName))
                     .collect(Collectors.toList());
             if (resultDirectors.size() > 0) {
 
-                model.with("resultDirectors", resultDirectors.subList(0, (resultDirectors.size() >= 8 ? 8 : resultDirectors.size())));
-                model.with("resultDirectorsCount", resultDirectors.size());
-            }
-
-            //Schauspieler suchen
-            List<Actor> resultActors = ActorEditor.createAndLoad().getData().stream()
-                    .filter(actor -> actor.getName().toLowerCase().contains(query.toLowerCase()))
-                    .sorted(Comparator.comparing(Actor::getName))
-                    .collect(Collectors.toList());
-            if (resultActors.size() > 0) {
-
-                model.with("resultActors", resultActors.subList(0, (resultActors.size() >= 8 ? 8 : resultActors.size())));
-                model.with("resultActorsCount", resultActors.size());
+                model.with("resultPersons", resultDirectors.subList(0, (resultDirectors.size() >= 8 ? 8 : resultDirectors.size())));
+                model.with("resultPersonsCount", resultDirectors.size());
             }
         } else {
 

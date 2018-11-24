@@ -124,11 +124,11 @@
         {% endif %}
     </div>
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Regiseure ({{ resultDirectorsCount | numberformat }}) {% if resultDirectorsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=director&query={{ query | escape }}">alle</a>{% endif %}</h1>
-        {% if resultDirectors.size() > 0 %}
+        <h1 class="ui header top attached">Personen ({{ resultPersonsCount | numberformat }}) {% if resultPersonsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=person&query={{ query | escape }}">alle</a>{% endif %}</h1>
+        {% if resultPersons.size() > 0 %}
         <div class="ui link cards four column doubling stackable bottom attached">
-            {% for element in resultDirectors %}
-            <div class="card" onclick="window.location = '/movie/serachpersonmovies?directorid={{ element.getId().get() }}'">
+            {% for element in resultPersons %}
+            <div class="card" onclick="window.location = '/movie/serachpersonmovies?id={{ element.getId().get() }}'">
                 <div class="image icon">
                     <i class="user icon massive"></i>
                 </div>
@@ -142,25 +142,5 @@
         </div>
         {% endif %}
     </div>
-    <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Schauspieler ({{ resultActorsCount | numberformat }}) {% if resultActorsCount > 8 %}<a class="ui button right floated" href="/movie/searchall?type=actor&query={{ query | escape }}">alle</a>{% endif %}</h1>
-        {% if resultActors.size() > 0 %}
-        <div class="ui link cards four column doubling stackable bottom attached">
-            {% for element in resultActors %}
-            <div class="card" onclick="window.location = '/movie/serachpersonmovies?actorid={{ element.getId().get() }}'">
-                <div class="image icon">
-                    <i class="user icon massive"></i>
-                </div>
-                <div class="content">
-                    <div class="ui">
-                        <div class="header">{{ element.getName() | escape }}</div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>
-</main>
 </body>
 </html>

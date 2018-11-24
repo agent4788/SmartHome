@@ -1,12 +1,12 @@
-package net.kleditzsch.SmartHome.view.movie.admin.actor;
+package net.kleditzsch.SmartHome.view.movie.admin.person;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.movie.editor.ActorEditor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
+import net.kleditzsch.SmartHome.model.movie.editor.PersonEditor;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.util.pagination.ListPagination;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -24,17 +24,17 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class MovieActorListServlet extends HttpServlet {
+public class MoviePersonListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/actor/actorlist.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/person/personlist.html");
         JtwigModel model = JtwigModel.newModel();
 
-        ActorEditor ae = ActorEditor.createAndLoad();
-        List<Actor> actorList = new ArrayList<>(ae.getData());
+        PersonEditor ae = PersonEditor.createAndLoad();
+        List<Person> personList = new ArrayList<>(ae.getData());
 
         //filtern
         String filterStr = null;
@@ -43,11 +43,11 @@ public class MovieActorListServlet extends HttpServlet {
             String filter = req.getParameter("filter").trim();
             filterStr = filter;
             model.with("filterStr", filterStr);
-            actorList = actorList.stream().filter(e -> e.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
+            personList = personList.stream().filter(e -> e.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
         }
 
         //sortieren
-        actorList.sort(Comparator.comparing(Element::getName));
+        personList.sort(Comparator.comparing(Element::getName));
 
         //Blätterfunktion
         int index = 0;
@@ -67,13 +67,13 @@ public class MovieActorListServlet extends HttpServlet {
         }
         settingsLock.unlock();
 
-        ListPagination<Actor> pagination = new ListPagination<>(actorList, elementsAtPage, index);
+        ListPagination<Person> pagination = new ListPagination<>(personList, elementsAtPage, index);
         if(filterStr != null) {
 
-            pagination.setBaseLink("/movie/admin/actor?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
+            pagination.setBaseLink("/movie/admin/person?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
         } else {
 
-            pagination.setBaseLink("/movie/admin/actor?index=");
+            pagination.setBaseLink("/movie/admin/person?index=");
         }
         model.with("pagination", pagination);
 

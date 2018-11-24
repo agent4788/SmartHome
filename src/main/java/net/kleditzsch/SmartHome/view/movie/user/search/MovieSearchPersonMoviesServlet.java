@@ -6,8 +6,7 @@ import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Actor;
-import net.kleditzsch.SmartHome.model.movie.movie.meta.Director;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Person;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.util.pagination.ListPagination;
@@ -19,9 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class MovieSearchPersonMoviesServlet extends HttpServlet {
 
@@ -52,46 +54,42 @@ public class MovieSearchPersonMoviesServlet extends HttpServlet {
         settingsLock.unlock();
 
         FormValidation form = FormValidation.create(req);
-        if(form.fieldNotEmpty("directorid")) {
+        if(form.fieldNotEmpty("id")) {
 
-            ID id = form.getId("directorid", "Regiseur ID");
+            ID id = form.getId("id", "Personen ID");
             if(form.isSuccessful()) {
 
-                Optional<Director> directorOptional = DirectorEditor.createAndLoad().getById(id);
-                if(directorOptional.isPresent()) {
+                Optional<Person> personOptional = PersonEditor.createAndLoad().getById(id);
+                if(personOptional.isPresent()) {
 
-                    List<Movie> movies = MovieEditor.searchMoviesByDirector(id);
+                    List<Movie> movies = new ArrayList<>(50);
+                    movies.addAll(MovieEditor.searchMoviesByDirector(id));
+                    movies.addAll(MovieEditor.searchMoviesByActor(id));
+
+                    //Doppelte Einträge filtern
+                    List<String> knownIDs = new ArrayList<>(movies.size());
+                    movies = movies.stream()
+                            .filter(m -> {
+
+                                if(!knownIDs.contains(m.getId().get())) {
+
+                                    knownIDs.add(m.getId().get());
+                                    return true;
+                                }
+                                return false;
+                            })
+                            .sorted(Comparator.comparing(Movie::getTitle))
+                            .collect(Collectors.toList());
+
+                    //Blätterfunktion
                     ListPagination<Movie> pagination = new ListPagination<>(movies, elementsAtPage, index);
                     pagination.setBaseLink("/movie/serachpersonmovies?directorid=" + id.get() + "&index=");
-                    model.with("director", directorOptional.get());
+                    model.with("person", personOptional.get());
                     model.with("pagination", pagination);
                 } else {
 
                     //Regiseur nicht gefunden
-                    model.with("errorMessage", "Reigiseur nicht gefunden");
-                }
-            } else  {
-
-                //Ungültige ID
-                model.with("errorMessage", "Ungültige ID");
-            }
-        } else if (form.fieldNotEmpty("actorid")) {
-
-            ID id = form.getId("actorid", "Schauspieler ID");
-            if(form.isSuccessful()) {
-
-                Optional<Actor> actorOptional = ActorEditor.createAndLoad().getById(id);
-                if(actorOptional.isPresent()) {
-
-                    List<Movie> movies = MovieEditor.searchMoviesByActor(id);
-                    ListPagination<Movie> pagination = new ListPagination<>(movies, elementsAtPage, index);
-                    pagination.setBaseLink("/movie/serachpersonmovies?actorid=" + id.get() + "&index=");
-                    model.with("actor", actorOptional.get());
-                    model.with("pagination", pagination);
-                } else {
-
-                    //Regiseur nicht gefunden
-                    model.with("errorMessage", "Schauspieler nicht gefunden");
+                    model.with("errorMessage", "Person nicht gefunden");
                 }
             } else  {
 
