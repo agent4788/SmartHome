@@ -11,13 +11,13 @@
                 <div class="description">
                     {% set virtualSensor = sensorEditor.getById(element.getVirtualSensorId().get()).get() %}
                     {% if virtualSensor.getType() == 'VIRTUALSENSORVALUE_ACTUAL_POWER' %}
-                    <span style="font-weight: bold;">avg:</span> <span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
-                        <br>
-                    <span style="font-weight: bold;">sum:</span> <span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
+                    <!-- <span style="font-weight: bold;">avg:</span> <span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
+                        <br> -->
+                    <!-- <span style="font-weight: bold;">sum:</span> --><span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
                     {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_ENERGY' %}
-                    <span style="font-weight: bold;">avg:</span> <span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
-                        <br>
-                    <span style="font-weight: bold;">sum:</span> <span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
+                    <!-- <span style="font-weight: bold;">avg:</span> <span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
+                        <br> -->
+                    <!-- <span style="font-weight: bold;">sum:</span> --><span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
                     {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_GAS_AMOUNT' %}
                     <span style="font-weight: bold;">sum:</span> <span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
                     {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_LIGHT_INTENSITY' %}
@@ -25,11 +25,12 @@
                     {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_WATER_AMOUNT' %}
                     <span style="font-weight: bold;">sum:</span> <span id="a{{ element.getVirtualSensorId().get() }}_sum">{{ virtualSensor.getSumAsSensorValue() | formatsensorvalue | escape }}</span>
                     {% elseif virtualSensor.getType() == 'VIRTUALSENSORVALUE_TEMPERATURE' %}
-                    <span style="font-weight: bold;">min:</span> <span id="a{{ element.getVirtualSensorId().get() }}_min">{{ virtualSensor.getMinAsSensorValue() | formatsensorvalue | escape }}</span>
-                        <br>
-                    <span style="font-weight: bold;">avg:</span> <span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
-                        <br>
+                    <!-- <span style="font-weight: bold;">min:</span> <span id="a{{ element.getVirtualSensorId().get() }}_min">{{ virtualSensor.getMinAsSensorValue() | formatsensorvalue | escape }}</span>
+                        <br>-->
+                    <!-- <span style="font-weight: bold;">avg:</span> --><span id="a{{ element.getVirtualSensorId().get() }}_avg">{{ virtualSensor.getAverageAsSensorValue() | formatsensorvalue | escape }}</span>
+                    <!--    <br>
                     <span style="font-weight: bold;">max:</span> <span id="a{{ element.getVirtualSensorId().get() }}_max">{{ virtualSensor.getMaxAsSensorValue() | formatsensorvalue | escape }}</span>
+                    -->
                     {% endif %}
                 </div>
             </div>
