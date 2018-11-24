@@ -111,8 +111,14 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
                         //Sensor IDs
                         se.setFirstSensorValueId(ID.of(roomElement.getString("firstSensorValueId")));
-                        se.setSecondSensorValueId(ID.of(roomElement.getString("secondSensorValueId")));
-                        se.setThirdSensorValueId(ID.of(roomElement.getString("thirdSensorValueId")));
+                        if(roomElement.getString("secondSensorValueId") != null) {
+
+                            se.setSecondSensorValueId(ID.of(roomElement.getString("secondSensorValueId")));
+                        }
+                        if(roomElement.getString("thirdSensorValueId") != null) {
+
+                            se.setThirdSensorValueId(ID.of(roomElement.getString("thirdSensorValueId")));
+                        }
 
                         element.getRoomElements().add(se);
                         break;
@@ -248,9 +254,9 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
                         //Sensor Element
                         SensorElement se = (SensorElement) roomElement;
-                        roomElementDoc.append("firstSensorValueId", se.getFirstSensorValueId().isPresent() ? se.getFirstSensorValueId().get().toString() : "");
-                        roomElementDoc.append("secondSensorValueId", se.getSecondSensorValueId().isPresent() ? se.getSecondSensorValueId().get().toString() : "");
-                        roomElementDoc.append("thirdSensorValueId", se.getThirdSensorValueId().isPresent() ? se.getThirdSensorValueId().get().toString() : "");
+                        roomElementDoc.append("firstSensorValueId", se.getFirstSensorValueId().isPresent() ? se.getFirstSensorValueId().get().toString() : null);
+                        roomElementDoc.append("secondSensorValueId", se.getSecondSensorValueId().isPresent() ? se.getSecondSensorValueId().get().toString() : null);
+                        roomElementDoc.append("thirdSensorValueId", se.getThirdSensorValueId().isPresent() ? se.getThirdSensorValueId().get().toString() : null);
                     } else if (roomElement instanceof VirtualSensorElement) {
 
                         //Virtual Sensor Element
