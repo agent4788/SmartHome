@@ -6,11 +6,16 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.global.backup.BackupFile;
 import net.kleditzsch.SmartHome.model.global.editor.BackupEditor;
+import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
+import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
+import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import org.bson.Document;
@@ -195,6 +200,17 @@ public class BackupRestore {
 
         DatabaseManager dbm = connectDatabase();
         MongoDatabase db = dbm.getDatabase();
+
+        //Text Index wiederherstellen
+        db.createCollection(MovieEditor.COLLECTION);
+        MongoCollection movies = db.getCollection(MovieEditor.COLLECTION);
+        movies.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+        db.createCollection(MovieBoxEditor.COLLECTION);
+        MongoCollection movieBoxes = db.getCollection(MovieBoxEditor.COLLECTION);
+        movieBoxes.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+        db.createCollection(MovieSeriesEditor.COLLECTION);
+        MongoCollection movieSeries = db.getCollection(MovieSeriesEditor.COLLECTION);
+        movieSeries.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
 
         List<String> messages = new ArrayList<>();
         if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("movie")) {
