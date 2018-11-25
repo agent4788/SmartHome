@@ -84,7 +84,7 @@
                 <label>Stunde</label>
                 <select class="ui dropdown" name="hour" multiple required>
                     <option value="*" {% if timer.getHour().size() == 0 %}selected{% endif %}>jede</option>
-                    {% for i in [0..11] %}
+                    {% for i in [0..23] %}
                     <option value="{{ i }}" {% if timer.getHour() | contains(i) %}selected{% endif %}>{{ i }}</option>
                     {% endfor %}
                 </select>
