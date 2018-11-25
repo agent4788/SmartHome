@@ -2,19 +2,11 @@ package net.kleditzsch.SmartHome.view.automation.admin.room;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
-import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
 import net.kleditzsch.SmartHome.model.automation.room.element.DividerElement;
-import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
-import net.kleditzsch.SmartHome.util.file.FileUtil;
-import net.kleditzsch.SmartHome.util.iconutil.IconUtil;
+import net.kleditzsch.SmartHome.util.icon.IconUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -25,10 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class AutomationRoomDividerElementFormServlet extends HttpServlet {
 

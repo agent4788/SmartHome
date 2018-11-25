@@ -4,7 +4,7 @@ import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.util.iconutil.IconUtil;
+import net.kleditzsch.SmartHome.util.icon.IconUtil;
 import net.kleditzsch.SmartHome.util.file.FileUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class AutomationRoomFormServlet extends HttpServlet {
 
@@ -34,8 +34,8 @@ public class AutomationRoomFormServlet extends HttpServlet {
         //Load List of Icon Files
         try {
 
-            Map<String, String> fileNamesMap = IconUtil.listIconFiles();
-            model.with("fileNames", fileNamesMap);
+            List<String> iconCategorys = IconUtil.listIconCategorys();
+            model.with("iconCategorys", iconCategorys.stream().sorted().collect(Collectors.toList()));
 
         } catch (URISyntaxException e) {
 
@@ -134,8 +134,8 @@ public class AutomationRoomFormServlet extends HttpServlet {
                 success = false;
             }
             //Icon Datei
-            List<String> fileNames = FileUtil.listResourceFolderFileNames("/webserver/static/img/iconset");
-            if(!fileNames.contains(iconFile)) {
+            List<String> fileNames = FileUtil.listResourceDirectoryFileNames("/webserver/static/img/iconset");
+            if(!fileNames.contains(iconFile.substring(iconFile.indexOf("/") + 1))) {
 
                 success = false;
             }

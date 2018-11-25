@@ -8,12 +8,87 @@
         $(function() {
 
             $('.checkbox').checkbox();
-            {% if addElement %}
             $('.dropdown').dropdown();
-            {% else %}
-            $('.dropdown').dropdown().dropdown('set selected', '{{ room.getIconFile() }}');
-            {% endif %}
         });
+
+        function openIconChooser(icon) {
+
+            if(icon != null) {
+
+                //vorausgewähltes Icon
+                var category = icon.substring(0, icon.indexOf('/'));
+                var iconFile = icon.substring(icon.indexOf('/') + 1);
+                $('.ui.form').form('set values', {
+                    iconCategory : category
+                });
+                loadIcons(category, iconFile);
+
+                $('#iconChooser').modal({ observeChanges: true });
+                $('#iconChooser').modal('show');
+            } else {
+
+                //nur dialog öffnen
+                $('#iconChooser').modal({ observeChanges: true });
+                $('#iconChooser').modal('show');
+            }
+        }
+
+        function loadIcons(category, iconFile) {
+
+            if(category == null) {
+
+                category = $('#iconCategory').val();
+            }
+            $.getJSON('/automation/admin/iconchooser?cat=' + category)
+                .done(function(data, textStatus) {
+
+                    if(data.icons) {
+
+                        $('#icons').addClass('loading');
+                        var html = "";
+                        for(var i = 0; i < data.icons.length; i++) {
+
+                            var icon = data.icons[i];
+                            if(iconFile != null && iconFile == icon.substring(icon.indexOf('/') + 1)) {
+
+                                html += '<div class="column grey" style="cursor: pointer;" onclick="chooseIcon(\'' + icon + '\');"><img class="ui image fluid" src="/static/img/iconset/' + icon + '"></div>';
+                            } else {
+
+                                html += '<div class="column" style="cursor: pointer;" onclick="chooseIcon(\'' + icon + '\');"><img class="ui image fluid" src="/static/img/iconset/' + icon + '"></div>';
+                            }
+                        }
+                        $('#icons').html(html);
+                        $('#icons').removeClass('loading');
+                    } else {
+
+                        //Fehler aufgetreten
+                        if(data.message) {
+
+                            $('#iconMessageText').text(data.message);
+                            $('#iconMessage').show();
+                        } else {
+
+                            $('#iconMessageText').text("keine Icons gefunden");
+                            $('#iconMessage').show();
+                        }
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $('#iconMessageText').text("Anfrage Fehlgeschlagen");
+                    $('#iconMessage').show();
+                });
+        }
+
+        function chooseIcon(icon) {
+
+            $('.ui.form').form('set values', {
+                iconFile : icon
+            });
+            $('#iconImage').attr('src','/static/img/iconset/' + icon);
+            $('#iconChooser').modal('hide');
+        }
     </script>
 </head>
 <body>
@@ -46,19 +121,49 @@
                 <label>Beschreibung</label>
                 <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if room.getDescription().isPresent() %}{{ room.getDescription().get() | escape }}{% endif %}</textarea>
             </div>
-            <div class="field required">
-                <label>Icon</label>
-                <div class="ui selection dropdown required search">
-                    <input type="hidden" name="iconFile" required>
-                    <i class="dropdown icon"></i>
-                    <div class="default text">Icon</div>
-                    <div class="menu">
-                        {% for fileName, displayName in fileNames %}
-                        <div class="item" data-value="{{ fileName | escape }}">
-                            <img class="ui huge image" src="/static/img/iconset/{{ fileName | escape }}">
-                            {{ displayName | escape }}
+            <div class="fields">
+                <div class="one wide field">
+                    <img class="ui image fluid" src="{% if not addElement %}/static/img/iconset/{{ room.getIconFile() | escape }}{% endif %}" id="iconImage">
+                </div>
+                <div class="eleven wide field required">
+                    <label>Icon</label>
+                    <input name="iconFile" type="text" {% if addElement %}value=""{% else %}value="{{ room.getIconFile() | escape }}"{% endif %} readonly>
+                </div>
+                <div class="four wide field">
+                    <label>Auswahl</label>
+                    <div class="ui button fluid secondary basic" onclick="{% if addElement %}openIconChooser();{% else %}openIconChooser('{{ room.getIconFile() | escape }}');{% endif %}">Ausw&auml;hlen</div>
+                </div>
+                <div class="ui modal" id="iconChooser">
+                    <div class="header">
+                        Icon Auswahl
+                    </div>
+                    <div class="scrolling content" style="min-height: 50%;">
+                        <div class="ui basic segment">
+                            <select class="ui dropdown fluid" onchange="loadIcons();" id="iconCategory" name="iconCategory">
+                                <option value="">Kategorie</option>
+                                {% for iconCategory in iconCategorys %}
+                                <option value="{{ iconCategory | escape }}">{{ iconCategory | escape }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        {% endfor %}
+                        <div class="ui basic segment" id="iconMessage" style="display: none;">
+                            <div class="ui message icon error">
+                                <i class="remove icon red"></i>
+                                <div class="content">
+                                    <p id="iconMessageText"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui basic segment">
+                            <div class="ui grid six column doubling" id="icons">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <div class="ui black deny button">
+                            Abbrechen
+                        </div>
                     </div>
                 </div>
             </div>

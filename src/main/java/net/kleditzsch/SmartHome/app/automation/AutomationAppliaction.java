@@ -149,6 +149,7 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationRoomElementOrderServlet.class, "/automation/admin/roomelementorder");
         contextHandler.addServlet(AutomationRoomElementDeleteServlet.class, "/automation/admin/roomelementdelete");
         contextHandler.addServlet(AutomationRoomDeleteServlet.class, "/automation/admin/roomdelete");
+        contextHandler.addServlet(AutomationIconChooserServlet.class, "/automation/admin/iconchooser");
     }
 
     /**

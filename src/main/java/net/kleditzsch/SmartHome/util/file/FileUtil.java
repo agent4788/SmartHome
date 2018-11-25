@@ -157,7 +157,7 @@ public abstract class FileUtil {
         return "";
     }
 
-    public static List<String> listResourceFolderFileNames(String folder) throws URISyntaxException, IOException {
+    public static List<String> listResourceDirectoryFileNames(String folder) throws URISyntaxException, IOException {
 
         List<String> fileNames = new ArrayList<>();
         URL resourceUrl = FileUtil.class.getResource(folder);
@@ -174,6 +174,31 @@ public abstract class FileUtil {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     fileNames.add(file.getFileName().toString());
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+        }
+        return fileNames;
+    }
+
+    public static List<String> listResourceSubDirectorys(String folder) throws URISyntaxException, IOException {
+
+        List<String> fileNames = new ArrayList<>();
+        URL resourceUrl = FileUtil.class.getResource(folder);
+        if (resourceUrl == null) {
+
+            throw new IOException("Ordner nicht gefunden");
+        }
+        URI uri = resourceUrl.toURI();
+        try (FileSystem fileSystem = (uri.getScheme().equals("jar") ? FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap()) : null)) {
+
+            Path myPath = Paths.get(uri);
+            Files.walkFileTree(myPath, new SimpleFileVisitor<Path>() {
+
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    fileNames.add(dir.getFileName().toString());
                     return FileVisitResult.CONTINUE;
                 }
             });

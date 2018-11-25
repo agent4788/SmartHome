@@ -12,7 +12,7 @@ import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
-import net.kleditzsch.SmartHome.util.iconutil.IconUtil;
+import net.kleditzsch.SmartHome.util.icon.IconUtil;
 import net.kleditzsch.SmartHome.util.file.FileUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -38,12 +38,11 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/room/roombuttonelementform.html");
         JtwigModel model = JtwigModel.newModel();
 
-        //Load List of Icon Files and list of Font Aweasome Icons
+        //Load List of Icon Files
         try {
 
-            //Icon Dateien laden
-            Map<String, String> fileNamesMap = IconUtil.listIconFiles();
-            model.with("fileNames", fileNamesMap);
+            List<String> iconCategorys = IconUtil.listIconCategorys();
+            model.with("iconCategorys", iconCategorys.stream().sorted().collect(Collectors.toList()));
 
             //liste der Font Aweasome Icons
             List<String> fontAwaesomeIcons = IconUtil.listFonAweasomeIcons();
@@ -217,8 +216,8 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
                 success = false;
             }
             //Icon Datei
-            List<String> fileNames = FileUtil.listResourceFolderFileNames("/webserver/static/img/iconset");
-            if(!fileNames.contains(iconFile)) {
+            List<String> fileNames = FileUtil.listResourceDirectoryFileNames("/webserver/static/img/iconset");
+            if(!fileNames.contains(iconFile.substring(iconFile.indexOf("/") + 1))) {
 
                 success = false;
             }
