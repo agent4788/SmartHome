@@ -138,7 +138,7 @@ public class BackupTask implements Runnable {
 
         BackupCreator backup = BackupCreator.create(config, Application.getInstance().getDatabaseConnection());
         List<Path> backupFiles = backup.executeBackup();
-        if(backupFiles.size() == 9) {
+        if(backupFiles.size() == 8) {
 
             //Zeitmessung
             Duration backupTime = Duration.between(start, LocalDateTime.now());
