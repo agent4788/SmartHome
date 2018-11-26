@@ -1,13 +1,13 @@
 {
-  "name": "Bilder",
-  "short_name": "Bilder",
+  "name": "Verträge",
+  "short_name": "Verträge",
   "description": "",
-  "start_url": "/picture/index",
+  "start_url": "/contract/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/picture.png",
+      "src": "/static/img/icon/contract.png",
       "sizes": "144x144",
       "type": "image/png"
     }

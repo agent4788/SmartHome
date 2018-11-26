@@ -1,13 +1,13 @@
 {
-  "name": "Kalender",
-  "short_name": "Kalender",
+  "name": "Netzwerk",
+  "short_name": "Netzwerk",
   "description": "",
-  "start_url": "/calendar/index",
+  "start_url": "/network/index",
   "display": "standalone",
   "lang": "de-DE",
   "icons": [
     {
-      "src": "/static/img/icon/calendar.png",
+      "src": "/static/img/icon/network.png",
       "sizes": "144x144",
       "type": "image/png"
     }
