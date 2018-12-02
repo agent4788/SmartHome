@@ -10,6 +10,8 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Swi
 import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptSingle;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
@@ -134,6 +136,7 @@ public class ScriptHandler implements Runnable {
                 //Nicht in 30 Sekunden abgeschlossen
                 process.destroy();
                 LoggerUtil.getLogger(this.getClass()).info("Der Befehl \"" + cliCommand + "\" wurde nach 30 Sekunden abgebrochen");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Der Befehl \"" + cliCommand + "\" wurde nach 30 Sekunden abgebrochen"));
 
             } else {
 
@@ -144,12 +147,14 @@ public class ScriptHandler implements Runnable {
                 } else {
 
                     LoggerUtil.getLogger(this.getClass()).info("Der Befehl \"" + cliCommand + "\" wurde mit dem Exitcode " + process.exitValue() + " beendet");
+                    MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Der Befehl \"" + cliCommand + "\" wurde mit dem Exitcode " + process.exitValue() + " beendet"));
                 }
             }
 
         } catch (IOException e) {
 
             LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), e);
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Fehler beim Ausführen des Scriptes", e));
         } catch (InterruptedException e) {
 
             Thread.currentThread().interrupt();

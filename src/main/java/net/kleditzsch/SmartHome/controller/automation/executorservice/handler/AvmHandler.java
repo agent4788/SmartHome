@@ -7,6 +7,8 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.command.In
 import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.Switch;
 import net.kleditzsch.SmartHome.util.api.avm.Device.SmarthomeDevice;
@@ -131,10 +133,12 @@ public class AvmHandler implements Runnable {
             } else {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht gefunden werden");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht geschalten werden"));
             }
         } catch (IOException e) {
 
             LoggerUtil.getLogger(this.getClass()).warning("Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht geschalten werden");
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht geschalten werden", e));
         }
     }
 }

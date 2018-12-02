@@ -2,7 +2,9 @@ package net.kleditzsch.SmartHome.controller.automation.avmservice;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.database.DatabaseEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
 import net.kleditzsch.SmartHome.model.global.settings.StringSetting;
 import net.kleditzsch.SmartHome.util.api.avm.Device.SmarthomeDevice;
@@ -80,6 +82,7 @@ public class AvmEditor implements DatabaseEditor {
             } catch (AuthException e1) {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"", e));
             }
         }
     }
@@ -107,6 +110,7 @@ public class AvmEditor implements DatabaseEditor {
                     } catch (AuthException e1) {
 
                         LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"");
+                        MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"", e));
                     }
                 }
 
@@ -124,10 +128,12 @@ public class AvmEditor implements DatabaseEditor {
             } catch (IOException e) {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur FritzBox konnte nicht hergestellt werden");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e.getLocalizedMessage() + "\"", e));
             }
         } else {
 
             LoggerUtil.getLogger(this.getClass()).info("AVM Support nicht aktiviert");
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "AVM Support nicht aktiviert"));
         }
     }
 

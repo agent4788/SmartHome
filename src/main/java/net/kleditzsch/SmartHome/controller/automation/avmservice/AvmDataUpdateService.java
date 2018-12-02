@@ -9,6 +9,8 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.PowerMeter;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.Switch;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.TemperatureSensor;
@@ -116,6 +118,7 @@ public class AvmDataUpdateService implements Runnable {
         } catch (AuthException e) {
 
             LoggerUtil.getLogger(this.getClass()).finer("Die AVM Daten konnten nicht aktualisiert werden");
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die AVM Daten konnten nicht aktualisiert werden", e));
         }
     }
 }

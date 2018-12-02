@@ -6,6 +6,8 @@ import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Sw
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
 import java.time.LocalDateTime;
@@ -73,6 +75,7 @@ public class SwitchTimerService implements Runnable {
                         //nächste Schaltzeit berechnen
                         st.setNextExecutionTime(ste.calculateNextExecutionTime(st));
                         LoggerUtil.getLogger(this).finest("Timer \"" + st.getName() + "\" geschaltet; nächste Ausführung: " + st.getNextExecutionTime());
+                        MessageEditor.addMessage(new Message("automation", Message.Type.info, "Timer \"" + st.getName() + "\" geschaltet; nächste Ausführung: " + st.getNextExecutionTime()));
 
                         seLock.unlock();
                     });
@@ -81,6 +84,7 @@ public class SwitchTimerService implements Runnable {
         } catch (Exception e) {
 
             LoggerUtil.serveException(LoggerUtil.getLogger(this), "Fehler beim Ausführen des Timers", e);
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Fehler beim Ausführen des Timers", e));
         }
     }
 }

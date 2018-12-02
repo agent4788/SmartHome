@@ -10,6 +10,8 @@ import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorV
 import net.kleditzsch.SmartHome.model.automation.device.sensor.VoltageValue;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.api.tplink.HS110;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
@@ -100,15 +102,18 @@ public class TPLinkSensorHandler implements Runnable {
 
                 //Steckdose nicht erreichbar
                 LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden", e));
             } catch (NullPointerException e) {
 
                 //keine HS110 Steckdose
                 LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose");
+                MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose"));
             }
         } else {
 
             //Nicht als HS110 Steckdose markiert
             LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose");
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " ist keine HS110 Steckdose"));
         }
     }
 }

@@ -1,7 +1,9 @@
 package net.kleditzsch.SmartHome.controller.global.backup;
 
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.global.settings.StringSetting;
@@ -18,6 +20,8 @@ import org.apache.commons.net.ftp.FTPSClient;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -145,6 +149,7 @@ public class BackupTask implements Runnable {
 
             //erfolgreich -> FTP Upload
             logger.info("Backup Erfolgreich durchgeführt");
+            MessageEditor.addMessage(new Message("global", Message.Type.success, "Automatisches Backup erfolgreich durchgeführt"));
 
             //FTP Upload
             boolean ftpUploadSuccess = true;
@@ -209,6 +214,7 @@ public class BackupTask implements Runnable {
             } catch (IOException e) {
 
                 LoggerUtil.serveException(logger, "FTP Upload fehlgeschlagen", e);
+                MessageEditor.addMessage(new Message("global", Message.Type.warning, "FTP Upload fehlgeschlagen", e));
             }
 
             //Mail
@@ -243,11 +249,13 @@ public class BackupTask implements Runnable {
             } catch (EmailException e) {
 
                 LoggerUtil.serveException(logger, "Mail Versand fehlgeschlagen", e);
+                MessageEditor.addMessage(new Message("global", Message.Type.warning, "Mail Versand fehlgeschlagen", e));
             }
         } else {
 
             //Fehler -> Mail verschicken wenn aktiviert
             logger.warning("Das Backup wurde mit einem Fehler abgebrochen");
+            MessageEditor.addMessage(new Message("global", Message.Type.error, "Das Backup wurde mit einem Fehler abgebrochen"));
 
             //Mail
             try {
@@ -280,6 +288,7 @@ public class BackupTask implements Runnable {
             } catch (EmailException e) {
 
                 LoggerUtil.serveException(logger, "Mail Versand fehlgeschlagen", e);
+                MessageEditor.addMessage(new Message("global", Message.Type.warning, "Mail Versand fehlgeschlagen", e));
             }
         }
     }

@@ -211,7 +211,7 @@ public class HS100 {
 
         SocketAddress addr = new InetSocketAddress(ip, port);
         Socket socket = new Socket();
-        socket.connect(addr, 1000);
+        socket.connect(addr, 2500);
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(encryptWithHeader(command));
 

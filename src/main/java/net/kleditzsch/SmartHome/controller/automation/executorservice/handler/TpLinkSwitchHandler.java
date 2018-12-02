@@ -8,6 +8,8 @@ import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Dou
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.api.tplink.HS100;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
@@ -106,7 +108,8 @@ public class TpLinkSwitchHandler implements Runnable {
             lock.unlock();
         } catch (IOException e) {
 
-            LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), "Schalten der TP-Link Steckdose nicht möglich", e);
+            LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", e);
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", e));
         }
     }
 }

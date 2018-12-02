@@ -6,6 +6,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import net.kleditzsch.SmartHome.util.zip.ZipArchiveCreator;
@@ -14,6 +16,8 @@ import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,6 +95,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Global\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -106,6 +114,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Automation\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -121,6 +133,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Verträge\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -136,6 +152,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Kontakte\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -151,6 +171,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Filme\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -166,6 +190,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Netzwerk\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -181,6 +209,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Rezepte\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -196,6 +228,10 @@ public class BackupCreator {
                     } catch (Exception e) {
 
                         LoggerUtil.serveException(logger, e);
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter writer = new PrintWriter(strWriter);
+                        e.printStackTrace(writer);
+                        MessageEditor.addMessage(new Message("global", Message.Type.error, "Backup des Modules \"Einkaufsliste\" fehlgeschlagen", strWriter.toString()));
                         return null;
                     }
                 });
@@ -212,10 +248,22 @@ public class BackupCreator {
                     backupFiles.add(path);
                 }
             }
+
+            if(backupFiles.size() > 0) {
+
+                MessageEditor.addMessage(new Message("global", Message.Type.success, "Backups erfolgreich erstellt"));
+            }
+
             return backupFiles;
         } catch (Exception e) {
 
             LoggerUtil.serveException(logger, e);
+
+            StringWriter strWriter = new StringWriter();
+            PrintWriter writer = new PrintWriter(strWriter);
+            e.printStackTrace(writer);
+            MessageEditor.addMessage(new Message("global", Message.Type.error, "Erstellen des Backups fehlgeschlagen", strWriter.toString()));
+
             return null;
         }
     }

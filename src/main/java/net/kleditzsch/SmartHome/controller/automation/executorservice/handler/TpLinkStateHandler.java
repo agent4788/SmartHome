@@ -6,6 +6,8 @@ import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.api.tplink.HS100;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
@@ -66,6 +68,7 @@ public class TpLinkStateHandler implements Runnable {
 
             //Steckdose nicht erreichbar
             LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden", e));
         }
     }
 }

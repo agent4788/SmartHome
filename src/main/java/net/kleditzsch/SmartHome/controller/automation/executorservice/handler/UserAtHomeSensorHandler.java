@@ -4,6 +4,8 @@ import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.UserAtHomeValue;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
 import java.net.InetAddress;
@@ -93,6 +95,7 @@ public class UserAtHomeSensorHandler implements Runnable {
         } catch (Exception e) {
 
             LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), e);
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Update Benutzer zu Hause fehlgeschlagen", e));
         }
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.app.contract.ContractApplication;
 import net.kleditzsch.SmartHome.app.contact.ContactApplication;
@@ -21,7 +22,9 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.util.json.Serializer.*;
@@ -32,6 +35,7 @@ import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalDeleteBackupServl
 import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalDownloadBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.backup.GlobalRunBackupServlet;
 import net.kleditzsch.SmartHome.view.global.admin.info.GlobalServerInfoServlet;
+import net.kleditzsch.SmartHome.view.global.admin.message.GlobalMessageServlet;
 import net.kleditzsch.SmartHome.view.global.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalIndexServlet;
 import net.kleditzsch.SmartHome.view.global.user.GlobalMobileViewServlet;
@@ -312,6 +316,12 @@ public class Application {
      */
     private void initData() {
 
+        //Meldungs Collection als Chapped Collection anlegen
+        if(!databaseManager.getCollectionNames().contains(MessageEditor.COLLECTION)) {
+
+            databaseManager.getDatabase().createCollection(MessageEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(1000).sizeInBytes(5 * 1024 * 1024));
+        }
+
         settings = new SettingsEditor();
         settings.load();
     }
@@ -342,6 +352,7 @@ public class Application {
                 contextHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");
                 contextHandler.addServlet(GlobalSettingsServlet.class, "/admin/settings");
                 contextHandler.addServlet(GlobalServerInfoServlet.class, "/admin/info");
+                contextHandler.addServlet(GlobalMessageServlet.class, "/admin/message");
                 contextHandler.addServlet(GlobalBackupServlet.class, "/admin/backup");
                 contextHandler.addServlet(GlobalDownloadBackupServlet.class, "/admin/downloadbackup");
                 contextHandler.addServlet(GlobalDeleteBackupServlet.class, "/admin/deletebackup");
@@ -537,7 +548,11 @@ public class Application {
         try {
 
             server.start();
+
+            //Meldung
             System.out.println("Anwendung erfolgreich gestartet");
+            MessageEditor.addMessage(new Message("global", Message.Type.info, "Anwendung erfolgreich gestartet"));
+
             server.join();
 
         } catch (Exception e) {
@@ -581,6 +596,9 @@ public class Application {
 
         //Scheduler stoppen
         timerExecutor.shutdown();
+
+        //Meldung
+        MessageEditor.addMessage(new Message("global", Message.Type.info, "Anwendung erfolgreich beendet"));
 
         //Datenbankverbindung aufheben
         if(databaseManager != null) {

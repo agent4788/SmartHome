@@ -13,6 +13,8 @@ import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 import javax.servlet.http.HttpServlet;
@@ -60,6 +62,7 @@ public class AutomationSwitchServlet extends HttpServlet {
 
                             commands.add(new SwitchCommand(switchCommand.getSwitchableId(), switchCommand.getCommand()));
                         });
+                        MessageEditor.addMessage(new Message("automation", Message.Type.info, "Button \"" + buttonElement.getDisplayText() +"\" manuell " + (command.equals("on") ? "eingeschalten" : (command.equals("off") ? "ausgeschalten" : "umgeschalten"))));
                     } else {
 
                         success = false;

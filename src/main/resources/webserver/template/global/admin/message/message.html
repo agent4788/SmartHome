@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHome Meldungen</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.dropdown').dropdown();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/global/admin/headline.html' with {module: 'message'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Meldungen</h1>
+    {% if not error %}
+    <div class="ui menu attached">
+        <div class="ui dropdown item">
+            Modul
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                {% for module in modules %}
+                <a class="item {% if module == choosedModul %}active{% endif %}" href="/admin/message?module={{ module | escape }}">{{ module | escape }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="ui dropdown item">
+            <i class="filter icon"></i>
+            Filter
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a class="item" href="/admin/message?module={{ module | escape }}">alle</a>
+                <a class="item {% if typeFilter == 'info' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=info">Info</a>
+                <a class="item {% if typeFilter == 'success' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=success">Erfolg</a>
+                <a class="item {% if typeFilter == 'warning' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=warning">Warnungen</a>
+                <a class="item {% if typeFilter == 'error' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=error">Fehler</a>
+            </div>
+        </div>
+    </div>
+    {% if pagination.getSize() > 0 %}
+    <table class="ui striped large table attached">
+        <thead>
+            <tr>
+                <th class="one wide">Status</th>
+                <th class="ten wide">Meldung</th>
+                <th class="three wide">Zeitstempel</th>
+                <th class="two wide">Quittierung</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for element in pagination.getCurrentPageElements() %}
+            <tr onclick="$('#a{{ element.getId().get() | escape }}').modal('show');" class="{% if element.getType() == 'success' %}positive{% elseif element.getType() == 'warning' %}warning{% elseif element.getType() == 'error' %}error{% endif %}" style="cursor: pointer;">
+                <td>
+                    {% if element.getType() == 'success' %}
+                    <i class="checkmark icon"></i>
+                    {% elseif element.getType() == 'warning' %}
+                    <i class="attention icon"></i>
+                    {% elseif element.getType() == 'error' %}
+                    <i class="attention icon"></i>
+                    {% elseif element.getType() == 'info' %}
+                    <i class="info icon"></i>
+                    {% endif %}
+                </td>
+                <td>{{ element.getMessage() | escape }}</td>
+                <td>{{ element.getTimestamp() | datetimeformat }}</td>
+                <td>
+                    {% if element.isAcknowledgeRequired() %}
+                        {% if element.isAcknowledgeApproved() %}
+                            {{ element.getAcknowledgeApprovedTime() | datetimeformat }}
+                        {% else %}
+                            erforderlich (offen)
+                        {% endif %}
+                    {% else %}
+                    nicht erforderlich
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for element in pagination.getCurrentPageElements() %}
+    <div class="ui modal" id="a{{ element.getId().get() | escape }}">
+        <div class="header">
+            {% if element.getType() == 'success' %}
+            <i class="checkmark icon"></i> Erfolg
+            {% elseif element.getType() == 'warning' %}
+            <i class="attention icon"></i> Warnung
+            {% elseif element.getType() == 'error' %}
+            <i class="attention icon"></i> Fehler
+            {% elseif element.getType() == 'info' %}
+            <i class="info icon"></i> information
+            {% endif %}
+        </div>
+        <div class="image content">
+            <div class="description">
+                <div class="ui header">{{ element.getMessage() | escape }}</div>
+                <div style="width: 100%; overflow: auto;">
+                    {{ element.getDescription() | escapenl }}
+                </div>
+                <br>
+                <table class="ui striped table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Informationen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Modul</td>
+                            <td>{{ element.getModule() | escape }}</td>
+                        </tr>
+                        <tr>
+                            <td>Zeitstempel</td>
+                            <td>{{ element.getTimestamp() | datetimeformat }}</td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Quittierung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quittierung</td>
+                            <td>{% if element.isAcknowledgeRequired() %}erforderlich{% else %}keine{% endif %}</td>
+                        </tr>
+                        {% if element.isAcknowledgeRequired() %}
+                        <tr>
+                            <td>Typ</td>
+                            <td>{% if element.getAcknowledgeType() == 'auto' %}automatisch{% else %}manuell{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>Quittiert</td>
+                            <td>{% if element.isAcknowledgeApproved() %}ja{% else %}nein{% endif %}</td>
+                        </tr>
+                        {% if element.isAcknowledgeApproved() %}
+                        <tr>
+                            <td>Zeitstempel</td>
+                            <td>{{ element.getAcknowledgeApprovedTime() | datetimeformat }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                    </tbody>
+                    {% if element.getExtraInformation().size > 0 %}
+                    <thead>
+                        <tr>
+                            <th colspan="2">Zusatzinformationen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in element.getExtraInformation() %}
+                        <tr>
+                            <td>{{ key | escpe }}</td>
+                            <td>{{ value | escpe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom attached clearing">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/global/admin/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="ui icon info message bottom attached large">
+        <i class="info circle icon black"></i>
+        <div class="content">
+            <p>Keine Meldungen vorhanden</p>
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="ui icon info message bottom attached large">
+        <i class="info circle icon black"></i>
+        <div class="content">
+            <p>{{ error }}</p>
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>

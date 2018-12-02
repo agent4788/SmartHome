@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import net.kleditzsch.SmartHome.app.Application;
@@ -13,6 +14,7 @@ import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.global.backup.BackupFile;
 import net.kleditzsch.SmartHome.model.global.editor.BackupEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
@@ -115,6 +117,12 @@ public class BackupRestore {
 
                         //alte Collection löschen
                         db.getCollection(collectionName).drop();
+
+                        //Meldungs Collection als Chapped Collection anlegen
+                        if(collectionName.equalsIgnoreCase(MessageEditor.COLLECTION)) {
+
+                            dbm.getDatabase().createCollection(MessageEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(1000).sizeInBytes(5 * 1024 * 1024));
+                        }
 
                         //Collection wiederherstellen
                         logger.info("Collection \"" + collectionName + "\" wird wiederhergestellt");

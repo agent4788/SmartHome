@@ -2,6 +2,8 @@ package net.kleditzsch.SmartHome.controller.global.backup;
 
 import net.kleditzsch.SmartHome.model.global.backup.BackupFile;
 import net.kleditzsch.SmartHome.model.global.editor.BackupEditor;
+import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
 import java.io.IOException;
@@ -50,14 +52,17 @@ public class BackupCleanupTask implements Runnable {
                             } catch (IOException e) {
 
                                 LoggerUtil.serveException(logger, e);
+                                MessageEditor.addMessage(new Message("global", Message.Type.warning, "Die Datei \"" + backupFile.getPath() + "\" konnte nicht gelöscht werden", e));
                             }
                         }
                     }
                 });
             });
+            MessageEditor.addMessage(new Message("global", Message.Type.info, "alte Backup Dateien aufgeräumt"));
         } catch (IOException e) {
 
             LoggerUtil.serveException(logger, e);
+            MessageEditor.addMessage(new Message("global", Message.Type.warning, "fehler beim löschen alter Backup Dateien", e));
         }
     }
 }

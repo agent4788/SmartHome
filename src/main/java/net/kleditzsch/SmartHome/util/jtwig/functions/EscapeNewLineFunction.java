@@ -24,6 +24,7 @@ public class EscapeNewLineFunction extends SimpleJtwigFunction {
             str = str.replace("\r\n", "<br>");
             str = str.replace("\r", "<br>");
             str = str.replace("\n", "<br>");
+            str = str.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             return str;
         }
         return "";

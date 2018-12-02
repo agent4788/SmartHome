@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -164,6 +166,24 @@ public class DatabaseManager {
         });
 
         return collectionInfoMap;
+    }
+
+    /**
+     * gibt eine Liste mit den Collection Namen zurück
+     *
+     * @return Collection Namen
+     */
+    public List<String> getCollectionNames() {
+
+        MongoDatabase db = getDatabase();
+        List<String> collectionNames = new ArrayList<>();
+
+        db.listCollectionNames().forEach((Block<String>) collectionName -> {
+
+            collectionNames.add(collectionName);
+        });
+
+        return collectionNames;
     }
 
     /**
