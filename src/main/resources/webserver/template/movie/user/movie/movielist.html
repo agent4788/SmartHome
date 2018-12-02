@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Filme</title>
     {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.ui.rating').rating('disable');
+        });
+    </script>
 </head>
 <body>
 {% include '/webserver/template/movie/user/headline.html' with {module: 'movie'} %}
@@ -39,6 +45,30 @@
                         {% for disc in dicsList %}
                         <a class="item {% if discFilter == disc.getId().get() %}active{% endif %}" href="/movie/movie?disc={{ disc.getId().get() }}">{{ disc.getName() | escape }}</a>
                         {% endfor %}
+                    </div>
+                </div>
+                <div class="item {% if ratingFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Bewertung</span>
+                    <div class="menu">
+                        <a class="item" href="/movie/movie?rating=0">
+                            <div class="item ui rating star" data-rating="0" data-max-rating="5"></div>
+                        </a>
+                        <a class="item" href="/movie/movie?rating=1">
+                            <div class="item ui rating star" data-rating="1" data-max-rating="5"></div>
+                        </a>
+                        <a class="item" href="/movie/movie?rating=2">
+                            <div class="item ui rating star" data-rating="2" data-max-rating="5"></div>
+                        </a>
+                        <a class="item" href="/movie/movie?rating=3">
+                            <div class="item ui rating star" data-rating="3" data-max-rating="5"></div>
+                        </a>
+                        <a class="item" href="/movie/movie?rating=4">
+                            <div class="item ui rating star" data-rating="4" data-max-rating="5"></div>
+                        </a>
+                        <a class="item" href="/movie/movie?rating=5">
+                            <div class="item ui rating star" data-rating="5" data-max-rating="5"></div>
+                        </a>
                     </div>
                 </div>
             </div>

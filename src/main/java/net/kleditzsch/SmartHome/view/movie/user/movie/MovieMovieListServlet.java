@@ -89,6 +89,18 @@ public class MovieMovieListServlet extends HttpServlet {
                 model.with("filtered", true);
                 model.with("discFilter", discId.get());
             } catch (Exception e) {}
+        } else if(req.getParameter("rating") != null) {
+
+            try {
+
+                int rating = Integer.parseInt(req.getParameter("rating"));
+                if(rating >= 0 && rating <= 5) {
+
+                    filter.setRating(rating);
+                    model.with("filtered", true);
+                    model.with("ratingFilter", rating);
+                }
+            } catch (Exception e) {}
         }
 
         int elementsAtPage = 25;

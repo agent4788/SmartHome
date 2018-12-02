@@ -27,6 +27,11 @@ public class MovieFilter {
     private ID disc = null;
 
     /**
+     * Bewertung
+     */
+    private int rating = -1;
+
+    /**
      * gibt die Minimallänge zurück
      *
      * @return Minimallämge
@@ -87,6 +92,29 @@ public class MovieFilter {
      */
     public Optional<ID> getDisc() {
         return Optional.ofNullable(disc);
+    }
+
+    /**
+     * setzt die Bewertung
+     *
+     * @param rating Bewertung
+     */
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    /**
+     * gibt die Bewertung zurück
+     *
+     * @return Bewertung
+     */
+    public Optional<Integer> getRating() {
+
+        if(rating >= 0) {
+
+            return Optional.of(rating);
+        }
+        return Optional.empty();
     }
 
     /**

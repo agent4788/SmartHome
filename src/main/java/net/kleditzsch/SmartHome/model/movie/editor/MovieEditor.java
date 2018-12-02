@@ -99,6 +99,9 @@ public abstract class MovieEditor {
         } else if(filter.getDisc().isPresent()) {
 
             bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        } else if(filter.getRating().isPresent()) {
+
+            bsonFilter = Filters.eq("rating", filter.getRating().get());
         }
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
@@ -399,6 +402,9 @@ public abstract class MovieEditor {
         } else if(filter.getDisc().isPresent()) {
 
             bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        } else if(filter.getRating().isPresent()) {
+
+            bsonFilter = Filters.eq("rating", filter.getRating().get());
         }
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
