@@ -31,11 +31,11 @@
             Filter
             <i class="dropdown icon"></i>
             <div class="menu">
-                <a class="item" href="/admin/message?module={{ module | escape }}">alle</a>
-                <a class="item {% if typeFilter == 'info' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=info">Info</a>
-                <a class="item {% if typeFilter == 'success' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=success">Erfolg</a>
-                <a class="item {% if typeFilter == 'warning' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=warning">Warnungen</a>
-                <a class="item {% if typeFilter == 'error' %}active{% endif %}" href="/admin/message?module={{ module | escape }}&filter=error">Fehler</a>
+                <a class="item" href="/admin/message?module={{ choosedModul | escape }}">alle</a>
+                <a class="item {% if typeFilter == 'info' %}active{% endif %}" href="/admin/message?module={{ choosedModul | escape }}&filter=info">Info</a>
+                <a class="item {% if typeFilter == 'success' %}active{% endif %}" href="/admin/message?module={{ choosedModul | escape }}&filter=success">Erfolg</a>
+                <a class="item {% if typeFilter == 'warning' %}active{% endif %}" href="/admin/message?module={{ choosedModul | escape }}&filter=warning">Warnungen</a>
+                <a class="item {% if typeFilter == 'error' %}active{% endif %}" href="/admin/message?module={{ choosedModul | escape }}&filter=error">Fehler</a>
             </div>
         </div>
     </div>
