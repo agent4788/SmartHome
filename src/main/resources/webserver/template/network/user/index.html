@@ -27,6 +27,7 @@
         <a href="/network/groupform" class="ui icon button basic green"><i class="plus icon"></i> Gruppe hinzuf&uuml;gen</a>
     </div>
     {% endif %}
+    {% if networkDeviceGroups.size() > 0 %}
     <table class="ui large table bottom attached">
     {% for group in networkDeviceGroups %}
         <thead>
@@ -126,9 +127,32 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+        {% else %}
+        <tbody>
+            <tr>
+                <td colspan="5">
+                    <div class="ui placeholder segment bottom attached">
+                        <div class="ui icon header">
+                            <i class="pdf file outline icon"></i>
+                            Keine Ger&auml;te gefunden
+                        </div>
+                        <a class="ui primary button" href="/network/deviceform?group={{ group.getId().get() | escape }}">Ger&auml;t hinzuf&uuml;gen</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
         {% endif %}
     {% endfor %}
     </table>
+    {% else %}
+    <div class="ui placeholder segment bottom attached">
+        <div class="ui icon header">
+            <i class="pdf file outline icon"></i>
+            Keine Ger&auml;tegruppe gefunden
+        </div>
+        <a class="ui primary button" href="/network/groupform">Gruppe hinzuf&uuml;gen</a>
+    </div>
+    {% endif %}
     {% for group in networkDeviceGroups %}
         {% for device in group.getDevices() %}
         <div class="ui modal" id="a{{ device.getId().get() | escape }}">
