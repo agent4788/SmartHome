@@ -76,7 +76,7 @@ public class BackupRestore {
                 return restoreMovieData(backupFile);
             case Network:
 
-                //TODO implimentieren
+                return restoreNetworkData(backupFile);
             case Recipe:
 
                 //TODO implimentieren
@@ -285,6 +285,56 @@ public class BackupRestore {
                         dumpFile(uploadFsk.resolve(entry.getName().replace("/upload/fskLogo/", "")), zip);
                         logger.info("FSK Logo: " + entry.getName() + "\" wurde wiederhergestellt");
 
+                    } else {
+
+                        messages.add("ungültige Modul Datei \"" + entry.getName() + "\"");
+                    }
+
+                    //nächstes Element
+                    entry = zip.getNextEntry();
+                }
+            }
+        } else {
+
+            messages.add("ungültige Modul Datei");
+        }
+        dbm.disconnectDatabase();
+        return messages;
+    }
+
+    /**
+     * Globale Daten wiederherstellen
+     *
+     * @param backupFile Backup Datei
+     * @return Liste mit Fehlermeldungen
+     */
+    private static List<String> restoreNetworkData(BackupFile backupFile) throws IOException, DatabaseException {
+
+        DatabaseManager dbm = connectDatabase();
+        MongoDatabase db = dbm.getDatabase();
+
+        List<String> messages = new ArrayList<>();
+        if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("network")) {
+
+            try (ZipInputStream zip = new ZipInputStream(new FileInputStream(backupFile.getPath().toFile()))) {
+
+                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+(\\.[A-Za-z0-9]+)+\\.json$");
+                ZipEntry entry = zip.getNextEntry();
+                while (entry != null) {
+
+                    //Collections auslesen
+                    String fileName = entry.getName();
+                    if(!entry.isDirectory() && pattern.matcher(fileName).find()) {
+
+                        String collectionName = fileName.substring(0, fileName.length() - 5);
+
+                        //alte Collection löschen
+                        db.getCollection(collectionName).drop();
+
+                        //Collection wiederherstellen
+                        logger.info("Collection \"" + collectionName + "\" wird wiederhergestellt");
+                        restoreCollection(db, collectionName, zip);
+                        logger.info("Collection \"" + collectionName + "\" wurde wiederhergestellt");
                     } else {
 
                         messages.add("ungültige Modul Datei \"" + entry.getName() + "\"");

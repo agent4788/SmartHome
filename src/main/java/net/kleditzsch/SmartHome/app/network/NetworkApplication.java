@@ -1,7 +1,7 @@
 package net.kleditzsch.SmartHome.app.network;
 
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.view.network.user.NetworkIndexServlet;
+import net.kleditzsch.SmartHome.view.network.user.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -26,6 +26,10 @@ public class NetworkApplication implements SubApplication {
 
         contextHandler.addServlet(NetworkIndexServlet.class, "/network/");
         contextHandler.addServlet(NetworkIndexServlet.class, "/network/index");
+        contextHandler.addServlet(NetworkGroupFormServlet.class, "/network/groupform");
+        contextHandler.addServlet(NetworkGroupDeleteServlet.class, "/network/groupdelete");
+        contextHandler.addServlet(NetworkDeviceFormServlet.class, "/network/deviceform");
+        contextHandler.addServlet(NetworkDeviceDeleteServlet.class, "/network/devicedelete");
     }
 
     /**

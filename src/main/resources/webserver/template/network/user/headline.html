@@ -35,9 +35,28 @@
             <img src="/static/img/icon/network.png" width="32" height="32" class="logo">
             Netzwerk
         </a>
-        <div class="right menu">
-            <a href="/network/admin/index" class="item"><i class="setting icon large"></i></a>
+        <a class="header item {% if module == 'dash' %}active{% endif %}" href="/network/index">
+            Dashboard
+        </a>
+        <div class="ui dropdown item">
+            Ger&auml;te
+            <div class="menu">
+                <a href="/network/nas" class="item {% if module == 'nas' %}active{% endif %}">
+                    NAS
+                </a>
+                <a href="/network/printer" class="item {% if module == 'printer' %}active{% endif %}">
+                    Drucker
+                </a>
+                <a href="/network/fritzbox" class="item {% if module == 'fritzbox' %}active{% endif %}">
+                    FRITZ!Box
+                </a>
+            </div>
         </div>
+        {% if module == 'dash' %}
+        <div class="right menu">
+            <a href="/network/index?edit=1" class="item"><i class="alternate pencil icon large"></i></a>
+        </div>
+        {% endif %}
     </div>
     <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
@@ -48,10 +67,24 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
-                    <a href="/network/admin/index" class="item">
-                        <i class="setting icon large"></i>
-                        Einstellungen
+                    <a href="/network/index" class="item {% if module == 'dash' %}active{% endif %}">
+                        Dashboard
                     </a>
+                    <a href="/network/nas" class="item {% if module == 'nas' %}active{% endif %}">
+                        NAS
+                    </a>
+                    <a href="/network/printer" class="item {% if module == 'printer' %}active{% endif %}">
+                        Drucker
+                    </a>
+                    <a href="/network/fritzbox" class="item {% if module == 'fritzbox' %}active{% endif %}">
+                        FRITZ!Box
+                    </a>
+                    {% if module == 'dash' %}
+                    <a href="/network/index?edit=1" class="item">
+                        <i class="alternate pencil icon large"></i>
+                        berarbeiten
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>

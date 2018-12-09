@@ -2,14 +2,174 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Netzwerk</title>
+    <title>Netzwerk&uuml;bersicht</title>
     {% include '/webserver/template/header.html' %}
     <link rel="manifest" href="/static/manifest/networkmanifest.json">
 </head>
 <body>
-{% include '/webserver/template/network/user/headline.html' %}
+{% include '/webserver/template/network/user/headline.html' with {module: 'dash'} %}
 <main class="ui main container">
-
+    <h1 class="ui header top attached">Netzwerk&uuml;bersicht</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if edit %}
+    <div class="ui attached segment">
+        <a href="/network/groupform" class="ui icon button basic green"><i class="plus icon"></i> Gruppe hinzuf&uuml;gen</a>
+    </div>
+    {% endif %}
+    <table class="ui large table bottom attached">
+    {% for group in networkDeviceGroups %}
+        <thead>
+            <tr>
+                <th colspan="5"><div class="ui ribbon label large blue">{{ group.getName() | escape }}</div></th>
+            </tr>
+            {% if group.getDescription().orElse("") != "" %}
+            <tr>
+                <th colspan="5">{{ group.getDescription().orElse("") | escape }}</th>
+            </tr>
+            {% endif %}
+            {% if edit %}
+            <tr>
+                <td colspan="5">
+                    <a href="/network/deviceform?group={{ group.getId().get() | escape }}" class="ui icon button basic green"><i class="plus icon"></i> Ger&auml;t hinzuf&uuml;gen</a>
+                    <a href="/network/groupform?group={{ group.getId().get() | escape }}" class="ui icon button basic orange"><i class="alternativ pencil icon"></i> Gruppe bearbeiten</a>
+                    <div class="ui icon button basic red" onclick="$('#b{{ group.getId().get() | escape}}').modal('show');"><i class="remove icon"></i> Gruppe l&ouml;schen</div>
+                    <div class="ui basic modal" id="b{{ group.getId().get() | escape}}">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Gruppe l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Gruppe l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/network/groupdelete?group={{ group.getId().get() | escape }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+        </thead>
+        {% if group.getDevices().size() > 0 %}
+                <thead>
+                    <tr>
+                        {% if edit %}
+                        <th class="five wide">Name</th>
+                        <th class="two wide">IP/AIN</th>
+                        <th class="two wide">MAC</th>
+                        <th class="four wide">Host</th>
+                        <th class="three wide"></th>
+                        {% else %}
+                        <th class="six wide">Name</th>
+                        <th class="two wide">IP/AIN</th>
+                        <th class="two wide">MAC</th>
+                        <th class="four wide">Host</th>
+                        <th class="two wide">Verbindung</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in group.getDevices() %}
+                    <tr {% if not edit %}style="cursor: pointer;" onclick="$('#a{{ device.getId().get() | escape }}').modal('show');"{% endif %}>
+                        {% if edit %}
+                        <td>{{ device.getName() | escape }}</td>
+                        <td>{% if device.getIpAddress() != "" %}{{ device.getIpAddress() | escape }}{% else %}{{ device.getAin() | escape }}{% endif %}</td>
+                        <td>{{ device.getMacAddress() | escape }}</td>
+                        <td>{{ device.getHostName() | escape }}</td>
+                        <td class="two wide">
+                            <a href="/network/deviceform?group={{ group.getId().get() | escape }}&devid={{ device.getId().get() | escape }}" class="ui icon button basic orange" title="Ger&auml;t bearbeiten"><i class="alternative pencil icon"></i></a>
+                            <div class="ui icon button basic red" onclick="$('#b{{ device.getId().get() | escape}}').modal('show');" title="Ger&auml;t l&ouml;schen"><i class="remove icon"></i></div>
+                            <div class="ui basic modal" id="b{{ device.getId().get() | escape}}">
+                                <div class="ui icon header">
+                                    <i class="delete icon"></i>
+                                    Ger&auml;t l&ouml;schen
+                                </div>
+                                <div class="content">
+                                    <p>Bist du sicher das du das Ger&auml;t l&ouml;schen m&ouml;chtest?</p>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui red basic cancel inverted button">
+                                        <i class="remove icon"></i>
+                                        Nein
+                                    </div>
+                                    <div class="ui green ok inverted button" onclick="window.location = '/network/devicedelete?group={{ group.getId().get() | escape }}&devid={{ device.getId().get() | escape }}'">
+                                        <i class="checkmark icon"></i>
+                                        Ja
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        {% else %}
+                        <td>{{ device.getName() | escape }}</td>
+                        <td>{% if device.getIpAddress() != "" %}{{ device.getIpAddress() | escape }}{% else %}{{ device.getAin() | escape }}{% endif %}</td>
+                        <td>{{ device.getMacAddress() | escape }}</td>
+                        <td>{{ device.getHostName() | escape }}</td>
+                        <td>{{ device.getLinkType() | escape }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+        {% endif %}
+    {% endfor %}
+    </table>
+    {% for group in networkDeviceGroups %}
+        {% for device in group.getDevices() %}
+        <div class="ui modal" id="a{{ device.getId().get() | escape }}">
+            <div class="header">
+                {{ device.getName() | escape }}
+            </div>
+            <div class="content">
+                <table class="ui striped large  table">
+                    <tr>
+                        <td class="four wide">Name:</td>
+                        <td class="twelve wide">{{ device.getName() | escape }}</td>
+                    </tr>
+                    <tr>
+                        <td>Beschreibung:</td>
+                        <td>{{ device.getDescription().orElse("") | escape }}</td>
+                    </tr>
+                    <tr>
+                        <td>IP / AIN:</td>
+                        <td>{% if device.getIpAddress() != "" %}{{ device.getIpAddress() | escape }}{% else %}{{ device.getAin() | escape }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>MAC:</td>
+                        <td>{{ device.getMacAddress() | escape }}</td>
+                    </tr>
+                    <tr>
+                        <td>Hostname:</td>
+                        <td>{{ device.getHostName() | escape }}</td>
+                    </tr>
+                    <tr>
+                        <td>Verbindung:</td>
+                        <td>{{ device.getLinkType() | escape }}</td>
+                    </tr>
+                    <tr>
+                        <td>Geschwindigkeit:</td>
+                        <td>{{ device.getLinkSpeed() | escape }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
 </main>
 </body>
 </html>

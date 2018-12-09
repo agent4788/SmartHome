@@ -1,5 +1,9 @@
 package net.kleditzsch.SmartHome.view.network.user;
 
+import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.network.devices.NetworkDevice;
+import net.kleditzsch.SmartHome.model.network.devices.NetworkDeviceGroup;
+import net.kleditzsch.SmartHome.model.network.editor.NetworkDeviceEditor;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -9,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class NetworkIndexServlet extends HttpServlet {
 
@@ -19,6 +25,32 @@ public class NetworkIndexServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/network/user/index.html");
         JtwigModel model = JtwigModel.newModel();
 
+        //bearbeitungsmodus
+        boolean edit = false;
+        if(req.getParameter("edit") != null && req.getParameter("edit").trim().equals("1")) {
+
+            edit = true;
+        }
+        model.with("edit", edit);
+
+        //Daten laden
+        List<NetworkDeviceGroup> networkDeviceGroups = NetworkDeviceEditor.listNetworkDeviceGroups();
+        networkDeviceGroups.forEach(group -> {
+
+            List<NetworkDevice> devices = group.getDevices().stream().sorted().collect(Collectors.toList());
+            group.getDevices().clear();
+            group.getDevices().addAll(devices);
+        });
+        model.with("networkDeviceGroups", networkDeviceGroups);
+
+        //Meldung
+        if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
+
+            model.with("success", req.getSession().getAttribute("success"));
+            model.with("message", req.getSession().getAttribute("message"));
+            req.getSession().removeAttribute("success");
+            req.getSession().removeAttribute("message");
+        }
 
         //Viewport
         if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
