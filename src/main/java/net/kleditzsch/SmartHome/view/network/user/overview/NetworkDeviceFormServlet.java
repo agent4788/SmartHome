@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.network.user;
+package net.kleditzsch.SmartHome.view.network.user.overview;
 
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.network.devices.NetworkDevice;
@@ -54,7 +54,7 @@ public class NetworkDeviceFormServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/network/user/deviceform.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/network/user/overview/deviceform.html");
         JtwigModel model = JtwigModel.newModel();
 
         boolean addElement = true;

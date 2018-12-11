@@ -2,6 +2,10 @@ package net.kleditzsch.SmartHome.app.network;
 
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.view.network.user.*;
+import net.kleditzsch.SmartHome.view.network.user.overview.NetworkDeviceDeleteServlet;
+import net.kleditzsch.SmartHome.view.network.user.overview.NetworkDeviceFormServlet;
+import net.kleditzsch.SmartHome.view.network.user.overview.NetworkGroupDeleteServlet;
+import net.kleditzsch.SmartHome.view.network.user.overview.NetworkGroupFormServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**

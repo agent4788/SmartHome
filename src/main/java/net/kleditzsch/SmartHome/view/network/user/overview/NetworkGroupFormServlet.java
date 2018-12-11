@@ -1,7 +1,6 @@
-package net.kleditzsch.SmartHome.view.network.user;
+package net.kleditzsch.SmartHome.view.network.user.overview;
 
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.network.devices.NetworkDevice;
 import net.kleditzsch.SmartHome.model.network.devices.NetworkDeviceGroup;
 import net.kleditzsch.SmartHome.model.network.editor.NetworkDeviceEditor;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
@@ -15,9 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class NetworkGroupFormServlet extends HttpServlet {
 
@@ -25,7 +22,7 @@ public class NetworkGroupFormServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/network/user/groupform.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/network/user/overview/groupform.html");
         JtwigModel model = JtwigModel.newModel();
 
         boolean addElement = true;

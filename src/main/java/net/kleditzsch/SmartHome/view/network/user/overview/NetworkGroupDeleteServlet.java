@@ -1,4 +1,4 @@
-package net.kleditzsch.SmartHome.view.network.user;
+package net.kleditzsch.SmartHome.view.network.user.overview;
 
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.network.devices.NetworkDevice;
