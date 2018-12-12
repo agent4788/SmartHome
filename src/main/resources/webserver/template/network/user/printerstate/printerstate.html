@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drucker Status</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.ui.progress').progress();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/network/user/headline.html' with {module: 'printer', ip: printerIp} %}
+<main class="ui main container" style="margin-bottom: 40px;">
+    <h1 class="ui header top attached">Drucker Status</h1>
+    {% if noIp is defined %}
+    <div class="ui message icon attached info">
+        <i class="bullhorn icon"></i>
+        <div class="content">
+            <p>Keine IP Adresse eingestellt</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if ipChanged is defined %}
+    <div class="ui message icon attached successful">
+        <i class="bullhorn icon"></i>
+        <div class="content">
+            <p>Die IP Adresse wurde erfolgreich ge&auml;ndert</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if connectionError is defined %}
+    <div class="ui message icon attached error">
+        <i class="remove icon red"></i>
+        <div class="content">
+            <p>Der Drucker konnte nicht erreicht werden</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if printer is defined %}
+    <table class="ui table bottom attached">
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Allgemein</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Standort</td>
+            <td class="ten wide">{{ printer.getLocation().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Kontakt</td>
+            <td class="ten wide">{{ printer.getContact().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Seriennummer</td>
+            <td class="ten wide">{{ printer.getSerialNumber().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Beschreibung</td>
+            <td class="ten wide">{{ printer.getSystemDescription().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Ger&auml;te Beschreibung</td>
+            <td class="ten wide">{{ printer.getDeviceDescription().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Fehler</td>
+            <td class="ten wide">{{ printer.getDeviceErrors().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Status</td>
+            <td class="ten wide">{{ printer.getDeviceState().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Laufzeit</td>
+            <td class="ten wide">{{ printer.getUptime().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Speicher</td>
+            <td class="ten wide">{{ printer.getMemorySize().orElse('0') | filesize }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Seitenzähler</td>
+            <td class="ten wide">{{ printer.getPageCount().orElse('0') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">IP Adresse</td>
+            <td class="ten wide">{{ printerIp | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Hardware Adresse</td>
+            <td class="ten wide">{{ printer.getHardwareAddress().orElse('') | escape }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Toner</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Schwarz</td>
+            <td class="ten wide">
+                <div class="ui progress black" data-percent="{{ printer.getBlackTonerCartridgeLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ printer.getBlackTonerCartridgeLevel().get().getPercentageLevelInteger() }}%</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Blau</td>
+            <td class="ten wide">
+                <div class="ui progress blue" data-percent="{{ printer.getCyanTonerCartridgeLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ printer.getCyanTonerCartridgeLevel().get().getPercentageLevelInteger() }}%</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Rot</td>
+            <td class="ten wide">
+                <div class="ui progress red" data-percent="{{ printer.getMagentaTonerCartridgeLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ printer.getMagentaTonerCartridgeLevel().get().getPercentageLevelInteger() }}%</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Gelb</td>
+            <td class="ten wide">
+                <div class="ui progress yellow" data-percent="{{ printer.getYellowTonerCartridgeLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ printer.getYellowTonerCartridgeLevel().get().getPercentageLevelInteger() }}%</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Trommeln</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Schwarze Trommeleinheit</td>
+            <td class="ten wide">
+                <div class="ui progress black" data-percent="{{ printer.getBlackDrumUnitLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">noch {{ printer.getBlackDrumUnitLevel().get().getLevel() }} von {{ printer.getBlackDrumUnitLevel().get().getCapacity() }} Seiten</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Blaue Trommeleinheit</td>
+            <td class="ten wide">
+                <div class="ui progress blue" data-percent="{{ printer.getCyanDrumUnitLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">noch {{ printer.getCyanDrumUnitLevel().get().getLevel() }} von {{ printer.getCyanDrumUnitLevel().get().getCapacity() }} Seiten</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Rote Trommeleinheit</td>
+            <td class="ten wide">
+                <div class="ui progress red" data-percent="{{ printer.getMagentaDrumUnitLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">noch {{ printer.getMagentaDrumUnitLevel().get().getLevel() }} von {{ printer.getMagentaDrumUnitLevel().get().getCapacity() }} Seiten</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Gelbe Trommeleinheit</td>
+            <td class="ten wide">
+                <div class="ui progress yellow" data-percent="{{ printer.getYellowDrumUnitLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">noch {{ printer.getYellowDrumUnitLevel().get().getLevel() }} von {{ printer.getYellowDrumUnitLevel().get().getCapacity() }} Seiten</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Sonstiges</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Bandeinheit</td>
+            <td class="ten wide">
+                <div class="ui progress grey" data-percent="{{ printer.getBeltUnitLevel().get().getPercentageLevelInteger() }}">
+                    <div class="bar"></div>
+                    <div class="label">noch {{ printer.getBeltUnitLevel().get().getLevel() }} von {{ printer.getBeltUnitLevel().get().getCapacity() }} Seiten</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    {% endif %}
+</main>
+</body>
+</html>

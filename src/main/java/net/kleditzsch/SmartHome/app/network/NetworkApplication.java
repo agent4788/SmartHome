@@ -2,10 +2,12 @@ package net.kleditzsch.SmartHome.app.network;
 
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.view.network.user.*;
+import net.kleditzsch.SmartHome.view.network.user.nasstate.NetworkNasStateServlet;
 import net.kleditzsch.SmartHome.view.network.user.overview.NetworkDeviceDeleteServlet;
 import net.kleditzsch.SmartHome.view.network.user.overview.NetworkDeviceFormServlet;
 import net.kleditzsch.SmartHome.view.network.user.overview.NetworkGroupDeleteServlet;
 import net.kleditzsch.SmartHome.view.network.user.overview.NetworkGroupFormServlet;
+import net.kleditzsch.SmartHome.view.network.user.printerstate.NetworkPrinterStateServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -34,6 +36,8 @@ public class NetworkApplication implements SubApplication {
         contextHandler.addServlet(NetworkGroupDeleteServlet.class, "/network/groupdelete");
         contextHandler.addServlet(NetworkDeviceFormServlet.class, "/network/deviceform");
         contextHandler.addServlet(NetworkDeviceDeleteServlet.class, "/network/devicedelete");
+        contextHandler.addServlet(NetworkPrinterStateServlet.class, "/network/printer");
+        contextHandler.addServlet(NetworkNasStateServlet.class, "/network/nas");
     }
 
     /**

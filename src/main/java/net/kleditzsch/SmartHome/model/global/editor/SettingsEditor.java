@@ -64,6 +64,10 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String MOVIE_BEST_MOVIES_COUNT = "MOVIE_BEST_MOVIES_COUNT";
     public static final String MOVIE_TMDB_API_KEY = "MOVIE_TMDB_API_KEY";
 
+    //Netzwerk Einstellungen
+    public static final String NETWORK_PRINTER_STATE_IP = "NETWORK_PRINTER_STATE_IP";
+    public static final String NETWORK_NAS_STATE_IP = "NETWORK_NAS_STATE_IP";
+
     /**
      * Lock objekt
      */
@@ -165,6 +169,12 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(bestMoviesCount);
         StringSetting tmdbApiKey = new StringSetting(MOVIE_TMDB_API_KEY, "", "");
         knownSettings.add(tmdbApiKey);
+
+        //Netzwerk Einstellungen
+        StringSetting printerSTateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "", "");
+        knownSettings.add(printerSTateIp);
+        StringSetting nasStateIp = new StringSetting(NETWORK_NAS_STATE_IP, "", "");
+        knownSettings.add(nasStateIp);
     }
 
     /**

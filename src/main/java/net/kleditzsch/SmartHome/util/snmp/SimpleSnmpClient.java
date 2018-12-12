@@ -93,9 +93,12 @@ public class SimpleSnmpClient {
         ResponseEvent event = get(oids);
 
         Map<String, Variable> vars = new HashMap<>();
-        for(int i = 0; i < event.getResponse().size(); i++) {
+        if(event.getResponse() != null) {
 
-            vars.put(event.getResponse().get(i).getOid().toDottedString(), event.getResponse().get(i).getVariable());
+            for(int i = 0; i < event.getResponse().size(); i++) {
+
+                vars.put(event.getResponse().get(i).getOid().toDottedString(), event.getResponse().get(i).getVariable());
+            }
         }
         return vars;
     }

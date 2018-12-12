@@ -155,9 +155,23 @@ public class PrinterState {
 
             if(capacity < 0 || level < 0) {
 
-                return (level / capacity * 100);
+                return (capacity * 100 / level);
             }
             return (level * 100 / capacity);
+        }
+
+        /**
+         * gibt die prozentuale verbleibende Kapazität zurück
+         *
+         * @return prozentuale verbleibende Kapazität
+         */
+        public int getPercentageLevelInteger() {
+
+            if(capacity < 0 || level < 0) {
+
+                return (int) (capacity * 100 / level);
+            }
+            return (int) (level * 100 / capacity);
         }
     }
 

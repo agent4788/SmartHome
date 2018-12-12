@@ -57,6 +57,64 @@
             <a href="/network/index?edit=1" class="item"><i class="alternate pencil icon large"></i></a>
         </div>
         {% endif %}
+        {% if module == 'printer' %}
+        <div class="right menu">
+            <a class="item" onclick="$('#printerIpDialog').modal('show');"><i class="alternate pencil icon large"></i></a>
+            <div class="ui modal" id="printerIpDialog">
+                <div class="header">
+                    Drucker IP Adresse
+                </div>
+                <div class="content">
+                    <form class="ui form" method="get" id="printerIpForm">
+                        <div class="grouped fields">
+                            <div class="field">
+                                <label>IP Adresse</label>
+                                <input name="ip" placeholder="IP Adresse ..." type="text" pattern="(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$)" value="{{ ip | escape }}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="actions">
+                    <div class="ui black deny button">
+                        abbrechen
+                    </div>
+                    <div class="ui positive right labeled icon button" onclick="$('#printerIpForm').submit();">
+                        speichern
+                        <i class="checkmark icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if module == 'nas' %}
+        <div class="right menu">
+            <a class="item" onclick="$('#nasIpDialog').modal('show');"><i class="alternate pencil icon large"></i></a>
+            <div class="ui modal" id="nasIpDialog">
+                <div class="header">
+                    Drucker IP Adresse
+                </div>
+                <div class="content">
+                    <form class="ui form" method="get" id="nasIpForm">
+                        <div class="grouped fields">
+                            <div class="field">
+                                <label>IP Adresse</label>
+                                <input name="ip" placeholder="IP Adresse ..." type="text" pattern="(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$)" value="{{ ip | escape }}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="actions">
+                    <div class="ui black deny button">
+                        abbrechen
+                    </div>
+                    <div class="ui positive right labeled icon button" onclick="$('#nasIpForm').submit();">
+                        speichern
+                        <i class="checkmark icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
         <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
@@ -84,6 +142,68 @@
                         <i class="alternate pencil icon large"></i>
                         berarbeiten
                     </a>
+                    {% endif %}
+                    {% if module == 'printer' %}
+                    <div class="divider"></div>
+                    <a onclick="$('#printerIpDialog').modal('show');"class="item">
+                        <i class="alternate pencil icon large"></i>
+                        IP Adresse
+                    </a>
+                    <div class="ui modal" id="printerIpDialog">
+                        <div class="header">
+                            Drucker IP Adresse
+                        </div>
+                        <div class="content">
+                            <form class="ui form" method="get" id="printerIpForm">
+                                <div class="grouped fields">
+                                    <div class="field">
+                                        <label>IP Adresse</label>
+                                        <input name="ip" placeholder="IP Adresse ..." type="text" pattern="(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$)" value="{{ ip | escape }}">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="actions">
+                            <div class="ui black deny button">
+                                abbrechen
+                            </div>
+                            <div class="ui positive right labeled icon button" onclick="$('#printerIpForm').submit();">
+                                speichern
+                                <i class="checkmark icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if module == 'nas' %}
+                    <div class="divider"></div>
+                    <a onclick="$('#nasIpDialog').modal('show');" class="item">
+                        <i class="alternate pencil icon large"></i>
+                        IP Adresse
+                    </a>
+                    <div class="ui modal" id="nasIpDialog">
+                        <div class="header">
+                            Drucker IP Adresse
+                        </div>
+                        <div class="content">
+                            <form class="ui form" method="get" id="nasIpForm">
+                                <div class="grouped fields">
+                                    <div class="field">
+                                        <label>IP Adresse</label>
+                                        <input name="ip" placeholder="IP Adresse ..." type="text" pattern="(^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$)" value="{{ ip | escape }}">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="actions">
+                            <div class="ui black deny button">
+                                abbrechen
+                            </div>
+                            <div class="ui positive right labeled icon button" onclick="$('#nasIpForm').submit();">
+                                speichern
+                                <i class="checkmark icon"></i>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>

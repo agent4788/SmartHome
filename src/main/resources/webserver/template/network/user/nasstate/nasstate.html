@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NAS Status</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.ui.progress').progress();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/network/user/headline.html' with {module: 'nas', ip: nasIp} %}
+<main class="ui main container" style="margin-bottom: 40px;">
+    <h1 class="ui header top attached">NAS Status</h1>
+    {% if noIp is defined %}
+    <div class="ui message icon attached info">
+        <i class="bullhorn icon"></i>
+        <div class="content">
+            <p>Keine IP Adresse eingestellt</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if ipChanged is defined %}
+    <div class="ui message icon attached successful">
+        <i class="bullhorn icon"></i>
+        <div class="content">
+            <p>Die IP Adresse wurde erfolgreich ge&auml;ndert</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if connectionError is defined %}
+    <div class="ui message icon attached error">
+        <i class="remove icon red"></i>
+        <div class="content">
+            <p>Die NAS konnte nicht erreicht werden</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if nas is defined %}
+    <table class="ui table bottom attached">
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Allgemein</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Model</td>
+            <td class="ten wide">{{ nas.getModelName().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Seriennummer</td>
+            <td class="ten wide">{{ nas.getSerialNumber().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Systemstatus</td>
+            <td class="ten wide">{% if nas.getSystemState().orElse('2') == '1' %}Normal{% else %}Fehler{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Systemtemperatur</td>
+            <td class="ten wide">{{ nas.getSystemTemrature().orElse('unbekannt') | escape }} &deg;C</td>
+        </tr>
+        <tr>
+            <td class="six wide">System L&uuml;fter</td>
+            <td class="ten wide">{% if nas.getSystemFanState().orElse('2') == '1' %}Normal{% else %}Fehler{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="six wide">CPU L&uuml;fter</td>
+            <td class="ten wide">{% if nas.getCpuFanState().orElse('2') == '1' %}Normal{% else %}Fehler{% endif %}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Software Version</td>
+            <td class="ten wide">{{ nas.getSoftwareVersion().orElse('unbekannt') | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Update Status</td>
+            <td class="ten wide">
+                {% if nas.getUpdateState().orElse('5') == '1' %}Update verf&uuml;gbar
+                {% elseif nas.getUpdateState().orElse('5') == '2' %}kein Update verf&uuml;gbar
+                {% elseif nas.getUpdateState().orElse('5') == '3' %}verbindung zum Server wird aufgebaut
+                {% elseif nas.getUpdateState().orElse('5') == '4' %}getrennt
+                {% elseif nas.getUpdateState().orElse('5') == '5' %}andere (nubenkannt)
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Hardware</div></td>
+        </tr>
+        {% if nas.getCpuUtilisation().isPresent() %}
+        <tr>
+            <td class="six wide">CPU Auslastung</td>
+            <td class="ten wide">
+                <div class="ui progress {% if nas.getCpuUtilisation().get().getUtilisation() > 90 %}red{% elseif nas.getCpuUtilisation().get().getUtilisation() > 75 %}yellow{% else %}green{% endif %}" data-percent="{{ nas.getCpuUtilisation().get().getUtilisation() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ nas.getCpuUtilisation().get().getUtilisation() | escape  }}%</div>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% if nas.getSystemMemory().isPresent() %}
+        <tr>
+            <td class="six wide">Arbeitsspeicher</td>
+            <td class="ten wide">
+                <div class="ui progress {% if nas.getSystemMemory().get().getIntUtilisation() > 90 %}red{% elseif nas.getSystemMemory().get().getIntUtilisation() > 75 %}yellow{% else %}green{% endif %}" data-percent="{{ nas.getSystemMemory().get().getIntUtilisation() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ nas.getSystemMemory().get().getUsed() | filesize }} von {{ nas.getSystemMemory().get().getSize() | filesize }} belegt</div>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% if nas.getSwapMemory().isPresent() %}
+        <tr>
+            <td class="six wide">SWAP</td>
+            <td class="ten wide">
+                <div class="ui progress {% if nas.getSwapMemory().get().getIntUtilisation() > 90 %}red{% elseif nas.getSwapMemory().get().getIntUtilisation() > 75 %}yellow{% else %}green{% endif %}" data-percent="{{ nas.getSwapMemory().get().getIntUtilisation() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ nas.getSwapMemory().get().getUsed() | filesize }} von {{ nas.getSwapMemory().get().getSize() | filesize }} belegt</div>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% if nas.getNetworkInterface2().isPresent() %}
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Netzwerk</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Schnittstelle</td>
+            <td class="ten wide">
+                {{ nas.getNetworkInterface2().get().getName() | escape }}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Eingehende Daten</td>
+            <td class="ten wide">
+                {{ nas.getNetworkInterface2().get().getIn() | filesize }}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Ausgehende Daten</td>
+            <td class="ten wide">
+                {{ nas.getNetworkInterface2().get().getOut() | filesize }}
+            </td>
+        </tr>
+        {% endif %}
+        {% if nas.getDisc1State().isPresent() %}
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Festplatte 1</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Name</td>
+            <td class="ten wide">{{ nas.getDisc1State().get().getId() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Typ</td>
+            <td class="ten wide">{{ nas.getDisc1State().get().getModel() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Verbindung</td>
+            <td class="ten wide">{{ nas.getDisc1State().get().getType() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Status</td>
+            <td class="ten wide">
+                {% if nas.getDisc1State().get().getState() == '1' %}Normal
+                {% elseif nas.getDisc1State().get().getState() == '2' %}Initalisiert
+                {% elseif nas.getDisc1State().get().getState() == '3' %}nicht Initalisiert
+                {% elseif nas.getDisc1State().get().getState() == '4' %}Partiotionsfehler
+                {% elseif nas.getDisc1State().get().getState() == '5' %}Defekt
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Temperatur</td>
+            <td class="ten wide">{{ nas.getDisc1State().get().getTemperature() | escape }} &deg;C</td>
+        </tr>
+        {% endif %}
+        {% if nas.getDisc2State().isPresent() %}
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Festplatte 2</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Name</td>
+            <td class="ten wide">{{ nas.getDisc2State().get().getId() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Typ</td>
+            <td class="ten wide">{{ nas.getDisc2State().get().getModel() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Verbindung</td>
+            <td class="ten wide">{{ nas.getDisc2State().get().getType() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Status</td>
+            <td class="ten wide">
+                {% if nas.getDisc2State().get().getState() == '1' %}Normal
+                {% elseif nas.getDisc2State().get().getState() == '2' %}Initalisiert
+                {% elseif nas.getDisc2State().get().getState() == '3' %}nicht Initalisiert
+                {% elseif nas.getDisc2State().get().getState() == '4' %}Partiotionsfehler
+                {% elseif nas.getDisc2State().get().getState() == '5' %}Defekt
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Temperatur</td>
+            <td class="ten wide">{{ nas.getDisc2State().get().getTemperature() | escape }} &deg;C</td>
+        </tr>
+        {% endif %}
+        {% if nas.getRaid1State().isPresent() %}
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Raid 1</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Name</td>
+            <td class="ten wide">{{ nas.getRaid1State().get().getName() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Status</td>
+            <td class="ten wide">
+                {% if nas.getRaid1State().get().getState() == '1' %}Normal
+                {% elseif nas.getRaid1State().get().getState() == '2' %}Repairing
+                {% elseif nas.getRaid1State().get().getState() == '3' %}Migrating
+                {% elseif nas.getRaid1State().get().getState() == '4' %}Expanding
+                {% elseif nas.getRaid1State().get().getState() == '5' %}Deleting
+                {% elseif nas.getRaid1State().get().getState() == '6' %}Creating
+                {% elseif nas.getRaid1State().get().getState() == '7' %}RaidSyncing
+                {% elseif nas.getRaid1State().get().getState() == '8' %}RaidParityChecking
+                {% elseif nas.getRaid1State().get().getState() == '9' %}RaidAssembling
+                {% elseif nas.getRaid1State().get().getState() == '10' %}Canceling
+                {% elseif nas.getRaid1State().get().getState() == '11' %}Degrade
+                {% elseif nas.getRaid1State().get().getState() == '12' %}Crashed
+                {% elseif nas.getRaid1State().get().getState() == '13' %}DataScrubbing
+                {% elseif nas.getRaid1State().get().getState() == '14' %}RaidDeploying
+                {% elseif nas.getRaid1State().get().getState() == '15' %}RaidUnDeploying
+                {% elseif nas.getRaid1State().get().getState() == '16' %}RaidMountCache
+                {% elseif nas.getRaid1State().get().getState() == '17' %}RaidUnmountCache
+                {% elseif nas.getRaid1State().get().getState() == '18' %}RaidExpandingUnfinishedSHR
+                {% elseif nas.getRaid1State().get().getState() == '19' %}RaidConvertSHRToPool
+                {% elseif nas.getRaid1State().get().getState() == '20' %}RaidMigrateSHR1ToSHR2
+                {% elseif nas.getRaid1State().get().getState() == '21' %}RaidUnknownStatus
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Auslastung</td>
+            <td class="ten wide">
+                <div class="ui progress {% if nas.getRaid1State().get().getIntUtilisation() > 90 %}red{% elseif nas.getRaid1State().get().getIntUtilisation() > 75 %}yellow{% else %}green{% endif %}" data-percent="{{ nas.getRaid1State().get().getIntUtilisation() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ nas.getRaid1State().get().getUsed() | filesize  }} von {{ nas.getRaid1State().get().getSize() | filesize  }} belegt</div>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% if nas.getRaid2State().isPresent() %}
+        <tr>
+            <td colspan="2"><div class="ui ribbon label large blue">Raid 2</div></td>
+        </tr>
+        <tr>
+            <td class="six wide">Name</td>
+            <td class="ten wide">{{ nas.getRaid2State().get().getName() | escape }}</td>
+        </tr>
+        <tr>
+            <td class="six wide">Status</td>
+            <td class="ten wide">
+                {% if nas.getRaid2State().get().getState() == '1' %}Normal
+                {% elseif nas.getRaid2State().get().getState() == '2' %}Repairing
+                {% elseif nas.getRaid2State().get().getState() == '3' %}Migrating
+                {% elseif nas.getRaid2State().get().getState() == '4' %}Expanding
+                {% elseif nas.getRaid2State().get().getState() == '5' %}Deleting
+                {% elseif nas.getRaid2State().get().getState() == '6' %}Creating
+                {% elseif nas.getRaid2State().get().getState() == '7' %}RaidSyncing
+                {% elseif nas.getRaid2State().get().getState() == '8' %}RaidParityChecking
+                {% elseif nas.getRaid2State().get().getState() == '9' %}RaidAssembling
+                {% elseif nas.getRaid2State().get().getState() == '10' %}Canceling
+                {% elseif nas.getRaid2State().get().getState() == '11' %}Degrade
+                {% elseif nas.getRaid2State().get().getState() == '12' %}Crashed
+                {% elseif nas.getRaid2State().get().getState() == '13' %}DataScrubbing
+                {% elseif nas.getRaid2State().get().getState() == '14' %}RaidDeploying
+                {% elseif nas.getRaid2State().get().getState() == '15' %}RaidUnDeploying
+                {% elseif nas.getRaid2State().get().getState() == '16' %}RaidMountCache
+                {% elseif nas.getRaid2State().get().getState() == '17' %}RaidUnmountCache
+                {% elseif nas.getRaid2State().get().getState() == '18' %}RaidExpandingUnfinishedSHR
+                {% elseif nas.getRaid2State().get().getState() == '19' %}RaidConvertSHRToPool
+                {% elseif nas.getRaid2State().get().getState() == '20' %}RaidMigrateSHR1ToSHR2
+                {% elseif nas.getRaid2State().get().getState() == '21' %}RaidUnknownStatus
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td class="six wide">Auslastung</td>
+            <td class="ten wide">
+                <div class="ui progress {% if nas.getRaid2State().get().getIntUtilisation() > 90 %}red{% elseif nas.getRaid2State().get().getIntUtilisation() > 75 %}yellow{% else %}green{% endif %}" data-percent="{{ nas.getRaid2State().get().getIntUtilisation() }}">
+                    <div class="bar"></div>
+                    <div class="label">{{ nas.getRaid2State().get().getUsed() | filesize  }} von {{ nas.getRaid2State().get().getSize() | filesize  }} belegt</div>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endif %}
+</main>
+</body>
+</html>
