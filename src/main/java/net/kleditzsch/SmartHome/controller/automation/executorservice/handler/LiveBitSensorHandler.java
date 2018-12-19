@@ -38,6 +38,7 @@ public class LiveBitSensorHandler implements Runnable {
             return;
         }
 
+        ReentrantReadWriteLock.WriteLock lock = null;
         try {
 
             LocalDateTime timeout = liveBitValue.getLastPushTime().plusNanos(liveBitValue.getTimeout() * 1_000_000L);
@@ -46,7 +47,7 @@ public class LiveBitSensorHandler implements Runnable {
 
                 //Timeout abgelaufen, Status zurücksetzen
                 SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
-                ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
+                lock = sensorEditor.writeLock();
                 lock.lock();
 
                 Optional<SensorValue> sensorValueOptional = sensorEditor.getById(liveBitValue.getId());
@@ -54,13 +55,17 @@ public class LiveBitSensorHandler implements Runnable {
 
                     ((LiveBitValue) sensorValueOptional.get()).setState(false);
                 }
-
-                lock.unlock();
             }
         } catch (Exception e) {
 
             LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), e);
             MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Fehler in der Lebenszeichenüberwachung", e));
+        } finally {
+
+            if(lock != null && lock.isHeldByCurrentThread()) {
+
+                lock.unlock();
+            }
         }
     }
 }

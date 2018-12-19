@@ -36,6 +36,7 @@ public class UserAtHomeSensorHandler implements Runnable {
             return;
         }
 
+        ReentrantReadWriteLock.WriteLock lock = null;
         try {
 
             if(userAtHomeValue.isUseExternalDataSource()) {
@@ -47,7 +48,7 @@ public class UserAtHomeSensorHandler implements Runnable {
 
                     //Timeout abgelaufen, Status zurücksetzen
                     SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
-                    ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
+                    lock = sensorEditor.writeLock();
                     lock.lock();
 
                     Optional<SensorValue> sensorValueOptional = sensorEditor.getById(userAtHomeValue.getId());
@@ -66,7 +67,7 @@ public class UserAtHomeSensorHandler implements Runnable {
 
                     //erreichbar
                     SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
-                    ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
+                    lock = sensorEditor.writeLock();
                     lock.lock();
 
                     Optional<SensorValue> sensorValueOptional = sensorEditor.getById(userAtHomeValue.getId());
@@ -80,7 +81,7 @@ public class UserAtHomeSensorHandler implements Runnable {
 
                     //nicht erreichbar
                     SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
-                    ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
+                    lock = sensorEditor.writeLock();
                     lock.lock();
 
                     Optional<SensorValue> sensorValueOptional = sensorEditor.getById(userAtHomeValue.getId());
@@ -96,6 +97,12 @@ public class UserAtHomeSensorHandler implements Runnable {
 
             LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), e);
             MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Update Benutzer zu Hause fehlgeschlagen", e));
+        } finally {
+
+            if(lock != null && lock.isHeldByCurrentThread()) {
+
+                lock.unlock();
+            }
         }
     }
 }

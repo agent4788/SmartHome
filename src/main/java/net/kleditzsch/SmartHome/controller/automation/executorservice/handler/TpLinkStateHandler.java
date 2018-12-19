@@ -40,35 +40,61 @@ public class TpLinkStateHandler implements Runnable {
             return;
         }
 
-        try {
+        ReentrantReadWriteLock.WriteLock lock = null;
+        boolean success = false;
+        Exception exception = null;
+        for(int i = 0; i < 3; i++) {
 
-            HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
-            int state = hs100.readState();
+            try {
 
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
-            lock.lock();
+                HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
+                int state = hs100.readState();
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
-            if(switchableOptional.isPresent()) {
+                SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
+                lock = switchableEditor.writeLock();
+                lock.lock();
 
-                if(state == 1 && !socket.isInverse() || state == 0 && socket.isInverse()) {
+                Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
+                if(switchableOptional.isPresent()) {
 
-                    switchableOptional.get().setState(Switchable.State.ON);
-                } else {
+                    if(state == 1 && !socket.isInverse() || state == 0 && socket.isInverse()) {
 
-                    switchableOptional.get().setState(Switchable.State.OFF);
+                        switchableOptional.get().setState(Switchable.State.ON);
+                    } else {
+
+                        switchableOptional.get().setState(Switchable.State.OFF);
+                    }
+                    LoggerUtil.getLogger(this.getClass()).finest("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " wurde erfolgreich aktualisiert");
                 }
-                LoggerUtil.getLogger(this.getClass()).finest("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " wurde erfolgreich aktualisiert");
+                success = true;
+            } catch (IOException e) {
+
+                exception = e;
+            } finally {
+
+                if(lock != null && lock.isHeldByCurrentThread()) {
+
+                    lock.unlock();
+                }
             }
 
-            lock.unlock();
+            //bei misserfolg 2,5 Sekunden warten und erneut probieren
+            if (!success) {
 
-        } catch (IOException e) {
+                try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+
+                    return;
+                }
+            }
+        }
+
+        if(!success) {
 
             //Steckdose nicht erreichbar
             LoggerUtil.getLogger(this.getClass()).finer("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden");
-            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden", e));
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " konnte nicht erreicht werden", exception));
         }
     }
 }

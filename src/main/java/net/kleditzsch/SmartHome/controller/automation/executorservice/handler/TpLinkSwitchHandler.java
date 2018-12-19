@@ -58,58 +58,77 @@ public class TpLinkSwitchHandler implements Runnable {
             return;
         }
 
-        try {
+        ReentrantReadWriteLock.WriteLock lock = null;
+        boolean success = false;
+        Exception exception = null;
 
-            //Steckdosenobjekt erzeugen
-            HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
+        for(int i = 0; i < 3; i++) {
 
-            final Switchable.State newSate;
-            if ((switchCommand == SwitchCommands.on && !socket.isInverse())
-                    || (switchCommand == SwitchCommands.off && socket.isInverse())) {
+            try {
 
-                //Steckdose einschalten
-                hs100.switchOn();
-                newSate = AutomationElement.State.ON;
+                //Steckdosenobjekt erzeugen
+                HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
 
-            } else if (switchCommand == SwitchCommands.off && !socket.isInverse()
-                    || (switchCommand == SwitchCommands.on && socket.isInverse())) {
+                final Switchable.State newSate;
+                if ((switchCommand == SwitchCommands.on && !socket.isInverse())
+                        || (switchCommand == SwitchCommands.off && socket.isInverse())) {
 
-                //Steckdose ausschalten
-                hs100.switchOff();
-                newSate = AutomationElement.State.OFF;
-
-            } else {
-
-                //Steckdose Umschalten
-                int state = hs100.readState();
-                if(state == 1) {
-
-                    hs100.switchOff();
-                    newSate = AutomationElement.State.OFF;
-                } else {
-
+                    //Steckdose einschalten
                     hs100.switchOn();
                     newSate = AutomationElement.State.ON;
+
+                } else if (switchCommand == SwitchCommands.off && !socket.isInverse()
+                        || (switchCommand == SwitchCommands.on && socket.isInverse())) {
+
+                    //Steckdose ausschalten
+                    hs100.switchOff();
+                    newSate = AutomationElement.State.OFF;
+
+                } else {
+
+                    //Steckdose Umschalten
+                    int state = hs100.readState();
+                    if(state == 1) {
+
+                        hs100.switchOff();
+                        newSate = AutomationElement.State.OFF;
+                    } else {
+
+                        hs100.switchOn();
+                        newSate = AutomationElement.State.ON;
+                    }
+                }
+
+                //Status speichern
+                SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
+                lock = switchableEditor.writeLock();
+                lock.lock();
+
+                Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
+                switchableOptional.ifPresent(switchable -> {
+
+                    switchable.setState(newSate);
+                    switchable.setLastToggleTime(LocalDateTime.now());
+                });
+
+                success = true;
+            } catch (IOException e) {
+
+                exception = e;
+            } finally {
+
+                if(lock != null && lock.isHeldByCurrentThread()) {
+
+                    lock.unlock();
                 }
             }
+        }
 
-            //Status speichern
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
-            lock.lock();
+        if(!success) {
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
-            switchableOptional.ifPresent(switchable -> {
-
-                switchable.setState(newSate);
-                switchable.setLastToggleTime(LocalDateTime.now());
-            });
-
-            lock.unlock();
-        } catch (IOException e) {
-
-            LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", e);
-            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", e));
+            //Steckdose nicht erreichbar
+            LoggerUtil.serveException(LoggerUtil.getLogger(this.getClass()), "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", exception);
+            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Schalten der TP-Link Steckdose \"" + socket.getIpAddress() + "\" nicht möglich", exception));
         }
     }
 }

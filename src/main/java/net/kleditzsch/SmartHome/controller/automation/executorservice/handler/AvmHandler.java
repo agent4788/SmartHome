@@ -74,6 +74,7 @@ public class AvmHandler implements Runnable {
         lock.unlock();
 
         //Schaltbefehl ausführen
+        ReentrantReadWriteLock.WriteLock lock1 = null;
         try {
 
             if(deviceOptional.isPresent() && deviceOptional.get().isSwitchSocket()) {
@@ -119,7 +120,7 @@ public class AvmHandler implements Runnable {
                 //Status speichern
                 final Switch.STATE finalNewState = newState;
                 SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-                ReentrantReadWriteLock.WriteLock lock1 = switchableEditor.writeLock();
+                lock1 = switchableEditor.writeLock();
                 lock1.lock();
 
                 Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
@@ -128,8 +129,6 @@ public class AvmHandler implements Runnable {
                     switchable.setState(finalNewState == Switch.STATE.ON ? Switchable.State.ON : Switchable.State.OFF);
                     switchable.setLastToggleTime(LocalDateTime.now());
                 });
-
-                lock1.unlock();
             } else {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht gefunden werden");
@@ -139,6 +138,12 @@ public class AvmHandler implements Runnable {
 
             LoggerUtil.getLogger(this.getClass()).warning("Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht geschalten werden");
             MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht geschalten werden", e));
+        } finally {
+
+            if(lock1 != null && lock1.isHeldByCurrentThread()) {
+
+                lock1.unlock();
+            }
         }
     }
 }
