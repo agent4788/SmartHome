@@ -91,6 +91,13 @@ public class MovieDiscFormServlet extends HttpServlet {
                 disc.setId(ID.create());
                 disc.setName(name);
                 disc.setDescription(description);
+                if (de.getData().size() > 0) {
+
+                    int nextLevel = de.getData().stream().mapToInt(Disc::getOrderId).summaryStatistics().getMax() + 1;
+                    nextLevel = nextLevel >= 0 ? nextLevel : 0;
+                    disc.setOrderId(nextLevel);
+                }
+
                 de.add(disc);
 
                 req.getSession().setAttribute("success", true);
