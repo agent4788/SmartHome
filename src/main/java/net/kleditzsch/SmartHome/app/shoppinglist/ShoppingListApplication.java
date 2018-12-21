@@ -1,8 +1,10 @@
 package net.kleditzsch.SmartHome.app.shoppinglist;
 
-import com.google.gson.GsonBuilder;
+import com.mongodb.client.model.CreateCollectionOptions;
+import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.view.shoppinglist.user.ShoppingListIndexServlet;
+import net.kleditzsch.SmartHome.model.shoppinglist.editor.SuggestionEditor;
+import net.kleditzsch.SmartHome.view.shoppinglist.user.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -15,7 +17,11 @@ public class ShoppingListApplication implements SubApplication {
      */
     public void init() {
 
+        //Vorschläge Collection als Chapped Collection anlegen
+        if(!Application.getInstance().getDatabaseManager().getCollectionNames().contains(SuggestionEditor.COLLECTION)) {
 
+            Application.getInstance().getDatabaseManager().getDatabase().createCollection(SuggestionEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(500).sizeInBytes(5 * 1024 * 1024));
+        }
     }
 
     /**
@@ -27,13 +33,20 @@ public class ShoppingListApplication implements SubApplication {
 
         contextHandler.addServlet(ShoppingListIndexServlet.class, "/shoppinglist/");
         contextHandler.addServlet(ShoppingListIndexServlet.class, "/shoppinglist/index");
+        contextHandler.addServlet(ShoppingListAddListServlet.class, "/shoppinglist/addlist");
+        contextHandler.addServlet(ShoppingListOrderListServlet.class, "/shoppinglist/listorder");
+        contextHandler.addServlet(ShoppingListDeleteListServlet.class, "/shoppinglist/deletelist");
+        contextHandler.addServlet(ShoppingListClearListServlet.class, "/shoppinglist/clearlist");
+        contextHandler.addServlet(ShoppingListClearListItemsServlet.class, "/shoppinglist/clearlistitems");
+        contextHandler.addServlet(ShoppingListPrintServlet.class, "/shoppinglist/printlist");
+        contextHandler.addServlet(ShoppingListAddItemServlet.class, "/shoppinglist/additem");
+        contextHandler.addServlet(ShoppingListDeleteItemServlet.class, "/shoppinglist/deleteitem");
     }
 
     /**
      * startet die Anwendung
      */
     public void start() {
-
 
     }
 

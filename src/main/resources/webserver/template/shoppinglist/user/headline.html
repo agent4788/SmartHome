@@ -35,8 +35,11 @@
             <img src="/static/img/icon/shoppinglist.png" width="32" height="32" class="logo">
             Einkaufsliste
         </a>
+        <a href="/shoppinglist/index" class="item {% if module == 'dash' %}active{% endif %}">
+            Dashboard
+        </a>
         <div class="right menu">
-            <a href="/shoppinglist/admin/index" class="item"><i class="setting icon large"></i></a>
+            <a href="/shoppinglist/index?edit=1" class="item"><i class="alternate pencil icon large"></i></a>
         </div>
     </div>
     <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
@@ -48,9 +51,9 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
-                    <a href="/shoppinglist/admin/index" class="item">
-                        <i class="setting icon large"></i>
-                        Einstellungen
+                    <a href="/shoppinglist/index?edit=1" class="item">
+                        <i class="alternate pencil icon large"></i>
+                        berarbeiten
                     </a>
                 </div>
             </div>

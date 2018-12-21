@@ -73,7 +73,7 @@ public abstract class Element {
      */
     public void setName(String name) {
 
-        if(name != null && name.trim().length() >= 3) {
+        if(name != null && name.trim().length() >= 1) {
 
             this.name = name;
             setChangedData();

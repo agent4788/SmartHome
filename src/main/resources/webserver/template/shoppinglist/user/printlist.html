@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Einkaufsliste</title>
+    {% include '/webserver/template/header.html' %}
+    <style type="text/css">
+
+        .hidden {
+
+            display: none;
+        }
+
+        .showing {
+
+            display: block;
+        }
+
+        @media print {
+
+            @page {
+
+                size: portrait
+            }
+
+            body {
+
+                background: #ffffff;
+                font-family: "times new roman", times, serif;
+                font-size: 12px;
+                height: auto;
+            }
+
+            .noprint {
+
+                display: none;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.ui.checkbox').checkbox();
+        });
+
+        var display = false;
+        function chooser() {
+
+            if(!display) {
+
+                //Checkboxen anzeigen
+                $('.check').removeClass('hidden');
+                $('.check').addClass('showing');
+                display = true;
+            } else {
+
+                //Formular abschicken
+                $('#clearChoosedItems').submit();
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="noprint">
+    {% include '/webserver/template/shoppinglist/user/headline.html' %}
+</div>
+<main class="ui main container">
+    <form class="ui form" method="post" action="/shoppinglist/clearlistitems" id="clearChoosedItems">
+        <input type="hidden" name="list" value="{{ list.getId().get() | escape }}">
+        <h1 class="ui header top attached">{{ list.getName() | escape }}</h1>
+        {% if message is defined %}
+        <div class="ui message icon attached error">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ message | escape }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <div class="ui grid">
+                <div class="eight wide column">
+                    <div class="ui relaxed divided list">
+                        {% for item in list.getItems() %}
+                        {% if loop.index0 % 2 == 0 %}
+                        <div class="item">
+                            <div class="content">
+                                <div class="right floated content noprint check hidden">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" name="clear" value="{{ item.getId().get() | escape }}" checked>
+                                    </div>
+                                </div>
+                                <div class="header">{{ item.getName() | escape }}</div>
+                                {% if item.getAmount().isPresent() %}
+                                <div class="description">{{ item.getAmount().get() | escape }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="eight wide column">
+                    <div class="ui relaxed divided list">
+                        {% for item in list.getItems() %}
+                        {% if loop.index0 % 2 == 1 %}
+                        <div class="item">
+                            <div class="content">
+                                <div class="right floated content noprint check hidden">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" name="clear" value="{{ item.getId().get() | escape }}" checked>
+                                    </div>
+                                </div>
+                                <div class="header">{{ item.getName() | escape }}</div>
+                                {% if item.getAmount().isPresent() %}
+                                <div class="description">{{ item.getAmount().get() | escape }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="ui segment bottom attached clearing noprint" style="margin-bottom:30px;">
+            <div class="ui secondary basic button right floated" onclick="window.print()">Drucken</div>
+            <a class="ui secondary basic button right floated" href="/shoppinglist/clearlist?id={{ list.getId().get() | escape }}">alle Artikel l&ouml;schen</a>
+            <div class="ui secondary basic button right floated" onclick="chooser()">Auswahl l&ouml;schen</div>
+            <div class="ui secondary basic button right floated" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+    </form>
+</main>
+</body>
+</html>
