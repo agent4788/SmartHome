@@ -60,7 +60,7 @@ public class NetworkNasStateServlet extends HttpServlet {
         settingsLock.unlock();
 
         //Daten vom Drucker laden
-        if(!nasIp.isBlank()) {
+        if(!nasIp.equals("0.0.0.0")) {
 
             try {
 

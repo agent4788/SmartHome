@@ -64,7 +64,7 @@ public class NetworkPrinterStateServlet extends HttpServlet {
         settingsLock.unlock();
 
         //Daten vom Drucker laden
-        if(!printerIp.isBlank()) {
+        if(!printerIp.equals("0.0.0.0")) {
 
             try {
 

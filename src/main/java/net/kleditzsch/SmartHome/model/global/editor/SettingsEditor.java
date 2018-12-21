@@ -171,9 +171,9 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(tmdbApiKey);
 
         //Netzwerk Einstellungen
-        StringSetting printerSTateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "", "");
+        StringSetting printerSTateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "0.0.0.0", "0.0.0.0");
         knownSettings.add(printerSTateIp);
-        StringSetting nasStateIp = new StringSetting(NETWORK_NAS_STATE_IP, "", "");
+        StringSetting nasStateIp = new StringSetting(NETWORK_NAS_STATE_IP, "0.0.0.0", "0.0.0.0");
         knownSettings.add(nasStateIp);
     }
 
