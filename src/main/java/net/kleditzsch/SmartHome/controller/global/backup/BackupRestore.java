@@ -1,7 +1,5 @@
 package net.kleditzsch.SmartHome.controller.global.backup;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.mongodb.client.MongoCollection;
@@ -9,7 +7,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.database.DatabaseManager;
 import net.kleditzsch.SmartHome.global.database.exception.DatabaseException;
 import net.kleditzsch.SmartHome.model.global.backup.BackupFile;
@@ -18,7 +15,7 @@ import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
-import net.kleditzsch.SmartHome.model.shoppinglist.editor.SuggestionEditor;
+import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 import org.bson.Document;
@@ -28,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -383,9 +379,9 @@ public class BackupRestore {
                         db.getCollection(collectionName).drop();
 
                         //Verschläge Collection als Chapped Collection anlegen
-                        if(collectionName.equalsIgnoreCase(SuggestionEditor.COLLECTION)) {
+                        if(collectionName.equalsIgnoreCase(ShoppingItemSuggestionEditor.COLLECTION)) {
 
-                            dbm.getDatabase().createCollection(SuggestionEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(500).sizeInBytes(5 * 1024 * 1024));
+                            dbm.getDatabase().createCollection(ShoppingItemSuggestionEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(500).sizeInBytes(5 * 1024 * 1024));
                         }
 
                         //Collection wiederherstellen
