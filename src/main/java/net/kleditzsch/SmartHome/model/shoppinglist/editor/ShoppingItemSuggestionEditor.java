@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Verwaltet die Vorschläge für Artikel
  */
-public class SuggestionEditor {
+public class ShoppingItemSuggestionEditor {
 
     public static final String COLLECTION = "shoppinglist.suggestion";
 
@@ -25,7 +25,7 @@ public class SuggestionEditor {
     /**
      * @param suggestions Liste der Verschläge
      */
-    private SuggestionEditor(Set<String> suggestions) {
+    private ShoppingItemSuggestionEditor(Set<String> suggestions) {
 
         this.suggestions = suggestions;
     };
@@ -35,7 +35,7 @@ public class SuggestionEditor {
      *
      * @return Vorschlagseditor
      */
-    public static SuggestionEditor create() {
+    public static ShoppingItemSuggestionEditor create() {
 
         MongoCollection suggestionCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         FindIterable<Document> iterator = suggestionCollection.find()
@@ -46,7 +46,7 @@ public class SuggestionEditor {
 
             suggestions.add(document.getString("name"));
         }
-        return new SuggestionEditor(suggestions);
+        return new ShoppingItemSuggestionEditor(suggestions);
     }
 
     /**

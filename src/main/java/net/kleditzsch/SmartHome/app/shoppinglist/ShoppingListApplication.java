@@ -3,7 +3,7 @@ package net.kleditzsch.SmartHome.app.shoppinglist;
 import com.mongodb.client.model.CreateCollectionOptions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
-import net.kleditzsch.SmartHome.model.shoppinglist.editor.SuggestionEditor;
+import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.view.shoppinglist.user.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -18,9 +18,9 @@ public class ShoppingListApplication implements SubApplication {
     public void init() {
 
         //Vorschläge Collection als Chapped Collection anlegen
-        if(!Application.getInstance().getDatabaseManager().getCollectionNames().contains(SuggestionEditor.COLLECTION)) {
+        if(!Application.getInstance().getDatabaseManager().getCollectionNames().contains(ShoppingItemSuggestionEditor.COLLECTION)) {
 
-            Application.getInstance().getDatabaseManager().getDatabase().createCollection(SuggestionEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(500).sizeInBytes(5 * 1024 * 1024));
+            Application.getInstance().getDatabaseManager().getDatabase().createCollection(ShoppingItemSuggestionEditor.COLLECTION, new CreateCollectionOptions().capped(true).maxDocuments(500).sizeInBytes(5 * 1024 * 1024));
         }
     }
 

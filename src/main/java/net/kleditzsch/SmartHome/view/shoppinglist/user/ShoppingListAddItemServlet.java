@@ -2,7 +2,7 @@ package net.kleditzsch.SmartHome.view.shoppinglist.user;
 
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingListEditor;
-import net.kleditzsch.SmartHome.model.shoppinglist.editor.SuggestionEditor;
+import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.model.shoppinglist.list.Item;
 import net.kleditzsch.SmartHome.model.shoppinglist.list.ShoppingList;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
@@ -44,8 +44,8 @@ public class ShoppingListAddItemServlet extends HttpServlet {
                 if(ShoppingListEditor.updateShoppingList(list)) {
 
                     //Name als Vorschlag speichern
-                    SuggestionEditor suggestionEditor = SuggestionEditor.create();
-                    suggestionEditor.addSuggestion(name);
+                    ShoppingItemSuggestionEditor shoppingItemSuggestionEditor = ShoppingItemSuggestionEditor.create();
+                    shoppingItemSuggestionEditor.addSuggestion(name);
 
                     //speichern erfolgreich
                     req.getSession().setAttribute("success", true);

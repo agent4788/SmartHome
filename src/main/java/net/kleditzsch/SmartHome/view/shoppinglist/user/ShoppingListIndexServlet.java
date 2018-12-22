@@ -1,12 +1,8 @@
 package net.kleditzsch.SmartHome.view.shoppinglist.user;
 
-import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingListEditor;
-import net.kleditzsch.SmartHome.model.shoppinglist.editor.SuggestionEditor;
-import net.kleditzsch.SmartHome.model.shoppinglist.list.Item;
+import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.model.shoppinglist.list.ShoppingList;
-import net.kleditzsch.SmartHome.util.collection.CollectionUtil;
-import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -17,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ShoppingListIndexServlet extends HttpServlet {
 
@@ -43,8 +38,8 @@ public class ShoppingListIndexServlet extends HttpServlet {
         model.with("maxOrderId", shoppingLists.stream().mapToInt(ShoppingList::getOrderId).summaryStatistics().getMax());
 
         //Verschläge laden
-        SuggestionEditor suggestionEditor = SuggestionEditor.create();
-        model.with("suggestions", suggestionEditor.listSuggestions());
+        ShoppingItemSuggestionEditor shoppingItemSuggestionEditor = ShoppingItemSuggestionEditor.create();
+        model.with("suggestions", shoppingItemSuggestionEditor.listSuggestions());
 
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {
