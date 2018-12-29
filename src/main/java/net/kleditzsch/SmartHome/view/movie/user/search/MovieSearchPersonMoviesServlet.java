@@ -99,6 +99,7 @@ public class MovieSearchPersonMoviesServlet extends HttpServlet {
         } else {
 
             //kein Suchbegriff eingegeben
+            model.with("errorMessage", "Ungültige Personen ID");
         }
 
         //Viewport
