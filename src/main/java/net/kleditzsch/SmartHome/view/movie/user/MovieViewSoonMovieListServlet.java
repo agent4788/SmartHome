@@ -60,7 +60,6 @@ public class MovieViewSoonMovieListServlet extends HttpServlet {
 
         ListPagination pagination = new ListPagination(newestMovies, elementsAtPage, index);
         pagination.setBaseLink("/movie/viewsoonmovies?index=");
-        List<Movie> moviesAtPage = MovieEditor.listMovies(pagination.getCurrentPageIndex(), pagination.getElementsAtPage());
         model.with("pagination", pagination);
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
 
