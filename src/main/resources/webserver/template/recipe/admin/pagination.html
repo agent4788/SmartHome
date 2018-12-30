@@ -1,0 +1,35 @@
+{% if pagination.isCurrentPageEqualFirstPage() == false %}
+<a class="icon item" href="{{ pagination.getBaseLink() }}{{ pagination.getFirstPageIndex() }}">
+    <i class="left chevron icon"></i>
+    <i class="left chevron icon"></i>
+</a>
+{% endif %}
+{% if pagination.hasPreviousPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getPreviousPageIndex() }}">
+    <i class="left chevron icon"></i>
+</a>
+{% endif %}
+{% if pagination.hasSecondPreviousPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getSecondPreviousPageIndex() }}">{{ pagination.getSecondPreviousPageLabel() }}</a>
+{% endif %}
+{% if pagination.hasPreviousPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getPreviousPageIndex() }}">{{ pagination.getPreviousPageLabel() }}</a>
+{% endif %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getCurrentPageIndex() }}">{{ pagination.getCurrentPageLabel() }}</a>
+{% if pagination.hasNextPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getNextPageIndex() }}">{{ pagination.getNextPageLabel() }}</a>
+{% endif %}
+{% if pagination.hasSecondNextPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getSecondNextPageIndex() }}">{{ pagination.getSecondNextPageLabel() }}</a>
+{% endif %}
+{% if pagination.hasNextPage() %}
+<a class="item" href="{{ pagination.getBaseLink() }}{{ pagination.getNextPageIndex() }}">
+    <i class="right chevron icon"></i>
+</a>
+{% endif %}
+{% if pagination.isCurrentPageEqualLastPage() == false %}
+<a class="icon item"  href="{{ pagination.getBaseLink() }}{{ pagination.getLastPageIndex() }}">
+    <i class="right chevron icon"></i>
+    <i class="right chevron icon"></i>
+</a>
+{% endif %}

@@ -7,9 +7,156 @@
     <link rel="manifest" href="/static/manifest/recipemanifest.json">
 </head>
 <body>
-{% include '/webserver/template/recipe/user/headline.html' %}
-<main class="ui main container">
-
+{% include '/webserver/template/recipe/user/headline.html' with {module: 'dash'} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">neuste Rezepte {% if newestMoviesCount > 4 %}<a class="ui button right floated" href="/recipe/newrecipes">alle</a>{% endif %}</h1>
+        {% if newestRecipes.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in newestRecipes %}
+            <div class="card" onclick="window.location = '/recipe/recipeview?id={{ element.getId().get() }}'">
+                <div class="image">
+                    {% if element.isBookmark() %}
+                    <a class="ui right corner label orange">
+                        <i class="bookmark icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if (element.getImageFile() != null) and (not element.getImageFile() == '') %}
+                    <img src="/recipe/image?file={{ element.getImageFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getName() | escape }}</div>
+                    </div>
+                </div>
+                <div class="extra content">
+                <span class="right floated">
+                    {% if element.getDifficulty() == 'LIGHT' %}Leicht
+                    {% elseif element.getDifficulty() == 'MEDIUM' %}Mittel
+                    {% elseif element.getDifficulty() == 'HEAVY' %}Schwer
+                    {% endif %}
+                </span>
+                    <span>
+                    <i class="clock outline icon"></i>
+                    {{ element.getTotalDuration() | minuteformat }}
+                </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="ui placeholder bottom attached segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Keine Rezepte vohanden
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% if bookmarkRecipes.size() > 0 %}
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">Merkliste {% if bookmarkRecipesCount > 4 %}<a class="ui button right floated" href="/recipe/bookmarkrecipes">alle</a>{% endif %}</h1>
+        {% if bookmarkRecipes.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in bookmarkRecipes %}
+            <div class="card" onclick="window.location = '/recipe/recipeview?id={{ element.getId().get() }}'">
+                <div class="image">
+                    {% if newestRecipeIds.contains(element.getId().get()) %}
+                    <a class="ui left corner label blue">
+                        <i class="star yellow icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if (element.getImageFile() != null) and (not element.getImageFile() == '') %}
+                    <img src="/recipe/image?file={{ element.getImageFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getName() | escape }}</div>
+                    </div>
+                </div>
+                <div class="extra content">
+                <span class="right floated">
+                    {% if element.getDifficulty() == 'LIGHT' %}Leicht
+                    {% elseif element.getDifficulty() == 'MEDIUM' %}Mittel
+                    {% elseif element.getDifficulty() == 'HEAVY' %}Schwer
+                    {% endif %}
+                </span>
+                    <span>
+                    <i class="clock outline icon"></i>
+                    {{ element.getTotalDuration() | minuteformat }}
+                </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="ui placeholder bottom attached segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Keine Rezepte vohanden
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">zuf&auml;llige Rezepte</h1>
+        {% if newestRecipes.size() > 0 %}
+        <div class="ui link cards four column doubling stackable bottom attached">
+            {% for element in randomRecipe %}
+            <div class="card" onclick="window.location = '/recipe/recipeview?id={{ element.getId().get() }}'">
+                <div class="image">
+                    {% if newestRecipeIds.contains(element.getId().get()) %}
+                    <a class="ui left corner label blue">
+                        <i class="star yellow icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if element.isBookmark() %}
+                    <a class="ui right corner label orange">
+                        <i class="bookmark icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if (element.getImageFile() != null) and (not element.getImageFile() == '') %}
+                    <img src="/recipe/image?file={{ element.getImageFile() }}">
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <div class="ui">
+                        <div class="header">{{ element.getName() | escape }}</div>
+                    </div>
+                </div>
+                <div class="extra content">
+                <span class="right floated">
+                    {% if element.getDifficulty() == 'LIGHT' %}Leicht
+                    {% elseif element.getDifficulty() == 'MEDIUM' %}Mittel
+                    {% elseif element.getDifficulty() == 'HEAVY' %}Schwer
+                    {% endif %}
+                </span>
+                    <span>
+                    <i class="clock outline icon"></i>
+                    {{ element.getTotalDuration() | minuteformat }}
+                </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="ui placeholder bottom attached segment">
+            <div class="ui icon header">
+                <i class="pdf file outline icon"></i>
+                Keine Rezepte vohanden
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </main>
 </body>
 </html>

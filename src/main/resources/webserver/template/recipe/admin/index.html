@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezepte Admin</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/recipe/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div class="ui link cards four column doubling stackable">
+            <div class="card" onclick="window.location = '/recipe/admin/ingredient'">
+                <div class="image">
+                    <img src="/static/img/icon/ingredient.png">
+                </div>
+                <div class="content">
+                    <div class="header">Zutaten</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/recipe/admin/tag'">
+                <div class="image">
+                    <img src="/static/img/icon/tag.png">
+                </div>
+                <div class="content">
+                    <div class="header">Tags</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/recipe/admin/settings'">
+                <div class="image">
+                    <img src="/static/img/icon/settings.png">
+                </div>
+                <div class="content">
+                    <div class="header">Einstellungen</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

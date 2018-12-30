@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Essensliste</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="stylesheet" type="text/css" href="/static/lightbox/css/lightbox.min.css">
+    <script src="/static/lightbox/js/lightbox.min.js" type="text/javascript"></script>
+</head>
+<body>
+{% include '/webserver/template/recipe/user/headline.html' with {module: 'foodlist'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Essensliste</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if pagination.getSize() > 0 %}
+    <div class="ui bottom attached segment">
+        <div class="ui divided items">
+            {% for element in pagination.getCurrentPageElements() %}
+            <div class="item">
+                <div class="image">
+                    {% if newestRecipeIds.contains(element.getId().get()) %}
+                    <a class="ui left corner label blue">
+                        <i class="star yellow icon"></i>
+                    </a>
+                    {% endif %}
+                    {% if (element.getImageFile() != null) and (not element.getImageFile() == '') %}
+                    <a href="/recipe/image?file={{ element.getImageFile() }}" data-lightbox="{{ randomstr() }}">
+                        <img src="/recipe/image?file={{ element.getImageFile() }}" class="ui huge image">
+                    </a>
+                    {% else %}
+                    <img src="/static/img/noimage.gif">
+                    {% endif %}
+                </div>
+                <div class="content">
+                    <a class="header" href="/recipe/recipeview?id={{ element.getId().get() }}">{{ element.getName() | escape }}</a>
+                    <p>{{ element.getDescription().orElse('') | escape }}</p>
+                    <div class="extra">
+                        <a class="ui right floated red basic button" href="/recipe/updatefoodlist?id={{ element.getId().get() }}&foodlist=0&refToList">
+                            <i class="remove icon"></i>
+                            entfernen
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="ui placeholder bottom attached segment">
+        <div class="ui icon header">
+            <i class="pdf file outline icon"></i>
+            Keine Rezepte auf der Essensliste
+        </div>
+    </div>
+    {% endif %}
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/recipe/user/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>

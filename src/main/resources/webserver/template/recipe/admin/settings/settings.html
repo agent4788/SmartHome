@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezept Einstellungen</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.menu .item').tab();
+            $('.ui.dropdown').dropdown();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/recipe/admin/headline.html' with {module: 'settings'} %}
+<main class="ui main container">
+    <form class="ui form" method="post" action="/recipe/admin/settings">
+        <h1 class="ui header top attached">Einstellungen</h1>
+        {% if success is defined %}
+        <div class="ui visible message icon attached {% if success %}success{% else %}error{% endif %}">
+            {% if success %}
+            <i class="check icon green"></i>
+            <div class="content">
+                <p>Die Einstellungen wurden erfolgreich gespeichert</p>
+            </div>
+            {% else %}
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>Die Einstellungen konnten nicht gespeichert werden</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="ui segment attached">
+            <div class="ui top attached tabular menu">
+                <div data-tab="general" class="item active" style="cursor: pointer;">Allgemein</div>
+                <div data-tab="pagination" class="item" style="cursor: pointer;">Bl&auml;ttern</div>
+            </div>
+            <div data-tab="general" class="ui bottom attached tab segment active">
+                <div class="field required">
+                    <label>Anzahl der neusten Rezepte</label>
+                    <input name="newesRecipeCount" type="number" min="0" max="250" step="1" value="{{ newesRecipeCount | escape }}" required>
+                </div>
+                <div class="field required">
+                    <label>Einkaufsliste</label>
+                    <select class="ui dropdown" name="shoppingList" required>
+                        {% for id, shoppingList in shoppingListMap %}
+                        <option value="{{ id | escape }}"{% if id == shoppingListId %}selected{% endif %}>{{ shoppingList.getName | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div data-tab="pagination" class="ui bottom attached tab segment">
+                <div class="field required">
+                    <label>Anzahl der Rezepte pro Seite (UCP)</label>
+                    <input name="paginationUcp" type="number" min="1" max="250" step="1" value="{{ paginationUcp | escape }}" required>
+                </div>
+                <div class="field required">
+                    <label>Anzahl der Elemente pro Seite (ACP)</label>
+                    <input name="paginationAcp" type="number" min="1" max="250" step="1" value="{{ paginationAcp | escape }}" required>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <input type="submit" class="ui button primary" value="speichern">
+            <input type="reset" class="ui button" value="reset">
+        </div>
+    </form>
+</main>
+</body>
+</html>

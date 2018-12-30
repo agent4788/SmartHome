@@ -1,9 +1,29 @@
 <script type="text/javascript">
 
+    function search() {
+
+        var value = $('#searchInput').val() ? $('#searchInput').val() : $('#mobileSearchInput').val();
+        window.location = '/recipe/search?query=' + value;
+    }
+
     var mobileView = {% if mobileView %}true{% else %}false{% endif %};
     $(function() {
 
         $('.ui.dropdown').dropdown();
+
+        $('.ui.search i').click(function () {
+            search();
+        });
+
+        $('#mobilSearchButton').click(function () {
+            search();
+        });
+
+        $('.ui.search input').keydown(function (e) {
+            if(e.which == 13) {
+                search();
+                 }
+        });
 
         //Bildschirmorientierung ermitteln
         var height = $(window).height();
@@ -35,7 +55,83 @@
             <img src="/static/img/icon/recipe.png" width="32" height="32" class="logo">
             Rezepte
         </a>
+        <a class="header item {% if module == 'dash' %}active{% endif %}" href="/recipe/index">
+            Dashboard
+        </a>
+        <a class="header item {% if module == 'recipe' %}active{% endif %}" href="/recipe/recipe">
+            Rezepte
+        </a>
+        <a class="header item {% if module == 'foodlist' %}active{% endif %}" href="/recipe/foodlist">
+            Essensliste
+        </a>
         <div class="right menu">
+            <div class="item">
+                <div class="ui icon input search">
+                    <input placeholder="Suchen..." type="text" id="searchInput">
+                    <i class="search link icon"></i>
+                </div>
+            </div>
+            <div class="ui icon item dropdown">
+                <i class="pencil alternate icon large"></i>
+                <div class="menu">
+                    <a class="item" href="/recipe/recipeform">
+                        <i class="icon plus"></i>
+                        hinzuf&uuml;gen
+                    </a>
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/recipe/recipeform?id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#recipeDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui divider"></div>
+                    <h6 class="item header">Rezept Daten</h6>
+                    <a class="item" href="/recipe/recipeview?edit=ingredient&id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        Zutaten
+                    </a>
+                    <a class="item" href="/recipe/recipeview?edit=workstep&id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        Arbeistschritte
+                    </a>
+                    <a class="item" href="/recipe/recipeview?edit=linkedrecipe&id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        Beilagen
+                    </a>
+                    <a class="item" href="/recipe/recipeview?edit=tag&id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        Tags
+                    </a>
+                    <a class="item" href="/recipe/recipeview?id={{ id | escape }}">
+                        <i class="icon left arrow"></i>
+                        zur&uuml;ck
+                    </a>
+                    <div class="ui basic modal" id="recipeDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Rezept l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du das Rezept l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/recipe/recipedelete?id={{ id }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
             <a href="/recipe/admin/index" class="item"><i class="setting icon large"></i></a>
         </div>
     </div>
@@ -48,11 +144,77 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
+                    <div class="item" onclick="$('#searchModal').modal('show');">
+                        <i class="search icon large"></i>
+                        suchen
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="ui icon item dropdown">
+                        <i class="pencil alternate icon large"></i>
+                        bearbeiten
+                        <div class="menu">
+                            <a class="item" href="/recipe/recipeform">
+                                <i class="icon plus"></i>
+                                hinzuf&uuml;gen
+                            </a>
+                            {% if id %}
+                            <div class="ui divider"></div>
+                            <a class="item" href="/recipe/recipeform?id={{ id | escape }}">
+                                <i class="icon pencil alternate"></i>
+                                bearbeiten
+                            </a>
+                            <a class="item" onclick="$('#recipeDeleteSafetyRequest').modal('show')">
+                                <i class="icon remove"></i>
+                                l&ouml;schen
+                            </a>
+                            <div class="ui basic modal" id="recipeDeleteSafetyRequest">
+                                <div class="ui icon header">
+                                    <i class="delete icon"></i>
+                                    Rezept l&ouml;schen
+                                </div>
+                                <div class="content">
+                                    <p>Bist du sicher das du das Rezept l&ouml;schen m&ouml;chtest?</p>
+                                </div>
+                                <div class="actions">
+                                    <div class="ui red basic cancel inverted button">
+                                        <i class="remove icon"></i>
+                                        Nein
+                                    </div>
+                                    <div class="ui green ok inverted button" onclick="window.location = '/recipe/recipedelete?id={{ id }}'">
+                                        <i class="checkmark icon"></i>
+                                        Ja
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                     <a href="/recipe/admin/index" class="item">
                         <i class="setting icon large"></i>
                         Einstellungen
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui modal" id="searchModal">
+        <i class="close icon"></i>
+        <div class="header">
+            Suche
+        </div>
+        <div class="image content">
+            <div class="ui icon input search fluid">
+                <input placeholder="Suchen..." type="text" id="mobileSearchInput">
+                <i class="search link icon"></i>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                abbrechen
+            </div>
+            <div class="ui positive right labeled icon button" id="mobilSearchButton">
+                suchen
+                <i class="search icon"></i>
             </div>
         </div>
     </div>

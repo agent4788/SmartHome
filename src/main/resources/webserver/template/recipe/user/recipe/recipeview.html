@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.getName() | escape }}</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="stylesheet" type="text/css" href="/static/lightbox/css/lightbox.min.css">
+    <script src="/static/lightbox/js/lightbox.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var bookmarkState = {{ recipe.isBookmark() }};
+        function updateBookmarkState() {
+
+            $.ajax({
+                url: "/recipe/updatebookmark?id={{ recipe.getId().get() }}&bookmark=" + (bookmarkState == true ? "0" : "1"),
+                context: document.body
+            }).done(function(res) {
+                if(parseInt(res) == 1) {
+
+                    bookmarkState = !bookmarkState;
+                    if(bookmarkState == true) {
+
+                        $('#bookmarkButton').removeClass('grey');
+                        $('#bookmarkButton').addClass('green');
+                        $('#bookmarkButtonIcon').removeClass('remove');
+                        $('#bookmarkButtonIcon').addClass('check');
+                    } else {
+
+                        $('#bookmarkButton').removeClass('green');
+                        $('#bookmarkButton').addClass('grey');
+                        $('#bookmarkButtonIcon').removeClass('check');
+                        $('#bookmarkButtonIcon').addClass('remove');
+                    }
+                } else {
+
+                    alert('Das Rezept konnte nicht auf die Merkliste gesetzt werden');
+                }
+            });
+        }
+
+        var content = [
+        {% for ingredient in ingredients %}
+            { title: '{{ ingredient.getName() | escape }}' }{% if not (loop.last) %},{% endif %}
+        {% endfor %}
+        ];
+
+        var ingredients = [
+        {% for ingredient in ingredients %}
+            {
+                id  : '{{ ingredient.getId().get() | escape }}',
+                name: '{{ ingredient.getName() | escape }}',
+                unit: '{{ ingredient.getUnit() | escape }}'
+            }{% if not (loop.last) %},{% endif %}
+        {% endfor %}
+        ];
+
+        function changeIngredientName(name = null) {
+
+            if(name == null) {
+
+                var name = $('#ingredientName').val().trim();
+            }
+            for(var i = 0; i < ingredients.length; i++) {
+
+                console.log(ingredients[i].name + ' == ' + name + ' -> ' + (ingredients[i].name == name));
+                if(ingredients[i].name == name) {
+
+                    $('.ui.form#ingredientAmountForm').form('set values', {
+                        unit : ingredients[i].unit,
+                        ingredientId : ingredients[i].id
+                    });
+                    $('.ui.dropdown').addClass('disabled');
+                }
+            }
+        }
+
+        function editWorkStep(id) {
+
+            $.getJSON('/recipe/workstepdata?id={{ recipe.getId().get() }}&step=' + id)
+                .done(function(data, textStatus) {
+
+                    if(textStatus == 'success' && data.success) {
+
+                        $('.ui.form#workStepForm').form('set values', {
+                            workStepId  : data.id,
+                            description : data.description,
+                            workTime    : data.workTime
+                        });
+                        $('#workStepFormModal').modal('show');
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    alert('Laden der Arbeitsschritt Daten fehlgeschlagen');
+                });
+        }
+
+        function clearWorkStepForm() {
+
+            $('.ui.form#workStepForm').form('set values', {
+                workStepId  : "",
+                description : "",
+                workTime    : 0
+            });
+            $('#workStepFormModal').modal('hide');
+        }
+
+        $(function() {
+
+            $('.ui.checkbox').checkbox();
+            $('.dropdown').dropdown();
+
+            $('.ui.search').search({
+                source: content,
+                onSelect: function(result, response) {
+
+                    changeIngredientName(result.title);
+                }
+            });
+
+            {% if recipe.getLinkedRecipes().size() > 0  %}
+            $('.ui.form#garnishForm').form('set values', {
+                garnishRecipes  : [{% for linkedRecipe in recipe.getLinkedRecipes() %}"{{ linkedRecipe.getRecipeId().get() }}",{% endfor %}]
+            });
+            {% endif %}
+        });
+    </script>
+    <style type="text/css">
+        .ui.basic.segments {
+            box-shadow: none;
+            border: none;
+        }
+        .ui.basic.segments .ui.segment{
+            box-shadow: none;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+{% include '/webserver/template/recipe/user/headline.html' with {module: 'recipe', id: recipe.getId().get() } %}
+<main class="ui main container">
+    {% if success is defined %}
+    <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if recipe %}
+    <div class="ui segment top attached">
+        <div class="ui grid stackable">
+            <div class="column four wide">
+                <div class="ui segments basic">
+                    <div class="ui segment center aligned">
+                        {% if (recipe.getImageFile() != null) and (not recipe.getImageFile() == '') %}
+                        <a href="/recipe/image?file={{ recipe.getImageFile() }}" data-lightbox="{{ randomstr() }}">
+                            <img src="/recipe/image?file={{ recipe.getImageFile() }}" class="ui huge image">
+                        </a>
+                        {% else %}
+                        <img src="/static/img/noimage.gif">
+                        {% endif %}
+                        <div style="margin-top: 15px;" class="ui labeled icon button basic {% if recipe.isBookmark() %}green{% else %}grey{% endif %}" id="bookmarkButton" onclick="updateBookmarkState()">
+                            <i class="{% if recipe.isBookmark() %}check{% else %}remove{% endif %} icon" id="bookmarkButtonIcon"></i>Merkliste
+                        </div>
+                        <div style="margin-top: 15px;" class="ui labeled icon button basic {% if recipe.isFoodList() %}green{% else %}grey{% endif %}" id="foodListButton" onclick="{% if recipe.isFoodList() %}window.location = '/recipe/foodlist'{% else %}$('#foodListFormModal').modal('show');{% endif %}">
+                            <i class="{% if recipe.isFoodList() %}check{% else %}remove{% endif %} icon" id="foodListButtonIcon"></i>Kochen
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column twelve wide">
+                <div class="ui basic segments">
+                    <div class="ui segment">
+                        <h1 class="ui header">{{ recipe.getName() | escape }}</h1>
+                    </div>
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Beschreibung</h4>
+                        <div class="ui text">
+                            {{ recipe.getDescription().get() | escapenl }}
+                        </div>
+                    </div>
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Infos</h4>
+                        <div class="ui {% if recipe.getWorkDuration().isPresent() %}two{% else %}three{% endif %} statistics mini stackable">
+                            <div class="statistic">
+                                <div class="label">
+                                    Gesamtzeit
+                                </div>
+                                <div class="value">
+                                    {{ recipe.getTotalDuration() | minuteformat }}
+                                </div>
+                            </div>
+                            {% if recipe.getWorkDuration().isPresent() %}
+                            <div class="statistic">
+                                <div class="label">
+                                    Aktive Zeit
+                                </div>
+                                <div class="value">
+                                    {{ recipe.getWorkDuration().get() | minuteformat }}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="statistic">
+                                <div class="label">
+                                    Art
+                                </div>
+                                <div class="value">
+                                    {% if recipe.getType() == 'MAIN_DISH' %}Hauptgericht
+                                    {% elseif recipe.getType() == 'STARTER' %}Vorspeise
+                                    {% elseif recipe.getType() == 'DESSERT' %}Dessert
+                                    {% elseif recipe.getType() == 'CAKE' %}Kuchen
+                                    {% elseif recipe.getType() == 'COOKIES' %}Kekse
+                                    {% elseif recipe.getType() == 'GARNISH' %}Beilege
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="statistic">
+                                <div class="label">
+                                    Schwierigkeit
+                                </div>
+                                <div class="value">
+                                    {% if recipe.getDifficulty() == 'LIGHT' %}Leicht
+                                    {% elseif recipe.getDifficulty() == 'MEDIUM' %}Mittel
+                                    {% elseif recipe.getDifficulty() == 'HEAVY' %}Schwer
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if recipe.getIngredientAmounts().size() > 0 or edit == 'ingredient' %}
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Zutaten</h4>
+                        {% if edit == 'ingredient' %}
+                        <table class="ui table">
+                            <thead>
+                                <tr>
+                                    <th class="eight wide">Zutat</th>
+                                    <th class="six wide">Menge</th>
+                                    <th class="two wide"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                   <td colspan="3">
+                                       <div class="ui basic button green" onclick="$('#ingredientAmountFormModal').modal('show');">hinzuf&uuml;gen</div>
+                                   </td>
+                                </tr>
+                                {% for amount in recipe.getIngredientAmounts() %}
+                                {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
+                                <tr>
+                                    <td>{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
+                                    <td>{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                    <td>
+                                        <div class="ui icon button basic red" title="Zutat l&ouml;schen" onclick="$('#a{{ amount.getId().get() | escape}}').modal('show');"><i class="remove icon"></i></div>
+                                        <div class="ui basic modal" id="a{{ amount.getId().get() | escape}}">
+                                            <div class="ui icon header">
+                                                <i class="delete icon"></i>
+                                                Zutat l&ouml;schen
+                                            </div>
+                                            <div class="content">
+                                                <p>Bist du sicher das du die Zutat l&ouml;schen m&ouml;chtest?</p>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="ui red basic cancel inverted button">
+                                                    <i class="remove icon"></i>
+                                                    Nein
+                                                </div>
+                                                <div class="ui green ok inverted button" onclick="window.location = '/recipe/deleteingredientamount?id={{ recipe.getId().get() | escape }}&amount={{ amount.getId().get() | escape }}'">
+                                                    <i class="checkmark icon"></i>
+                                                    Ja
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <table class="ui table">
+                            <thead>
+                                <tr>
+                                    <th class="ten wide">Zutat</th>
+                                    <th class="six wide">Menge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for amount in recipe.getIngredientAmounts() %}
+                                {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
+                                <tr>
+                                    <td>{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
+                                    <td>{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if linkedRecipes.size() > 0 %}
+                        {% for linkedRecipe in linkedRecipes %}
+                        <table class="ui table">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="sixteen wide">{{ linkedRecipe.getName() | escape }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for amount in linkedRecipe.getIngredientAmounts() %}
+                                {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
+                                <tr>
+                                    <td class="ten wide">{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
+                                    <td class="six wide">{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endfor %}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if recipe.getWorkSteps().size() > 0 or edit == 'workstep' %}
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Arbeitsschritte</h4>
+                        {% if edit == 'workstep' %}
+                        <table class="ui table striped">
+                            <tbody>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="ui basic button green" onclick="$('#workStepFormModal').modal('show');">hinzuf&uuml;gen</div>
+                                    </td>
+                                </tr>
+                                {% for workStep in workSteps %}
+                                <tr>
+                                    <td class="two wide"><div class="ui yellow huge circular label">{{ loop.index }}</div></td>
+                                    <td class="nine wide">
+                                        <p>{{ workStep.getDescription().orElse('') | escapenl }}</p>
+                                        {% if workStep.getWorkDuration().isPresent() %}
+                                        <span>
+                                                <i class="icon clock outline"></i>
+                                                {{ workStep.getWorkDuration().get() | minuteformat }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="five wide">
+                                        {% if workStep.getOrderId() != 0 %}
+                                        <a title="nach oben verschieben" class="ui button icon basic" href="/recipe/worksteporder?direction=up&id={{ recipe.getId().get() }}&step={{ workStep.getId().get() | escape }}"><i class="arrow up icon"></i></a>
+                                        {% endif %}
+                                        {% if workStep.getOrderId() != workStepsMaxOrderId %}
+                                        <a title="nach unten verschieben" class="ui button icon basic" href="/recipe/worksteporder?direction=down&id={{ recipe.getId().get() }}&step={{ workStep.getId().get() | escape }}"><i class="arrow down icon"></i></a>
+                                        {% endif %}
+                                        <div class="ui icon button basic orange" title="Arbeitsschritt bearbeiten" onclick="editWorkStep('{{ workStep.getId().get() | escape}}')"><i class="pencil alternate icon"></i></div>
+                                        <div class="ui icon button basic red" title="Arbeitsschritt l&ouml;schen" onclick="$('#a{{ workStep.getId().get() | escape}}').modal('show');"><i class="remove icon"></i></div>
+                                        <div class="ui basic modal" id="a{{ workStep.getId().get() | escape}}">
+                                            <div class="ui icon header">
+                                                <i class="delete icon"></i>
+                                                Arbeitsschritt l&ouml;schen
+                                            </div>
+                                            <div class="content">
+                                                <p>Bist du sicher das du den Arbeitsschritt l&ouml;schen m&ouml;chtest?</p>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="ui red basic cancel inverted button">
+                                                    <i class="remove icon"></i>
+                                                    Nein
+                                                </div>
+                                                <div class="ui green ok inverted button" onclick="window.location = '/recipe/deleteworkstep?id={{ recipe.getId().get() | escape }}&step={{ workStep.getId().get() | escape }}'">
+                                                    <i class="checkmark icon"></i>
+                                                    Ja
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <table class="ui table striped">
+                            <tbody>
+                                {% for workStep in workSteps %}
+                                <tr>
+                                    <td><div class="ui yellow huge circular label">{{ loop.index }}</div></td>
+                                    <td>
+                                        <p>{{ workStep.getDescription().orElse('') | escapenl }}</p>
+                                        {% if workStep.getWorkDuration().isPresent() %}
+                                        <span>
+                                            <i class="icon clock outline"></i>
+                                            {{ workStep.getWorkDuration().get() | minuteformat }}
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if linkedRecipes.size() > 0 %}
+                        {% for linkedRecipe in linkedRecipes %}
+                        <table class="ui table striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">{{ linkedRecipe.getName() | escape }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for workStep in linkedRecipe.getWorkSteps() %}
+                                <tr>
+                                    <td><div class="ui yellow huge circular label">{{ loop.index }}</div></td>
+                                    <td>
+                                        <p>{{ workStep.getDescription().orElse('') | escapenl }}</p>
+                                        {% if workStep.getWorkDuration().isPresent() %}
+                                        <span>
+                                            <i class="icon clock outline"></i>
+                                            {{ workStep.getWorkDuration().get() | minuteformat }}
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endfor %}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if recipe.getLinkedRecipes().size() > 0 or edit == 'linkedrecipe' %}
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Beilagen</h4>
+                        {% if edit == 'linkedrecipe' %}
+                        <form class="ui form" method="post" action="/recipe/updategarnish" id="garnishForm">
+                            <input type="hidden" name="id" value="{{ recipe.getId().get() | escape }}">
+                            <div class="field">
+                                <select name="garnishRecipes" class="ui dropdown" multiple>
+                                    {% for garnishRecipe in garnishRecipes %}
+                                    <option value="{{ garnishRecipe.getId().get() | escape }}">{{ garnishRecipe.getName() | escape }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="ui segment">
+                                <input type="submit" value="speichern" class="ui green basic button">
+                            </div>
+                        </form>
+                        {% else %}
+                        <div class="ui items divided">
+                            {% for link in recipe.getLinkedRecipes() %}
+                            {% if linkedRecipesMap.containsKey(link.getRecipeId().get()) %}
+                            <div class="item">
+                                {% if (linkedRecipesMap.get(link.getRecipeId().get()).getImageFile() != null) and (not linkedRecipesMap.get(link.getRecipeId().get()).getImageFile() == '')  %}
+                                <div class="ui tiny image">
+                                    <a href="/recipe/image?file={{ linkedRecipesMap.get(link.getRecipeId().get()).getImageFile() }}" data-lightbox="{{ randomstr() }}">
+                                        <img src="/recipe/image?file={{ linkedRecipesMap.get(link.getRecipeId().get()).getImageFile() }}" class="ui huge image">
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div class="content">
+                                    <a class="header" href="/recipe/recipeview?id={{ link.getRecipeId().get() | escape }}">{{ linkedRecipesMap.get(link.getRecipeId().get()).getName() | escape }}</a>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if recipe.getTags().size() > 0 or edit == 'tag' %}
+                    <div class="ui segment">
+                        <h4 class="ui horizontal divider header">Tags</h4>
+                        {% if edit == 'tag' %}
+                            <form class="ui form" method="post" action="/recipe/updatetag">
+                                <input type="hidden" name="id" value="{{ recipe.getId().get() | escape }}">
+                                {% for tag in tags %}
+                                <div class="field">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" name="tags" value="{{ tag.getId().get() | escape }}" {% if recipeTags.contains(tag.getId().get()) %}checked{% endif %}>
+                                        <label><div class="ui {{ tag.getColor() | escape }} tag label">{{ tag.getName() | escape }}</div></label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <input type="submit" class="ui primary button" value="speichern">
+                            </form>
+                        {% else %}
+                            {% for tag in recipeTags %}
+                            {% if tagMap.containsKey(tag) %}
+                            <a href="/recipe/searchtagrecipes?id={{ tag | escape }}" class="ui {{ tagMap.get(tag).getColor() | escape }} tag label">{{ tagMap.get(tag).getName() | escape }}</a>
+                            {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui segment bottom attached clearing" style="margin-bottom:30px;">
+        <div class="ui secondary basic button right floated" onclick="window.history.back()">zur&uuml;ck</div>
+    </div>
+    {% else %}
+    <div class="ui message icon attached error">
+        <i class="remove icon red"></i>
+        <div class="content">
+            <p>Das Rezept ist nicht bekannt</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui modal" id="ingredientAmountFormModal">
+        <div class="header">
+            Zutat
+        </div>
+        <div class="content">
+            <form class="ui form" method="post" id="ingredientAmountForm" action="/recipe/addingredientamount">
+                <input type="hidden" name="id" value="{{ recipe.getId().get() | escape }}">
+                <input type="hidden" name="ingredientId" value="">
+                <div class="field required">
+                    <label>Zutat</label>
+                    <div class="ui search">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" name="name" id="ingredientName" placeholder="Zutat ..." pattern=".{1,50}" required onchange="changeIngredientName()">
+                        </div>
+                        <div class="results"></div>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="field ten wide">
+                        <label>Menge</label>
+                        <input type="number" placeholder="Menge ..." name="amount" id="ingredientAmount" min="1" max="1000000" step="1">
+                    </div>
+                    <div class="field six wide">
+                        <label>Einheit</label>
+                        <select name="unit" id="ingredientUnit" class="ui dropdown">
+                            <option value="St&uuml;ck">St&uuml;ck</option>
+                            <option value="Pack">Pack</option>
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
+                            <option value="ml">ml</option>
+                            <option value="l">l</option>
+                            <option value="cm">cm</option>
+                            <option value="m">m</option>
+                            <option value="">keine</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="actions">
+                <div class="ui black deny button">
+                    abbrechen
+                </div>
+                <div class="ui positive right labeled icon button" onclick="$('#ingredientAmountForm').submit()">
+                    speichern
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui modal" id="workStepFormModal">
+        <div class="header">
+            Arbeitsschritt
+        </div>
+        <div class="content">
+            <form class="ui form" method="post" id="workStepForm" action="/recipe/workstepform">
+                <input type="hidden" name="id" value="{{ recipe.getId().get() | escape }}">
+                <input type="hidden" name="workStepId" value="">
+                <div class="field required">
+                    <label>Beschreibung</label>
+                    <div class="ui search">
+                        <textarea name="description" required minlength="3" id="workStepDescription"></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Arbeitszeit</label>
+                    <input type="number" placeholder="Arbeitszeit ..." name="workTime" id="workTime" min="0" max="1000000" step="1" value="0">
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="actions">
+                <div class="ui black deny button" onclick="clearWorkStepForm();">
+                    abbrechen
+                </div>
+                <div class="ui positive right labeled icon button" onclick="$('#workStepForm').submit()">
+                    speichern
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui modal" id="foodListFormModal">
+        <div class="header">
+            Rezept Kochen
+        </div>
+        <div class="content">
+            <h4 class="ui header">Zutaten Einkaufen</h4>
+            <form class="ui form" method="post" id="foodListForm" action="/recipe/addshoppinglist">
+                <input type="hidden" name="id" value="{{ recipe.getId().get() }}">
+                {% for combinedIngredientAmount in combinedIngredientAmounts %}
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="ingredients" value="{{ combinedIngredientAmount.getIngredientId().get() | escape }}" checked>
+                        <label>{{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getName() | escape }} - {{ combinedIngredientAmount.getAmount() | numberformat }} {{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getUnit() | escape }}</label>
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="actions">
+            <div class="actions">
+                <div class="ui black deny button">
+                    abbrechen
+                </div>
+                <a class="ui positive right labeled icon button" href="/recipe/updatefoodlist?id={{ recipe.getId().get() }}&foodlist=1&refToRecipe&removeBookmark">
+                    Kochen
+                    <i class="checkmark icon"></i>
+                </a>
+                <div class="ui positive right labeled icon button" onclick="$('#foodListForm').submit()">
+                    Einkaufen und Kochen
+                    <i class="checkmark icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

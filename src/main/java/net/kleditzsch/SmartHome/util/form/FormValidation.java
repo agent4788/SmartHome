@@ -1239,4 +1239,10 @@ public class FormValidation {
 
         return Collections.unmodifiableMap(errorMessages);
     }
+
+    public void printErrorMessages() {
+
+        System.out.println("Formularfehler:");
+        getErrorMessages().forEach((k, v) -> System.out.println(k + " -> " + v));
+    }
 }

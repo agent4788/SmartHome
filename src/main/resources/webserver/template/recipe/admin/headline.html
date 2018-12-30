@@ -1,0 +1,32 @@
+<header>
+    <div class="ui fixed inverted menu large stackable">
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')"  class="header item">
+            <img src="/static/img/icon/recipe.png" width="32" height="32" class="logo">
+            Rezepte Admin
+        </a>
+    </div>
+</header>
+<aside>
+    <div class="ui left vertical inverted sidebar labeled icon menu scale down">
+        <a href="/recipe/index" class="item">
+            <img src="/static/img/icon/recipe.png" width="64" height="64" class="logo" style="margin: 0 auto;">
+            Rezepte
+        </a>
+        <a href="/recipe/admin/index" class="item {% if module == 'admin' %}active{% endif %}">
+            <img src="/static/img/icon/recipe.png" width="64" height="64" class="logo" style="margin: 0 auto;">
+            Rezepte Admin
+        </a>
+        <a href="/recipe/admin/ingredient" class="item {% if module == 'ingredient' %}active{% endif %}">
+            <img src="/static/img/icon/ingredient.png" width="64" height="64" class="logo" style="margin: 0 auto;">
+            Zutaten
+        </a>
+        <a href="/recipe/admin/tag" class="item {% if module == 'tag' %}active{% endif %}">
+            <img src="/static/img/icon/tag.png" width="64" height="64" class="logo" style="margin: 0 auto;">
+            Tags
+        </a>
+        <a href="/recipe/admin/settings" class="item {% if module == 'settings' %}active{% endif %}">
+            <img src="/static/img/icon/settings.png" width="64" height="64" class="logo" style="margin: 0 auto;">
+            Einstellungen
+        </a>
+    </div>
+</aside>

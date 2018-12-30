@@ -15,6 +15,7 @@ import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
+import net.kleditzsch.SmartHome.model.recipe.editor.RecipeEditor;
 import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
@@ -76,7 +77,7 @@ public class BackupRestore {
                 return restoreNetworkData(backupFile);
             case Recipe:
 
-                //TODO implimentieren
+                return restoreRecipeData(backupFile);
             case ShoppingList:
 
                 restoreShoppingListData(backupFile);
@@ -312,6 +313,61 @@ public class BackupRestore {
 
         List<String> messages = new ArrayList<>();
         if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("network")) {
+
+            try (ZipInputStream zip = new ZipInputStream(new FileInputStream(backupFile.getPath().toFile()))) {
+
+                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+(\\.[A-Za-z0-9]+)+\\.json$");
+                ZipEntry entry = zip.getNextEntry();
+                while (entry != null) {
+
+                    //Collections auslesen
+                    String fileName = entry.getName();
+                    if(!entry.isDirectory() && pattern.matcher(fileName).find()) {
+
+                        String collectionName = fileName.substring(0, fileName.length() - 5);
+
+                        //alte Collection löschen
+                        db.getCollection(collectionName).drop();
+
+                        //Collection wiederherstellen
+                        logger.info("Collection \"" + collectionName + "\" wird wiederhergestellt");
+                        restoreCollection(db, collectionName, zip);
+                        logger.info("Collection \"" + collectionName + "\" wurde wiederhergestellt");
+                    } else {
+
+                        messages.add("ungültige Modul Datei \"" + entry.getName() + "\"");
+                    }
+
+                    //nächstes Element
+                    entry = zip.getNextEntry();
+                }
+            }
+        } else {
+
+            messages.add("ungültige Modul Datei");
+        }
+        dbm.disconnectDatabase();
+        return messages;
+    }
+
+    /**
+     * Rezepte Daten wiederherstellen
+     *
+     * @param backupFile Backup Datei
+     * @return Liste mit Fehlermeldungen
+     */
+    private static List<String> restoreRecipeData(BackupFile backupFile) throws IOException, DatabaseException {
+
+        DatabaseManager dbm = connectDatabase();
+        MongoDatabase db = dbm.getDatabase();
+
+        //Text Index wiederherstellen
+        db.createCollection(RecipeEditor.COLLECTION);
+        MongoCollection movies = db.getCollection(RecipeEditor.COLLECTION);
+        movies.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
+
+        List<String> messages = new ArrayList<>();
+        if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("recipe")) {
 
             try (ZipInputStream zip = new ZipInputStream(new FileInputStream(backupFile.getPath().toFile()))) {
 

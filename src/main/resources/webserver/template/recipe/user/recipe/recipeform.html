@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezepte</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.ui.checkbox').checkbox();
+            $('.ui.dropdown').dropdown();
+            $('.ui.accordion').accordion();
+
+            $('.ui.form').form('set values', {
+                type           : "{{ recipe.getType() }}",
+                difficulty     : "{{ recipe.getDifficulty() }}",
+                defaultImage   : "[{% if defaultImage %}{{ defaultImage }}{% else %}none{% endif %}"
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/recipe/user/headline.html' with {module: 'recipe'} %}
+<main class="ui main container">
+    <form class="ui form" action="/recipe/recipeform?id={{ recipe.getId().get() | escape }}" method="post" enctype="multipart/form-data">
+        <h1 class="ui header top attached">Rezept {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui styled fluid accordion attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="active title">
+                <i class="dropdown icon"></i>
+                Allgemein
+            </div>
+            <div class="active content">
+                <div class="field required">
+                    <label>Name</label>
+                    <input name="name" placeholder="Name ..." type="text" pattern=".{3,50}"  value="{{ recipe.getName() | escape }}" required>
+                </div>
+                <div class="field required">
+                    <label>Beschreibung</label>
+                    <textarea name="description" required minlength="3">{{ recipe.getDescription().orElse("") | escape }}</textarea>
+                </div>
+            </div>
+            <div class="title">
+                <i class="dropdown icon"></i>
+                Bild
+            </div>
+            <div class="content">
+                <div class="field">
+                    <label>Upload</label>
+                    <input name="imgae" type="file">
+                </div>
+                <div class="equal width fields">
+                    <div class="field">
+                        <label>URL</label>
+                        <input name="imageUrl" type="url">
+                    </div>
+                    <div class="field">
+                        <label>Standard</label>
+                        <select name="defaultImage" class="ui dropdown">
+                            <option value="none">kein Standard Bild</option>
+                            {% for key, value in defaultImages %}
+                            <option value="{{ key | escape }}">{{ value | escape }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="title">
+                <i class="dropdown icon"></i>
+                Zusatzinformationen
+            </div>
+            <div class="content">
+                <div class="equal width fields">
+                    <div class="field required">
+                        <label>Gesamtzeit</label>
+                        <input name="totalDuration" placeholder="Gesamtzeit ..." type="number" value="{{ recipe.getTotalDuration() | escape }}" required min="1" max="10000" step="1">
+                    </div>
+                    <div class="field">
+                        <label>Arbeitszeit</label>
+                        <input name="workDuration" placeholder="Arbeitszeit ..." type="number" value="{{ recipe.getWorkDuration().orElse('0') | escape }}" min="0" max="10000" step="1">
+                    </div>
+                </div>
+                <div class="equal width fields">
+                    <div class="field">
+                        <div class="field required">
+                            <label>Portionen</label>
+                            <input name="baseServings" placeholder="Portionen ..." type="text" value="{{ recipe.getBaseServings() | escape }}" required min="1" max="100" step="1">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Typ</label>
+                        <select name="type" class="ui dropdown">
+                            <option value="MAIN_DISH">Hauptgericht</option>
+                            <option value="STARTER">Vorspeise</option>
+                            <option value="DESSERT">Dessert</option>
+                            <option value="CAKE">Kuchen</option>
+                            <option value="COOKIES">Kekse</option>
+                            <option value="GARNISH">Beilage</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Schwierigkeit</label>
+                    <select name="difficulty" class="ui dropdown">
+                        <option value="LIGHT">Leicht</option>
+                        <option value="MEDIUM">Mittel</option>
+                        <option value="HEAVY">Schwer</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

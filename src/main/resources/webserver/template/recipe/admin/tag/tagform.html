@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezepte Tags</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.dropdown').dropdown();
+            $('.ui.form').form('set values', {
+                color        : "{{ tag.getColor().toString() }}"
+            });
+        });
+
+        function updatePreview() {
+
+            var name = $('input[name=name]').val();
+            var color = $('select[name=color] option:checked').val();
+            var html = '<div class="ui ' + color + ' tag label">' + name + '</div>';
+            $('#preview').html(html);
+        }
+    </script>
+</head>
+<body>
+{% include '/webserver/template/recipe/admin/headline.html' with {module: 'tag'} %}
+<main class="ui main container">
+    <form class="ui form"  action="/recipe/admin/tagform?id={{ tag.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Tag {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ tag.getName() | escape }}"{% endif %} pattern=".{3,50}" required onchange="updatePreview();">
+            </div>
+            <div class="field required">
+                <label>Farbe</label>
+                <select class="ui dropdown" name="color" required onchange="updatePreview()">
+                    <option value="none">keine</option>
+                    <option value="red">Rot</option>
+                    <option value="orange">Orange</option>
+                    <option value="yellow">Gelb</option>
+                    <option value="olive">Olive</option>
+                    <option value="green">Gr&uuml;n</option>
+                    <option value="teal">T&uuml;rkis</option>
+                    <option value="blue">Blau</option>
+                    <option value="violet">Violett</option>
+                    <option value="purple">Lila</option>
+                    <option value="pink">Rosa</option>
+                    <option value="brown">Braun</option>
+                    <option value="grey">Grau</option>
+                    <option value="black">Schwarz</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Vorschau</label>
+                <div id="preview">
+                    {% if not addElement %}<div class="ui {{ tag.getColor() | escape }} tag label">{{ tag.getName() | escape }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

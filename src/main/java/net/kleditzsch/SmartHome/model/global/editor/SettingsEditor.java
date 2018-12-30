@@ -68,6 +68,12 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String NETWORK_PRINTER_STATE_IP = "NETWORK_PRINTER_STATE_IP";
     public static final String NETWORK_NAS_STATE_IP = "NETWORK_NAS_STATE_IP";
 
+    //Rezepte Einstellungen
+    public static final String RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE = "RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE";
+    public static final String RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE = "RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE";
+    public static final String RECIPE_NEWEST_RECIPE_COUNT = "RECIPE_NEWEST_RECIPE_COUNT";
+    public static final String RECIPE_SHOPPING_LIST_ID = "RECIPE_SHOPPING_LIST_ID";
+
     /**
      * Lock objekt
      */
@@ -171,10 +177,20 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(tmdbApiKey);
 
         //Netzwerk Einstellungen
-        StringSetting printerSTateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "0.0.0.0", "0.0.0.0");
-        knownSettings.add(printerSTateIp);
+        StringSetting printerStateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "0.0.0.0", "0.0.0.0");
+        knownSettings.add(printerStateIp);
         StringSetting nasStateIp = new StringSetting(NETWORK_NAS_STATE_IP, "0.0.0.0", "0.0.0.0");
         knownSettings.add(nasStateIp);
+
+        //Rezepte Einstellungen
+        IntegerSetting recipePaginationElementsAtPageAdmin = new IntegerSetting(RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
+        knownSettings.add(recipePaginationElementsAtPageAdmin);
+        IntegerSetting recipePaginationElementsAtPageUser = new IntegerSetting(RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        knownSettings.add(recipePaginationElementsAtPageUser);
+        IntegerSetting newestRecipeCount = new IntegerSetting(RECIPE_NEWEST_RECIPE_COUNT, 10, 10);
+        knownSettings.add(newestRecipeCount);
+        StringSetting shoppingListId = new StringSetting(RECIPE_SHOPPING_LIST_ID, "", "");
+        knownSettings.add(shoppingListId);
     }
 
     /**

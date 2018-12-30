@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezepte</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/recipe/user/headline.html' with {module: 'recipe'} %}
+<main class="ui main container">
+    <div class="ui text menu top attached">
+        <h1 class="ui item" style="font-weight: bold;line-height: 1.28571429em;color: rgba(0,0,0,.87);">Rezepte</h1>
+        <div class="ui right dropdown item">
+            <i class="filter icon"></i>
+            filtern
+            <div class="menu">
+                <div class="item {% if difficultlyFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Schwierigkeit</span>
+                    <div class="menu">
+                        <a class="item {% if difficultlyFilter == 'light' %}active{% endif %}" href="/recipe/recipe?difficultly=light">einfach</a>
+                        <a class="item {% if difficultlyFilter == 'medium' %}active{% endif %}" href="/recipe/recipe?difficultly=medium">mittel</a>
+                        <a class="item {% if difficultlyFilter == 'heavy' %}active{% endif %}" href="/recipe/recipe?difficultly=heavy">schwer</a>
+                    </div>
+                </div>
+                <div class="item {% if typeFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Typ</span>
+                    <div class="menu">
+                        <a class="item {% if typeFilter == 'maindish' %}active{% endif %}" href="/recipe/recipe?type=maindish">Hauptgericht</a>
+                        <a class="item {% if typeFilter == 'starter' %}active{% endif %}" href="/recipe/recipe?type=starter">Vorspeise</a>
+                        <a class="item {% if typeFilter == 'dessert' %}active{% endif %}" href="/recipe/recipe?type=dessert">Dessert</a>
+                        <a class="item {% if typeFilter == 'cake' %}active{% endif %}" href="/recipe/recipe?type=cake">Kuchen</a>
+                        <a class="item {% if typeFilter == 'cookies' %}active{% endif %}" href="/recipe/recipe?type=cookies">Kekse</a>
+                        <a class="item {% if typeFilter == 'garnish' %}active{% endif %}" href="/recipe/recipe?type=garnish">Beilage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    {% if pagination.getSize() > 0 %}
+    <div class="ui link cards four column doubling stackable bottom attached">
+        {% for element in recipesAtPage %}
+        <div class="card" onclick="window.location = '/recipe/recipeview?id={{ element.getId().get() }}'">
+            <div class="image">
+                {% if newestRecipes.contains(element.getId().get()) %}
+                <a class="ui left corner label blue">
+                    <i class="star yellow icon"></i>
+                </a>
+                {% endif %}
+                {% if element.isBookmark() %}
+                <a class="ui right corner label orange">
+                    <i class="bookmark icon"></i>
+                </a>
+                {% endif %}
+                {% if (element.getImageFile() != null) and (not element.getImageFile() == '') %}
+                <img src="/recipe/image?file={{ element.getImageFile() }}">
+                {% else %}
+                <img src="/static/img/noimage.gif">
+                {% endif %}
+            </div>
+            <div class="content">
+                <div class="ui">
+                    <div class="header">{{ element.getName() | escape }}</div>
+                </div>
+            </div>
+            <div class="extra content">
+                <span class="right floated">
+                    {% if element.getDifficulty() == 'LIGHT' %}Leicht
+                    {% elseif element.getDifficulty() == 'MEDIUM' %}Mittel
+                    {% elseif element.getDifficulty() == 'HEAVY' %}Schwer
+                    {% endif %}
+                </span>
+                <span>
+                    <i class="clock outline icon"></i>
+                    {{ element.getTotalDuration() | minuteformat }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    {% if filtered %}
+    <div class="ui message icon bottom attached info">
+        <i class="search icon"></i>
+        <div class="content">
+            <p>Keine Rezepte zu diesem Filter gefunden</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="ui placeholder segment bottom attached">
+        <div class="ui icon header">
+            <i class="pdf file outline icon"></i>
+            Keine Rezepte gefunden
+        </div>
+        <a class="ui primary button" href="/recipe/recipeform">Rezept hinzuf&uuml;gen</a>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom clearing" style="margin-bottom: 30px;">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/recip/user/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+</main>
+</body>
+</html>
