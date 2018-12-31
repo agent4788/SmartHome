@@ -4,6 +4,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
+import net.kleditzsch.SmartHome.util.image.ImageUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -114,7 +115,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
 
         if(form.uploadNotEmpty("poster")) {
 
-            poster = form.getUploadedFile("poster", "Poster", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
+            poster = form.getUploadedFile("poster", "Poster", 2_097_152, ImageUtil.allowedContentTypes);
         }
         if(form.fieldNotEmpty("posterUrl")) {
 
@@ -122,7 +123,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
         }
         if(form.uploadNotEmpty("banner")) {
 
-            banner = form.getUploadedFile("banner", "Banner", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
+            banner = form.getUploadedFile("banner", "Banner", 2_097_152, ImageUtil.allowedContentTypes);
         }
         if(form.fieldNotEmpty("bannerUrl")) {
 
@@ -149,178 +150,38 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                 if(poster != null) {
 
                     //Cover Datei
-                    String filename = ID.create().get();
-                    switch (poster.getContentType()) {
-
-                        case "image/jpeg":
-
-                            filename += ".jpeg";
-                            break;
-                        case "image/png":
-
-                            filename += ".png";
-                            break;
-                        case "image/gif":
-
-                            filename += ".gif";
-                            break;
-                    }
-                    Path uploadFile = uploadDir.resolve(filename);
-                    try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                        poster.getInputStream().transferTo(outputStream);
-                    }
-
-                    movieSeries.setPosterFile(filename);
+                    Path targetFile = ImageUtil.handleUploadedImage(poster, uploadDir);
+                    movieSeries.setPosterFile(targetFile.getFileName().toString());
                 } else if (posterUrl != null) {
 
                     //Cover aus dem Internet herunterladen
-                    Path tmpDir = Paths.get("upload/tmp");
-                    if(!Files.exists(tmpDir)) {
-
-                        Files.createDirectories(tmpDir);
-                    }
-
+                    Path targetFile = null;
                     try {
 
-                        HttpClient client = HttpClient.newBuilder()
-                                .version(HttpClient.Version.HTTP_2)
-                                .followRedirects(HttpClient.Redirect.NORMAL)
-                                .build();;
+                        targetFile = ImageUtil.handleImageUrl(posterUrl, uploadDir);
+                        movieSeries.setPosterFile(targetFile.getFileName().toString());
+                    } catch (InterruptedException e) {
 
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create(posterUrl))
-                                .timeout(Duration.ofSeconds(5))
-                                .GET()
-                                .build();
-
-                        Path tmpFile = tmpDir.resolve("tmpCover");
-                        HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                        HttpResponse<Path> response = client.send(request, asFile);
-
-                        if(response.statusCode() == 200) {
-
-                            //neuen Dateinamen erstellen und COntent Type prüfen
-                            String filename = ID.create().get();
-                            switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                case "image/jpeg":
-
-                                    filename += ".jpeg";
-                                    break;
-                                case "image/png":
-
-                                    filename += ".png";
-                                    break;
-                                case "image/gif":
-
-                                    filename += ".gif";
-                                    break;
-
-                                default:
-
-                                    //Ungültiger Dateityp
-                                    Files.delete(tmpFile);
-                                    throw new IllegalStateException();
-                            }
-
-                            //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                            Files.move(tmpFile, uploadDir.resolve(filename));
-                            movieSeries.setPosterFile(filename);
-                        } else {
-
-                            //Download fehleschlagen
-                            throw new IllegalStateException("Download fehlgeschlagen");
-                        }
-                    } catch (InterruptedException e) {}
+                        e.printStackTrace();
+                    }
                 }
                 if(banner != null) {
 
                     //Cover Datei
-                    String filename = ID.create().get();
-                    switch (banner.getContentType()) {
-
-                        case "image/jpeg":
-
-                            filename += ".jpeg";
-                            break;
-                        case "image/png":
-
-                            filename += ".png";
-                            break;
-                        case "image/gif":
-
-                            filename += ".gif";
-                            break;
-                    }
-                    Path uploadFile = uploadDir.resolve(filename);
-                    try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                        banner.getInputStream().transferTo(outputStream);
-                    }
-
-                    movieSeries.setPosterFile(filename);
+                    Path targetFile = ImageUtil.handleUploadedImage(banner, uploadDir);
+                    movieSeries.setBannerFile(targetFile.getFileName().toString());
                 } else if (bannerUrl != null) {
 
                     //Cover aus dem Internet herunterladen
-                    Path tmpDir = Paths.get("upload/tmp");
-                    if(!Files.exists(tmpDir)) {
-
-                        Files.createDirectories(tmpDir);
-                    }
-
+                    Path targetFile = null;
                     try {
 
-                        HttpClient client = HttpClient.newBuilder()
-                                .version(HttpClient.Version.HTTP_2)
-                                .followRedirects(HttpClient.Redirect.NORMAL)
-                                .build();;
+                        targetFile = ImageUtil.handleImageUrl(bannerUrl, uploadDir);
+                        movieSeries.setBannerFile(targetFile.getFileName().toString());
+                    } catch (InterruptedException e) {
 
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create(bannerUrl))
-                                .timeout(Duration.ofSeconds(5))
-                                .GET()
-                                .build();
-
-                        Path tmpFile = tmpDir.resolve("tmpCover");
-                        HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                        HttpResponse<Path> response = client.send(request, asFile);
-
-                        if(response.statusCode() == 200) {
-
-                            //neuen Dateinamen erstellen und COntent Type prüfen
-                            String filename = ID.create().get();
-                            switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                case "image/jpeg":
-
-                                    filename += ".jpeg";
-                                    break;
-                                case "image/png":
-
-                                    filename += ".png";
-                                    break;
-                                case "image/gif":
-
-                                    filename += ".gif";
-                                    break;
-
-                                default:
-
-                                    //Ungültiger Dateityp
-                                    Files.delete(tmpFile);
-                                    throw new IllegalStateException();
-                            }
-
-                            //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                            Files.move(tmpFile, uploadDir.resolve(filename));
-                            movieSeries.setBannerFile(filename);
-                        } else {
-
-                            //Download fehleschlagen
-                            throw new IllegalStateException("Download fehlgeschlagen");
-                        }
-                    } catch (InterruptedException e) {}
+                        e.printStackTrace();
+                    }
                 }
 
                 MovieSeriesEditor.addMovieSeries(movieSeries);
@@ -347,27 +208,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     }
                     if(poster != null) {
 
-                        String filename = ID.create().get();
-                        switch (poster.getContentType()) {
-
-                            case "image/jpeg":
-
-                                filename += ".jpeg";
-                                break;
-                            case "image/png":
-
-                                filename += ".png";
-                                break;
-                            case "image/gif":
-
-                                filename += ".gif";
-                                break;
-                        }
-                        Path uploadFile = uploadDir.resolve(filename);
-                        try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                            poster.getInputStream().transferTo(outputStream);
-                        }
+                        Path targetFile = ImageUtil.handleUploadedImage(poster, uploadDir);
 
                         //altes Logo löschen
                         if(movieSeries.getPosterFile() != null && movieSeries.getPosterFile().length() > 0) {
@@ -379,101 +220,33 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                         }
 
                         //Dateiname des neuen Logos setzen
-                        movieSeries.setPosterFile(filename);
+                        movieSeries.setPosterFile(targetFile.getFileName().toString());
                     } else if (posterUrl != null) {
 
                         //Cover aus dem Internet herunterladen
-                        Path tmpDir = Paths.get("upload/tmp");
-                        if(!Files.exists(tmpDir)) {
-
-                            Files.createDirectories(tmpDir);
-                        }
-
+                        Path targetFile = null;
                         try {
 
-                            HttpClient client = HttpClient.newBuilder()
-                                    .version(HttpClient.Version.HTTP_2)
-                                    .followRedirects(HttpClient.Redirect.NORMAL)
-                                    .build();;
+                            targetFile = ImageUtil.handleImageUrl(posterUrl, uploadDir);
 
-                            HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(URI.create(posterUrl))
-                                    .timeout(Duration.ofSeconds(5))
-                                    .GET()
-                                    .build();
+                            //altes Logo löschen
+                            if(movieSeries.getPosterFile() != null && movieSeries.getPosterFile().length() > 0) {
 
-                            Path tmpFile = tmpDir.resolve("tmpCover");
-                            HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                            HttpResponse<Path> response = client.send(request, asFile);
+                                try {
 
-                            if(response.statusCode() == 200) {
-
-                                //neuen Dateinamen erstellen und COntent Type prüfen
-                                String filename = ID.create().get();
-                                switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                    case "image/jpeg":
-
-                                        filename += ".jpeg";
-                                        break;
-                                    case "image/png":
-
-                                        filename += ".png";
-                                        break;
-                                    case "image/gif":
-
-                                        filename += ".gif";
-                                        break;
-
-                                    default:
-
-                                        //Ungültiger Dateityp
-                                        Files.delete(tmpFile);
-                                        throw new IllegalStateException();
-                                }
-
-                                //altes Logo löschen
-                                if(movieSeries.getPosterFile() != null && movieSeries.getPosterFile().length() > 0) {
-
-                                    try {
-
-                                        Files.delete(uploadDir.resolve(movieSeries.getPosterFile()));
-                                    } catch (Exception e) {}
-                                }
-
-                                //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                                Files.move(tmpFile, uploadDir.resolve(filename));
-                                movieSeries.setPosterFile(filename);
-                            } else {
-
-                                //Download fehleschlagen
-                                throw new IllegalStateException("Download fehlgeschlagen");
+                                    Files.delete(uploadDir.resolve(movieSeries.getPosterFile()));
+                                } catch (Exception e) {}
                             }
-                        } catch (InterruptedException e) {}
+
+                            movieSeries.setPosterFile(targetFile.getFileName().toString());
+                        } catch (InterruptedException e) {
+
+                            e.printStackTrace();
+                        }
                     }
                     if(banner != null) {
 
-                        String filename = ID.create().get();
-                        switch (banner.getContentType()) {
-
-                            case "image/jpeg":
-
-                                filename += ".jpeg";
-                                break;
-                            case "image/png":
-
-                                filename += ".png";
-                                break;
-                            case "image/gif":
-
-                                filename += ".gif";
-                                break;
-                        }
-                        Path uploadFile = uploadDir.resolve(filename);
-                        try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                            banner.getInputStream().transferTo(outputStream);
-                        }
+                        Path targetFile = ImageUtil.handleUploadedImage(banner, uploadDir);
 
                         //altes Logo löschen
                         if(movieSeries.getBannerFile() != null && movieSeries.getBannerFile().length() > 0) {
@@ -485,77 +258,29 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                         }
 
                         //Dateiname des neuen Logos setzen
-                        movieSeries.setBannerFile(filename);
+                        movieSeries.setBannerFile(targetFile.getFileName().toString());
                     } else if (bannerUrl != null) {
 
                         //Cover aus dem Internet herunterladen
-                        Path tmpDir = Paths.get("upload/tmp");
-                        if(!Files.exists(tmpDir)) {
-
-                            Files.createDirectories(tmpDir);
-                        }
-
+                        Path targetFile = null;
                         try {
 
-                            HttpClient client = HttpClient.newBuilder()
-                                    .version(HttpClient.Version.HTTP_2)
-                                    .followRedirects(HttpClient.Redirect.NORMAL)
-                                    .build();;
+                            targetFile = ImageUtil.handleImageUrl(bannerUrl, uploadDir);
 
-                            HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(URI.create(bannerUrl))
-                                    .timeout(Duration.ofSeconds(5))
-                                    .GET()
-                                    .build();
+                            //altes Logo löschen
+                            if(movieSeries.getBannerFile() != null && movieSeries.getBannerFile().length() > 0) {
 
-                            Path tmpFile = tmpDir.resolve("tmpCover");
-                            HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                            HttpResponse<Path> response = client.send(request, asFile);
+                                try {
 
-                            if(response.statusCode() == 200) {
-
-                                //neuen Dateinamen erstellen und COntent Type prüfen
-                                String filename = ID.create().get();
-                                switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                    case "image/jpeg":
-
-                                        filename += ".jpeg";
-                                        break;
-                                    case "image/png":
-
-                                        filename += ".png";
-                                        break;
-                                    case "image/gif":
-
-                                        filename += ".gif";
-                                        break;
-
-                                    default:
-
-                                        //Ungültiger Dateityp
-                                        Files.delete(tmpFile);
-                                        throw new IllegalStateException();
-                                }
-
-                                //altes Logo löschen
-                                if(movieSeries.getBannerFile() != null && movieSeries.getBannerFile().length() > 0) {
-
-                                    try {
-
-                                        Files.delete(uploadDir.resolve(movieSeries.getBannerFile()));
-                                    } catch (Exception e) {}
-                                }
-
-                                //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                                Files.move(tmpFile, uploadDir.resolve(filename));
-                                movieSeries.setBannerFile(filename);
-                            } else {
-
-                                //Download fehleschlagen
-                                throw new IllegalStateException("Download fehlgeschlagen");
+                                    Files.delete(uploadDir.resolve(movieSeries.getBannerFile()));
+                                } catch (Exception e) {}
                             }
-                        } catch (InterruptedException e) {}
+
+                            movieSeries.setBannerFile(targetFile.getFileName().toString());
+                        } catch (InterruptedException e) {
+
+                            e.printStackTrace();
+                        }
                     }
 
                     MovieSeriesEditor.updateMovieSeries(movieSeries);

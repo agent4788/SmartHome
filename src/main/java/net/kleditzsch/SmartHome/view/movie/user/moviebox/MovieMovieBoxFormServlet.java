@@ -6,6 +6,7 @@ import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.*;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
+import net.kleditzsch.SmartHome.util.image.ImageUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -130,7 +131,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
         LocalDate purchaseDate = form.getLocalDate("purchaseDate", "Kaufdatum", DateTimeFormatter.ofPattern("yyyy-MM-dd"), LocalDate.of(1900, 01, 01), LocalDate.now());
         if(form.uploadNotEmpty("cover")) {
 
-            cover = form.getUploadedFile("cover", "Cover", 2_097_152, Arrays.asList("image/jpeg", "image/png", "image/gif"));
+            cover = form.getUploadedFile("cover", "Cover", 2_097_152, ImageUtil.allowedContentTypes);
         }
         if(form.fieldNotEmpty("coverUrl")) {
 
@@ -165,90 +166,20 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                 }
                 if(cover != null) {
 
-                    String filename = ID.create().get();
-                    switch (cover.getContentType()) {
-
-                        case "image/jpeg":
-
-                            filename += ".jpeg";
-                            break;
-                        case "image/png":
-
-                            filename += ".png";
-                            break;
-                        case "image/gif":
-
-                            filename += ".gif";
-                            break;
-                    }
-                    Path uploadFile = uploadDir.resolve(filename);
-                    try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                        cover.getInputStream().transferTo(outputStream);
-                    }
-
-                    movieBox.setCoverFile(filename);
+                    Path targetFile = ImageUtil.handleUploadedImage(cover, uploadDir);
+                    movieBox.setCoverFile(targetFile.getFileName().toString());
                 } else if (coverUrl != null) {
 
                     //Cover aus dem Internet herunterladen
-                    Path tmpDir = Paths.get("upload/tmp");
-                    if(!Files.exists(tmpDir)) {
-
-                        Files.createDirectories(tmpDir);
-                    }
-
+                    Path targetFile = null;
                     try {
 
-                        HttpClient client = HttpClient.newBuilder()
-                                .version(HttpClient.Version.HTTP_2)
-                                .followRedirects(HttpClient.Redirect.NORMAL)
-                                .build();;
+                        targetFile = ImageUtil.handleImageUrl(coverUrl, uploadDir);
+                        movieBox.setCoverFile(targetFile.getFileName().toString());
+                    } catch (InterruptedException e) {
 
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create(coverUrl))
-                                .timeout(Duration.ofSeconds(5))
-                                .GET()
-                                .build();
-
-                        Path tmpFile = tmpDir.resolve("tmpCover");
-                        HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                        HttpResponse<Path> response = client.send(request, asFile);
-
-                        if(response.statusCode() == 200) {
-
-                            //neuen Dateinamen erstellen und COntent Type prüfen
-                            String filename = ID.create().get();
-                            switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                case "image/jpeg":
-
-                                    filename += ".jpeg";
-                                    break;
-                                case "image/png":
-
-                                    filename += ".png";
-                                    break;
-                                case "image/gif":
-
-                                    filename += ".gif";
-                                    break;
-
-                                default:
-
-                                    //Ungültiger Dateityp
-                                    Files.delete(tmpFile);
-                                    throw new IllegalStateException();
-                            }
-
-                            //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                            Files.move(tmpFile, uploadDir.resolve(filename));
-                            movieBox.setCoverFile(filename);
-                        } else {
-
-                            //Download fehleschlagen
-                            throw new IllegalStateException("Download fehlgeschlagen");
-                        }
-                    } catch (InterruptedException e) {}
+                        e.printStackTrace();
+                    }
                 }
 
                 MovieBoxEditor.addMovieBox(movieBox);
@@ -279,27 +210,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                     }
                     if(cover != null) {
 
-                        String filename = ID.create().get();
-                        switch (cover.getContentType()) {
-
-                            case "image/jpeg":
-
-                                filename += ".jpeg";
-                                break;
-                            case "image/png":
-
-                                filename += ".png";
-                                break;
-                            case "image/gif":
-
-                                filename += ".gif";
-                                break;
-                        }
-                        Path uploadFile = uploadDir.resolve(filename);
-                        try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                            cover.getInputStream().transferTo(outputStream);
-                        }
+                        Path targetFile = ImageUtil.handleUploadedImage(cover, uploadDir);
 
                         //altes Logo löschen
                         if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
@@ -311,77 +222,29 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                         }
 
                         //Dateiname des neuen Logos setzen
-                        movieBox.setCoverFile(filename);
+                        movieBox.setCoverFile(targetFile.getFileName().toString());
                     } else if (coverUrl != null) {
 
                         //Cover aus dem Internet herunterladen
-                        Path tmpDir = Paths.get("upload/tmp");
-                        if(!Files.exists(tmpDir)) {
-
-                            Files.createDirectories(tmpDir);
-                        }
-
+                        Path targetFile = null;
                         try {
 
-                            HttpClient client = HttpClient.newBuilder()
-                                    .version(HttpClient.Version.HTTP_2)
-                                    .followRedirects(HttpClient.Redirect.NORMAL)
-                                    .build();;
+                            targetFile = ImageUtil.handleImageUrl(coverUrl, uploadDir);
 
-                            HttpRequest request = HttpRequest.newBuilder()
-                                    .uri(URI.create(coverUrl))
-                                    .timeout(Duration.ofSeconds(5))
-                                    .GET()
-                                    .build();
+                            //altes Logo löschen
+                            if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
-                            Path tmpFile = tmpDir.resolve("tmpCover");
-                            HttpResponse.BodyHandler<Path> asFile = HttpResponse.BodyHandlers.ofFile(tmpFile);
-                            HttpResponse<Path> response = client.send(request, asFile);
+                                try {
 
-                            if(response.statusCode() == 200) {
-
-                                //neuen Dateinamen erstellen und COntent Type prüfen
-                                String filename = ID.create().get();
-                                switch(response.headers().allValues("Content-Type").get(0)) {
-
-                                    case "image/jpeg":
-
-                                        filename += ".jpeg";
-                                        break;
-                                    case "image/png":
-
-                                        filename += ".png";
-                                        break;
-                                    case "image/gif":
-
-                                        filename += ".gif";
-                                        break;
-
-                                    default:
-
-                                        //Ungültiger Dateityp
-                                        Files.delete(tmpFile);
-                                        throw new IllegalStateException();
-                                }
-
-                                //altes Logo löschen
-                                if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
-
-                                    try {
-
-                                        Files.delete(uploadDir.resolve(movieBox.getCoverFile()));
-                                    } catch (Exception e) {}
-                                }
-
-                                //Datei in Cover Ordner verschieben und Dateinem im Filmobjekt speichern
-                                Files.move(tmpFile, uploadDir.resolve(filename));
-                                movieBox.setCoverFile(filename);
-                            } else {
-
-                                //Download fehleschlagen
-                                throw new IllegalStateException("Download fehlgeschlagen");
+                                    Files.delete(uploadDir.resolve(movieBox.getCoverFile()));
+                                } catch (Exception e) {}
                             }
-                        } catch (InterruptedException e) {}
+
+                            movieBox.setCoverFile(targetFile.getFileName().toString());
+                        } catch (InterruptedException e) {
+
+                            e.printStackTrace();
+                        }
                     }
 
                     MovieBoxEditor.updateMovieBox(movieBox);
