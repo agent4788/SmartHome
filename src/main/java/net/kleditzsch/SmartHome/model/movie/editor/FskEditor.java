@@ -48,11 +48,11 @@ public class FskEditor extends AbstractDatabaseEditor<FSK> {
     public void load() {
 
         MongoCollection fskCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = fskCollection.find();
+        FindIterable<Document> iterator = fskCollection.find();
 
         List<FSK> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             FSK element = new FSK();
             element.setId(ID.of(document.getString("_id")));
@@ -63,7 +63,7 @@ public class FskEditor extends AbstractDatabaseEditor<FSK> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
     }
 
     /**

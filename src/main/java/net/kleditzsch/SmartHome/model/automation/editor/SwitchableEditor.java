@@ -36,14 +36,14 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
     public void load() {
 
         MongoCollection switchableCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = switchableCollection.find();
+        FindIterable<Document> iterator = switchableCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<Switchable> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document : iterator) {
 
                     switch (AutomationElement.Type.valueOf(document.getString("type"))) {
 
@@ -188,7 +188,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             data.add(wakeOnLan);
                             break;
                     }
-        });
+        };
 
         lock.unlock();
     }

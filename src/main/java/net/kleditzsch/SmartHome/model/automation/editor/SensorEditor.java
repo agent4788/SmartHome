@@ -38,14 +38,14 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
     public void load() {
 
         MongoCollection sensorCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = sensorCollection.find();
+        FindIterable<Document> iterator = sensorCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<SensorValue> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document : iterator) {
 
                     switch (AutomationElement.Type.valueOf(document.getString("type"))) {
 
@@ -486,7 +486,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             data.add(virtualWaterAmountValue);
                             break;
                     }
-        });
+        };
 
         lock.unlock();
     }

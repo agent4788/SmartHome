@@ -35,14 +35,14 @@ public abstract class MovieSeriesEditor {
     public static List<MovieSeries> listMovieSeries() {
 
         MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieSeriesCollection.find()
+        FindIterable<Document> iterator = movieSeriesCollection.find()
                 .sort(Sorts.ascending("title"));
 
         List<MovieSeries> movies = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movies.add(documentToMovieSeries(document));
-        });
+        }
         return movies;
     }
     /**
@@ -55,16 +55,16 @@ public abstract class MovieSeriesEditor {
     public static List<MovieSeries> listMovieSeries(long start, long length) {
 
         MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieSeriesCollection.find()
+        FindIterable<Document> iterator = movieSeriesCollection.find()
                 .sort(Sorts.ascending("title"))
                 .skip(((Long) start).intValue())
                 .limit(((Long) length).intValue());
 
         List<MovieSeries> movies = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movies.add(documentToMovieSeries(document));
-        });
+        }
         return movies;
     }
 
@@ -77,15 +77,15 @@ public abstract class MovieSeriesEditor {
     public static List<MovieSeries> listMovieSeriesByIDList(List<ID> idList) {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieCollection.find(
+        FindIterable<Document> iterator = movieCollection.find(
                 in("_id", idList.stream().map(ID::toString).collect(Collectors.toList()))
         );
 
         List<MovieSeries> movieSeriesList = new ArrayList<>(idList.size());
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movieSeriesList.add(documentToMovieSeries(document));
-        });
+        }
         return movieSeriesList;
     }
 
@@ -98,10 +98,10 @@ public abstract class MovieSeriesEditor {
     public static Optional<MovieSeries> getMovieSeries(ID id) {
 
         MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieSeriesCollection.find(new Document().append("_id", id.get()));
+        FindIterable<Document> iterator = movieSeriesCollection.find(new Document().append("_id", id.get()));
         if(iterator.first() != null) {
 
-            return Optional.of(documentToMovieSeries((Document) iterator.first()));
+            return Optional.of(documentToMovieSeries(iterator.first()));
         }
         return Optional.empty();
     }
@@ -115,15 +115,15 @@ public abstract class MovieSeriesEditor {
     public static List<MovieSeries> search(String query) {
 
         MongoCollection movieSeriesCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieSeriesCollection.find(Filters.text(query))
+        FindIterable<Document> iterator = movieSeriesCollection.find(Filters.text(query))
                 .projection(Projections.metaTextScore("score"))
                 .sort(Sorts.metaTextScore("score"));
 
         List<MovieSeries> movies = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movies.add(documentToMovieSeries(document));
-        });
+        }
         return movies;
     }
 

@@ -31,14 +31,14 @@ public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
     public void load() {
 
         MongoCollection switchServerCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = switchServerCollection.find();
+        FindIterable<Document> iterator = switchServerCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<SwitchServer> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document : iterator) {
 
             SwitchServer element = new SwitchServer(
                     ID.of(document.getString("_id")),
@@ -51,7 +51,7 @@ public class SwitchServerEditor extends AbstractDatabaseEditor<SwitchServer> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
 
         lock.unlock();
     }

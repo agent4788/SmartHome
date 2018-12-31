@@ -36,14 +36,14 @@ public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
     public void load() {
 
         MongoCollection switchTimerCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = switchTimerCollection.find();
+        FindIterable<Document> iterator = switchTimerCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<SwitchTimer> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             SwitchTimer element = new  SwitchTimer();
             element.setId(ID.of(document.getString("_id")));
@@ -71,7 +71,7 @@ public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
 
         lock.unlock();
     }

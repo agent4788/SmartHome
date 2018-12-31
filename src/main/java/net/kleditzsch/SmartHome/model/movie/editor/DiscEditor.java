@@ -51,11 +51,11 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
     public void load() {
 
         MongoCollection discCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = discCollection.find();
+        FindIterable<Document> iterator = discCollection.find();
 
         List<Disc> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document :iterator) {
 
             Disc element = new Disc();
             element.setId(ID.of(document.getString("_id")));
@@ -65,7 +65,7 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
     }
 
     /**

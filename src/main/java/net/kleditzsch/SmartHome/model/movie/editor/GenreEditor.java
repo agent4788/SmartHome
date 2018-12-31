@@ -49,11 +49,11 @@ public class GenreEditor extends AbstractDatabaseEditor<Genre> {
     public void load() {
 
         MongoCollection genreCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = genreCollection.find();
+        FindIterable<Document> iterator = genreCollection.find();
 
         List<Genre> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             Genre element = new Genre();
             element.setId(ID.of(document.getString("_id")));
@@ -62,7 +62,7 @@ public class GenreEditor extends AbstractDatabaseEditor<Genre> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
     }
 
     /**

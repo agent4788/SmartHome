@@ -37,14 +37,14 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
     public void load() {
 
         MongoCollection roomCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = roomCollection.find();
+        FindIterable<Document> iterator = roomCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<Room> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document : iterator) {
 
             Room element = new Room();
             element.setId(ID.of(document.getString("_id")));
@@ -163,7 +163,7 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        }
 
         lock.unlock();
     }

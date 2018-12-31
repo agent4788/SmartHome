@@ -37,14 +37,14 @@ public abstract class MovieBoxEditor {
     public static List<MovieBox> listMovieBoxes() {
 
         MongoCollection movieBoxCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieBoxCollection.find()
+        FindIterable<Document> iterator = movieBoxCollection.find()
                 .sort(Sorts.ascending("title"));
 
         List<MovieBox> movieBoxes = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movieBoxes.add(documentToMovieBox(document));
-        });
+        }
         return movieBoxes;
     }
 
@@ -58,16 +58,16 @@ public abstract class MovieBoxEditor {
     public static List<MovieBox> listMovieBoxes(long start, long length) {
 
         MongoCollection movieBoxCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieBoxCollection.find()
+        FindIterable<Document> iterator = movieBoxCollection.find()
                 .sort(Sorts.ascending("title"))
                 .skip(((Long) start).intValue())
                 .limit(((Long) length).intValue());
 
         List<MovieBox> movieBoxes = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movieBoxes.add(documentToMovieBox(document));
-        });
+        }
         return movieBoxes;
     }
 
@@ -80,10 +80,10 @@ public abstract class MovieBoxEditor {
     public static Optional<MovieBox> getMovieBox(ID id) {
 
         MongoCollection movieBoxCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieBoxCollection.find(new Document().append("_id", id.get()));
+        FindIterable<Document> iterator = movieBoxCollection.find(new Document().append("_id", id.get()));
         if(iterator.first() != null) {
 
-            return Optional.of(documentToMovieBox((Document) iterator.first()));
+            return Optional.of(documentToMovieBox(iterator.first()));
         }
         return Optional.empty();
     }
@@ -97,15 +97,15 @@ public abstract class MovieBoxEditor {
     public static List<MovieBox> search(String query) {
 
         MongoCollection movieBoxCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = movieBoxCollection.find(Filters.text(query))
+        FindIterable<Document> iterator = movieBoxCollection.find(Filters.text(query))
                 .projection(Projections.metaTextScore("score"))
                 .sort(Sorts.metaTextScore("score"));
 
         List<MovieBox> movieBoxes = new ArrayList<>(50);
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             movieBoxes.add(documentToMovieBox(document));
-        });
+        }
         return movieBoxes;
     }
 

@@ -200,13 +200,13 @@ public class SettingsEditor implements DatabaseEditor {
     public void load() {
 
         MongoCollection settingsCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = settingsCollection.find();
+        FindIterable<Document> iterator = settingsCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         settings.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for(Document document : iterator) {
 
             switch (Setting.Type.valueOf(document.getString("type"))) {
 
@@ -256,7 +256,7 @@ public class SettingsEditor implements DatabaseEditor {
                     settings.add(listSetting);
                     break;
             }
-        });
+        };
 
         //mit bekannten Einstellungen falls nötig auffüllen
         for(Setting knownSetting : knownSettings) {

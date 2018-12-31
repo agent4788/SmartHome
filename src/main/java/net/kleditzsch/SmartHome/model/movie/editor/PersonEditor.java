@@ -49,11 +49,11 @@ public class PersonEditor extends AbstractDatabaseEditor<Person> {
     public void load() {
 
         MongoCollection actorCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable iterator = actorCollection.find();
+        FindIterable<Document> iterator = actorCollection.find();
 
         List<Person> data = getData();
         data.clear();
-        iterator.forEach((Block<Document>) document -> {
+        for (Document document : iterator) {
 
             Person element = new Person();
             element.setId(ID.of(document.getString("_id")));
@@ -62,7 +62,7 @@ public class PersonEditor extends AbstractDatabaseEditor<Person> {
             element.resetChangedData();
 
             data.add(element);
-        });
+        };
     }
 
     /**
