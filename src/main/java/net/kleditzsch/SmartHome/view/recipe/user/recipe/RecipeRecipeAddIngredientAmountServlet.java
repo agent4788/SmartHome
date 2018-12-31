@@ -7,6 +7,7 @@ import net.kleditzsch.SmartHome.model.recipe.recipe.Ingredient;
 import net.kleditzsch.SmartHome.model.recipe.recipe.IngredientAmount;
 import net.kleditzsch.SmartHome.model.recipe.recipe.Recipe;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
+import net.kleditzsch.SmartHome.util.recipe.RecipeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class RecipeRecipeAddIngredientAmountServlet extends HttpServlet {
@@ -52,7 +54,7 @@ public class RecipeRecipeAddIngredientAmountServlet extends HttpServlet {
                 } else {
 
                     //Neue Zutat
-                    String unit = form.getString("unit", "Einheit");
+                    String unit = form.getString("unit", "Einheit", new ArrayList<>(RecipeUtil.baseUnits.keySet()));
                     if(form.isSuccessful()) {
 
                         ingredient = new Ingredient();
@@ -69,7 +71,7 @@ public class RecipeRecipeAddIngredientAmountServlet extends HttpServlet {
                 }
 
                 //Zutatenmenge im Rezept speichern
-                int amount = form.getInteger("amount", "Mange", 1, 1_000_000);
+                double amount = form.getDouble("amount", "Menge", 0.25, 1_000_000);
                 if(ingredient != null && form.isSuccessful()) {
 
                     IngredientAmount ingredientAmount = new IngredientAmount();

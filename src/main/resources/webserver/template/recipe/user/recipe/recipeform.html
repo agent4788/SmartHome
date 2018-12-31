@@ -47,9 +47,9 @@
                     <label>Name</label>
                     <input name="name" placeholder="Name ..." type="text" pattern=".{3,50}"  value="{{ recipe.getName() | escape }}" required>
                 </div>
-                <div class="field required">
+                <div class="field">
                     <label>Beschreibung</label>
-                    <textarea name="description" required minlength="3">{{ recipe.getDescription().orElse("") | escape }}</textarea>
+                    <textarea name="description">{{ recipe.getDescription().orElse("") | escape }}</textarea>
                 </div>
             </div>
             <div class="title">

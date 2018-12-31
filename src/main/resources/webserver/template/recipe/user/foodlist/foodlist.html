@@ -44,7 +44,9 @@
                 </div>
                 <div class="content">
                     <a class="header" href="/recipe/recipeview?id={{ element.getId().get() }}">{{ element.getName() | escape }}</a>
+                    {% if element.getDescription().orElse('') != '' %}
                     <p>{{ element.getDescription().orElse('') | escape }}</p>
+                    {% endif %}
                     <div class="extra">
                         <a class="ui right floated red basic button" href="/recipe/updatefoodlist?id={{ element.getId().get() }}&foodlist=0&refToList">
                             <i class="remove icon"></i>

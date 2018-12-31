@@ -50,6 +50,7 @@ public class RecipeRecipeViewServlet extends HttpServlet {
                 List<Ingredient> ingredients = IngredientEditor.listIngredients();
                 model.with("ingredients", ingredients);
                 model.with("ingredientMap", ingredients.stream().collect(Collectors.toMap(in -> in.getId().get(), in -> in)));
+                model.with("units", RecipeUtil.baseUnits);
                 List<WorkStep> workSteps = recipe.getWorkSteps().stream().sorted().collect(Collectors.toList());
                 model.with("workSteps", workSteps);
                 model.with("workStepsMaxOrderId", workSteps.stream().mapToInt(WorkStep::getOrderId).summaryStatistics().getMax());

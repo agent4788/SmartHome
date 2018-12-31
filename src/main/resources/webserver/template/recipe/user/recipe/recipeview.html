@@ -178,12 +178,14 @@
                     <div class="ui segment">
                         <h1 class="ui header">{{ recipe.getName() | escape }}</h1>
                     </div>
+                    {% if recipe.getDescription().orElse('') != '' %}
                     <div class="ui segment">
                         <h4 class="ui horizontal divider header">Beschreibung</h4>
                         <div class="ui text">
-                            {{ recipe.getDescription().get() | escapenl }}
+                            {{ recipe.getDescription().orElse('') | escapenl }}
                         </div>
                     </div>
+                    {% endif %}
                     <div class="ui segment">
                         <h4 class="ui horizontal divider header">Infos</h4>
                         <div class="ui {% if recipe.getWorkDuration().isPresent() %}two{% else %}three{% endif %} statistics mini stackable">
@@ -254,7 +256,7 @@
                                 {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
                                 <tr>
                                     <td>{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
-                                    <td>{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                    <td>{{ amount.getAmount() | numberformat(2, 1) }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
                                     <td>
                                         <div class="ui icon button basic red" title="Zutat l&ouml;schen" onclick="$('#a{{ amount.getId().get() | escape}}').modal('show');"><i class="remove icon"></i></div>
                                         <div class="ui basic modal" id="a{{ amount.getId().get() | escape}}">
@@ -295,7 +297,7 @@
                                 {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
                                 <tr>
                                     <td>{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
-                                    <td>{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                    <td>{{ amount.getAmount() | numberformat(2, 1) }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -314,7 +316,7 @@
                                 {% if ingredientMap.containsKey(amount.getIngredientId().get()) %}
                                 <tr>
                                     <td class="ten wide">{{ ingredientMap.get(amount.getIngredientId().get()).getName() | escape }}</td>
-                                    <td class="six wide">{{ amount.getAmount() | numberformat }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
+                                    <td class="six wide">{{ amount.getAmount() | numberformat(2, 1) }} {{ ingredientMap.get(amount.getIngredientId().get()).getUnit() | escape }}</td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}
@@ -529,19 +531,14 @@
                 <div class="fields">
                     <div class="field ten wide">
                         <label>Menge</label>
-                        <input type="number" placeholder="Menge ..." name="amount" id="ingredientAmount" min="1" max="1000000" step="1">
+                        <input type="number" placeholder="Menge ..." name="amount" id="ingredientAmount" min="0.25" max="1000000" step="0.25">
                     </div>
                     <div class="field six wide">
                         <label>Einheit</label>
                         <select name="unit" id="ingredientUnit" class="ui dropdown">
-                            <option value="St&uuml;ck">St&uuml;ck</option>
-                            <option value="Pack">Pack</option>
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ml">ml</option>
-                            <option value="l">l</option>
-                            <option value="cm">cm</option>
-                            <option value="m">m</option>
+                            {% for unit, name in units %}
+                            <option value="{{ unit | escape }}">{{ name | escape }}</option>
+                            {% endfor %}
                             <option value="">keine</option>
                         </select>
                     </div>
@@ -604,7 +601,7 @@
                 <div class="field">
                     <div class="ui checkbox">
                         <input type="checkbox" name="ingredients" value="{{ combinedIngredientAmount.getIngredientId().get() | escape }}" checked>
-                        <label>{{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getName() | escape }} - {{ combinedIngredientAmount.getAmount() | numberformat }} {{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getUnit() | escape }}</label>
+                        <label>{{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getName() | escape }} - {{ combinedIngredientAmount.getAmount() | numberformat(2, 1) }} {{ ingredientMap.get(combinedIngredientAmount.getIngredientId().get()).getUnit() | escape }}</label>
                     </div>
                 </div>
                 {% endfor %}

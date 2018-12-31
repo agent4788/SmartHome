@@ -144,6 +144,15 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
+                    <a class="header item {% if module == 'dash' %}active{% endif %}" href="/recipe/index">
+                        Dashboard
+                    </a>
+                    <a class="header item {% if module == 'recipe' %}active{% endif %}" href="/recipe/recipe">
+                        Rezepte
+                    </a>
+                    <a class="header item {% if module == 'foodlist' %}active{% endif %}" href="/recipe/foodlist">
+                        Essensliste
+                    </a>
                     <div class="item" onclick="$('#searchModal').modal('show');">
                         <i class="search icon large"></i>
                         suchen

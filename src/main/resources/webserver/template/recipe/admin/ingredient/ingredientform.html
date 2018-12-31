@@ -40,14 +40,9 @@
             <div class="field required">
                 <label>Einheit</label>
                 <select class="ui dropdown" name="unit">
-                    <option value="St&uuml;ck">St&uuml;ck</option>
-                    <option value="Pack">Pack</option>
-                    <option value="g">g</option>
-                    <option value="kg">kg</option>
-                    <option value="ml">ml</option>
-                    <option value="l">l</option>
-                    <option value="cm">cm</option>
-                    <option value="m">m</option>
+                    {% for unit, name in units %}
+                    <option value="{{ unit | escape }}">{{ name | escape }}</option>
+                    {% endfor %}
                     <option value="">keine</option>
                 </select>
             </div>

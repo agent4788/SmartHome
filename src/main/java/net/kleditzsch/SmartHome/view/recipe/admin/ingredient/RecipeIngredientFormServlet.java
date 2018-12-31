@@ -7,6 +7,7 @@ import net.kleditzsch.SmartHome.model.recipe.recipe.Ingredient;
 import net.kleditzsch.SmartHome.model.recipe.recipe.Tag;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.util.recipe.RecipeUtil;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -62,6 +64,7 @@ public class RecipeIngredientFormServlet extends HttpServlet {
         }
         model.with("addElement", addElement);
         model.with("ingredient", ingredient);
+        model.with("units", RecipeUtil.baseUnits);
 
         //Template rendern
         resp.setContentType("text/html");
@@ -81,7 +84,7 @@ public class RecipeIngredientFormServlet extends HttpServlet {
             tagId = form.getId("id", "ID");
         }
         String name = form.getString("name", "Titel", 3, 50);
-        String unit = form.optString("unit", "Einheit", "", Arrays.asList("Stück", "Pack", "g", "kg", "ml", "l", "cm", "m", ""));
+        String unit = form.optString("unit", "Einheit", "", new ArrayList<>(RecipeUtil.baseUnits.keySet()));
 
         if (form.isSuccessful()) {
 

@@ -3,14 +3,33 @@ package net.kleditzsch.SmartHome.util.recipe;
 import net.kleditzsch.SmartHome.model.recipe.recipe.IngredientAmount;
 import net.kleditzsch.SmartHome.model.recipe.recipe.Recipe;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Rezepte Hilfsfunktionen
  */
 public abstract class RecipeUtil {
+
+    /**
+     * Basis Mengeneinheiten
+     */
+    public static Map<String, String> baseUnits;
+    static {
+
+        Map<String, String> tmp = new HashMap<>();
+        tmp.put("Stück", "Stück");
+        tmp.put("Pack", "Pack");
+        tmp.put("Brise", "Brise");
+        tmp.put("Schwap", "Schwap");
+        tmp.put("g", "g");
+        tmp.put("kg", "kg");
+        tmp.put("ml", "ml");
+        tmp.put("l", "l");
+        tmp.put("EL", "EL");
+        tmp.put("cm", "cm");
+        tmp.put("m", "m");
+        baseUnits = Collections.unmodifiableMap(tmp);
+    }
 
     /**
      * gibt eine kombinierte Liste mit allen Rezeptzutaten zurück

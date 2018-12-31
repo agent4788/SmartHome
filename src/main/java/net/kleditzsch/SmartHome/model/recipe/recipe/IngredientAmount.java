@@ -16,7 +16,7 @@ public class IngredientAmount extends Element {
     /**
      * Menge
      */
-    private int amount = 0;
+    private double amount = 0;
 
     /**
      * gibt die Zutaten ID zurück
@@ -41,7 +41,7 @@ public class IngredientAmount extends Element {
      *
      * @return Menge
      */
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -50,7 +50,7 @@ public class IngredientAmount extends Element {
      *
      * @param amount Menge
      */
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 }

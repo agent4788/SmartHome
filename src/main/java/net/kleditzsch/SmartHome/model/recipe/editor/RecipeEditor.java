@@ -578,7 +578,7 @@ public abstract class RecipeEditor {
             IngredientAmount elem = new IngredientAmount();
             elem.setId(ID.of(doc.getString("_id")));
             elem.setIngredientId(ID.of(doc.getString("ingredientId")));
-            elem.setAmount(doc.getInteger("amount"));
+            elem.setAmount(doc.get("amount") instanceof Integer ? doc.getInteger("amount") : doc.getDouble("amount"));
             element.getIngredientAmounts().add(elem);
         }
 
