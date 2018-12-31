@@ -80,7 +80,7 @@ public class BackupRestore {
                 return restoreRecipeData(backupFile);
             case ShoppingList:
 
-                restoreShoppingListData(backupFile);
+                return restoreShoppingListData(backupFile);
         }
         List<String> messages = new ArrayList<>();
         messages.add("Fehlerhaftes Modul!");
@@ -204,17 +204,6 @@ public class BackupRestore {
         DatabaseManager dbm = connectDatabase();
         MongoDatabase db = dbm.getDatabase();
 
-        //Text Index wiederherstellen
-        db.createCollection(MovieEditor.COLLECTION);
-        MongoCollection movies = db.getCollection(MovieEditor.COLLECTION);
-        movies.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
-        db.createCollection(MovieBoxEditor.COLLECTION);
-        MongoCollection movieBoxes = db.getCollection(MovieBoxEditor.COLLECTION);
-        movieBoxes.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
-        db.createCollection(MovieSeriesEditor.COLLECTION);
-        MongoCollection movieSeries = db.getCollection(MovieSeriesEditor.COLLECTION);
-        movieSeries.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
-
         List<String> messages = new ArrayList<>();
         if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("movie")) {
 
@@ -268,6 +257,24 @@ public class BackupRestore {
                         //alte Collection löschen
                         db.getCollection(collectionName).drop();
 
+                        //Text Index wiederherstellen
+                        if(collectionName.equals(RecipeEditor.COLLECTION)) {
+
+                            db.createCollection(MovieEditor.COLLECTION);
+                            MongoCollection movies = db.getCollection(MovieEditor.COLLECTION);
+                            movies.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+                        } else if(collectionName.equals(MovieBoxEditor.COLLECTION)) {
+
+                            db.createCollection(MovieBoxEditor.COLLECTION);
+                            MongoCollection movieBoxes = db.getCollection(MovieBoxEditor.COLLECTION);
+                            movieBoxes.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+                        } else if(collectionName.equals(MovieSeriesEditor.COLLECTION)) {
+
+                            db.createCollection(MovieSeriesEditor.COLLECTION);
+                            MongoCollection movieSeries = db.getCollection(MovieSeriesEditor.COLLECTION);
+                            movieSeries.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
+                        }
+
                         //Collection wiederherstellen
                         logger.info("Collection \"" + collectionName + "\" wird wiederhergestellt");
                         restoreCollection(db, collectionName, zip);
@@ -282,7 +289,6 @@ public class BackupRestore {
                         //FSK Logo Dateien wiederherstellen
                         dumpFile(uploadFsk.resolve(entry.getName().replace("/upload/fskLogo/", "")), zip);
                         logger.info("FSK Logo: " + entry.getName() + "\" wurde wiederhergestellt");
-
                     } else {
 
                         messages.add("ungültige Modul Datei \"" + entry.getName() + "\"");
@@ -361,15 +367,28 @@ public class BackupRestore {
         DatabaseManager dbm = connectDatabase();
         MongoDatabase db = dbm.getDatabase();
 
-        //Text Index wiederherstellen
-        db.createCollection(RecipeEditor.COLLECTION);
-        MongoCollection movies = db.getCollection(RecipeEditor.COLLECTION);
-        movies.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
-
         List<String> messages = new ArrayList<>();
         if(Files.exists(backupFile.getPath()) && backupFile.getFileName().contains("recipe")) {
 
             try (ZipInputStream zip = new ZipInputStream(new FileInputStream(backupFile.getPath().toFile()))) {
+
+                Path uploadRecipeImage = Paths.get("upload/recipe");
+
+                //Alle Dateien aus dem Cover Ordner löschen (außer .gitignore)
+                DirectoryStream<Path> cover = Files.newDirectoryStream(uploadRecipeImage);
+                cover.forEach(file -> {
+
+                    if(!file.getFileName().toString().equals(".gitignore") && Files.exists(file)) {
+
+                        try {
+
+                            Files.delete(file);
+                        } catch (IOException e) {
+
+                            messages.add("Die Bild Datei \"" + file.getFileName() + "\" konnte nicht gelöscht werden");
+                        }
+                    }
+                });
 
                 Pattern pattern = Pattern.compile("^[A-Za-z0-9]+(\\.[A-Za-z0-9]+)+\\.json$");
                 ZipEntry entry = zip.getNextEntry();
@@ -384,10 +403,23 @@ public class BackupRestore {
                         //alte Collection löschen
                         db.getCollection(collectionName).drop();
 
+                        //Text Index wiederherstellen
+                        if(collectionName.equals(RecipeEditor.COLLECTION)) {
+
+                            db.createCollection(RecipeEditor.COLLECTION);
+                            MongoCollection recipe = db.getCollection(RecipeEditor.COLLECTION);
+                            recipe.createIndex(Indexes.text("name"), new IndexOptions().defaultLanguage("german"));
+                        }
+
                         //Collection wiederherstellen
                         logger.info("Collection \"" + collectionName + "\" wird wiederhergestellt");
                         restoreCollection(db, collectionName, zip);
                         logger.info("Collection \"" + collectionName + "\" wurde wiederhergestellt");
+                    } else if(entry.getName().startsWith("/upload/cover/")) {
+
+                        //Bild Dateien wiederherstellen
+                        dumpFile(uploadRecipeImage.resolve(entry.getName().replace("/upload/recipe/", "")), zip);
+                        logger.info("Bild: " + entry.getName() + "\" wurde wiederhergestellt");
                     } else {
 
                         messages.add("ungültige Modul Datei \"" + entry.getName() + "\"");

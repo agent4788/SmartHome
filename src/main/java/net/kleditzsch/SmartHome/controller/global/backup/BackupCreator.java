@@ -367,6 +367,11 @@ public class BackupCreator {
 
             dumpCollectionZipToFile(collectionName, zip, collectionName + ".json");
         }
+
+        //Dateien sichern
+        Path upload = Paths.get("upload");
+        zip.addDirectory(upload.resolve("recipe"), "/upload/recipe/", false, true);
+
         zip.close();
         return zipFile;
     }
