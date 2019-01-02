@@ -41,13 +41,16 @@ public class AvmEditor implements DatabaseEditor {
     private List<SmarthomeDevice> deviceList = new ArrayList<>();
 
     /**
+     * Zugangsdaten
+     */
+    private String address = "";
+    private String user = "";
+    private String password = "";
+
+    /**
      * initialisiert die Verbindung
      */
     public AvmEditor() {
-
-        String address = "";
-        String user = "";
-        String password = "";
 
         //Einstellungen laden
         SettingsEditor settingsEditor = Application.getInstance().getSettings();
@@ -107,10 +110,18 @@ public class AvmEditor implements DatabaseEditor {
                     try {
 
                         devices = fritzBoxSmarthome.listDevices();
-                    } catch (AuthException e1) {
+                    } catch (Exception e1) {
 
-                        LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"");
-                        MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"", e));
+                        try {
+
+                            //erneuten Login probieren
+                            fritzBoxSmarthome = new FritzBoxSmarthome(address, user, password);
+                            devices = fritzBoxSmarthome.listDevices();
+                        } catch (Exception e2) {
+
+                            LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"");
+                            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"", e));
+                        }
                     }
                 }
 
