@@ -131,7 +131,7 @@ public abstract class DatabaseDateTimeUtil {
      * @param date Datumsobjekt
      * @return LocalDate Objekt
      */
-    public static LocalDate dateToLocallDate(Date date) {
+    public static LocalDate dateToLocalDate(Date date) {
 
         return date.toInstant().atOffset(ZoneOffset.ofHours(0)).toLocalDate();
     }
