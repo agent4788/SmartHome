@@ -58,11 +58,20 @@
             if(name == null) {
 
                 var name = $('#ingredientName').val().trim();
+                name = $('<div/>').text(name).html();
+                name = name.replace('ä', '&auml;');
+                name = name.replace('Ä', '&Auml;');
+                name = name.replace('ö', '&ouml;');
+                name = name.replace('Ö', '&Ouml;');
+                name = name.replace('ü', '&uuml;');
+                name = name.replace('Ü', '&Uuml;');
+                name = name.replace('ß', '&szlig;');
             }
             for(var i = 0; i < ingredients.length; i++) {
 
-                console.log(ingredients[i].name + ' == ' + name + ' -> ' + (ingredients[i].name == name));
-                if(ingredients[i].name == name) {
+                var ingredientName = ingredients[i].name;
+                console.log(ingredientName + ' == ' + name + ' -> ' + (ingredientName == name));
+                if(ingredientName == name) {
 
                     $('.ui.form#ingredientAmountForm').form('set values', {
                         unit : ingredients[i].unit,
