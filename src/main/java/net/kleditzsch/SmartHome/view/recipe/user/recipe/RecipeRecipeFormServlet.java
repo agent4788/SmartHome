@@ -115,7 +115,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
         if(!addElement) {
             recipeId = form.getId("id", "Rezept ID");
         }
-        String name = form.getString("name", "name", 3, 50);
+        String name = form.getString("name", "name", 3, 100);
         String description = form.optString("description", "Beschreibung", "", 0, 100_000);
 
         if(form.uploadNotEmpty("imgae")) {
