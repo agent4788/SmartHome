@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Kontakte</title>
+    <title>{{ contactGroup.getName() | escape }}</title>
     {% include '/webserver/template/header.html' %}
     <style type="text/css">
         .card .image.icon {
@@ -19,9 +19,9 @@
     </style>
 </head>
 <body>
-{% include '/webserver/template/contact/user/headline.html' with {module: 'dash', location: 'dash'} %}
+{% include '/webserver/template/contact/user/headline.html' with {module: 'dash', location: 'groupview', id: contactGroup.getId().get() } %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Kontakte</h1>
+    <h1 class="ui header top attached">{{ contactGroup.getName() | escape }}</h1>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -36,8 +36,8 @@
     {% endif %}
     {% if pagination.getSize() > 0 %}
     <div class="ui link cards four column doubling stackable bottom attached">
-        {% for element in contactGroupsAtPage %}
-        <div class="card" onclick="window.location = '/contact/groupview?id={{ element.getId().get() }}'">
+        {% for element in pagination.getCurrentPageElements() %}
+        <div class="card" onclick="window.location = '/contact/contactview?group={{ contactGroup.getId().get() | escape }}&id={{ element.getId().get() }}'">
             <div class="image icon">
                 <i class="user icon massive"></i>
             </div>
@@ -46,11 +46,6 @@
                     {{ element.getName() | escape }}
                 </div>
             </div>
-            <div class="extra content">
-                <span class="right floated">
-                    {{ element.getContacts().size() | numberformat }} Kontakte
-                </span>
-            </div>
         </div>
         {% endfor %}
     </div>
@@ -58,9 +53,9 @@
     <div class="ui placeholder segment bottom attached">
         <div class="ui icon header">
             <i class="pdf file outline icon"></i>
-            Keine Kontaktgruppen gefunden
+            Keine Kontakte gefunden
         </div>
-        <a class="ui primary button" href="/contact/groupform">Kontaktgruppe hinzuf&uuml;gen</a>
+        <a class="ui primary button" href="/contact/contactform?group={{ contactGroup.getId().get() | escape }}">Kontakt hinzuf&uuml;gen</a>
     </div>
     {% endif %}
     {% if pagination.hasPages() %}

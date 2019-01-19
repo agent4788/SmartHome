@@ -85,7 +85,7 @@ public abstract class DatabaseDateTimeUtil {
      * @param date Datumsobjekt
      * @return LocalDateTime Objekt
      */
-    public static LocalDateTime dateToLocaleDateTime(Date date) {
+    public static LocalDateTime dateToLocalDateTime(Date date) {
 
         return date.toInstant().atOffset(ZoneOffset.ofHours(0)).toLocalDateTime();
     }
@@ -97,7 +97,7 @@ public abstract class DatabaseDateTimeUtil {
      * @param zone Zeitzone
      * @return LocalDateTime Objekt
      */
-    public static LocalDateTime dateToLocaleDateTime(Date date, ZoneId zone) {
+    public static LocalDateTime dateToLocalDateTime(Date date, ZoneId zone) {
 
         return date.toInstant().atZone(zone).toLocalDateTime();
     }
@@ -120,7 +120,7 @@ public abstract class DatabaseDateTimeUtil {
      * @param zone Zeitzone
      * @return LocalTime Objekt
      */
-    public static LocalTime dateToLocaleTime(Date date, ZoneId zone) {
+    public static LocalTime dateToLocalTime(Date date, ZoneId zone) {
 
         return date.toInstant().atZone(zone).toLocalTime();
     }
@@ -143,7 +143,7 @@ public abstract class DatabaseDateTimeUtil {
      * @param zone Zeitzone
      * @return LocalDate Objekt
      */
-    public static LocalDate dateToLocaleDate(Date date, ZoneId zone) {
+    public static LocalDate dateToLocalDate(Date date, ZoneId zone) {
 
         return date.toInstant().atZone(zone).toLocalDate();
     }

@@ -573,7 +573,7 @@ public abstract class MovieEditor {
         element.setFskId(ID.of(document.getString("fskId")));
         element.setGenreId(ID.of(document.getString("genreId")));
         element.setRating(document.getInteger("rating"));
-        element.setPurchaseDate(DatabaseDateTimeUtil.dateToLocallDate(document.getDate("purchaseDate")));
+        element.setPurchaseDate(DatabaseDateTimeUtil.dateToLocalDate(document.getDate("purchaseDate")));
         List<String> directorIds = (List<String>) document.get("directorIds");
         element.getDirectorIds().addAll(directorIds.stream().map(ID::of).collect(Collectors.toList()));
         List<String> actorIds = (List<String>) document.get("actorIds");

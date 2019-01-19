@@ -3,7 +3,6 @@ package net.kleditzsch.SmartHome.model.automation.editor;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
-import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
@@ -18,8 +17,6 @@ import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,7 +52,7 @@ public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
             element.getDay().addAll((Collection<? extends Integer>) document.get("day"));
             element.getHour().addAll((Collection<? extends Integer>) document.get("hour"));
             element.getMinute().addAll((Collection<? extends Integer>) document.get("minute"));
-            element.setNextExecutionTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("nextExecutionTime")));
+            element.setNextExecutionTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("nextExecutionTime")));
 
             List<Document> commands = (List<Document>) document.get("commands");
             for (Document command : commands) {

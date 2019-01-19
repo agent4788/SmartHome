@@ -16,8 +16,6 @@ import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -425,11 +423,11 @@ public class BackupCreator {
         MongoCollection collection = database.getCollection(collectionName);
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(zip.addFile(archiveFileName), StandardCharsets.UTF_8));
         writer.beginArray();
-        FindIterable iterator = collection.find();
-        iterator.forEach((Block<Document>) document -> {
+        FindIterable<Document> iterator = collection.find();
+        for (Document document : iterator) {
 
             writeJsonObject(writer, document);
-        });
+        };
         writer.endArray();
         writer.flush();
     }
@@ -469,7 +467,7 @@ public class BackupCreator {
                     writer.name(key).value("string://" + document.getString(key));
                 }  else if(document.get(key) instanceof Date) {
 
-                    LocalDateTime localDateTime = DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate(key));
+                    LocalDateTime localDateTime = DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate(key));
                     writer.name(key).value("date://" + DatabaseDateTimeUtil.getDatabaseDateTimeStr(localDateTime));
                 }  else if(document.get(key) instanceof Document) {
 
@@ -535,7 +533,7 @@ public class BackupCreator {
                         List<Date> documents = (List<Date>) document.get(key);
                         for (Date subDoc : documents) {
 
-                            LocalDateTime localDateTime = DatabaseDateTimeUtil.dateToLocaleDateTime(subDoc);
+                            LocalDateTime localDateTime = DatabaseDateTimeUtil.dateToLocalDateTime(subDoc);
                             writer.value("date://" + DatabaseDateTimeUtil.getDatabaseDateTimeStr(localDateTime));
                         }
                     } catch (ClassCastException e) {}

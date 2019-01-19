@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ contact.getName() | escape }}</title>
+    {% include '/webserver/template/header.html' %}
+    <style type="text/css">
+        .ui.basic.segments {
+            box-shadow: none;
+            border: none;
+        }
+        .ui.basic.segments .ui.segment{
+            box-shadow: none;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+{% include '/webserver/template/contact/user/headline.html' with {module: 'dash', location: 'contactview', id: contact.getId().get(), groupid: contactGroup.getId().get(), edit: edit } %}
+<main class="ui main container">
+    {% if success is defined %}
+    <div class="ui message icon {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui segment top attached">
+        <div class="ui grid stackable">
+            <div class="column four wide">
+                <div class="ui segments basic">
+                    <div class="ui segment center aligned">
+                        <i class="image icon user massive"></i>
+                    </div>
+                    {% if contact.isBirtday() %}
+                    <div class="ui segment center aligned">
+                        <div class="ui one statistics mini stackable">
+                            <div class="statistic">
+                                <div class="label">
+                                    Geburtstag
+                                </div>
+                                <div class="value">
+                                    {{ contact.getBirthDay() | dateformat }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="column twelve wide">
+                <div class="ui grid">
+                    <div class="column sixteen wide">
+                        <h1 class="ui header">{{ contact.getName() | escape }}</h1>
+                        {% if contact.getCompanie() != '' %}<h3 class="ui header">Firma: {{ contact.getCompanie() | escape }}</h3>{% endif %}
+                    </div>
+                    {% if (contact.getPhoneNumber().size() > 0) or edit %}
+                    <div class="column sixteen wide">
+                        <h4 class="ui horizontal divider header">Telefon</h4>
+                    </div>
+                    {% if edit %}
+                        {% if contact.getPhoneNumber().size() > 0 %}
+                        {% for number in contact.getPhoneNumber() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ number.getDevice() | escape }}:</span>
+                            </div>
+                            <div class="column eight wide">
+                                <div class="text">
+                                    {{ number.getPhoneNumber() | escape }}
+                                </div>
+                            </div>
+                            <div class="column four wide">
+                                <div class="ui basic icon button red" onclick="$('#a{{ number.getId().get() | escape}}').modal('show');" title="l&ouml;schen" ><i class="ui icon remove"></i></div>
+                                <div class="ui basic modal" id="a{{ number.getId().get() | escape}}">
+                                    <div class="ui icon header">
+                                        <i class="delete icon"></i>
+                                        Telefonnummer l&ouml;schen
+                                    </div>
+                                    <div class="content">
+                                        <p>Bist du sicher das du die Telefonnummer l&ouml;schen m&ouml;chtest?</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            Nein
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="window.location = '/contact/phonenumberdelete?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}&phone={{ number.getId().get() | escape }}'">
+                                            <i class="checkmark icon"></i>
+                                            Ja
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="column sixteen wide">
+                            <h4 class="ui horizontal divider header">Telefonnummer hinzuf&uuml;gen</h4>
+                        </div>
+                        <div class="column sixteen wide">
+                            <form class="ui form" method="post" action="/contact/phonenumberform?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}">
+                                <div class="fields">
+                                    <div class="field four wide">
+                                        <label>Ger&auml;t</label>
+                                        <input name="device" placeholder="Ger&auml;t ..." type="text" pattern=".{1,20}" required>
+                                    </div>
+                                    <div class="field twelve wide">
+                                        <label>Telefonnummer</label>
+                                        <input name="phone" placeholder="Telefonnummer ..." type="tel" required>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <input type="submit" class="ui button" value="speichern">
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        {% if contact.getPhoneNumber().size() > 0 %}
+                        {% for number in contact.getPhoneNumber() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ number.getDevice() | escape }}:</span>
+                            </div>
+                            <div class="column twelve wide">
+                                <div class="text">
+                                    {{ number.getPhoneNumber() | escape }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% if (contact.getMailAddress().size() > 0) or edit %}
+                    <div class="column sixteen wide">
+                        <h4 class="ui horizontal divider header">Mail</h4>
+                    </div>
+                    {% if edit %}
+                        {% if contact.getMailAddress().size() > 0 %}
+                        {% for mail in contact.getMailAddress() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ mail.getLabel() | escape }}:</span>
+                            </div>
+                            <div class="column eight wide">
+                                <div class="text">
+                                    {{ mail.getMailAddress() | escape }}
+                                </div>
+                            </div>
+                            <div class="column four wide">
+                                <div class="ui basic icon button red" onclick="$('#a{{ mail.getId().get() | escape}}').modal('show');" title="l&ouml;schen" ><i class="ui icon remove"></i></div>
+                                <div class="ui basic modal" id="a{{ mail.getId().get() | escape}}">
+                                    <div class="ui icon header">
+                                        <i class="delete icon"></i>
+                                        Mailadresse l&ouml;schen
+                                    </div>
+                                    <div class="content">
+                                        <p>Bist du sicher das du die Mailadresse l&ouml;schen m&ouml;chtest?</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            Nein
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="window.location = '/contact/mailaddressdelete?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}&mail={{ mail.getId().get() | escape }}'">
+                                            <i class="checkmark icon"></i>
+                                            Ja
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="column sixteen wide">
+                            <form class="ui form" method="post" action="/contact/mailaddressform?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}">
+                                <div class="fields">
+                                    <div class="field four wide">
+                                        <label>Label</label>
+                                        <input name="label" placeholder="Label ..." type="text" pattern=".{1,20}" required>
+                                    </div>
+                                    <div class="field twelve wide">
+                                        <label>Mailadresse</label>
+                                        <input name="mail" placeholder="Mailadresse ..." type="email" required>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <input type="submit" class="ui button" value="speichern">
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        {% if contact.getMailAddress().size() > 0 %}
+                        {% for mail in contact.getMailAddress() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ mail.getLabel() | escape }}:</span>
+                            </div>
+                            <div class="column twelve wide">
+                                <div class="text">
+                                    {{ mail.getMailAddress() | escape }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% if contact.getAddress() != '' %}
+                    <div class="row">
+                        <div class="column four wide">
+                            <span style="font-weight: bold;">Adresse:</span>
+                        </div>
+                        <div class="column twelve wide">
+
+                            <div class="ui text">
+                                {{ contact.getAddress() | escapenl }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if contact.getWebpage() != '' %}
+                    <div class="row">
+                        <div class="column four wide">
+                            <span style="font-weight: bold;">Webseite:</span>
+                        </div>
+                        <div class="column twelve wide">
+                            <a href="{{ contact.getWebpage() | escape }}" target="_blank">{{ contact.getWebpage() | escape }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if (contact.getCustomFields().size() > 0) or edit %}
+                    {% if edit %}
+                        {% if contact.getCustomFields().size() > 0 %}
+                        {% for field in contact.getCustomFields() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ field.getLabel() | escape }}:</span>
+                            </div>
+                            <div class="column eight wide">
+                                <div class="text">
+                                    {{ field.getValue() | escape }}
+                                </div>
+                            </div>
+                            <div class="column four wide">
+                                <div class="ui basic icon button red" onclick="$('#a{{ field.getId().get() | escape}}').modal('show');" title="l&ouml;schen" ><i class="ui icon remove"></i></div>
+                                <div class="ui basic modal" id="a{{ field.getId().get() | escape}}">
+                                    <div class="ui icon header">
+                                        <i class="delete icon"></i>
+                                        Benutzerfeld l&ouml;schen
+                                    </div>
+                                    <div class="content">
+                                        <p>Bist du sicher das du das Benutzerfeld l&ouml;schen m&ouml;chtest?</p>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="ui red basic cancel inverted button">
+                                            <i class="remove icon"></i>
+                                            Nein
+                                        </div>
+                                        <div class="ui green ok inverted button" onclick="window.location = '/contact/customfielddelete?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}&field={{ field.getId().get() | escape }}'">
+                                            <i class="checkmark icon"></i>
+                                            Ja
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="column sixteen wide">
+                            <h4 class="ui horizontal divider header">Benutzerfeld hinzuf&uuml;gen</h4>
+                        </div>
+                        <div class="column sixteen wide">
+                            <form class="ui form" method="post" action="/contact/customfieldform?group={{ contactGroup.getId().get() | escape }}&id={{ contact.getId().get() | escape }}">
+                                <div class="fields">
+                                    <div class="field four wide">
+                                        <label>Label</label>
+                                        <input name="label" placeholder="Label ..." type="text" pattern=".{1,20}" required>
+                                    </div>
+                                    <div class="field twelve wide">
+                                        <label>Text</label>
+                                        <input name="value" placeholder="Text ..." type="text" pattern=".{1,250}" required>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <input type="submit" class="ui button" value="speichern">
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        {% if contact.getCustomFields().size() > 0 %}
+                        {% for field in contact.getCustomFields() %}
+                        <div class="row">
+                            <div class="column four wide">
+                                <span style="font-weight: bold;">{{ field.getLabel() | escape }}:</span>
+                            </div>
+                            <div class="column twelve wide">
+                                <div class="text">
+                                    {{ field.getValue() | escape }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% if contact.getDescription().orElse('') != '' %}
+                    <div class="row">
+                        <div class="column sixteen wide">
+                            <h4 class="ui horizontal divider header">Notizen</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column sixteen wide">
+                            <div class="text">
+                                {{ contact.getDescription().orElse('') | escapenl }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui segment bottom attached clearing" style="margin-bottom:30px;">
+        <div class="ui secondary basic button right floated" onclick="window.history.back()">zur&uuml;ck</div>
+    </div>
+</main>
+</body>
+</html>

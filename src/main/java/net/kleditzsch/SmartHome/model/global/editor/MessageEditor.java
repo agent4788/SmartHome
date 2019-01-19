@@ -176,13 +176,13 @@ public abstract class MessageEditor {
 
         Message element = new Message();
         element.setId(ID.of(document.getString("_id")));
-        element.setTimestamp(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("timestamp")));
+        element.setTimestamp(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("timestamp")));
         element.setModule(document.getString("module"));
         element.setType(Message.Type.valueOf(document.getString("type")));
         element.setAcknowledgeRequired(document.getBoolean("acknowledgeRequired"));
         element.setAcknowledgeType(Message.AckType.valueOf(document.getString("acknowledgeType")));
         element.setAcknowledgeApproved(document.getBoolean("acknowledgeApproved"));
-        element.setAcknowledgeApprovedTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("acknowledgeApprovedTime")));
+        element.setAcknowledgeApprovedTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("acknowledgeApprovedTime")));
         element.setMessage(document.getString("message"));
         element.setDescription(document.getString("description"));
 

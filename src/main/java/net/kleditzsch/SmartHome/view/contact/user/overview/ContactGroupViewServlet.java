@@ -1,13 +1,14 @@
-package net.kleditzsch.SmartHome.view.contact.user;
+package net.kleditzsch.SmartHome.view.contact.user.overview;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.contact.contact.Contact;
 import net.kleditzsch.SmartHome.model.contact.contact.ContactGroup;
 import net.kleditzsch.SmartHome.model.contact.editor.ContactEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.util.pagination.ListPagination;
 import net.kleditzsch.SmartHome.util.pagination.Pagination;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -22,13 +23,13 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class ContactIndexServlet extends HttpServlet {
+public class ContactGroupViewServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/contact/user/index.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/contact/user/overview/groupview.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Blätterfunktion
@@ -50,9 +51,28 @@ public class ContactIndexServlet extends HttpServlet {
         settingsLock.unlock();
 
         //Daten laden
-        Pagination pagination = new Pagination(ContactEditor.countContactGroups(), elementsAtPage);
-        model.with("pagination", pagination);
-        model.with("contactGroupsAtPage", ContactEditor.listContactGroups(pagination.getCurrentPageIndex(), pagination.getElementsAtPage()));
+        try {
+
+            ID id = ID.of(req.getParameter("id"));
+            Optional<ContactGroup> contactGroupOptional = ContactEditor.getContactGroupById(id);
+            if(contactGroupOptional.isPresent()) {
+
+                List<Contact> contacts = contactGroupOptional.get().getContacts().stream().sorted().collect(Collectors.toList());
+                ListPagination<Contact> pagination = new ListPagination<>(contacts, elementsAtPage);
+                model.with("pagination", pagination);
+                model.with("contactGroup", contactGroupOptional.get());
+            } else {
+
+                //Kontaktgruppe nicht gefunden
+                req.getSession().setAttribute("success", false);
+                req.getSession().setAttribute("message", "Die Kontaktgruppe konnte nicht gefunden werden");
+            }
+        } catch (Exception e) {
+
+            //Fehlerhafte ID
+            req.getSession().setAttribute("success", false);
+            req.getSession().setAttribute("message", "Fehlerhafte ID");
+        }
 
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {

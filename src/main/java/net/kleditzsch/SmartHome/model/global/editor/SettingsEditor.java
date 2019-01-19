@@ -74,6 +74,9 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String RECIPE_NEWEST_RECIPE_COUNT = "RECIPE_NEWEST_RECIPE_COUNT";
     public static final String RECIPE_SHOPPING_LIST_ID = "RECIPE_SHOPPING_LIST_ID";
 
+    //Kontakte
+    public static final String CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE = "CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE";
+
     /**
      * Lock objekt
      */
@@ -191,6 +194,10 @@ public class SettingsEditor implements DatabaseEditor {
         knownSettings.add(newestRecipeCount);
         StringSetting shoppingListId = new StringSetting(RECIPE_SHOPPING_LIST_ID, "", "");
         knownSettings.add(shoppingListId);
+
+        //Kontakte Einstellungen
+        IntegerSetting contactPaginationElementsAtPageUser = new IntegerSetting(CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        knownSettings.add(contactPaginationElementsAtPageUser);
     }
 
     /**

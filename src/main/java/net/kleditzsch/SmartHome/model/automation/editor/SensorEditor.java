@@ -3,7 +3,6 @@ package net.kleditzsch.SmartHome.model.automation.editor;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
-import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
@@ -58,7 +57,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             actualPowerValue.setSystemValue(document.getBoolean("systemValue"));
                             actualPowerValue.setDescription(document.getString("description"));
-                            actualPowerValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            actualPowerValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             actualPowerValue.setActualPower(document.getDouble("actualPower"));
 
@@ -74,7 +73,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             airPressureValue.setSystemValue(document.getBoolean("systemValue"));
                             airPressureValue.setDescription(document.getString("description"));
-                            airPressureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            airPressureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             airPressureValue.setAirPressure(document.getDouble("airPressure"));
 
@@ -90,7 +89,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             altitudeValue.setSystemValue(document.getBoolean("systemValue"));
                             altitudeValue.setDescription(document.getString("description"));
-                            altitudeValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            altitudeValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             altitudeValue.setAltitude(document.getDouble("altitude"));
 
@@ -106,7 +105,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             batteryLevelValue.setSystemValue(document.getBoolean("systemValue"));
                             batteryLevelValue.setDescription(document.getString("description"));
-                            batteryLevelValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            batteryLevelValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             batteryLevelValue.setBatteryLevel(document.getDouble("batteryLevel"));
 
@@ -122,7 +121,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             biStateValue.setSystemValue(document.getBoolean("systemValue"));
                             biStateValue.setDescription(document.getString("description"));
-                            biStateValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            biStateValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             biStateValue.setState(document.getBoolean("state"));
                             biStateValue.setTrueText(document.getString("trueText"));
@@ -140,7 +139,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             counterValue.setSystemValue(document.getBoolean("systemValue"));
                             counterValue.setDescription(document.getString("description"));
-                            counterValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            counterValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             counterValue.setCounterValue(BigInteger.valueOf(document.getLong("counterValue")));
 
@@ -156,7 +155,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             currentValue.setSystemValue(document.getBoolean("systemValue"));
                             currentValue.setDescription(document.getString("description"));
-                            currentValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            currentValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             currentValue.setCurrent(document.getDouble("current"));
 
@@ -172,7 +171,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             distanceValue.setSystemValue(document.getBoolean("systemValue"));
                             distanceValue.setDescription(document.getString("description"));
-                            distanceValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            distanceValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             distanceValue.setDistance(document.getDouble("distance"));
                             distanceValue.setOffset(document.getDouble("offset"));
@@ -189,7 +188,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             durationValue.setSystemValue(document.getBoolean("systemValue"));
                             durationValue.setDescription(document.getString("description"));
-                            durationValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            durationValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             durationValue.setDuration(document.getLong("duration"));
 
@@ -205,7 +204,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             energyValue.setSystemValue(document.getBoolean("systemValue"));
                             energyValue.setDescription(document.getString("description"));
-                            energyValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            energyValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             energyValue.setEnergy(document.getDouble("energy"));
 
@@ -221,7 +220,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             gasAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             gasAmountValue.setDescription(document.getString("description"));
-                            gasAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            gasAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             gasAmountValue.setGasAmount(document.getDouble("gasAmount"));
 
@@ -237,7 +236,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             humidityValue.setSystemValue(document.getBoolean("systemValue"));
                             humidityValue.setDescription(document.getString("description"));
-                            humidityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            humidityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             humidityValue.setHumidity(document.getDouble("humidity"));
 
@@ -253,7 +252,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             inputValue.setSystemValue(document.getBoolean("systemValue"));
                             inputValue.setDescription(document.getString("description"));
-                            inputValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            inputValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             inputValue.setState(document.getBoolean("state"));
 
@@ -269,7 +268,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             lightIntensityValue.setSystemValue(document.getBoolean("systemValue"));
                             lightIntensityValue.setDescription(document.getString("description"));
-                            lightIntensityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            lightIntensityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             lightIntensityValue.setLightIntensity(document.getDouble("lightIntensity"));
 
@@ -285,7 +284,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             liveBitValue.setSystemValue(document.getBoolean("systemValue"));
                             liveBitValue.setDescription(document.getString("description"));
-                            liveBitValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            liveBitValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             liveBitValue.setState(document.getBoolean("state"));
                             liveBitValue.setTimeout(document.getLong("timeout"));
@@ -304,7 +303,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             moistureValue.setSystemValue(document.getBoolean("systemValue"));
                             moistureValue.setDescription(document.getString("description"));
-                            moistureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            moistureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             moistureValue.setMoisture(document.getDouble("moisture"));
 
@@ -320,7 +319,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             stringValue.setSystemValue(document.getBoolean("systemValue"));
                             stringValue.setDescription(document.getString("description"));
-                            stringValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            stringValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             stringValue.setString(document.getString("string"));
 
@@ -336,7 +335,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             temperatureValue.setSystemValue(document.getBoolean("systemValue"));
                             temperatureValue.setDescription(document.getString("description"));
-                            temperatureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            temperatureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             temperatureValue.setTemperature(document.getDouble("temperature"));
                             temperatureValue.setOffset(document.getDouble("offset"));
@@ -353,7 +352,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             userAtHomeValue.setSystemValue(document.getBoolean("systemValue"));
                             userAtHomeValue.setDescription(document.getString("description"));
-                            userAtHomeValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            userAtHomeValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             userAtHomeValue.setIpAddress(document.getString("ipAddress"));
                             userAtHomeValue.setAtHome(document.getBoolean("atHome"));
@@ -372,7 +371,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             voltageValue.setSystemValue(document.getBoolean("systemValue"));
                             voltageValue.setDescription(document.getString("description"));
-                            voltageValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            voltageValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             voltageValue.setVoltage(document.getDouble("voltage"));
 
@@ -388,7 +387,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             waterAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             waterAmountValue.setDescription(document.getString("description"));
-                            waterAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            waterAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             waterAmountValue.setWaterAmount(document.getDouble("waterAmount"));
 
@@ -404,7 +403,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualActualPowerValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualActualPowerValue.setDescription(document.getString("description"));
-                            virtualActualPowerValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualActualPowerValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualActualPowerValue.getSensorValues().clear();
                             virtualActualPowerValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));
@@ -419,7 +418,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualEnergyValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualEnergyValue.setDescription(document.getString("description"));
-                            virtualEnergyValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualEnergyValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualEnergyValue.getSensorValues().clear();
                             virtualEnergyValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));
@@ -434,7 +433,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualGasAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualGasAmountValue.setDescription(document.getString("description"));
-                            virtualGasAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualGasAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualGasAmountValue.getSensorValues().clear();
                             virtualGasAmountValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));
@@ -449,7 +448,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualLightIntensityValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualLightIntensityValue.setDescription(document.getString("description"));
-                            virtualLightIntensityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualLightIntensityValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualLightIntensityValue.getSensorValues().clear();
                             virtualLightIntensityValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));
@@ -464,7 +463,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualTemperatureValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualTemperatureValue.setDescription(document.getString("description"));
-                            virtualTemperatureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualTemperatureValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualTemperatureValue.getSensorValues().clear();
                             virtualTemperatureValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));
@@ -479,7 +478,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             );
                             virtualWaterAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             virtualWaterAmountValue.setDescription(document.getString("description"));
-                            virtualWaterAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastPushTime")));
+                            virtualWaterAmountValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             virtualWaterAmountValue.getSensorValues().clear();
                             virtualWaterAmountValue.getSensorValues().addAll((Collection<? extends String>) document.get("sensorValues"));

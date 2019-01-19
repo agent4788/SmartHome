@@ -228,7 +228,7 @@ public abstract class MovieBoxEditor {
         element.setYear(document.getInteger("year"));
         element.setDiscId(ID.of(document.getString("discId")));
         element.setPrice(document.get("price") instanceof Integer ? document.getInteger("price").doubleValue(): document.getDouble("price"));
-        element.setPurchaseDate(DatabaseDateTimeUtil.dateToLocallDate(document.getDate("purchaseDate")));
+        element.setPurchaseDate(DatabaseDateTimeUtil.dateToLocalDate(document.getDate("purchaseDate")));
 
         List<Document> boxMoviesDocuments = (List<Document>) document.get("boxMovies");
         for (Document boxMovieDocument : boxMoviesDocuments) {

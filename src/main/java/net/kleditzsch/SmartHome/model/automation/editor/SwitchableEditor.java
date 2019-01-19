@@ -3,7 +3,6 @@ package net.kleditzsch.SmartHome.model.automation.editor;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
-import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
@@ -59,7 +58,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                avmSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                avmSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }
                             avmSocket.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Double Switchable
@@ -85,7 +84,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                tPlinkSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                tPlinkSocket.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }
                             tPlinkSocket.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Double Switchable
@@ -113,7 +112,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                output.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                output.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }output.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Double Switchable
                             output.setInverse(document.getBoolean("inverse"));
@@ -135,7 +134,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                scriptSingle.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                scriptSingle.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }scriptSingle.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Einfaches Script
                             scriptSingle.getCommand().addAll((Collection<? extends String>) document.get("command"));
@@ -155,7 +154,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                scriptDouble.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                scriptDouble.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }scriptDouble.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Double Switchable
                             scriptDouble.setInverse(document.getBoolean("inverse"));
@@ -178,7 +177,7 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             //Switchable
                             if(document.getDate("lastToggleTime") != null) {
 
-                                wakeOnLan.setLastToggleTime(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("lastToggleTime")));
+                                wakeOnLan.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
                             }
                             wakeOnLan.setState(AutomationElement.State.valueOf(document.getString("state")));
                             //Wake on Lan

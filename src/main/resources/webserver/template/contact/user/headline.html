@@ -35,8 +35,102 @@
             <img src="/static/img/icon/contact.png" width="32" height="32" class="logo">
             Kontakte
         </a>
+        <a class="header item {% if module == 'dash' %}active{% endif %}" href="/contact/index">
+            Dashboard
+        </a>
         <div class="right menu">
-            <a href="/contact/admin/index" class="item"><i class="setting icon large"></i></a>
+            <div class="ui icon item dropdown">
+                <i class="pencil alternate icon large"></i>
+                <div class="menu">
+                    {% if location == 'dash' %}
+                    <a class="item" href="/contact/groupform">
+                        <i class="icon plus"></i>
+                        hinzuf&uuml;gen
+                    </a>
+                    {% endif %}
+                    {% if location == 'groupview' %}
+                    <a class="item" href="/contact/contactform?group={{ id | escape }}">
+                        <i class="icon plus"></i>
+                        Kontakt hinzuf&uuml;gen
+                    </a>
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/contact/groupform?id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#groupDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui basic modal" id="groupDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Kontaktgruppe l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Kontaktgruppe l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/contact/groupdelete?id={{ id }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    {% if location == 'contactview' %}
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/contact/contactform?id={{ id | escape }}&group={{ groupid | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#contactDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui basic modal" id="contactDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Kontakt l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Kontakt l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/contact/contactdelete?id={{ id }}&group={{ groupid | escape }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="ui divider"></div>
+                    {% if edit %}
+                    <a class="item" href="/contact/contactview?id={{ id | escape }}&group={{ groupid | escape }}">
+                        <i class="icon arrow left"></i>
+                        zur&uuml;ck
+                    </a>
+                    {% else %}
+                    <a class="item" href="/contact/contactview?id={{ id | escape }}&group={{ groupid | escape }}&edit">
+                        <i class="icon pencil alternate"></i>
+                        Daten bearbeiten
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <!-- <a href="/contact/admin/index" class="item"><i class="setting icon large"></i></a> -->
         </div>
     </div>
     <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
@@ -48,10 +142,100 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
+                    <a href="/contact/index" class="item {% if module == 'dash' %}active{% endif %}">
+                        Dashboard
+                    </a>{% if location == 'dash' %}
+                    <a class="item" href="/contact/groupform">
+                        <i class="icon plus"></i>
+                        hinzuf&uuml;gen
+                    </a>
+                    {% endif %}
+                    {% if location == 'groupview' %}
+                    <a class="item" href="/contact/contactform?group={{ id | escape }}">
+                        <i class="icon plus"></i>
+                        Kontakt hinzuf&uuml;gen
+                    </a>
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/contact/groupform?id={{ id | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#groupDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui basic modal" id="groupDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Kontaktgruppe l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Kontaktgruppe l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/contact/groupdelete?id={{ id }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    {% if location == 'contactview' %}
+                    {% if id %}
+                    <div class="ui divider"></div>
+                    <a class="item" href="/contact/contactform?id={{ id | escape }}&group={{ groupid | escape }}">
+                        <i class="icon pencil alternate"></i>
+                        bearbeiten
+                    </a>
+                    <a class="item" onclick="$('#contactDeleteSafetyRequest').modal('show')">
+                        <i class="icon remove"></i>
+                        l&ouml;schen
+                    </a>
+                    <div class="ui basic modal" id="contactDeleteSafetyRequest">
+                        <div class="ui icon header">
+                            <i class="delete icon"></i>
+                            Kontakt l&ouml;schen
+                        </div>
+                        <div class="content">
+                            <p>Bist du sicher das du die Kontakt l&ouml;schen m&ouml;chtest?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Nein
+                            </div>
+                            <div class="ui green ok inverted button" onclick="window.location = '/contact/contactdelete?id={{ id }}&group={{ groupid | escape }}'">
+                                <i class="checkmark icon"></i>
+                                Ja
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="ui divider"></div>
+                    {% if edit %}
+                    <a class="item" href="/contact/contactview?id={{ id | escape }}&group={{ groupid | escape }}">
+                        <i class="icon arrow left"></i>
+                        zur&uuml;ck
+                    </a>
+                    {% else %}
+                    <a class="item" href="/contact/contactview?id={{ id | escape }}&group={{ groupid | escape }}&edit">
+                        <i class="icon pencil alternate"></i>
+                        Daten bearbeiten
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                    <!--
                     <a href="/contact/admin/index" class="item">
                         <i class="setting icon large"></i>
                         Einstellungen
                     </a>
+                    -->
                 </div>
             </div>
         </div>

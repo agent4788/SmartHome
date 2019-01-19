@@ -568,7 +568,7 @@ public abstract class RecipeEditor {
         element.setFoodList(document.getBoolean("foodList"));
         element.setBaseServings(document.getInteger("baseServings"));
         element.setImageFile(document.getString("imageFile"));
-        element.setInsertDate(DatabaseDateTimeUtil.dateToLocaleDateTime(document.getDate("insertDate")));
+        element.setInsertDate(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("insertDate")));
         element.setType(Recipe.Type.valueOf(document.getString("type")));
 
         //Zutaten

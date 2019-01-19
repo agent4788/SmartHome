@@ -103,7 +103,7 @@ public class DatabaseManager {
 
         Map<String, Object> host = new HashMap<>();
         Document hostInfoResults = db.runCommand(new Document("hostInfo", 1));
-        host.put("systemCurrentTime", DatabaseDateTimeUtil.dateToLocaleDateTime(((Document) hostInfoResults.get("system")).getDate("currentTime")).toString());
+        host.put("systemCurrentTime", DatabaseDateTimeUtil.dateToLocalDateTime(((Document) hostInfoResults.get("system")).getDate("currentTime")).toString());
         host.put("systemHostname", ((Document) hostInfoResults.get("system")).getString("hostname"));
         host.put("systemCpuAddrSize", ((Document) hostInfoResults.get("system")).getInteger("cpuAddrSize"));
         host.put("systemMemSizeMB", ((Document) hostInfoResults.get("system")).getInteger("memSizeMB"));
@@ -119,7 +119,7 @@ public class DatabaseManager {
         global.put("version", serverStatsResults.getString("version"));
         global.put("uptime", serverStatsResults.getDouble("uptime").longValue());
         global.put("uptimeMillis", serverStatsResults.getLong("uptimeMillis"));
-        global.put("localTime", DatabaseDateTimeUtil.dateToLocaleDateTime(serverStatsResults.getDate("localTime")));
+        global.put("localTime", DatabaseDateTimeUtil.dateToLocalDateTime(serverStatsResults.getDate("localTime")));
         global.put("connectionsCurrent", ((Document) serverStatsResults.get("connections")).getInteger("current"));
         global.put("connectionsAvailable", ((Document) serverStatsResults.get("connections")).getInteger("available"));
         global.put("connectionsTotalCreated", ((Document) serverStatsResults.get("connections")).getInteger("totalCreated"));
