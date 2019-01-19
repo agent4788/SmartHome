@@ -95,6 +95,13 @@
             {% endfor %}
         </div>
     </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom attached clearing">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/recipe/admin/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
     {% else %}
     <div class="ui icon info message bottom attached large">
         <i class="info circle icon black"></i>
