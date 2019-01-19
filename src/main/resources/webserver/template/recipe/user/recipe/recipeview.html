@@ -162,7 +162,7 @@
                             <img src="/recipe/image?file={{ recipe.getImageFile() }}" class="ui huge image">
                         </a>
                         {% else %}
-                        <img src="/static/img/noimage.gif">
+                        <img src="/static/img/noimage.gif" class="ui image fluid">
                         {% endif %}
                         <div style="margin-top: 15px;" class="ui labeled icon button basic {% if recipe.isBookmark() %}green{% else %}grey{% endif %}" id="bookmarkButton" onclick="updateBookmarkState()">
                             <i class="{% if recipe.isBookmark() %}check{% else %}remove{% endif %} icon" id="bookmarkButtonIcon"></i>Merkliste
@@ -217,7 +217,7 @@
                                     {% elseif recipe.getType() == 'DESSERT' %}Dessert
                                     {% elseif recipe.getType() == 'CAKE' %}Kuchen
                                     {% elseif recipe.getType() == 'COOKIES' %}Kekse
-                                    {% elseif recipe.getType() == 'GARNISH' %}Beilege
+                                    {% elseif recipe.getType() == 'GARNISH' %}Beilage
                                     {% endif %}
                                 </div>
                             </div>
