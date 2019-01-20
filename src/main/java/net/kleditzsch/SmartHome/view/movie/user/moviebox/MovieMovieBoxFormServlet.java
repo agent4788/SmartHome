@@ -2,11 +2,10 @@ package net.kleditzsch.SmartHome.view.movie.user.moviebox;
 
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
-import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.*;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
-import net.kleditzsch.SmartHome.util.image.ImageUtil;
+import net.kleditzsch.SmartHome.util.image.UploadUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -19,22 +18,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -131,7 +121,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
         LocalDate purchaseDate = form.getLocalDate("purchaseDate", "Kaufdatum", DateTimeFormatter.ofPattern("yyyy-MM-dd"), LocalDate.of(1900, 01, 01), LocalDate.now());
         if(form.uploadNotEmpty("cover")) {
 
-            cover = form.getUploadedFile("cover", "Cover", 2_097_152, ImageUtil.allowedContentTypes);
+            cover = form.getUploadedFile("cover", "Cover", 2_097_152, UploadUtil.allowedImageContentTypes);
         }
         if(form.fieldNotEmpty("coverUrl")) {
 
@@ -166,7 +156,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                 }
                 if(cover != null) {
 
-                    Path targetFile = ImageUtil.handleUploadedImage(cover, uploadDir);
+                    Path targetFile = UploadUtil.handleUploadedImage(cover, uploadDir);
                     movieBox.setCoverFile(targetFile.getFileName().toString());
                 } else if (coverUrl != null) {
 
@@ -174,7 +164,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                     Path targetFile = null;
                     try {
 
-                        targetFile = ImageUtil.handleImageUrl(coverUrl, uploadDir);
+                        targetFile = UploadUtil.handleImageUrl(coverUrl, uploadDir);
                         movieBox.setCoverFile(targetFile.getFileName().toString());
                     } catch (InterruptedException e) {
 
@@ -210,7 +200,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                     }
                     if(cover != null) {
 
-                        Path targetFile = ImageUtil.handleUploadedImage(cover, uploadDir);
+                        Path targetFile = UploadUtil.handleUploadedImage(cover, uploadDir);
 
                         //altes Logo löschen
                         if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
@@ -229,7 +219,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
                         Path targetFile = null;
                         try {
 
-                            targetFile = ImageUtil.handleImageUrl(coverUrl, uploadDir);
+                            targetFile = UploadUtil.handleImageUrl(coverUrl, uploadDir);
 
                             //altes Logo löschen
                             if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {

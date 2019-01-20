@@ -1,7 +1,6 @@
 package net.kleditzsch.SmartHome.util.image;
 
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.util.validation.Validator.PatternValidator;
 
 import javax.servlet.http.Part;
 import java.io.FileOutputStream;
@@ -20,12 +19,12 @@ import java.util.*;
 /**
  * Hilfsklasse für Bilder
  */
-public abstract class ImageUtil {
+public abstract class UploadUtil {
 
     /**
      * Liste mit den erlaubten Content typen
      */
-    public static List<String> allowedContentTypes;
+    public static List<String> allowedImageContentTypes;
 
     /**
      * Map mit den Dateiendungen
@@ -39,7 +38,7 @@ public abstract class ImageUtil {
         tmp.put("image/gif", ".gif");
 
         fileTypes = Collections.unmodifiableMap(tmp);
-        allowedContentTypes = Collections.unmodifiableList(new ArrayList<>(tmp.keySet()));
+        allowedImageContentTypes = Collections.unmodifiableList(new ArrayList<>(tmp.keySet()));
     }
 
     /**
@@ -166,5 +165,37 @@ public abstract class ImageUtil {
 
             throw new IOException("Download fehlgeschlagen, Status Code: " + response.statusCode());
         }
+    }
+
+    /**
+     * prüft und verschiebt eine hochgeladene Bild Datei
+     *
+     * @param part Datei
+     * @param targetDirectory Zielordner
+     * @param allowedContentTypes Erlaubte Content Typen
+     * @return Zieldatei
+     */
+    public static Path handleUploadedFile(Part part, Path targetDirectory, List<String> allowedContentTypes) throws IOException {
+
+        //Zielordner erstellen (falls nicht vorhanden)
+        if(!Files.exists(targetDirectory)) {
+
+            Files.createDirectories(targetDirectory);
+        }
+
+        //Contenttype prüfen
+        String contentType = part.getContentType();
+        if(!allowedContentTypes.contains(contentType)) {
+
+            throw new IOException("Ungültiger Content Type: " + contentType);
+        }
+
+        Path targetFile = targetDirectory.resolve(part.getSubmittedFileName());
+        try (OutputStream outputStream = new FileOutputStream(targetFile.toFile())) {
+
+            part.getInputStream().transferTo(outputStream);
+        }
+
+        return targetFile;
     }
 }

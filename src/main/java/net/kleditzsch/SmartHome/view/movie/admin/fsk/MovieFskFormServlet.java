@@ -4,7 +4,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.FskEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
-import net.kleditzsch.SmartHome.util.image.ImageUtil;
+import net.kleditzsch.SmartHome.util.image.UploadUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -17,16 +17,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 public class MovieFskFormServlet extends HttpServlet {
@@ -126,7 +121,7 @@ public class MovieFskFormServlet extends HttpServlet {
 
                 //Logo Datei
                 Path uploadDir = Paths.get("upload/fskLogo");
-                Path targetFile = ImageUtil.handleUploadedImage(logo, uploadDir);
+                Path targetFile = UploadUtil.handleUploadedImage(logo, uploadDir);
                 fsk.setImageFile(targetFile.getFileName().toString());
 
                 fe.add(fsk);
@@ -148,7 +143,7 @@ public class MovieFskFormServlet extends HttpServlet {
                     if(logo != null) {
 
                         Path uploadDir = Paths.get("upload/fskLogo");
-                        Path targetFile = ImageUtil.handleUploadedImage(logo, uploadDir);
+                        Path targetFile = UploadUtil.handleUploadedImage(logo, uploadDir);
                         //altes Logo löschen
                         Files.delete(uploadDir.resolve(fsk.getImageFile()));
 

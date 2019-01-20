@@ -4,7 +4,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieSeries;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
-import net.kleditzsch.SmartHome.util.image.ImageUtil;
+import net.kleditzsch.SmartHome.util.image.UploadUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -17,18 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class MovieMovieSeriesFormServlet extends HttpServlet {
@@ -115,7 +107,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
 
         if(form.uploadNotEmpty("poster")) {
 
-            poster = form.getUploadedFile("poster", "Poster", 2_097_152, ImageUtil.allowedContentTypes);
+            poster = form.getUploadedFile("poster", "Poster", 2_097_152, UploadUtil.allowedImageContentTypes);
         }
         if(form.fieldNotEmpty("posterUrl")) {
 
@@ -123,7 +115,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
         }
         if(form.uploadNotEmpty("banner")) {
 
-            banner = form.getUploadedFile("banner", "Banner", 2_097_152, ImageUtil.allowedContentTypes);
+            banner = form.getUploadedFile("banner", "Banner", 2_097_152, UploadUtil.allowedImageContentTypes);
         }
         if(form.fieldNotEmpty("bannerUrl")) {
 
@@ -150,7 +142,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                 if(poster != null) {
 
                     //Cover Datei
-                    Path targetFile = ImageUtil.handleUploadedImage(poster, uploadDir);
+                    Path targetFile = UploadUtil.handleUploadedImage(poster, uploadDir);
                     movieSeries.setPosterFile(targetFile.getFileName().toString());
                 } else if (posterUrl != null) {
 
@@ -158,7 +150,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     Path targetFile = null;
                     try {
 
-                        targetFile = ImageUtil.handleImageUrl(posterUrl, uploadDir);
+                        targetFile = UploadUtil.handleImageUrl(posterUrl, uploadDir);
                         movieSeries.setPosterFile(targetFile.getFileName().toString());
                     } catch (InterruptedException e) {
 
@@ -168,7 +160,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                 if(banner != null) {
 
                     //Cover Datei
-                    Path targetFile = ImageUtil.handleUploadedImage(banner, uploadDir);
+                    Path targetFile = UploadUtil.handleUploadedImage(banner, uploadDir);
                     movieSeries.setBannerFile(targetFile.getFileName().toString());
                 } else if (bannerUrl != null) {
 
@@ -176,7 +168,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     Path targetFile = null;
                     try {
 
-                        targetFile = ImageUtil.handleImageUrl(bannerUrl, uploadDir);
+                        targetFile = UploadUtil.handleImageUrl(bannerUrl, uploadDir);
                         movieSeries.setBannerFile(targetFile.getFileName().toString());
                     } catch (InterruptedException e) {
 
@@ -208,7 +200,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     }
                     if(poster != null) {
 
-                        Path targetFile = ImageUtil.handleUploadedImage(poster, uploadDir);
+                        Path targetFile = UploadUtil.handleUploadedImage(poster, uploadDir);
 
                         //altes Logo löschen
                         if(movieSeries.getPosterFile() != null && movieSeries.getPosterFile().length() > 0) {
@@ -227,7 +219,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                         Path targetFile = null;
                         try {
 
-                            targetFile = ImageUtil.handleImageUrl(posterUrl, uploadDir);
+                            targetFile = UploadUtil.handleImageUrl(posterUrl, uploadDir);
 
                             //altes Logo löschen
                             if(movieSeries.getPosterFile() != null && movieSeries.getPosterFile().length() > 0) {
@@ -246,7 +238,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     }
                     if(banner != null) {
 
-                        Path targetFile = ImageUtil.handleUploadedImage(banner, uploadDir);
+                        Path targetFile = UploadUtil.handleUploadedImage(banner, uploadDir);
 
                         //altes Logo löschen
                         if(movieSeries.getBannerFile() != null && movieSeries.getBannerFile().length() > 0) {
@@ -265,7 +257,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                         Path targetFile = null;
                         try {
 
-                            targetFile = ImageUtil.handleImageUrl(bannerUrl, uploadDir);
+                            targetFile = UploadUtil.handleImageUrl(bannerUrl, uploadDir);
 
                             //altes Logo löschen
                             if(movieSeries.getBannerFile() != null && movieSeries.getBannerFile().length() > 0) {

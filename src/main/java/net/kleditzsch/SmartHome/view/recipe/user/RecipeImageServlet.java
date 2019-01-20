@@ -1,6 +1,6 @@
 package net.kleditzsch.SmartHome.view.recipe.user;
 
-import net.kleditzsch.SmartHome.util.image.ImageUtil;
+import net.kleditzsch.SmartHome.util.image.UploadUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 public class RecipeImageServlet extends HttpServlet {
@@ -20,7 +19,7 @@ public class RecipeImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<String> allowedContentType = ImageUtil.allowedContentTypes;
+        List<String> allowedContentType = UploadUtil.allowedImageContentTypes;
         String file = req.getParameter("file");
         Path filePath = Paths.get("upload/recipe").resolve(file);
         if(Files.exists(filePath)) {

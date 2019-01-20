@@ -5,9 +5,8 @@ import net.kleditzsch.SmartHome.model.recipe.editor.IngredientEditor;
 import net.kleditzsch.SmartHome.model.recipe.editor.RecipeEditor;
 import net.kleditzsch.SmartHome.model.recipe.editor.TagEditor;
 import net.kleditzsch.SmartHome.model.recipe.recipe.Recipe;
-import net.kleditzsch.SmartHome.model.recipe.recipe.Tag;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
-import net.kleditzsch.SmartHome.util.image.ImageUtil;
+import net.kleditzsch.SmartHome.util.image.UploadUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -120,7 +119,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
 
         if(form.uploadNotEmpty("imgae")) {
 
-            image = form.getUploadedFile("imgae", "Bild", 2_097_152, ImageUtil.allowedContentTypes);
+            image = form.getUploadedFile("imgae", "Bild", 2_097_152, UploadUtil.allowedImageContentTypes);
         }
         imageUrl = form.optString("imageUrl", "Bild URL", null, 3, 1000);
         List<String> whiteList = new ArrayList<String>(Recipe.defaultImages.keySet());
@@ -157,7 +156,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                 if(image != null) {
 
                     //Datei hochgeladen
-                    Path targetFile = ImageUtil.handleUploadedImage(image, targetDirectory);
+                    Path targetFile = UploadUtil.handleUploadedImage(image, targetDirectory);
                     recipe.setImageFile(targetFile.getFileName().toString());
                 } else if(imageUrl != null) {
 
@@ -165,7 +164,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                     Path targetFile = null;
                     try {
 
-                        targetFile = ImageUtil.handleImageUrl(imageUrl, targetDirectory);
+                        targetFile = UploadUtil.handleImageUrl(imageUrl, targetDirectory);
                         recipe.setImageFile(targetFile.getFileName().toString());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -201,7 +200,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                     if(image != null) {
 
                         //Datei hochgeladen
-                        Path targetFile = ImageUtil.handleUploadedImage(image, targetDirectory);
+                        Path targetFile = UploadUtil.handleUploadedImage(image, targetDirectory);
 
                         //altes Bild löschen und neues speichern
                         if(recipe.getImageFile() != null && recipe.getImageFile().length() > 0 && !Recipe.defaultImages.containsKey(recipe.getImageFile())) {
@@ -215,7 +214,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                         Path targetFile = null;
                         try {
 
-                            targetFile = ImageUtil.handleImageUrl(imageUrl, targetDirectory);
+                            targetFile = UploadUtil.handleImageUrl(imageUrl, targetDirectory);
 
                             //altes Bild löschen und neues speichern
                             if(recipe.getImageFile() != null && recipe.getImageFile().length() > 0 && !Recipe.defaultImages.containsKey(recipe.getImageFile())) {
