@@ -4,6 +4,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.editor.FskEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.util.form.FormValidation;
+import net.kleditzsch.SmartHome.util.image.ImageUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
@@ -125,34 +126,8 @@ public class MovieFskFormServlet extends HttpServlet {
 
                 //Logo Datei
                 Path uploadDir = Paths.get("upload/fskLogo");
-                if(!Files.exists(uploadDir)) {
-
-                    Files.createDirectories(uploadDir);
-                }
-
-                String filename = ID.create().get();
-                switch (logo.getContentType()) {
-
-                    case "image/jpeg":
-
-                        filename += ".jpeg";
-                        break;
-                    case "image/png":
-
-                        filename += ".png";
-                        break;
-                    case "image/gif":
-
-                        filename += ".gif";
-                        break;
-                }
-                Path uploadFile = uploadDir.resolve(filename);
-                try (OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                    logo.getInputStream().transferTo(outputStream);
-                }
-
-                fsk.setImageFile(filename);
+                Path targetFile = ImageUtil.handleUploadedImage(logo, uploadDir);
+                fsk.setImageFile(targetFile.getFileName().toString());
 
                 fe.add(fsk);
 
@@ -173,38 +148,12 @@ public class MovieFskFormServlet extends HttpServlet {
                     if(logo != null) {
 
                         Path uploadDir = Paths.get("upload/fskLogo");
-                        if(!Files.exists(uploadDir)) {
-
-                            Files.createDirectories(uploadDir);
-                        }
-
-                        String filename = ID.create().get();
-                        switch (logo.getContentType()) {
-
-                            case "image/jpeg":
-
-                                filename += ".jpeg";
-                                break;
-                            case "image/png":
-
-                                filename += ".png";
-                                break;
-                            case "image/gif":
-
-                                filename += ".gif";
-                                break;
-                        }
-                        Path uploadFile = uploadDir.resolve(filename);
-                        try(OutputStream outputStream = new FileOutputStream(uploadFile.toFile())) {
-
-                            logo.getInputStream().transferTo(outputStream);
-                        }
-
+                        Path targetFile = ImageUtil.handleUploadedImage(logo, uploadDir);
                         //altes Logo löschen
                         Files.delete(uploadDir.resolve(fsk.getImageFile()));
 
                         //Dateiname des neuen Logos setzen
-                        fsk.setImageFile(filename);
+                        fsk.setImageFile(targetFile.getFileName().toString());
                     }
 
                     fe.update(fsk);
