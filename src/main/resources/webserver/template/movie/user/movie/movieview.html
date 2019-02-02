@@ -176,7 +176,7 @@
                         <h5 class="ui horizontal divider header">Schauspieler</h5>
                         {% for actorId in movie.getActorIds() %}
                         {% if personEditor.getById(actorId).isPresent() %}
-                        <a style="color: black;" href="/movie/serachpersonmovies?Id={{ actorId }}">
+                        <a style="color: black;" href="/movie/serachpersonmovies?id={{ actorId }}">
                             <i class="user circular icon"></i> {{ personEditor.getById(actorId).get().getName() | escape }}
                         </a>
                         {% endif %}
