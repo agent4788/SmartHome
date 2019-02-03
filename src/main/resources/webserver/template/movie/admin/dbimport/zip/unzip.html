@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Import</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">ZIP Import</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui bottom attached segment">
+        {% if success %}
+        <a class="ui button primary" href="/movie/admin/zipimport/movie">weiter</a>
+        {% else %}
+        <a class="ui button primary" href="/movie/admin/import">zur&uuml;ck</a>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

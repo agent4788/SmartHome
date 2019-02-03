@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Import</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">ZIP Import</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui attached segment">
+        <div class="ui grid">
+            <div class="column four wide"><span style="font-weight: bold">Datei:</span></div>
+            <div class="column twelve wide">{{ fileName | escape }}</div>
+            <div class="column four wide"><span style="font-weight: bold">Erstellt am:</span></div>
+            <div class="column twelve wide">{{ creationDate | datetimeformat }}</div>
+            <div class="column four wide"><span style="font-weight: bold">Gr&ouml;ße:</span></div>
+            <div class="column twelve wide">{{ fileSize | filesize }}</div>
+        </div>
+    </div>
+    <div class="ui bottom attached segment">
+        <a class="ui button secondary" href="/movie/admin">abbrechen</a>
+        <a class="ui button primary" href="/movie/admin/zipimport/unzip">Import starten</a>
+    </div>
+</main>
+</body>
+</html>

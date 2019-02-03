@@ -206,4 +206,29 @@ public abstract class FileUtil {
         }
         return fileNames;
     }
+
+    /**
+     * löscht einen Ordner mit allen Dateien und Unterordnern
+     *
+     * @param directory Ordner
+     */
+    public static void deleteDirectoryRecursiv(Path directory) throws IOException {
+
+        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
 }

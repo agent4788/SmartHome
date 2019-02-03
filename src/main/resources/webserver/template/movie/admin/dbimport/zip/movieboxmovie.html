@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Import</title>
+    {% include '/webserver/template/header.html' %}
+    <link rel="stylesheet" type="text/css" href="/static/lightbox/css/lightbox.min.css">
+    <script src="/static/lightbox/js/lightbox.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        $(function() {
+
+            $('.dropdown').dropdown();
+            $('.ui.form').form('set values', {
+                year        : "{{ movie.get('year') }}",
+                disc        : "{{ disc.getId().get() }}",
+                fsk         : "{{ fsk.getId().get() }}",
+                genre       : "{{ genre.getId().get() }}",
+                rating      : "{{ rating }}",
+                directors   : [{% for id in directorIds %}"{{ id.get() }}",{% endfor %}],
+                actors      : [{% for id1 in actorIds %}"{{ id1.get() }}",{% endfor %}]
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">ZIP Import - Filmbox Film</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <form class="ui form" method="post" action="/movie/admin/zipimport/moviebox">
+        {% if movie %}
+        <div class="ui attached segment">
+            <input type="hidden" name="oldid" value="{{ oldBoxId | escape }}">
+            <input type="hidden" name="oldmovieid" value="{{ movie.get('id') | escape }}">
+            <input type="hidden" name="newid" value="{{ newBoxId | escape }}">
+            <input type="hidden" name="type" value="boxmovie">
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Titel</label>
+                    <input name="title" placeholder="Titel ..." type="text" pattern=".{3,50}"  value="{{ movie.get('title') | escape }}" required>
+                </div>
+                <div class="field">
+                    <label>Untertietel</label>
+                    <input name="subtitle" placeholder="Untertietel ..." pattern=".{3,50}"  type="text" value="{{ movie.get('subTitle') | escape }}">
+                </div>
+            </div>
+            <div class="field required">
+                <label>Beschreibung</label>
+                <textarea name="description" required minlength="3">{{ movie.get('description') | escape }}</textarea>
+            </div>
+            <div class="field required">
+                <h3 class="ui header top attached">Cover</h3>
+                <div class="ui segment bottom attached">
+                    <div class="ui grid four column">
+                        {% if movie.get('coverImg').length() > 0 %}
+                        <div class="column">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="cover" checked="checked" value="origin://{{ movie.get('coverImg') | escape }}">
+                                <label>
+                                    <a href="/movie/admin/zipimport/cover?file={{ movie.get('coverImg') | escape }}" data-lightbox="{{ randomstr() }}">
+                                        <img src="/movie/admin/zipimport/cover?file={{ movie.get('coverImg') | escape }}" class="ui small image">
+                                    </a>
+                                </label>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% for path, url in coverUrlList %}
+                        <div class="column">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="cover" value="{{ path | escape }}">
+                                <label>
+                                    <a href="{{ url | escape }}" data-lightbox="{{ randomstr() }}">
+                                        <img src="{{ url | escape }}" class="ui small image">
+                                    </a>
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="column">
+                            <div class="ui radio checkbox">
+                                <input type="radio" name="cover" value="none">
+                                <label>kein Cover</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Produktionsjahr</label>
+                    <select name="year" class="ui dropdown" required>
+                        <option value="">Produktionsjahr</option>
+                        {% for element in yearList %}
+                        <option value="{{ element }}">{{ element }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field required">
+                    <label>Medium</label>
+                    <select name="disc" class="ui dropdown" required>
+                        <option value="">Medium</option>
+                        {% for element in discList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Laufzeit</label>
+                    <input name="duration" placeholder="0" type="number" min="1" max="15000" step="1" value="{{ movie.get('duration') }}" required>
+                </div>
+                <div class="field required">
+                    <label>Altersfreigabe</label>
+                    <select name="fsk" class="ui dropdown" required>
+                        <option value="">FSK</option>
+                        {% for element in fskList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field required">
+                    <label>Genre</label>
+                    <select name="genre" class="ui dropdown" required>
+                        <option value="">Genre</option>
+                        {% for element in genreList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field required">
+                    <label>Bewertung</label>
+                    <select name="rating" class="ui dropdown" required>
+                        <option value="0">keine</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <label>Regisseur</label>
+                    <select name="directors" class="ui fluid search dropdown" multiple>
+                        <option value="">Regisseur</option>
+                        {% for element in personList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Schauspieler</label>
+                    <select name="actors" class="ui fluid search dropdown" multiple>
+                        <option value="">Schauspieler</option>
+                        {% for element in personList %}
+                        <option value="{{ element.getId().get() }}">{{ element.getName() | escape }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="ui message icon attached error">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>keine Import Daten vorhanden</p>
+            </div>
+        </div>
+        {% endif %}
+        <div class="ui bottom attached segment">
+            <input type="submit" class="ui button primary" value="Speichern">
+        </div>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Import</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">ZIP Import - Abgeschlossen</h1>
+    <div class="ui bottom attached segment">
+        <a class="ui button secondary" href="/movie/admin/zipimport/final?cleanup">Daten bereinigen</a>
+    </div>
+</main>
+</body>
+</html>

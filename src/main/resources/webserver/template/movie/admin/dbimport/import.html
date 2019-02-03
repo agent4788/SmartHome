@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Import</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'admin'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Import</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <form class="ui form" method="post" action="/movie/admin/import" enctype="multipart/form-data">
+        <div class="ui attached segment">
+            <div class="field required">
+                <label>Datenimport Datei</label>
+                <input name="file" type="file" accept=".csv, .zip" required>
+            </div>
+        </div>
+        <div class="ui bottom attached segment">
+            <input type="submit" class="ui primary basic button" value="upload">
+        </div>
+    </form>
+</main>
+</body>
+</html>

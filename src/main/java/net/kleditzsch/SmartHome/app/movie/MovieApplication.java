@@ -10,6 +10,8 @@ import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Genre;
 import net.kleditzsch.SmartHome.view.movie.admin.MovieAdminIndexServlet;
+import net.kleditzsch.SmartHome.view.movie.admin.dbimport.MovieImportServlet;
+import net.kleditzsch.SmartHome.view.movie.admin.dbimport.zip.*;
 import net.kleditzsch.SmartHome.view.movie.admin.person.MoviePersonDeleteServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.person.MoviePersonFormServlet;
 import net.kleditzsch.SmartHome.view.movie.admin.person.MoviePersonListServlet;
@@ -238,6 +240,14 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieFskOrderServlet.class, "/movie/admin/fskorder");
         contextHandler.addServlet(MovieStatisticServlet.class, "/movie/admin/statistic");
         contextHandler.addServlet(MovieSettingsServlet.class, "/movie/admin/settings");
+
+        contextHandler.addServlet(MovieImportServlet.class, "/movie/admin/import");
+        contextHandler.addServlet(MovieZipImportServlet.class, "/movie/admin/zipimport/start");
+        contextHandler.addServlet(MovieZipImportUnzipServlet.class, "/movie/admin/zipimport/unzip");
+        contextHandler.addServlet(MovieZipImportMovieServlet.class, "/movie/admin/zipimport/movie");
+        contextHandler.addServlet(MovieZipImportMovieBoxServlet.class, "/movie/admin/zipimport/moviebox");
+        contextHandler.addServlet(MovieZipImportCoverServlet.class, "/movie/admin/zipimport/cover");
+        contextHandler.addServlet(MovieZipImportFinalServlet.class, "/movie/admin/zipimport/final");
     }
 
     /**
