@@ -15,6 +15,7 @@ import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
+import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.recipe.editor.RecipeEditor;
 import net.kleditzsch.SmartHome.model.shoppinglist.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
@@ -308,7 +309,7 @@ public class BackupRestore {
                         db.getCollection(collectionName).drop();
 
                         //Text Index wiederherstellen
-                        if(collectionName.equals(RecipeEditor.COLLECTION)) {
+                        if(collectionName.equals(MovieEditor.COLLECTION)) {
 
                             db.createCollection(MovieEditor.COLLECTION);
                             MongoCollection movies = db.getCollection(MovieEditor.COLLECTION);
@@ -620,7 +621,7 @@ public class BackupRestore {
                 case BEGIN_ARRAY:
 
                     reader.beginArray();
-                    JsonToken nextToken =reader.peek();
+                    JsonToken nextToken = reader.peek();
                     if(nextToken == JsonToken.BEGIN_OBJECT) {
 
                         //Array aus Objekten
@@ -644,6 +645,7 @@ public class BackupRestore {
                             list.add(new ObjectId(str.substring(prefixIdLength)));
                             while (reader.peek() == JsonToken.STRING) {
 
+                                str = reader.nextString();
                                 list.add(new ObjectId(str.substring(prefixIdLength)));
                             }
                             doc.append(nextName, list);
@@ -656,6 +658,7 @@ public class BackupRestore {
                                 list.add(Long.parseLong(str.substring(prefixLongLength)));
                                 while (reader.peek() == JsonToken.STRING) {
 
+                                    str = reader.nextString();
                                     list.add(Long.parseLong(str.substring(prefixLongLength)));
                                 }
                                 doc.append(nextName, list);
@@ -667,6 +670,7 @@ public class BackupRestore {
                             list.add(str.substring(prefixStringLength));
                             while (reader.peek() == JsonToken.STRING) {
 
+                                str = reader.nextString();
                                 list.add(str.substring(prefixStringLength));
                             }
                             doc.append(nextName, list);
@@ -677,6 +681,7 @@ public class BackupRestore {
                             list.add(DatabaseDateTimeUtil.parseDateTimeFromDatabase(str.substring(prefixDateLength)));
                             while (reader.peek() == JsonToken.STRING) {
 
+                                str = reader.nextString();
                                 list.add(DatabaseDateTimeUtil.parseDateTimeFromDatabase(str.substring(prefixDateLength)));
                             }
                             doc.append(nextName, list);
@@ -694,6 +699,7 @@ public class BackupRestore {
                                 list.add(Double.parseDouble(number));
                                 while (reader.peek() == JsonToken.NUMBER) {
 
+                                    number = reader.nextString();
                                     list.add(Double.parseDouble(number));
                                 }
                                 doc.append(nextName, list);
@@ -704,6 +710,7 @@ public class BackupRestore {
                                 list.add(Integer.parseInt(number));
                                 while (reader.peek() == JsonToken.NUMBER) {
 
+                                    number = reader.nextString();
                                     list.add(Integer.parseInt(number));
                                 }
                                 doc.append(nextName, list);
