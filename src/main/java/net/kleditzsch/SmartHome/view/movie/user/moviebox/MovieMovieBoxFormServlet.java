@@ -113,8 +113,8 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
         if(!addElement) {
             movieBoxId = form.getId("id", "Film ID");
         }
-        String title = form.getString("title", "Titel", 3, 50);
-        String subTitle = form.getString("subtitle", "Untertietel", 0, 50);
+        String title = form.getString("title", "Titel", 1, 100);
+        String subTitle = form.getString("subtitle", "Untertietel", 0, 100);
         int year = form.getInteger("year", "Produktionsjahr", 1900, LocalDate.now().getYear());
         ID discID = form.getId("disc", "Medium");
         double price = form.getDouble("price", "Preis", 0.0, 1000.0);

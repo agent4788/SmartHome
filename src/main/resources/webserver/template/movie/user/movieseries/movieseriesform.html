@@ -26,11 +26,11 @@
             <div class="equal width fields">
                 <div class="field required">
                     <label>Titel</label>
-                    <input name="title" placeholder="Titel ..." type="text" pattern=".{3,50}"  value="{{ movieSeries.getTitle() | escape }}" required>
+                    <input name="title" placeholder="Titel ..." type="text" pattern=".{1,100}"  value="{{ movieSeries.getTitle() | escape }}" required>
                 </div>
                 <div class="field">
                     <label>Untertietel</label>
-                    <input name="subtitle" placeholder="Untertietel ..." pattern=".{3,50}"  type="text" value="{{ movieSeries.getSubTitle() | escape }}">
+                    <input name="subtitle" placeholder="Untertietel ..." pattern=".{1,100}"  type="text" value="{{ movieSeries.getSubTitle() | escape }}">
                 </div>
             </div>
             <div class="field required">
