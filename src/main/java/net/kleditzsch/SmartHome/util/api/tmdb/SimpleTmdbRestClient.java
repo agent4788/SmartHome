@@ -123,7 +123,7 @@ public class SimpleTmdbRestClient {
                                 .append("&language=").append(lang)
                                 .append("&query=").append(encodedQuery)
                                 .append("&page=").append(page)
-                                .append("&include_adult=").append("true")
+                                .append("&include_adult=").append("false")
                                 .toString()))
                 .timeout(TIMEOUT)
                 .header("Content-Type", "application/json")
