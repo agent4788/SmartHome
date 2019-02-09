@@ -158,6 +158,7 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
 
                     Path targetFile = UploadUtil.handleUploadedImage(cover, uploadDir);
                     movieBox.setCoverFile(targetFile.getFileName().toString());
+                    cover.delete();
                 } else if (coverUrl != null) {
 
                     //Cover aus dem Internet herunterladen
@@ -213,6 +214,8 @@ public class MovieMovieBoxFormServlet extends HttpServlet {
 
                         //Dateiname des neuen Logos setzen
                         movieBox.setCoverFile(targetFile.getFileName().toString());
+
+                        cover.delete();
                     } else if (coverUrl != null) {
 
                         //Cover aus dem Internet herunterladen

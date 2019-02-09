@@ -144,6 +144,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     //Cover Datei
                     Path targetFile = UploadUtil.handleUploadedImage(poster, uploadDir);
                     movieSeries.setPosterFile(targetFile.getFileName().toString());
+                    poster.delete();
                 } else if (posterUrl != null) {
 
                     //Cover aus dem Internet herunterladen
@@ -162,6 +163,7 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
                     //Cover Datei
                     Path targetFile = UploadUtil.handleUploadedImage(banner, uploadDir);
                     movieSeries.setBannerFile(targetFile.getFileName().toString());
+                    banner.delete();
                 } else if (bannerUrl != null) {
 
                     //Cover aus dem Internet herunterladen
@@ -213,6 +215,8 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
 
                         //Dateiname des neuen Logos setzen
                         movieSeries.setPosterFile(targetFile.getFileName().toString());
+
+                        poster.delete();
                     } else if (posterUrl != null) {
 
                         //Cover aus dem Internet herunterladen
@@ -251,6 +255,8 @@ public class MovieMovieSeriesFormServlet extends HttpServlet {
 
                         //Dateiname des neuen Logos setzen
                         movieSeries.setBannerFile(targetFile.getFileName().toString());
+
+                        banner.delete();
                     } else if (bannerUrl != null) {
 
                         //Cover aus dem Internet herunterladen

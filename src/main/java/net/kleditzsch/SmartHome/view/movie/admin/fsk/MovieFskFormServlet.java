@@ -123,6 +123,7 @@ public class MovieFskFormServlet extends HttpServlet {
                 Path uploadDir = Paths.get("upload/fskLogo");
                 Path targetFile = UploadUtil.handleUploadedImage(logo, uploadDir);
                 fsk.setImageFile(targetFile.getFileName().toString());
+                logo.delete();
 
                 fe.add(fsk);
 
@@ -146,6 +147,7 @@ public class MovieFskFormServlet extends HttpServlet {
                         Path targetFile = UploadUtil.handleUploadedImage(logo, uploadDir);
                         //altes Logo löschen
                         Files.delete(uploadDir.resolve(fsk.getImageFile()));
+                        logo.delete();
 
                         //Dateiname des neuen Logos setzen
                         fsk.setImageFile(targetFile.getFileName().toString());

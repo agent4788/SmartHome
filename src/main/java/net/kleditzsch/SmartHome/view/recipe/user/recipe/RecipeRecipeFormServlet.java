@@ -158,6 +158,7 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                     //Datei hochgeladen
                     Path targetFile = UploadUtil.handleUploadedImage(image, targetDirectory);
                     recipe.setImageFile(targetFile.getFileName().toString());
+                    image.delete();
                 } else if(imageUrl != null) {
 
                     //Datei aus dem Internet herunterladen
@@ -208,6 +209,8 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                             Files.delete(targetDirectory.resolve(recipe.getImageFile()));
                         }
                         recipe.setImageFile(targetFile.getFileName().toString());
+
+                        image.delete();
                     } else if(imageUrl != null) {
 
                         //Datei aus dem Internet herunterladen
