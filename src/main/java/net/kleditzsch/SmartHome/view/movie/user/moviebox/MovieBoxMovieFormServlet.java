@@ -455,7 +455,7 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
 
                                 e.printStackTrace();
                             }
-                        } else if(movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
+                        } else if(movie.getCoverFile().length() == 0 && movieBox.getCoverFile() != null && movieBox.getCoverFile().length() > 0) {
 
                             //Box Cover übernehmen wenn kein Cover hochgeladen wurde
                             movie.setCoverFile(movieBox.getCoverFile());
