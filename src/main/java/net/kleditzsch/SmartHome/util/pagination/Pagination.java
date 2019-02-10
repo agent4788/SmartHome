@@ -325,7 +325,12 @@ public class Pagination {
      */
     public long getLastPageIndex() {
 
-        return Math.round(Math.ceil(size / elementsAtPage) * elementsAtPage);
+        long lastPageIndex = Math.round(Math.ceil(size / elementsAtPage) * elementsAtPage);
+        if(lastPageIndex >= size) {
+
+            lastPageIndex -= elementsAtPage;
+        }
+        return lastPageIndex;
     }
 
     /**
@@ -335,6 +340,12 @@ public class Pagination {
      */
     public long getLastPageLabel() {
 
-        return Math.round(Math.ceil(size / elementsAtPage)) + 1;
+        long lastPageIndex = Math.round(Math.ceil(size / elementsAtPage) * elementsAtPage);
+        long lastPageLabel = Math.round(Math.ceil(size / elementsAtPage)) + 1;
+        if(lastPageIndex >= size) {
+
+            lastPageLabel -= 1;
+        }
+        return lastPageLabel;
     }
 }
