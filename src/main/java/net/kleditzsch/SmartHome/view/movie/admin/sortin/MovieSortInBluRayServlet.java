@@ -57,7 +57,7 @@ public class MovieSortInBluRayServlet extends HttpServlet {
 
         //Liste der neusten Filme laden
         List<ID> newestMovieIds = new ArrayList<>();
-        if(req.getSession().getAttribute("newestMovieList") != null) {
+        if(req.getSession().getAttribute("newestMovieList") != null && req.getParameter("reset") == null) {
 
             //noch offene IDs
             List<String> strIds = (List<String>) req.getSession().getAttribute("newestMovieList");
