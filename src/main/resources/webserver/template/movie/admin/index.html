@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Movie Admin</title>
+    <title>Filme Admin</title>
     {% include '/webserver/template/header.html' %}
 </head>
 <body>
@@ -40,6 +40,14 @@
                 </div>
                 <div class="content">
                     <div class="header">Genre</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/sortin'">
+                <div class="image">
+                    <img src="/static/img/icon/sortin.png">
+                </div>
+                <div class="content">
+                    <div class="header">Sortieren</div>
                 </div>
             </div>
             <div class="card" onclick="window.location = '/movie/admin/statistic'">

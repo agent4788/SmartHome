@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filme Sortieren</title>
+    {% include '/webserver/template/header.html' %}
+</head>
+<body>
+{% include '/webserver/template/movie/admin/headline.html' with {module: 'sortin'} %}
+<main class="ui main container">
+    <div class="ui segment">
+        <div class="ui link cards four column doubling stackable">
+            <div class="card" onclick="window.location = '/movie/admin/sortin/dvd'">
+                <div class="image">
+                    <img src="/static/img/icon/disc.png">
+                </div>
+                <div class="content">
+                    <div class="header">DVD</div>
+                </div>
+            </div>
+            <div class="card" onclick="window.location = '/movie/admin/sortin/bluray'">
+                <div class="image">
+                    <img src="/static/img/icon/disc.png">
+                </div>
+                <div class="content">
+                    <div class="header">Blu-ray</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
