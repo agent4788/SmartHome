@@ -51,9 +51,9 @@ public class MovieZipImportMovieServlet extends HttpServlet {
         //alt -> neu
         Map<String, String> discList = new HashMap<>();
         discList.put("DVD", "DVD");
-        discList.put("Blu-ray", "Blu ray");
-        discList.put("3D Blu-ray", "3D Blu ray");
-        discList.put("4K UHD Blu-ray", "4K UHD Blu ray");
+        discList.put("Blu-ray", "Blu-ray");
+        discList.put("3D Blu-ray", "3D Blu-ray");
+        discList.put("4K UHD Blu-ray", "4K UHD Blu-ray");
         discList.put("SD Datei", "SD Datei");
         discList.put("HD Datei", "HD Datei");
         discList.put("4K UHD Datei", "4K UHD Datei");
