@@ -75,6 +75,7 @@ task buildApllicationFile(type: Zip) {
     into('.') {
 
         from 'build/libs'
+        from 'shserver.service'
         into('upload/fskLogo') {
 
             from 'upload/fskLogo'
