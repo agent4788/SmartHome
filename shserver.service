@@ -1,0 +1,10 @@
+[Unit]
+Description=SmartHome Server
+
+[Service]
+Type=idle
+WorkingDirectory=/opt/smarthome/
+ExecStart=/opt/java/openjdk/bin/java -jar /opt/smarthome/SmartHome-all-1.0.0.jar
+
+[Install]
+WantedBy=multi-user.target
