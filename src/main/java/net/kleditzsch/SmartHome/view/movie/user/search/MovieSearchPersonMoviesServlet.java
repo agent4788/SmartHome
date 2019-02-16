@@ -83,7 +83,7 @@ public class MovieSearchPersonMoviesServlet extends HttpServlet {
 
                     //Blätterfunktion
                     ListPagination<Movie> pagination = new ListPagination<>(movies, elementsAtPage, index);
-                    pagination.setBaseLink("/movie/serachpersonmovies?directorid=" + id.get() + "&index=");
+                    pagination.setBaseLink("/movie/serachpersonmovies?id=" + id.get() + "&index=");
                     model.with("person", personOptional.get());
                     model.with("pagination", pagination);
                 } else {
