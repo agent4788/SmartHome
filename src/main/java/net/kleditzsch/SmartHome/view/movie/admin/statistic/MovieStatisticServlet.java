@@ -5,9 +5,14 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieSeriesEditor;
+import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.movie.editor.*;
+import net.kleditzsch.SmartHome.model.movie.movie.Movie;
+import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.FSK;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Genre;
+import net.kleditzsch.SmartHome.util.collection.CollectionUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.bson.Document;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -18,9 +23,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.IntSummaryStatistics;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MovieStatisticServlet extends HttpServlet {
 
@@ -31,43 +36,150 @@ public class MovieStatisticServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/statistic/statistic.html");
         JtwigModel model = JtwigModel.newModel();
 
-        model.with("movieCount", MovieEditor.countMovies(true));
-        model.with("movieBoxCount", MovieBoxEditor.countMovieBoxes());
-        model.with("movieSeriesCount", MovieSeriesEditor.countMovieSeries());
+        //Statistische Daten ermitteln
+        List<Movie> movies = MovieEditor.listMovies();
+        List<MovieBox> movieBoxes = MovieBoxEditor.listMovieBoxes();
 
-        //Gesamtelänge, Durchschnittslänge, Gesamtpreis und Durchschnittspreis ermitteln
-        MongoCollection movies = Application.getInstance().getDatabaseCollection(MovieEditor.COLLECTION);
-        FindIterable iterator = movies.find().projection(Projections.include("price", "duration"));
-        List<Integer> durationList = new ArrayList<>(100);
-        List<Double> priceList = new ArrayList<>(100);
-        iterator.forEach((Block<Document>) document -> {
+        //Preis
+        DoubleSummaryStatistics moviePrice = movies.stream().mapToDouble(Movie::getPrice).summaryStatistics();
+        DoubleSummaryStatistics movieBoxPrice = movieBoxes.stream().mapToDouble(MovieBox::getPrice).summaryStatistics();
+        double sumPrice = moviePrice.getSum() + movieBoxPrice.getSum();
 
-            durationList.add(document.getInteger("duration"));
-            priceList.add(document.get("price") instanceof Integer ? document.getInteger("price").doubleValue(): document.getDouble("price"));
-        });
-
-        MongoCollection movieBoxes = Application.getInstance().getDatabaseCollection(MovieEditor.COLLECTION);
-        FindIterable iterator1 = movieBoxes.find().projection(Projections.include("price"));
-        iterator1.forEach((Block<Document>) document -> {
-
-            priceList.add(document.get("price") instanceof Integer ? document.getInteger("price").doubleValue(): document.getDouble("price"));
-        });
-
-        IntSummaryStatistics durationStatistics = durationList.stream().mapToInt(Integer::intValue).summaryStatistics();
-
-        double sumPrice = priceList.stream().mapToDouble(Double::doubleValue).sum();
-        double avgPrice = 0.0;
-        if(durationList.size() > 0) {
-
-            avgPrice = sumPrice / durationList.size();
-        }
-        long sumDuration = durationStatistics.getSum();
-        double avgDuration = durationStatistics.getAverage();
+        IntSummaryStatistics movieDuration = movies.stream().mapToInt(Movie::getDuration).summaryStatistics();
 
         model.with("sumPrice", sumPrice);
-        model.with("avgPrice", avgPrice);
-        model.with("sumDuration", sumDuration);
-        model.with("avgDuration", Math.round(avgDuration));
+        model.with("avgPrice", sumPrice / movies.size());
+        model.with("sumDuration", movieDuration.getSum());
+        model.with("avgDuration", Math.round(movieDuration.getAverage()));
+
+        model.with("movieCount", movies.size());
+        model.with("movieBoxCount", movieBoxes.size());
+        model.with("movieSeriesCount", MovieSeriesEditor.countMovieSeries());
+
+        //Käufe der letzten 10 Jahre
+        Map<Integer, List<Movie>> yearlyPurcheases = new LinkedHashMap<>();
+        for (int i = LocalDate.now().minusYears(9).getYear(); i <= LocalDate.now().getYear(); i++) {
+
+            final int year = i;
+            List<Movie> yearPurchaseMovies = movies.stream().filter(m -> m.getPurchaseDate().getYear() == year).collect(Collectors.toList());
+            yearlyPurcheases.put(year, yearPurchaseMovies);
+        }
+
+        //Anzahl der gekauften Filme pro Jahr
+        Map<Integer, Integer> yearPurchasedMovies = new LinkedHashMap<>();
+        yearlyPurcheases.forEach((year, purchasedMovies) -> {
+
+            yearPurchasedMovies.put(year, purchasedMovies.size());
+        });
+        model.with("yearMovies", yearPurchasedMovies);
+
+        //Gesamtpreis der gekauften Filme pro Jahr
+        Map<Integer, Double> yearPriceMovies = new LinkedHashMap<>();
+        yearlyPurcheases.forEach((year, purchasedMovies) -> {
+
+            yearPriceMovies.put(year, purchasedMovies.stream().mapToDouble(Movie::getPrice).sum());
+        });
+        model.with("yearPriceMovies", yearPriceMovies);
+
+        //Durchschnittspreis der gekauften Filme pro Jahr
+        Map<Integer, Double> yearAvgPriceMovies = new LinkedHashMap<>();
+        yearlyPurcheases.forEach((year, purchasedMovies) -> {
+
+            yearAvgPriceMovies.put(year, purchasedMovies.stream().mapToDouble(Movie::getPrice).summaryStatistics().getAverage());
+        });
+        model.with("yearAvgPriceMovies", yearAvgPriceMovies);
+
+        //Genres gruppieren und zählen
+        final Map<String, Integer> genreCount = new LinkedHashMap<>(25);
+        movies.forEach(m -> {
+
+            String genreId = m.getGenreId().get();
+            if(genreCount.containsKey(genreId)) {
+
+                genreCount.put(genreId, genreCount.get(genreId) + 1);
+            } else {
+
+                genreCount.put(genreId, 1);
+            }
+        });
+        GenreEditor genreEditor = GenreEditor.createAndLoad();
+        Map<String, Integer> genres = new LinkedHashMap<>();
+        Map<String, Integer> genreCountSorted = CollectionUtil.sortByValueReversed(genreCount);
+        genreCountSorted.forEach((id, count) -> {
+
+            Optional<Genre> genreOptional = genreEditor.getById(ID.of(id));
+            if(genreOptional.isPresent()) {
+
+                genres.put(genreOptional.get().getName(), count);
+            }
+        });
+        model.with("genres", genres);
+
+        //Medien gruppieren und zählen
+        final Map<String, Integer> discCount = new LinkedHashMap<>(25);
+        movies.forEach(m -> {
+
+            String discId = m.getDiscId().get();
+            if(discCount.containsKey(discId)) {
+
+                discCount.put(discId, discCount.get(discId) + 1);
+            } else {
+
+                discCount.put(discId, 1);
+            }
+        });
+        DiscEditor discEditor = DiscEditor.createAndLoad();
+        Map<String, Integer> discs = new LinkedHashMap<>();
+        Map<String, Integer> discCountSorted = CollectionUtil.sortByValueReversed(discCount);
+        discCountSorted.forEach((id, count) -> {
+
+            Optional<Disc> discOptional = discEditor.getById(ID.of(id));
+            if(discOptional.isPresent()) {
+
+                discs.put(discOptional.get().getName(), count);
+            }
+        });
+        model.with("discs", discs);
+
+        final Map<Integer, Integer> ratingCount = new LinkedHashMap<>(25);
+        movies.forEach(m -> {
+
+            int rating = m.getRating();
+            if(ratingCount.containsKey(rating)) {
+
+                ratingCount.put(rating, ratingCount.get(rating) + 1);
+            } else {
+
+                ratingCount.put(rating, 1);
+            }
+        });
+        model.with("ratingCount", CollectionUtil.sortByValueReversed(ratingCount));
+
+        //Altersfreigaben gruppieren und zählen
+        final Map<String, Integer> fskCount = new LinkedHashMap<>(25);
+        movies.forEach(m -> {
+
+            String fskId = m.getFskId().get();
+            if(fskCount.containsKey(fskId)) {
+
+                fskCount.put(fskId, fskCount.get(fskId) + 1);
+            } else {
+
+                fskCount.put(fskId, 1);
+            }
+        });
+        FskEditor fskEditor = FskEditor.createAndLoad();
+        Map<String, Integer> fsks = new LinkedHashMap<>();
+        Map<String, Integer> fskCountSorted = CollectionUtil.sortByValueReversed(fskCount);
+        fskCountSorted.forEach((id, count) -> {
+
+            Optional<FSK> fskOptional = fskEditor.getById(ID.of(id));
+            if(fskOptional.isPresent()) {
+
+                fsks.put(fskOptional.get().getName(), count);
+            }
+        });
+        model.with("fsks", fsks);
 
         //Template rendern
         resp.setContentType("text/html");

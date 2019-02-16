@@ -4,6 +4,289 @@
     <meta charset="UTF-8">
     <title>Filme Statistik</title>
     {% include '/webserver/template/header.html' %}
+    <script src="/static/rgraph/RGraph.common.core.js"></script>
+    <script src="/static/rgraph/RGraph.common.dynamic.js"></script>
+    <script src="/static/rgraph/RGraph.common.tooltips.js"></script>
+    <script src="/static/rgraph/RGraph.common.key.js"></script>
+    <script src="/static/rgraph/RGraph.bar.js"></script>
+    <script src="/static/rgraph/RGraph.pie.js"></script>
+    <script type="text/javascript">
+
+        var purchaseAtYearKeys = [
+            {% for year, count in yearMovies %}"{{ year }}",{% endfor %}
+        ];
+        var purchaseAtYearData = [
+            {% for year, count in yearMovies %}"{{ count }}",{% endfor %}
+        ];
+        var costAtYearKeys = [
+            {% for year, price in yearPriceMovies %}"{{ year }}",{% endfor %}
+        ];
+        var costAtYearData = [
+            {% for year, price in yearPriceMovies %}"{{ price }}",{% endfor %}
+        ];
+        var avgCostAtYearKeys = [
+            {% for year, price in yearAvgPriceMovies %}"{{ year }}",{% endfor %}
+        ];
+        var avgCostAtYearData = [
+            {% for year, price in yearAvgPriceMovies %}"{{ price }}",{% endfor %}
+        ];
+        var genresKeys = [
+            {% for genre, count in genres %}"{{ genre }}",{% endfor %}
+        ];
+        var genresData = [
+            {% for genre, count in genres %}"{{ count }}",{% endfor %}
+        ];
+        var ratingKeys = [
+            {% for rating, count in ratingCount %}"{{ rating }}",{% endfor %}
+        ];
+        var ratingData = [
+            {% for rating, count in ratingCount %}"{{ count }}",{% endfor %}
+        ];
+        var discsKeys = [
+            {% for disc, count in discs %}"{{ disc }}",{% endfor %}
+        ];
+        var discsData = [
+            {% for disc, count in discs %}"{{ count }}",{% endfor %}
+        ];
+        var fskKeys = [
+            {% for fsk, count in fsks %}"{{ fsk }}",{% endfor %}
+        ];
+        var fskData = [
+            {% for fsk, count in fsks %}"{{ count }}",{% endfor %}
+        ];
+
+        var colors = ['#86B5BC','#E30513','#1C1C1B','#86BC24','#E5007D','#2F8DCD','#F9D900',
+            '#F6A200','#BCBCBC', '#00FFFF', '#8A2BE2', '#D2691E', '#DC143C', '#FF8C00', '#E9967A',
+            '#B22222', '#228B22', '#FFD700', '#ADFF2F', '#F08080', '#FF4500'];
+
+        $(function() {
+
+            new RGraph.Bar({
+                id: 'purchase',
+                data: purchaseAtYearData,
+                options: {
+                    labelsAbove: true,
+                    labelsAboveDecimals: 0,
+                    labelsAboveColor: 'black',
+                    labelsAboveSize: 10,
+                    hmargin: 20,
+                    colors: colors,
+                    colorsSequential: true,
+                    labels: purchaseAtYearKeys,
+                    textSize: 10,
+                    textColor: 'gray',
+                    backgroundGridVlines: false,
+                    backgroundGridAutofitNumhlines: 4,
+                    backgroundGridBorder: false,
+                    noaxes: true,
+                    ylabelsCount: 4,
+                    titleX: 25,
+                    titleY: 0,
+                    titleHalign: 'left',
+                    titleColor: '#999',
+                    ylabelsOffsetx: -10
+                }
+            }).grow({frames: 60});
+
+            new RGraph.Bar({
+                id: 'price',
+                data: costAtYearData,
+                options: {
+                    unitsPost: ' €',
+                    labelsAbove: true,
+                    labelsAboveDecimals: 0,
+                    labelsAboveUnitsPost: '€',
+                    labelsAboveColor: 'black',
+                    labelsAboveSize: 10,
+                    hmargin: 20,
+                    colors: colors,
+                    colorsSequential: true,
+                    labels: costAtYearKeys,
+                    textSize: 10,
+                    textColor: 'gray',
+                    backgroundGridVlines: false,
+                    backgroundGridAutofitNumhlines: 4,
+                    backgroundGridBorder: false,
+                    noaxes: true,
+                    ylabelsCount: 4,
+                    titleX: 25,
+                    titleY: 0,
+                    titleHalign: 'left',
+                    titleColor: '#999',
+                    ylabelsOffsetx: -10
+                }
+            }).grow({frames: 60});
+
+            new RGraph.Bar({
+                id: 'avgPrice',
+                data: avgCostAtYearData,
+                options: {
+                    unitsPost: ' €',
+                    labelsAbove: true,
+                    labelsAboveDecimals: 2,
+                    labelsAboveUnitsPost: '€',
+                    labelsAboveColor: 'black',
+                    labelsAboveSize: 10,
+                    hmargin: 20,
+                    colors: colors,
+                    colorsSequential: true,
+                    labels: avgCostAtYearKeys,
+                    textSize: 10,
+                    textColor: 'gray',
+                    backgroundGridVlines: false,
+                    backgroundGridAutofitNumhlines: 4,
+                    backgroundGridBorder: false,
+                    noaxes: true,
+                    ylabelsCount: 4,
+                    titleX: 25,
+                    titleY: 0,
+                    titleHalign: 'left',
+                    titleColor: '#999',
+                    ylabelsOffsetx: -10
+                }
+            }).grow({frames: 60});
+
+            let keys = [];
+            for (let i = 0; i < genresData.length; i++) {
+                keys[i] = '{1}: {2}'.format(genresKeys[i], genresData[i]);
+            }
+
+            RGraph.HTML.Key('genresContainer',
+                    {
+                        colors: colors,
+                        labels: keys,
+                        tableCss: {
+                            position: 'absolute',
+                            top: '50%',
+                            right: '-70px',
+                            transform: 'translateY(-50%)'
+                        }
+                    });
+
+            new RGraph.Pie({
+                id: 'genres',
+                data: genresData,
+                options: {
+                    gutterLeft: 50,
+                    gutterRight: 50,
+                    linewidth: 0,
+                    strokestyle: 'rgba(0,0,0,0)',
+                    colors: colors,
+                    colorsSequential: true,
+                    variant: 'pie3d',
+                    radius: 100,
+                    radius: 80,
+                    shadowOffsety: 5,
+                    shadowColor: '#aaa'
+                }
+            }).draw();
+
+            keys = [];
+            for (let i = 0; i < ratingData.length; i++) {
+                keys[i] = '{1}: {2}'.format(ratingKeys[i], ratingData[i]);
+            }
+
+            RGraph.HTML.Key('ratingContainer',
+                    {
+                        colors: colors,
+                        labels: keys,
+                        tableCss: {
+                            position: 'absolute',
+                            top: '50%',
+                            right: '-70px',
+                            transform: 'translateY(-50%)'
+                        }
+                    });
+
+            new RGraph.Pie({
+                id: 'ratings',
+                data: ratingData,
+                options: {
+                    gutterLeft: 50,
+                    gutterRight: 50,
+                    linewidth: 0,
+                    strokestyle: 'rgba(0,0,0,0)',
+                    colors: colors,
+                    colorsSequential: true,
+                    variant: 'pie3d',
+                    radius: 100,
+                    radius: 80,
+                    shadowOffsety: 5,
+                    shadowColor: '#aaa'
+                }
+            }).draw();
+
+            keys = [];
+            for (let i = 0; i < discsData.length; i++) {
+                keys[i] = '{1}: {2}'.format(discsKeys[i], discsData[i]);
+            }
+
+            RGraph.HTML.Key('discContainer',
+                    {
+                        colors: colors,
+                        labels: keys,
+                        tableCss: {
+                            position: 'absolute',
+                            top: '50%',
+                            right: '-70px',
+                            transform: 'translateY(-50%)'
+                        }
+                    });
+
+            new RGraph.Pie({
+                id: 'discs',
+                data: discsData,
+                options: {
+                    gutterLeft: 50,
+                    gutterRight: 50,
+                    linewidth: 0,
+                    strokestyle: 'rgba(0,0,0,0)',
+                    colors: colors,
+                    colorsSequential: true,
+                    variant: 'pie3d',
+                    radius: 100,
+                    radius: 80,
+                    shadowOffsety: 5,
+                    shadowColor: '#aaa'
+                }
+            }).draw();
+
+            keys = [];
+            for (let i = 0; i < fskData.length; i++) {
+                keys[i] = '{1}: {2}'.format(fskKeys[i], fskData[i]);
+            }
+
+            RGraph.HTML.Key('fskContainer',
+                    {
+                        colors: colors,
+                        labels: keys,
+                        tableCss: {
+                            position: 'absolute',
+                            top: '50%',
+                            right: '-150px',
+                            transform: 'translateY(-50%)'
+                        }
+                    });
+
+            new RGraph.Pie({
+                id: 'fsk',
+                data: fskData,
+                options: {
+                    gutterLeft: 50,
+                    gutterRight: 50,
+                    linewidth: 0,
+                    strokestyle: 'rgba(0,0,0,0)',
+                    colors: colors,
+                    colorsSequential: true,
+                    variant: 'pie3d',
+                    radius: 100,
+                    radius: 80,
+                    shadowOffsety: 5,
+                    shadowColor: '#aaa'
+                }
+            }).draw();
+        });
+    </script>
 </head>
 <body>
 {% include '/webserver/template/movie/admin/headline.html' with {module: 'statistic'} %}
@@ -44,6 +327,48 @@
             </tr>
         </tbody>
     </table>
+    <h3 class="ui header attached">Anzahl gekaufter Filme</h3>
+    <div class="ui attached segment center aligned">
+        <canvas id="purchase" width="800" height="400">
+            [No canvas support]
+        </canvas>
+    </div>
+    <h3 class="ui header attached">Preis gekaufter Filme</h3>
+    <div class="ui attached segment center aligned">
+        <canvas id="price" width="800" height="400">
+            [No canvas support]
+        </canvas>
+    </div>
+    <h3 class="ui header attached">mittlerer Preis gekaufter Filme</h3>
+    <div class="ui attached segment center aligned">
+        <canvas id="avgPrice" width="800" height="400">
+            [No canvas support]
+        </canvas>
+    </div>
+    <h3 class="ui header attached">Genres</h3>
+    <div class="ui attached segment center aligned">
+        <div id="genresContainer" style="display: inline-block; position: relative">
+            <canvas id="genres" width="500" height="350">[No canvas support]</canvas>
+        </div>
+    </div>
+    <h3 class="ui header attached">Medien</h3>
+    <div class="ui attached segment center aligned">
+        <div id="discContainer" style="display: inline-block; position: relative">
+            <canvas id="discs" width="500" height="350">[No canvas support]</canvas>
+        </div>
+    </div>
+    <h3 class="ui header attached">Bewertungen</h3>
+    <div class="ui attached segment center aligned">
+        <div id="ratingContainer" style="display: inline-block; position: relative">
+            <canvas id="ratings" width="500" height="350">[No canvas support]</canvas>
+        </div>
+    </div>
+    <h3 class="ui header attached">Altersfreigaben</h3>
+    <div class="ui bottom attached segment center aligned" style="margin-bottom: 25px;">
+        <div id="fskContainer" style="display: inline-block; position: relative">
+            <canvas id="fsk" width="500" height="350">[No canvas support]</canvas>
+        </div>
+    </div>
 </main>
 </body>
 </html>

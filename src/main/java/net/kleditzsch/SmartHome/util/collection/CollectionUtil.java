@@ -6,9 +6,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Hilfsfunktionen für Collections
@@ -66,5 +64,41 @@ public abstract class CollectionUtil {
 
         List<String> lines = Files.readAllLines(Paths.get(fileName));
         lines.stream().map(String::trim).filter(line -> line.length() > 0).forEach(collection::add);
+    }
+
+    /**
+     * sortiert eine Map anhand ihrer Werte
+     *
+     * @param map Map
+     * @return Sortierte Map
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+    }
+
+    /**
+     * sortiert eine Map anhand ihrer Werte (in umgekehrter Reihenfolge)
+     *
+     * @param map Map
+     * @return Sortierte Map
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValueReversed(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            result.put(list.get(i).getKey(), list.get(i).getValue());
+        }
+
+        return result;
     }
 }
