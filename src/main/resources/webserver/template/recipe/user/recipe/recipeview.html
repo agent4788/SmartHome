@@ -413,6 +413,7 @@
                         </table>
                         {% if linkedRecipes.size() > 0 %}
                         {% for linkedRecipe in linkedRecipes %}
+                        {% if linkedRecipe.getWorkSteps().size() > 0 %}
                         <table class="ui table striped">
                             <thead>
                                 <tr>
@@ -436,6 +437,7 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% endif %}
                         {% endfor %}
                         {% endif %}
                         {% endif %}
