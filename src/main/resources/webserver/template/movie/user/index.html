@@ -49,7 +49,7 @@
     </div>
     {% if viewSoonMovies.size() > 0 %}
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">Merkliste {% if viewSoonMoviesCount > 4 %}<a class="ui button right floated" href="/movie/viewsonnmovies">alle</a>{% endif %}</h1>
+        <h1 class="ui header top attached">Merkliste {% if viewSoonMoviesCount > 4 %}<a class="ui button right floated" href="/movie/viewsoonmovies">alle</a>{% endif %}</h1>
         <div class="ui link cards four column doubling stackable bottom attached">
             {% for element in viewSoonMovies %}
             <div class="card" onclick="window.location = '{% if element.isInMovieBox() %}/movie/movieboxview?id={{ element.getBoxId().get().get() }}#{{ element.getId().get() }}{% else %}/movie/movieview?id={{ element.getId().get() }}{% endif %}'">

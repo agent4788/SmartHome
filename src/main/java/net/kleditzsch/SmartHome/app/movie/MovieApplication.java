@@ -195,7 +195,7 @@ public class MovieApplication implements SubApplication {
         contextHandler.addServlet(MovieIndexServlet.class, "/movie/");
         contextHandler.addServlet(MovieIndexServlet.class, "/movie/index");
         contextHandler.addServlet(MovieNewMovieListServlet.class, "/movie/newmovies");
-        contextHandler.addServlet(MovieViewSoonMovieListServlet.class, "/movie/viewsonnmovies");
+        contextHandler.addServlet(MovieViewSoonMovieListServlet.class, "/movie/viewsoonmovies");
         contextHandler.addServlet(MovieFskImageServlet.class, "/movie/fsklogo");
         contextHandler.addServlet(MovieCoverImageServlet.class, "/movie/cover");
         contextHandler.addServlet(MovieMovieListServlet.class, "/movie/movie");
