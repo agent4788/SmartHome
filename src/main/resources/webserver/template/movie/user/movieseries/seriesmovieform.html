@@ -37,7 +37,7 @@
             <div class="field">
                 <label>Film suchen</label>
                 <div class="ui icon input fluid">
-                    <input placeholder="Suchen..." type="search" id="searchInput">
+                    <input placeholder="Suchen..." type="search" id="movieSearchInput">
                     <i class="search link icon" id="searchButton"></i>
                 </div>
             </div>
@@ -73,8 +73,8 @@
             </div>
         </div>
         <div class="ui segment bottom attached">
-            <div class="ui button labeled icon right floated basic primary" onclick="$('#searchModal').modal('show');"><i class="search icon"></i>Film suchen</div>
-            <div class="ui modal coupled" id="searchModal">
+            <div class="ui button labeled icon right floated basic primary" id="searchActionButton"><i class="search icon"></i>Film suchen</div>
+            <div class="ui modal" id="movieSearchModal">
                 <div class="header">Film suchen</div>
                 <div class="scrolling content">
                     <div class="ui basic segments">
@@ -166,14 +166,14 @@
                 });
 
                 $('#searchResults').dimmer('hide');
-                $('#searchModal').modal('hide');
+                $('#movieSearchModal').modal('hide');
             }
 
             $(function() {
 
                     $('#modalSearchButton').click(function () {
 
-                        $('#searchResults').addClass('loading');
+                        $('#searchResults').addClass('loading')
                         search();
                     });
                     $('#modalSearchInput').keydown(function (e) {
@@ -184,19 +184,26 @@
                         }
                     });
 
-                    $('#searchButton').click(function () {
+                    $('#searchActionButton').click(function () {
 
-                        $('#modalSearchInput').val($('#searchInput').val());
+                        $('#modalSearchInput').val($('#movieSearchInput').val());
                         $('#searchResults').addClass('loading');
-                        $('#searchModal').modal('show');
+                        $('#movieSearchModal').modal('show');
                         search();
                     });
-                    $('#searchInput').keydown(function (e) {
+                    $('#searchButton').click(function () {
+
+                        $('#modalSearchInput').val($('#movieSearchInput').val());
+                        $('#searchResults').addClass('loading');
+                        $('#movieSearchModal').modal('show');
+                        search();
+                    });
+                    $('#movieSearchInput').keydown(function (e) {
                         if(e.which == 13) {
 
-                            $('#modalSearchInput').val($('#searchInput').val());
+                            $('#modalSearchInput').val($('#movieSearchInput').val());
                             $('#searchResults').addClass('loading');
-                            $('#searchModal').modal('show');
+                            $('#movieSearchModal').modal('show');
                             search();
                         }
                     });
