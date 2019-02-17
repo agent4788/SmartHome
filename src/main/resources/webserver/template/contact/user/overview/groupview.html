@@ -42,8 +42,11 @@
                 <i class="user icon massive"></i>
             </div>
             <div class="content">
-                <div class="header">
-                    {{ element.getName() | escape }}
+                <div class="ui">
+                    <div class="header">{{ element.getName() | escape }}</div>
+                    <div class="meta">
+                        {{ element.getCompanie() | escape }}
+                    </div>
                 </div>
             </div>
         </div>
