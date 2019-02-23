@@ -1,6 +1,9 @@
 package net.kleditzsch.SmartHome.view.movie.user.moviebox;
 
+import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.*;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 public class MovieMovieBoxViewServlet extends HttpServlet {
@@ -28,6 +32,19 @@ public class MovieMovieBoxViewServlet extends HttpServlet {
         //Template Engine initalisieren
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/user/moviebox/movieboxview.html");
         JtwigModel model = JtwigModel.newModel();
+
+        //Neuste Filme laden
+        int newestMoviesCount = 50;
+        SettingsEditor settingsEditor = Application.getInstance().getSettings();
+        ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
+        settingsLock.lock();
+        Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
+        if (newestMoviesCountOptional.isPresent()) {
+
+            newestMoviesCount = newestMoviesCountOptional.get().getValue();
+        }
+        settingsLock.unlock();
+        model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
 
         try {
 

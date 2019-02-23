@@ -118,6 +118,11 @@
                 <div class="ui segment {% if loop.last and editMode == false %}bottom{% endif %} attached" id="{{ movie.getId().get() }}">
                     <div class="ui grid stackable">
                         <div class="four wide column">
+                            {% if newestMovies.contains(movie.getId().get()) %}
+                            <a class="ui left corner label blue">
+                                <i class="star yellow icon"></i>
+                            </a>
+                            {% endif %}
                             <div class="ui segments basic">
                                 <div class="ui segment center aligned">
                                     {% if movie.getCoverFile() != null %}
