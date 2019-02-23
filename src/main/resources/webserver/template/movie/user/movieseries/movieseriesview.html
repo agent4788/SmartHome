@@ -87,13 +87,13 @@
                 <div class="ui items divided">
                     {% for seriesMovie in seriesMovies %}
                     <div class="item">
-                        {% if newestMovies.contains(seriesMovie.getMovieId().get()) %}
-                        <a class="ui left corner label blue">
-                            <i class="star yellow icon"></i>
-                        </a>
-                        {% endif %}
                         {% if movies.get(seriesMovie.getMovieId().get()).getCoverFile() != null %}
                         <div class="image">
+                            {% if newestMovies.contains(seriesMovie.getMovieId().get()) %}
+                            <a class="ui left corner label blue">
+                                <i class="star yellow icon"></i>
+                            </a>
+                            {% endif %}
                             <a href="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}" data-lightbox="{{ randomstr() }}" class="ui small image">
                                 <img src="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}">
                             </a>
