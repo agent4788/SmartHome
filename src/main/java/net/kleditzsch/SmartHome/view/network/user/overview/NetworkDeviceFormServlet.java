@@ -151,6 +151,7 @@ public class NetworkDeviceFormServlet extends HttpServlet {
         String linkSpeed = form.getString("linkspeed", "Verbindungsgeschwindigkeit", this.linkSpeed);
         String hostname = form.optString("hostname", "Hostname", "", 3, 100);
 
+        mac = mac.toUpperCase();
 
         final ID finalNetworkDeviceId = networkDeviceId;
         Optional<NetworkDeviceGroup> networkDeviceGroupOptional = NetworkDeviceEditor.getNetworkDeviceGroup(networkDeviceGroupId);

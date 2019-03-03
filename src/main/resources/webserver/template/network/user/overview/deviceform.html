@@ -48,7 +48,7 @@
             </div>
             <div class="field">
                 <label>MAC Adresse</label>
-                <input name="mac" placeholder="MAC Adresse ..." type="text" pattern="(^[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}$)" value="{{ networkDevice.getMac() | escape }}">
+                <input name="mac" placeholder="MAC Adresse ..." type="text" pattern="(^[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}\:[a-fA-F0-9]{2}$)" value="{{ networkDevice.getMacAddress().toUpperCase() | escape }}">
             </div>
             <div class="field">
                 <label>Verbindung (langsamste bei Mischbetrieb)</label>
