@@ -5,10 +5,8 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.movie.editor.DiscEditor;
-import net.kleditzsch.SmartHome.model.movie.editor.MovieBoxEditor;
 import net.kleditzsch.SmartHome.model.movie.editor.MovieEditor;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
-import net.kleditzsch.SmartHome.model.movie.movie.MovieBox;
 import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -34,17 +32,45 @@ public class MovieSortInBluRayServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/sortin/sortinbluray.html");
         JtwigModel model = JtwigModel.newModel();
 
-        //Einstellungen laden
+        //Anzahl der zu sortierenden Filme ermitteln
         int newestMoviesCount = 50;
-        SettingsEditor settingsEditor = Application.getInstance().getSettings();
-        ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
-        settingsLock.lock();
-        Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-        if (newestMoviesCountOptional.isPresent()) {
+        if(req.getSession().getAttribute("count") != null) {
 
-            newestMoviesCount = newestMoviesCountOptional.get().getValue();
+            //Anzahl der Filme bekannt
+            newestMoviesCount = (int) req.getSession().getAttribute("count");
+        } else {
+
+            //Anzahl der Filme unbekannt
+            if(req.getParameter("count") != null) {
+
+                //Anzahl übergeben
+                newestMoviesCount = Integer.parseInt(req.getParameter("count"));
+                req.getSession().setAttribute("count", newestMoviesCount);
+            } else {
+
+                //Anzahl nicht übergeben -> Einstellungen laden
+                SettingsEditor settingsEditor = Application.getInstance().getSettings();
+                ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
+                settingsLock.lock();
+                Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
+                if (newestMoviesCountOptional.isPresent()) {
+
+                    newestMoviesCount = newestMoviesCountOptional.get().getValue();
+                }
+                settingsLock.unlock();
+
+                //Auswahlseite anzeigen
+                JtwigTemplate preTemplate = JtwigFactory.fromClasspath("/webserver/template/movie/admin/sortin/selectbluraycount.html");
+                JtwigModel preModel = JtwigModel.newModel();
+                preModel.with("count", newestMoviesCount);
+
+                //Template rendern
+                resp.setContentType("text/html");
+                resp.setStatus(HttpServletResponse.SC_OK);
+                preTemplate.render(preModel, new WriterOutputStream(resp.getWriter()));
+                return;
+            }
         }
-        settingsLock.unlock();
 
         //Blu-ray Discs ermitteln
         DiscEditor discEditor = DiscEditor.createAndLoad();
@@ -66,6 +92,8 @@ public class MovieSortInBluRayServlet extends HttpServlet {
 
             //Liste aus der Datenbank laden
             newestMovieIds = MovieEditor.listNewestMovieIds(newestMoviesCount);
+            req.getSession().removeAttribute("count");
+            resp.sendRedirect("/movie/admin/sortin/bluray");
         }
 
         //Nächsten Film

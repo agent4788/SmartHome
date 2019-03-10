@@ -91,11 +91,14 @@
         <a class="ui primary button" href="/movie/admin/sortin/dvd?oldid={{ mainMovie.getId().get() | escape }}">weiter</a>
     </div>
     {% else %}
-    <div class="ui bottom attached info icon message">
+    <div class="ui attached info icon message">
         <i class="info icon"></i>
         <div class="content">
             <p>Keine Filme vorhanden</p>
         </div>
+    </div>
+    <div class="ui bottom attached segment">
+        <a class="ui basic button" href="/movie/admin/sortin">zur&uuml;ck</a>
     </div>
     {% endif %}
 </main>

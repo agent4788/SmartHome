@@ -32,17 +32,45 @@ public class MovieSortInDvdServlet extends HttpServlet {
         JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/movie/admin/sortin/sortindvd.html");
         JtwigModel model = JtwigModel.newModel();
 
-        //Einstellungen laden
+        //Anzahl der zu sortierenden Filme ermitteln
         int newestMoviesCount = 50;
-        SettingsEditor settingsEditor = Application.getInstance().getSettings();
-        ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
-        settingsLock.lock();
-        Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-        if (newestMoviesCountOptional.isPresent()) {
+        if(req.getSession().getAttribute("dvdcount") != null) {
 
-            newestMoviesCount = newestMoviesCountOptional.get().getValue();
+            //Anzahl der Filme bekannt
+            newestMoviesCount = (int) req.getSession().getAttribute("dvdcount");
+        } else {
+
+            //Anzahl der Filme unbekannt
+            if(req.getParameter("count") != null) {
+
+                //Anzahl übergeben
+                newestMoviesCount = Integer.parseInt(req.getParameter("count"));
+                req.getSession().setAttribute("dvdcount", newestMoviesCount);
+            } else {
+
+                //Anzahl nicht übergeben -> Einstellungen laden
+                SettingsEditor settingsEditor = Application.getInstance().getSettings();
+                ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
+                settingsLock.lock();
+                Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
+                if (newestMoviesCountOptional.isPresent()) {
+
+                    newestMoviesCount = newestMoviesCountOptional.get().getValue();
+                }
+                settingsLock.unlock();
+
+                //Auswahlseite anzeigen
+                JtwigTemplate preTemplate = JtwigFactory.fromClasspath("/webserver/template/movie/admin/sortin/selectdvdcount.html");
+                JtwigModel preModel = JtwigModel.newModel();
+                preModel.with("count", newestMoviesCount);
+
+                //Template rendern
+                resp.setContentType("text/html");
+                resp.setStatus(HttpServletResponse.SC_OK);
+                preTemplate.render(preModel, new WriterOutputStream(resp.getWriter()));
+                return;
+            }
         }
-        settingsLock.unlock();
 
         //Blu-ray Discs ermitteln
         DiscEditor discEditor = DiscEditor.createAndLoad();
@@ -64,6 +92,8 @@ public class MovieSortInDvdServlet extends HttpServlet {
 
             //Liste aus der Datenbank laden
             newestMovieIds = MovieEditor.listNewestMovieIds(newestMoviesCount);
+            req.getSession().removeAttribute("count");
+            resp.sendRedirect("/movie/admin/sortin/dvd");
         }
 
         //Nächsten Film
