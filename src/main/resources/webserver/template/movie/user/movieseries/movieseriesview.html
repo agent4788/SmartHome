@@ -94,6 +94,11 @@
                                 <i class="star yellow icon"></i>
                             </a>
                             {% endif %}
+                            {% if viewSoonMovies.contains(seriesMovie.getMovieId().get()) %}
+                            <a class="ui right corner label orange">
+                                <i class="binoculars icon"></i>
+                            </a>
+                            {% endif %}
                             <a href="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}" data-lightbox="{{ randomstr() }}" class="ui small image">
                                 <img src="/movie/cover?file={{ movies.get(seriesMovie.getMovieId().get()).getCoverFile() }}">
                             </a>

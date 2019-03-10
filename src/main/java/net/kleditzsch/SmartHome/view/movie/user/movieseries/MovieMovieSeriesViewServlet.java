@@ -93,6 +93,7 @@ public class MovieMovieSeriesViewServlet extends HttpServlet {
                 model.with("editMode", editMode);
                 model.with("seriesMoviesOrder", seriesMoviesOrder);
                 model.with("maxOrderId", movieSeries.getSeriesMovies().stream().mapToInt(SeriesMovie::getOrderId).summaryStatistics().getMax());
+                model.with("viewSoonMovies", MovieEditor.listViewSoonMovieIds().stream().map(ID::get).collect(Collectors.toList()));
             } else {
 
                 //Element nicht gefunden
