@@ -216,7 +216,7 @@
                 <p>{{ message | escape }}</p>
             </div>
         </div>
-        {% endif %}
+        {% else %}
         <div class="ui segment bottom attached">
             <div class="ui grid relaxed stackable doubling">
                 {% for element in activeRoom.getRoomElemenstSorted() %}
@@ -232,6 +232,7 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
     </div>
 </main>
 </body>

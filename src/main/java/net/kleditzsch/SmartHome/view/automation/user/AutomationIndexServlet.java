@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class AutomationIndexServlet extends HttpServlet {
 
@@ -31,7 +32,7 @@ public class AutomationIndexServlet extends HttpServlet {
         ReentrantReadWriteLock.ReadLock lock = roomEditor.readLock();
         lock.lock();
 
-        List<Room> rooms = roomEditor.getRoomsSorted();
+        List<Room> rooms = roomEditor.getRoomsSorted().stream().filter(room -> !room.isDisabled()).collect(Collectors.toList());
         model.with("rooms", rooms);
 
         //aktiven Raum ermitteln
@@ -56,6 +57,10 @@ public class AutomationIndexServlet extends HttpServlet {
 
             model.with("success", false);
             model.with("message", "Der Raum wurde nicht gefunden oder es ist kein Raum Konfiguriert");
+        } else if (activeRoom.isDisabled()) {
+
+            model.with("success", false);
+            model.with("message", "Der Raum wurde deaktiviert");
         }
         model.with("activeRoom", activeRoom);
 
