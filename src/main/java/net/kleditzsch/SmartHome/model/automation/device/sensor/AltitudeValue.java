@@ -36,6 +36,16 @@ public class AltitudeValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public AltitudeValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * gibt die Standorthöhe zurück
      *
      * @return Standorthöhe

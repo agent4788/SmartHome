@@ -31,6 +31,16 @@ public class StringValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public StringValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * setzt die Zeichenkette
      *
      * @return Zeichenkette

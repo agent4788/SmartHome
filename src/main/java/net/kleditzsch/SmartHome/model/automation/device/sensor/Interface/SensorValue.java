@@ -32,6 +32,11 @@ public abstract class SensorValue extends AutomationElement {
     private LocalDateTime lastPushTime;
 
     /**
+     * Timeout (0 = deaktiviert)
+     */
+    private int timeout = 0;
+
+    /**
      * @param id ID
      * @param identifier Identifizierung
      * @param name Name
@@ -41,6 +46,20 @@ public abstract class SensorValue extends AutomationElement {
         setId(id);
         setIdentifier(identifier);
         setName(name);
+    }
+
+    /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public SensorValue(ID id, String identifier, String name, int timeout) {
+
+        setId(id);
+        setIdentifier(identifier);
+        setName(name);
+        setTimeout(timeout);
     }
 
     /**
@@ -112,5 +131,50 @@ public abstract class SensorValue extends AutomationElement {
 
         this.lastPushTime = LocalDateTime.now();
         setChangedData();
+    }
+
+    /**
+     * gibt den Timeout zurück
+     *
+     * @return Timeout
+     */
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * setzt den Timeout
+     *
+     * @param timeout Timeout
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    /**
+     * gibt an ob der Timeout aktiviert ist
+     *
+     * @return Timeout aktiv
+     */
+    public boolean isTimeoutActivated() {
+
+        return timeout > 0;
+    }
+
+    /**
+     * gibt an ob die Timeout Zeit überschritten wurde
+     *
+     * @return Timeout Zeit überschritten (wenn deaktiviert immer false)
+     */
+    public boolean isTimeoutExceeded() {
+
+        //prüfen ob Timeout aktiviert
+        if(isTimeoutActivated()) {
+
+            //prüfen ob Timeout abgelaufen
+            LocalDateTime timeoutTime = LocalDateTime.now().minusSeconds(timeout);
+            return lastPushTime.isBefore(timeoutTime);
+        }
+        return false;
     }
 }

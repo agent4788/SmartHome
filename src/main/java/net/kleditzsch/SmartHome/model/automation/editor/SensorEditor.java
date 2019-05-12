@@ -53,7 +53,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             ActualPowerValue actualPowerValue = new ActualPowerValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             actualPowerValue.setSystemValue(document.getBoolean("systemValue"));
                             actualPowerValue.setDescription(document.getString("description"));
@@ -69,7 +70,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             AirPressureValue airPressureValue = new AirPressureValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             airPressureValue.setSystemValue(document.getBoolean("systemValue"));
                             airPressureValue.setDescription(document.getString("description"));
@@ -85,7 +87,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             AltitudeValue altitudeValue = new AltitudeValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             altitudeValue.setSystemValue(document.getBoolean("systemValue"));
                             altitudeValue.setDescription(document.getString("description"));
@@ -101,7 +104,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             BatteryLevelValue batteryLevelValue = new BatteryLevelValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             batteryLevelValue.setSystemValue(document.getBoolean("systemValue"));
                             batteryLevelValue.setDescription(document.getString("description"));
@@ -117,7 +121,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             BiStateValue biStateValue = new BiStateValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             biStateValue.setSystemValue(document.getBoolean("systemValue"));
                             biStateValue.setDescription(document.getString("description"));
@@ -135,7 +140,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             CounterValue counterValue = new CounterValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             counterValue.setSystemValue(document.getBoolean("systemValue"));
                             counterValue.setDescription(document.getString("description"));
@@ -151,7 +157,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             CurrentValue currentValue = new CurrentValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             currentValue.setSystemValue(document.getBoolean("systemValue"));
                             currentValue.setDescription(document.getString("description"));
@@ -167,7 +174,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             DistanceValue distanceValue = new DistanceValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             distanceValue.setSystemValue(document.getBoolean("systemValue"));
                             distanceValue.setDescription(document.getString("description"));
@@ -184,7 +192,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             DurationValue durationValue = new DurationValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             durationValue.setSystemValue(document.getBoolean("systemValue"));
                             durationValue.setDescription(document.getString("description"));
@@ -200,7 +209,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             EnergyValue energyValue = new EnergyValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             energyValue.setSystemValue(document.getBoolean("systemValue"));
                             energyValue.setDescription(document.getString("description"));
@@ -216,7 +226,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             GasAmountValue gasAmountValue = new GasAmountValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             gasAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             gasAmountValue.setDescription(document.getString("description"));
@@ -232,7 +243,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             HumidityValue humidityValue = new HumidityValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             humidityValue.setSystemValue(document.getBoolean("systemValue"));
                             humidityValue.setDescription(document.getString("description"));
@@ -248,7 +260,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             InputValue inputValue = new InputValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             inputValue.setSystemValue(document.getBoolean("systemValue"));
                             inputValue.setDescription(document.getString("description"));
@@ -264,7 +277,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             LightIntensityValue lightIntensityValue = new LightIntensityValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             lightIntensityValue.setSystemValue(document.getBoolean("systemValue"));
                             lightIntensityValue.setDescription(document.getString("description"));
@@ -280,14 +294,15 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             LiveBitValue liveBitValue = new LiveBitValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("sentimeout", 0)
                             );
                             liveBitValue.setSystemValue(document.getBoolean("systemValue"));
                             liveBitValue.setDescription(document.getString("description"));
                             liveBitValue.setLastPushTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastPushTime")));
 
                             liveBitValue.setState(document.getBoolean("state"));
-                            liveBitValue.setTimeout(document.getLong("timeout"));
+                            liveBitValue.setLiveTimeout(document.getLong("timeout"));
                             liveBitValue.setTrueText(document.getString("trueText"));
                             liveBitValue.setFalseText(document.getString("falseText"));
 
@@ -299,7 +314,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             MoistureValue moistureValue = new MoistureValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             moistureValue.setSystemValue(document.getBoolean("systemValue"));
                             moistureValue.setDescription(document.getString("description"));
@@ -315,7 +331,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             StringValue stringValue = new StringValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             stringValue.setSystemValue(document.getBoolean("systemValue"));
                             stringValue.setDescription(document.getString("description"));
@@ -331,7 +348,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             TemperatureValue temperatureValue = new TemperatureValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             temperatureValue.setSystemValue(document.getBoolean("systemValue"));
                             temperatureValue.setDescription(document.getString("description"));
@@ -348,7 +366,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             UserAtHomeValue userAtHomeValue = new UserAtHomeValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("sentimeout", 0)
                             );
                             userAtHomeValue.setSystemValue(document.getBoolean("systemValue"));
                             userAtHomeValue.setDescription(document.getString("description"));
@@ -356,7 +375,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
 
                             userAtHomeValue.setIpAddress(document.getString("ipAddress"));
                             userAtHomeValue.setAtHome(document.getBoolean("atHome"));
-                            userAtHomeValue.setTimeout(document.getInteger("timeout"));
+                            userAtHomeValue.setLiveTimeout(document.getInteger("timeout"));
                             userAtHomeValue.setUseExternalDataSource(document.getBoolean("useExternalDataSource"));
 
                             userAtHomeValue.resetChangedData();
@@ -367,7 +386,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             VoltageValue voltageValue = new VoltageValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             voltageValue.setSystemValue(document.getBoolean("systemValue"));
                             voltageValue.setDescription(document.getString("description"));
@@ -383,7 +403,8 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                             WaterAmountValue waterAmountValue = new WaterAmountValue(
                                     ID.of(document.getString("_id")),
                                     document.getString("identifier"),
-                                    document.getString("name")
+                                    document.getString("name"),
+                                    document.getInteger("timeout", 0)
                             );
                             waterAmountValue.setSystemValue(document.getBoolean("systemValue"));
                             waterAmountValue.setDescription(document.getString("description"));
@@ -567,6 +588,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", actualPowerValue.getIdentifier()),
                                         set("systemValue", actualPowerValue.isSystemValue()),
                                         set("lastPushTime", actualPowerValue.getLastPushTime()),
+                                        set("timeout", actualPowerValue.getTimeout()),
                                         //Sensorwert
                                         set("actualPower", actualPowerValue.getActualPower()),
                                         setOnInsert("type", actualPowerValue.getType().toString())
@@ -588,6 +610,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", airPressureValue.getIdentifier()),
                                         set("systemValue", airPressureValue.isSystemValue()),
                                         set("lastPushTime", airPressureValue.getLastPushTime()),
+                                        set("timeout", airPressureValue.getTimeout()),
                                         //Sensorwert
                                         set("airPressure", airPressureValue.getAirPressure()),
                                         setOnInsert("type", airPressureValue.getType().toString())
@@ -609,6 +632,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", altitudeValue.getIdentifier()),
                                         set("systemValue", altitudeValue.isSystemValue()),
                                         set("lastPushTime", altitudeValue.getLastPushTime()),
+                                        set("timeout", altitudeValue.getTimeout()),
                                         //Sensorwert
                                         set("altitude", altitudeValue.getAltitude()),
                                         setOnInsert("type", altitudeValue.getType().toString())
@@ -630,6 +654,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", batteryLevelValue.getIdentifier()),
                                         set("systemValue", batteryLevelValue.isSystemValue()),
                                         set("lastPushTime", batteryLevelValue.getLastPushTime()),
+                                        set("timeout", batteryLevelValue.getTimeout()),
                                         //Sensorwert
                                         set("batteryLevel", batteryLevelValue.getBatteryLevel()),
                                         setOnInsert("type", batteryLevelValue.getType().toString())
@@ -651,6 +676,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", biStateValue.getIdentifier()),
                                         set("systemValue", biStateValue.isSystemValue()),
                                         set("lastPushTime", biStateValue.getLastPushTime()),
+                                        set("timeout", biStateValue.getTimeout()),
                                         //Sensorwert
                                         set("state", biStateValue.getState()),
                                         set("trueText", biStateValue.getTrueText()),
@@ -674,6 +700,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", counterValue.getIdentifier()),
                                         set("systemValue", counterValue.isSystemValue()),
                                         set("lastPushTime", counterValue.getLastPushTime()),
+                                        set("timeout", counterValue.getTimeout()),
                                         //Sensorwert
                                         set("counterValue", counterValue.getCounterValue().longValue()),
                                         setOnInsert("type", counterValue.getType().toString())
@@ -695,6 +722,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", currentValue.getIdentifier()),
                                         set("systemValue", currentValue.isSystemValue()),
                                         set("lastPushTime", currentValue.getLastPushTime()),
+                                        set("timeout", currentValue.getTimeout()),
                                         //Sensorwert
                                         set("current", currentValue.getCurrent()),
                                         setOnInsert("type", currentValue.getType().toString())
@@ -716,6 +744,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", distanceValue.getIdentifier()),
                                         set("systemValue", distanceValue.isSystemValue()),
                                         set("lastPushTime", distanceValue.getLastPushTime()),
+                                        set("timeout", distanceValue.getTimeout()),
                                         //Sensorwert
                                         set("distance", distanceValue.getDistance()),
                                         set("offset", distanceValue.getOffset()),
@@ -738,6 +767,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", durationValue.getIdentifier()),
                                         set("systemValue", durationValue.isSystemValue()),
                                         set("lastPushTime", durationValue.getLastPushTime()),
+                                        set("timeout", durationValue.getTimeout()),
                                         //Sensorwert
                                         set("duration", durationValue.getDuration()),
                                         setOnInsert("type", durationValue.getType().toString())
@@ -759,6 +789,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", energyValue.getIdentifier()),
                                         set("systemValue", energyValue.isSystemValue()),
                                         set("lastPushTime", energyValue.getLastPushTime()),
+                                        set("timeout", energyValue.getTimeout()),
                                         //Sensorwert
                                         set("energy", energyValue.getEnergy()),
                                         setOnInsert("type", energyValue.getType().toString())
@@ -780,6 +811,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", gasAmountValue.getIdentifier()),
                                         set("systemValue", gasAmountValue.isSystemValue()),
                                         set("lastPushTime", gasAmountValue.getLastPushTime()),
+                                        set("timeout", gasAmountValue.getTimeout()),
                                         //Sensorwert
                                         set("gasAmount", gasAmountValue.getGasAmount()),
                                         setOnInsert("type", gasAmountValue.getType().toString())
@@ -801,6 +833,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", humidityValue.getIdentifier()),
                                         set("systemValue", humidityValue.isSystemValue()),
                                         set("lastPushTime", humidityValue.getLastPushTime()),
+                                        set("timeout", humidityValue.getTimeout()),
                                         //Sensorwert
                                         set("humidity", humidityValue.getHumidity()),
                                         setOnInsert("type", humidityValue.getType().toString())
@@ -822,6 +855,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", inputValue.getIdentifier()),
                                         set("systemValue", inputValue.isSystemValue()),
                                         set("lastPushTime", inputValue.getLastPushTime()),
+                                        set("timeout", inputValue.getTimeout()),
                                         //Sensorwert
                                         set("state", inputValue.getState()),
                                         setOnInsert("type", inputValue.getType().toString())
@@ -843,6 +877,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", lightIntensityValue.getIdentifier()),
                                         set("systemValue", lightIntensityValue.isSystemValue()),
                                         set("lastPushTime", lightIntensityValue.getLastPushTime()),
+                                        set("timeout", lightIntensityValue.getTimeout()),
                                         //Sensorwert
                                         set("lightIntensity", lightIntensityValue.getLightIntensity()),
                                         setOnInsert("type", lightIntensityValue.getType().toString())
@@ -864,9 +899,10 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", liveBitValue.getIdentifier()),
                                         set("systemValue", liveBitValue.isSystemValue()),
                                         set("lastPushTime", liveBitValue.getLastPushTime()),
+                                        set("sentimeout", liveBitValue.getTimeout()),
                                         //Sensorwert
                                         set("state", liveBitValue.getState()),
-                                        set("timeout", liveBitValue.getTimeout()),
+                                        set("timeout", liveBitValue.getLiveTimeout()),
                                         set("trueText", liveBitValue.getTrueText()),
                                         set("falseText", liveBitValue.getFalseText()),
                                         setOnInsert("type", liveBitValue.getType().toString())
@@ -888,6 +924,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", moistureValue.getIdentifier()),
                                         set("systemValue", moistureValue.isSystemValue()),
                                         set("lastPushTime", moistureValue.getLastPushTime()),
+                                        set("timeout", moistureValue.getTimeout()),
                                         //Sensorwert
                                         set("moisture", moistureValue.getMoisture()),
                                         setOnInsert("type", moistureValue.getType().toString())
@@ -909,6 +946,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", stringValue.getIdentifier()),
                                         set("systemValue", stringValue.isSystemValue()),
                                         set("lastPushTime", stringValue.getLastPushTime()),
+                                        set("timeout", stringValue.getTimeout()),
                                         //Sensorwert
                                         set("string", stringValue.getString()),
                                         setOnInsert("type", stringValue.getType().toString())
@@ -930,6 +968,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", temperatureValue.getIdentifier()),
                                         set("systemValue", temperatureValue.isSystemValue()),
                                         set("lastPushTime", temperatureValue.getLastPushTime()),
+                                        set("timeout", temperatureValue.getTimeout()),
                                         //Sensorwert
                                         set("temperature", temperatureValue.getTemperature()),
                                         set("offset", temperatureValue.getOffset()),
@@ -952,10 +991,11 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         set("identifier", userAtHomeValue.getIdentifier()),
                                         set("systemValue", userAtHomeValue.isSystemValue()),
                                         set("lastPushTime", userAtHomeValue.getLastPushTime()),
+                                        set("sentimeout", userAtHomeValue.getTimeout()),
                                         //Sensorwert
                                         set("ipAddress", userAtHomeValue.getIpAddress()),
                                         set("atHome", userAtHomeValue.isAtHome()),
-                                        set("timeout", userAtHomeValue.getTimeout()),
+                                        set("timeout", userAtHomeValue.getLiveTimeout()),
                                         set("useExternalDataSource", userAtHomeValue.isUseExternalDataSource()),
                                         setOnInsert("type", userAtHomeValue.getType().toString())
                                 ),
@@ -976,6 +1016,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", voltageValue.getIdentifier()),
                                         set("systemValue", voltageValue.isSystemValue()),
                                         set("lastPushTime", voltageValue.getLastPushTime()),
+                                        set("timeout", voltageValue.getTimeout()),
                                         //Sensorwert
                                         set("voltage", voltageValue.getVoltage()),
                                         setOnInsert("type", voltageValue.getType().toString())
@@ -997,6 +1038,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
                                         setOnInsert("identifier", waterAmountValue.getIdentifier()),
                                         set("systemValue", waterAmountValue.isSystemValue()),
                                         set("lastPushTime", waterAmountValue.getLastPushTime()),
+                                        set("timeout", waterAmountValue.getTimeout()),
                                         //Sensorwert
                                         set("waterAmount", waterAmountValue.getWaterAmount()),
                                         setOnInsert("type", waterAmountValue.getType().toString())
@@ -1152,7 +1194,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
             LiveBitValue newSensorValue = new LiveBitValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
             newSensorValue.setDisabled(oldSensorValue.isDisabled());
             newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
-            newSensorValue.setTimeout(oldSensorValue.getTimeout());
+            newSensorValue.setLiveTimeout(oldSensorValue.getLiveTimeout());
             newSensorValue.setState(oldSensorValue.getState());
 
             return newSensorValue;
@@ -1162,7 +1204,7 @@ public class SensorEditor extends AbstractDatabaseEditor<SensorValue> {
             UserAtHomeValue newSensorValue = new UserAtHomeValue(ID.of(oldSensorValue.getId().get()), oldSensorValue.getIdentifier(), oldSensorValue.getName());
             newSensorValue.setDisabled(oldSensorValue.isDisabled());
             newSensorValue.setLastPushTime(oldSensorValue.getLastPushTime());
-            newSensorValue.setTimeout(oldSensorValue.getTimeout());
+            newSensorValue.setLiveTimeout(oldSensorValue.getLiveTimeout());
             newSensorValue.setIpAddress(oldSensorValue.getIpAddress());
             newSensorValue.setUseExternalDataSource(oldSensorValue.isUseExternalDataSource());
             newSensorValue.setAtHome(oldSensorValue.isAtHome());

@@ -52,6 +52,10 @@
                 <label>aktueller Wert</label>
                 <input type="text" value="{{ sensorValue | formatsensorvalue | escape }}" readonly>
             </div>
+            <div class="field">
+                <label>Timeout [s] (bei 0 deaktiviert)</label>
+                <input type="number" name="timeout" value="{{ sensorValue.getTimeout() | escape }}" min="0" max="32000000" step="1">
+            </div>
         </div>
         <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>

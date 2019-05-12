@@ -27,6 +27,16 @@ public class InputValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public InputValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * gibt an ob der Eingang aktiviert ist
      *
      * @return true wenn aktiviert

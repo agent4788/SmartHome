@@ -34,7 +34,7 @@ public class UserAtHomeValue extends SensorValue {
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
     @ValidateMin(value = 0, errorCode = 10005, message = "Ungültiger Timeout")
     @ValidateMax(value = 86_400_000, errorCode = 10005, message = "Ungültiger Timeout")
-    private int timeout = 10_000;
+    private int liveTimeout = 10_000;
 
     /**
      * Externe Datenquelle verwenden
@@ -48,6 +48,16 @@ public class UserAtHomeValue extends SensorValue {
      */
     public UserAtHomeValue(ID id, String identifier, String name) {
         super(id, identifier, name);
+    }
+
+    /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public UserAtHomeValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
     }
 
     /**
@@ -106,8 +116,8 @@ public class UserAtHomeValue extends SensorValue {
      *
      * @return Timeout
      */
-    public int getTimeout() {
-        return timeout;
+    public int getLiveTimeout() {
+        return liveTimeout;
     }
 
     /**
@@ -115,9 +125,9 @@ public class UserAtHomeValue extends SensorValue {
      *
      * @param timeout Timeout
      */
-    public void setTimeout(int timeout) {
+    public void setLiveTimeout(int timeout) {
 
-        this.timeout = timeout;
+        this.liveTimeout = timeout;
         setChangedData();
     }
 

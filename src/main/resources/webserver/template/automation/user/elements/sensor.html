@@ -9,18 +9,18 @@
                     {{ element.getDisplayText() | escape }}
                 </div>
                 <div class="description">
-                    <span id="a{{ element.getFirstSensorValueId().get() }}">
+                    <span id="a{{ element.getFirstSensorValueId().get() }}" {% if sensorEditor.getById(element.getFirstSensorValueId().get()).get().isTimeoutExceeded() %}style="color: red;"{% endif %}>
                         {{ sensorEditor.getById(element.getFirstSensorValueId().get()).get() | formatsensorvalue | escape }}
                     </span>
                     {% if element.getSecondSensorValueId().isPresent() %}
                         <br>
-                        <span id="a{{ element.getSecondSensorValueId().get() }}">
+                        <span id="a{{ element.getSecondSensorValueId().get() }}" {% if sensorEditor.getById(element.getSecondSensorValueId().get()).get().isTimeoutExceeded() %}style="color: red;"{% endif %}>
                         {{ sensorEditor.getById(element.getSecondSensorValueId().get()).get() | formatsensorvalue | escape }}
                         </span>
                     {% endif %}
                     {% if element.getThirdSensorValueId().isPresent() %}
                         <br>
-                        <span id="a{{ element.getThirdSensorValueId().get() }}">
+                        <span id="a{{ element.getThirdSensorValueId().get() }}" {% if sensorEditor.getById(element.getThirdSensorValueId().get()).get().isTimeoutExceeded() %}style="color: red;"{% endif %}>
                         {{ sensorEditor.getById(element.getThirdSensorValueId().get()).get() | formatsensorvalue | escape }}
                         </span>
                     {% endif %}

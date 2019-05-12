@@ -5,6 +5,7 @@ import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.BiStateValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -70,47 +71,16 @@ public class AutomationSensorValuesBiStateFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String idStr = req.getParameter("id");
-        String name = req.getParameter("name");
-        String description = req.getParameter("description");
-        String trueText = req.getParameter("trueText");
-        String falseText = req.getParameter("falseText");
+        FormValidation form = FormValidation.create(req);
 
-        //Daten vorbereiten
-        ID id = null;
+        ID id = form.getId("id", "Sensor Wert ID");
+        String name = form.getString("name", "Name", 3, 50);
+        String description = form.getString("description", "Beschreibung", 0, 250);
+        String trueText = form.getString("trueText", "Text für wahr", 1, 15);
+        String falseText = form.getString("falseText", "Text für falsch", 1, 15);
+        int timeout = form.getInteger("timeout", "Timeout", 0, 32_000_000);
 
-        //Daten prüfen
-        boolean success = true;
-        try {
-
-            if(!(idStr != null)) {
-
-                success = false;
-            }
-            id = ID.of(idStr);
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            if(!(description != null && description.length() <= 250)) {
-
-                success = false;
-            }
-            if(!(trueText != null && trueText.length() >= 1 && trueText.length() <= 15)) {
-
-                success = false;
-            }
-            if(!(falseText != null && falseText.length() >= 1 && falseText.length() <= 15)) {
-
-                success = false;
-            }
-
-        } catch (Exception e) {
-
-            success = false;
-        }
-
-        if (success) {
+        if (form.isSuccessful()) {
 
             SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
             ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
@@ -125,6 +95,7 @@ public class AutomationSensorValuesBiStateFormServlet extends HttpServlet {
                 sensorValue.setDescription(description);
                 sensorValue.setTrueText(trueText);
                 sensorValue.setFalseText(falseText);
+                sensorValue.setTimeout(timeout);
 
                 req.getSession().setAttribute("success", true);
                 req.getSession().setAttribute("message", "Der Sensorwert wurde erfolgreich bearbeitet");

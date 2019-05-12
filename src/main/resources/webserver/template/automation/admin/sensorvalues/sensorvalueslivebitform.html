@@ -50,7 +50,7 @@
             </div>
             <div class="field required">
                 <label>Timeout [ms]</label>
-                <input type="number" name="timeout" value="{{ sensorValue.getTimeout() | escape }}" min="10000" max="86400000" step="1" required>
+                <input type="number" name="liveTimeout" value="{{ sensorValue.getLiveTimeout() | escape }}" min="10000" max="86400000" step="1" required>
             </div>
             <div class="field">
                 <label>aktueller Wert</label>

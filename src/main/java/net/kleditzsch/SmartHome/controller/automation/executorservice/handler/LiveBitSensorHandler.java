@@ -41,7 +41,7 @@ public class LiveBitSensorHandler implements Runnable {
         ReentrantReadWriteLock.WriteLock lock = null;
         try {
 
-            LocalDateTime timeout = liveBitValue.getLastPushTime().plusNanos(liveBitValue.getTimeout() * 1_000_000L);
+            LocalDateTime timeout = liveBitValue.getLastPushTime().plusNanos(liveBitValue.getLiveTimeout() * 1_000_000L);
             LocalDateTime now = LocalDateTime.now();
             if(liveBitValue.getState() && timeout.isBefore(now)) {
 

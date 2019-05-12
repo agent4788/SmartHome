@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -200,7 +199,7 @@ public class AutomationSensorValuesUserAtHomeFormServlet extends HttpServlet {
                     sensorValue.setDescription(description);
                     if(sensorValue.isUseExternalDataSource()) {
 
-                        sensorValue.setTimeout(timeout);
+                        sensorValue.setLiveTimeout(timeout);
                     } else {
 
                         sensorValue.setIpAddress(ipAddress);

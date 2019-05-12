@@ -30,6 +30,16 @@ public class CounterValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public CounterValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * gibt den aktuellen Zählerwert zurück
      *
      * @return Zählerwert

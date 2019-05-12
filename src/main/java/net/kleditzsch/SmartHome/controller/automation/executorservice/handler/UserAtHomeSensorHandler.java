@@ -42,7 +42,7 @@ public class UserAtHomeSensorHandler implements Runnable {
             if(userAtHomeValue.isUseExternalDataSource()) {
 
                 //Timeout Prüfen
-                LocalDateTime timeout = userAtHomeValue.getLastPushTime().plusNanos(userAtHomeValue.getTimeout() * 1_000_000L);
+                LocalDateTime timeout = userAtHomeValue.getLastPushTime().plusNanos(userAtHomeValue.getLiveTimeout() * 1_000_000L);
                 LocalDateTime now = LocalDateTime.now();
                 if(userAtHomeValue.isAtHome() && timeout.isBefore(now)) {
 

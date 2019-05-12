@@ -33,6 +33,16 @@ public class EnergyValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public EnergyValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * gibt den Energieverbrauch zurück
      *
      * @return Energieverbrauch

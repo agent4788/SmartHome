@@ -6,6 +6,7 @@ import net.kleditzsch.SmartHome.model.automation.device.sensor.DistanceValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.TemperatureValue;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -71,44 +72,15 @@ public class AutomationSensorValuesTemperatureFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String idStr = req.getParameter("id");
-        String name = req.getParameter("name");
-        String description = req.getParameter("description");
-        String offsetStr = req.getParameter("offset");
+        FormValidation form = FormValidation.create(req);
 
-        //Daten vorbereiten
-        double offset = 0.0;
-        ID id = null;
+        ID id = form.getId("id", "Sensor Wert ID");
+        String name = form.getString("name", "Name", 3, 50);
+        String description = form.getString("description", "Beschreibung", 0, 250);
+        double offset = form.getDouble("offset", "Offset", -25, 25);
+        int timeout = form.getInteger("timeout", "Timeout", 0, 32_000_000);
 
-        //Daten prüfen
-        boolean success = true;
-        try {
-
-            if(!(idStr != null)) {
-
-                success = false;
-            }
-            id = ID.of(idStr);
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            if(!(description != null && description.length() <= 250)) {
-
-                success = false;
-            }
-            offset = Double.parseDouble(offsetStr);
-            if(!(offset >= -25 && offset <= 25)) {
-
-                success = false;
-            }
-
-        } catch (Exception e) {
-
-            success = false;
-        }
-
-        if (success) {
+        if (form.isSuccessful()) {
 
             SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
             ReentrantReadWriteLock.WriteLock lock = sensorEditor.writeLock();
@@ -122,6 +94,7 @@ public class AutomationSensorValuesTemperatureFormServlet extends HttpServlet {
                 sensorValue.setName(name);
                 sensorValue.setDescription(description);
                 sensorValue.setOffset(offset);
+                sensorValue.setTimeout(timeout);
 
                 req.getSession().setAttribute("success", true);
                 req.getSession().setAttribute("message", "Der Sensorwert wurde erfolgreich bearbeitet");

@@ -26,7 +26,7 @@ public class LiveBitValue extends SensorValue {
     @ValidateNotNull(errorCode = 10000, message = "Das Feld %s ist Null, sollte aber nicht")
     @ValidateMin(value = 100, errorCode = 10005, message = "Ungültiger Timeout")
     @ValidateMax(value = 86_400_000, errorCode = 10005, message = "Ungültiger Timeout")
-    private long timeout = 10_000;
+    private long liveTimeout = 10_000;
 
     /**
      * Statustexte
@@ -41,6 +41,16 @@ public class LiveBitValue extends SensorValue {
      */
     public LiveBitValue(ID id, String identifier, String name) {
         super(id, identifier, name);
+    }
+
+    /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public LiveBitValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
     }
 
     /**
@@ -79,18 +89,18 @@ public class LiveBitValue extends SensorValue {
      *
      * @return Timeout
      */
-    public long getTimeout() {
-        return timeout;
+    public long getLiveTimeout() {
+        return liveTimeout;
     }
 
     /**
      * setzt den Timeout
      *
-     * @param timeout Timeout
+     * @param liveTimeout Timeout
      */
-    public void setTimeout(long timeout) {
+    public void setLiveTimeout(long liveTimeout) {
 
-        this.timeout = timeout;
+        this.liveTimeout = liveTimeout;
         setChangedData();
     }
 

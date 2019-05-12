@@ -31,6 +31,16 @@ public class ActualPowerValue extends SensorValue {
     }
 
     /**
+     * @param id ID
+     * @param identifier Identifizierung
+     * @param name Name
+     * @param timeout Timeout
+     */
+    public ActualPowerValue(ID id, String identifier, String name, int timeout) {
+        super(id, identifier, name, timeout);
+    }
+
+    /**
      * gibt den aktuellen Energieverbrauch zurück
      *
      * @return Energieverbrauch in Milliwatt
