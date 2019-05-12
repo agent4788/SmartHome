@@ -233,6 +233,7 @@ public class MovieMovieFormServlet extends HttpServlet {
                 movie.setGenreId(genreID);
                 movie.setRating(rating);
                 movie.setPurchaseDate(purchaseDate);
+                movie.setViewSoon(true);
                 movie.getActorIds().clear();
                 if(actors != null) {
 

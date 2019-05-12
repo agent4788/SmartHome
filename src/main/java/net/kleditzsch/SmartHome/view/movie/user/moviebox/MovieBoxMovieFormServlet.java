@@ -260,6 +260,7 @@ public class MovieBoxMovieFormServlet extends HttpServlet {
                     movie.setRating(rating);
                     movie.setPurchaseDate(movieBox.getPurchaseDate());
                     movie.setInMovieBox(movieBox.getId());
+                    movie.setViewSoon(true);
                     movie.getActorIds().clear();
                     if(actors != null) {
 
