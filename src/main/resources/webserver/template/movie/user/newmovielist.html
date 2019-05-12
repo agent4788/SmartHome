@@ -56,6 +56,9 @@
         <div class="ui right floated pagination menu">
             {% include '/webserver/template/movie/user/pagination.html' with {pagination: pagination} %}
         </div>
+        <div class="ui pagination menu" style="box-shadow: none; border: none;">
+            <div class="item">Seite {{ pagination.getCurrentPageLabel() }} von {{ pagination.getLastPageLabel() }}</div>
+        </div>
     </div>
     {% endif %}
 </main>
