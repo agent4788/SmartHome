@@ -290,10 +290,16 @@ public class AutomationRoomSensorElementFormServlet extends HttpServlet {
                         if(secondSensorValueId.isPresent()) {
 
                             roomElement.setSecondSensorValueId(secondSensorValueId.get());
+                        } else {
+
+                            roomElement.setSecondSensorValueId(null);
                         }
                         if(thirdSensorValueId.isPresent()) {
 
                             roomElement.setThirdSensorValueId(thirdSensorValueId.get());
+                        } else {
+
+                            roomElement.setThirdSensorValueId(null);
                         }
                         roomElement.setDisabled(disabled);
 
