@@ -76,6 +76,9 @@
             </div>
         </div>
         <div class="right menu">
+            <a class="ui item" onclick="$('#sensortypemodal').modal('show');">
+                <i class="list icon"></i> Typen
+            </a>
             <div class="ui dropdown item">
                 <i class="filter icon"></i> Typfilter
                 <div class="menu">
@@ -283,6 +286,161 @@
     </div>
     {% endif %}
     <div style="height: 50px;"></div>
+    <div class="ui modal" id="sensortypemodal">
+        <i class="close icon"></i>
+        <div class="header">
+            Sensor Typ ID's
+        </div>
+        <div class="content">
+            <div class="ui icon info message">
+                <i class="info icon"></i>
+                <div class="content">
+                    <div class="header">
+                        Sensor Push Link
+                    </div>
+                    <p>/automation/admin/sensorvaluespush?type=&lt;Typ ID&gt;&id=&lt;Wert ID&gt;&value=&lt;Wert&gt;</p>
+                </div>
+            </div>
+            <table class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Art</th>
+                        <th>Einheit</th>
+                        <th>Datentyp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="ID">1</td>
+                        <td data-label="Art">aktuelle Energie</td>
+                        <td data-label="Einheit">[mW] Milliwatt</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">2</td>
+                        <td data-label="Art">Luftdruck</td>
+                        <td data-label="Einheit">[hPa] Hektopascal</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">3</td>
+                        <td data-label="Art">Standorth&ouml;e</td>
+                        <td data-label="Einheit">[m] Meter</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">4</td>
+                        <td data-label="Art">Akku Ladezustand</td>
+                        <td data-label="Einheit">Prozent</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">5</td>
+                        <td data-label="Art">Doppelstatus</td>
+                        <td data-label="Einheit">Wahrheitswert</td>
+                        <td data-label="Datentyp">Boolean</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">6</td>
+                        <td data-label="Art">Zähler</td>
+                        <td data-label="Einheit">Ganzzahl (+ addieren, - subtrahieren)</td>
+                        <td data-label="Datentyp">Integer</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">7</td>
+                        <td data-label="Art">Stromstärke</td>
+                        <td data-label="Einheit">[mA] Milliampere</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">8</td>
+                        <td data-label="Art">Abstand</td>
+                        <td data-label="Einheit">[mm] Millimeter</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">9</td>
+                        <td data-label="Art">Laufzeit</td>
+                        <td data-label="Einheit">[s] Sekunden</td>
+                        <td data-label="Datentyp">Long</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">10</td>
+                        <td data-label="Art">Energieverbrauch</td>
+                        <td data-label="Einheit">[kWh] Kilowattstunden</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">11</td>
+                        <td data-label="Art">Gasmenge</td>
+                        <td data-label="Einheit">[l] Liter oder [dm<sup>3</sup>] Kubikdezimeter</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">12</td>
+                        <td data-label="Art">Luftfeuchtigkeit</td>
+                        <td data-label="Einheit">Prozent</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">13</td>
+                        <td data-label="Art">Eingang</td>
+                        <td data-label="Einheit">Wahrheitswert</td>
+                        <td data-label="Datentyp">Boolean</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">14</td>
+                        <td data-label="Art">Lichst&auml;rke</td>
+                        <td data-label="Einheit">Prozent</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">15</td>
+                        <td data-label="Art">Lebenszeichen</td>
+                        <td data-label="Einheit">Wahrheitswert</td>
+                        <td data-label="Datentyp">Boolean</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">16</td>
+                        <td data-label="Art">Feuchtigkeit</td>
+                        <td data-label="Einheit">Prozent</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">17</td>
+                        <td data-label="Art">Zeichenkette</td>
+                        <td data-label="Einheit">Zeichenkette mit 1 bis 50 Zeichen</td>
+                        <td data-label="Datentyp">String</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">18</td>
+                        <td data-label="Art">Temperatur</td>
+                        <td data-label="Einheit">[&deg;C] Grad Celsius</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">19</td>
+                        <td data-label="Art">Benutzer zu Hause</td>
+                        <td data-label="Einheit">Wahrheitswert</td>
+                        <td data-label="Datentyp">Boolean</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">20</td>
+                        <td data-label="Art">Spannung</td>
+                        <td data-label="Einheit">[mV] Millivolt</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                    <tr>
+                        <td data-label="ID">21</td>
+                        <td data-label="Art">Wassermenge</td>
+                        <td data-label="Einheit">[l] Liter oder [dm<sup>3</sup>] Kubikdezimeter</td>
+                        <td data-label="Datentyp">Double</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </main>
 </body>
 </html>
