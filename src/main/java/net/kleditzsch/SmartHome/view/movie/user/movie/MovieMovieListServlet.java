@@ -135,6 +135,7 @@ public class MovieMovieListServlet extends HttpServlet {
             pagination.setBaseLink("/movie/movie?index=");
         }
         List<Movie> moviesAtPage = MovieEditor.listMovies(filter, pagination.getCurrentPageIndex(), pagination.getElementsAtPage());
+        model.with("movieFilter", filter);
         model.with("pagination", pagination);
         model.with("moviesAtPage", moviesAtPage);
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));

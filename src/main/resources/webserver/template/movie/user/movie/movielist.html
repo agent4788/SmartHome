@@ -15,7 +15,7 @@
 {% include '/webserver/template/movie/user/headline.html' with {module: 'movie'} %}
 <main class="ui main container">
     <div class="ui text menu top attached">
-        <h1 class="ui item" style="font-weight: bold;line-height: 1.28571429em;color: rgba(0,0,0,.87);">Filme</h1>
+        <h1 class="ui item" style="font-weight: bold;line-height: 1.28571429em;color: rgba(0,0,0,.87);">Filme{% if movieFilter.isActive() %} ({{ pagination.getSize() | numberformat }}){% endif %}</h1>
         <div class="ui right dropdown item">
             <i class="filter icon"></i>
             filtern

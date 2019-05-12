@@ -125,4 +125,22 @@ public class MovieFilter {
     public void setDisc(ID disc) {
         this.disc = disc;
     }
+
+    /**
+     * gibt an ob mindestens ein Filter aktiv ist
+     *
+     * @return Filter aktiv
+     */
+    public boolean isActive() {
+
+        if(getMinLength() > 0
+                || getMaxLength() < Integer.MAX_VALUE
+                || getGenre().isPresent()
+                || getRating().isPresent()
+                || getDisc().isPresent()) {
+
+            return true;
+        }
+        return false;
+    }
 }
