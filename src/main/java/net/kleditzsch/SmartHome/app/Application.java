@@ -8,6 +8,7 @@ import com.mongodb.client.model.CreateCollectionOptions;
 import net.kleditzsch.SmartHome.app.automation.AutomationAppliaction;
 import net.kleditzsch.SmartHome.app.contract.ContractApplication;
 import net.kleditzsch.SmartHome.app.contact.ContactApplication;
+import net.kleditzsch.SmartHome.app.knowledge.KnowledgeApplication;
 import net.kleditzsch.SmartHome.app.movie.MovieApplication;
 import net.kleditzsch.SmartHome.app.network.NetworkApplication;
 import net.kleditzsch.SmartHome.app.recipe.RecipeApplication;
@@ -128,6 +129,11 @@ public class Application {
      * Hauptklasse der Einkaufsliste
      */
     private volatile ShoppingListApplication shoppingListApplication;
+
+    /**
+     * Hauptklasse der Wissensdatenbank
+     */
+    private volatile KnowledgeApplication knowledgeApplication;
 
     /**
      * Scheduler
@@ -266,6 +272,10 @@ public class Application {
         shoppingListApplication = new ShoppingListApplication();
         shoppingListApplication.init();
 
+        //Wissensdatenbank initalisieren
+        knowledgeApplication = new KnowledgeApplication();
+        knowledgeApplication.init();
+
         initWebserver();
     }
 
@@ -368,6 +378,7 @@ public class Application {
                 networkApplication.initWebContext(contextHandler);
                 recipeApplication.initWebContext(contextHandler);
                 shoppingListApplication.initWebContext(contextHandler);
+                knowledgeApplication.initWebContext(contextHandler);
             });
 
             serverStarter.config();
@@ -489,12 +500,21 @@ public class Application {
     }
 
     /**
-     * gibt die Filmdatenbank zurück
+     * gibt die Einkaufsliste zurück
      *
-     * @return Filmdatenbank
+     * @return Einkaufsliste
      */
     public ShoppingListApplication getShoppingListApplication() {
         return shoppingListApplication;
+    }
+
+    /**
+     * gibt die Wissensdatenbank zurück
+     *
+     * @return Wissensdatenbank
+     */
+    public KnowledgeApplication getKnowledgeApplication() {
+        return knowledgeApplication;
     }
 
     /**

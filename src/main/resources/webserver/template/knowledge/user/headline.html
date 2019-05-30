@@ -1,0 +1,46 @@
+<script type="text/javascript">
+
+    var mobileView = {% if mobileView %}true{% else %}false{% endif %};
+    $(function() {
+
+        $('.ui.dropdown').dropdown();
+
+        //Bildschirmorientierung ermitteln
+        var height = $(window).height();
+        var width = $(window).width();
+        if(width < height) {
+
+            //Smallscreen
+            $('#widescreen').hide();
+            $('#smallscreen').show();
+            if(!mobileView) {
+
+                $.get({url: "/mobileview?mobile"});
+            }
+        } else {
+
+            //Widescreen
+            $('#widescreen').show();
+            $('#smallscreen').hide();
+            if(mobileView) {
+
+                $.get({url: "/mobileview"});
+            }
+        }
+    });
+</script>
+<header>
+    <div class="ui fixed inverted menu large" id="widescreen" {% if mobileView %}style="display: none;"{% endif %}>
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
+            <img src="/static/img/icon/knowledge.png" width="32" height="32" class="logo">
+            Wissen
+        </a>
+    </div>
+    <div class="ui fixed inverted menu large" id="smallscreen" {% if not mobileView %}style="display: none;"{% endif %}>
+        <a onclick="$('.ui.labeled.icon.sidebar').sidebar('toggle')" class="header item">
+            <img src="/static/img/icon/knowledge.png" width="32" height="32" class="logo">
+            Wissen
+        </a>
+    </div>
+</header>
+{% include '/webserver/template/sidebar.html' with {module: 'knowledge'} %}

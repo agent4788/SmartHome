@@ -1,0 +1,15 @@
+{
+  "name": "Wissen",
+  "short_name": "Wissen",
+  "description": "",
+  "start_url": "/knowledge/index",
+  "display": "standalone",
+  "lang": "de-DE",
+  "icons": [
+    {
+      "src": "/static/img/icon/knowledge.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}
