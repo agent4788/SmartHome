@@ -67,7 +67,7 @@ public class FritzBoxSmarthome {
         List<String> devices = getDeviceList();
         if(devices.size() > 0) {
 
-            String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getdevicelistinfos&ain=" + devices.stream().findFirst().get());
+            String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getdevicelistinfos");
 
             //XML Daten auswerten
             try {
