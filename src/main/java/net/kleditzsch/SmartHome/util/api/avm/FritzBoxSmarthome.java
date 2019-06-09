@@ -51,17 +51,25 @@ public class FritzBoxSmarthome {
     }
 
     /**
+     * neuen Login anstoßen
+     */
+    public void reLogin() throws InterruptedException {
+
+        fritzBoxHandler.login();
+    }
+
+    /**
      * gibt eine Liste mit den Geräte IDs zurück
      *
      * @return Set mit den Geräte IDs
      */
-    public List<String> getDeviceList() throws IOException {
+    public List<String> getDeviceList() throws IOException, InterruptedException {
 
         String response = fritzBoxHandler.sendHttpRequest("/webservices/homeautoswitch.lua?switchcmd=getswitchlist");
         return Arrays.asList(response.split(","));
     }
 
-    public List<SmarthomeDevice> listDevices() throws IOException {
+    public List<SmarthomeDevice> listDevices() throws IOException, InterruptedException {
 
         List<SmarthomeDevice> smartHomeDevices = new ArrayList<>();
         List<String> devices = getDeviceList();

@@ -273,14 +273,20 @@ public class SmarthomeDevice {
      */
     public boolean updatePresent() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchpresent");
-        if(response.equals("1")) {
+        try {
 
-            present = true;
-        } else {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchpresent");
+            if(response.equals("1")) {
 
-            present = false;
+                present = true;
+            } else {
+
+                present = false;
+            }
+            return isPresent();
+        } catch (InterruptedException e) {
+
+            return false;
         }
-        return isPresent();
     }
 }

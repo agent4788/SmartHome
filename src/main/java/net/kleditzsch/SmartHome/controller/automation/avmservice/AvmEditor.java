@@ -109,19 +109,13 @@ public class AvmEditor implements DatabaseEditor {
                     //nochmal probieren
                     try {
 
+                        //erneuten Login probieren
+                        fritzBoxSmarthome.reLogin();
                         devices = fritzBoxSmarthome.listDevices();
-                    } catch (Exception e1) {
+                    } catch (Exception e2) {
 
-                        try {
-
-                            //erneuten Login probieren
-                            fritzBoxSmarthome = new FritzBoxSmarthome(address, user, password);
-                            devices = fritzBoxSmarthome.listDevices();
-                        } catch (Exception e2) {
-
-                            LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"");
-                            MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e1.getLocalizedMessage() + "\"", e));
-                        }
+                        LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e.getLocalizedMessage() + "\"");
+                        MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e.getLocalizedMessage() + "\"", e));
                     }
                 }
 
@@ -140,6 +134,9 @@ public class AvmEditor implements DatabaseEditor {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Die Verbindung zur FritzBox konnte nicht hergestellt werden");
                 MessageEditor.addMessage(new Message("automation", Message.Type.warning, "Die Verbindung zur Fritz Box konnte nicht hergestellt werden, Meldung: \"" + e.getLocalizedMessage() + "\"", e));
+            } catch (InterruptedException e) {
+
+                //nix
             }
         } else {
 

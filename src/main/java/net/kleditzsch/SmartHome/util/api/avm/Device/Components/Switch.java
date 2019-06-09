@@ -113,15 +113,22 @@ public class Switch {
      */
     public STATE updateState() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchstate");
-        if(response.equals("1")) {
+        try {
 
-            state = STATE.ON;
-        } else {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchstate");
+            if(response.trim().equals("1")) {
+
+                state = STATE.ON;
+            } else {
+
+                state = STATE.OFF;
+            }
+            return getState();
+        } catch (InterruptedException e) {
 
             state = STATE.OFF;
+            return getState();
         }
-        return getState();
     }
 
     /**
@@ -131,15 +138,22 @@ public class Switch {
      */
     public STATE switchOn() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchon");
-        if(response.equals("1")) {
+        try {
 
-            state = STATE.ON;
-        } else {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchon");
+            if(response.trim().equals("1")) {
+
+                state = STATE.ON;
+            } else {
+
+                state = STATE.OFF;
+            }
+            return getState();
+        } catch (InterruptedException e) {
 
             state = STATE.OFF;
+            return getState();
         }
-        return getState();
     }
 
     /**
@@ -149,15 +163,22 @@ public class Switch {
      */
     public STATE switchOff() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchoff");
-        if(response.equals("1")) {
+        try {
 
-            state = STATE.ON;
-        } else {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchoff");
+            if(response.trim().equals("1")) {
+
+                state = STATE.ON;
+            } else {
+
+                state = STATE.OFF;
+            }
+            return getState();
+        } catch (InterruptedException e) {
 
             state = STATE.OFF;
+            return getState();
         }
-        return getState();
     }
 
     /**
@@ -167,14 +188,20 @@ public class Switch {
      */
     public STATE switchToggle() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchtoggle");
-        if(response.equals("1")) {
+        try {
 
-            state = STATE.ON;
-        } else {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=setswitchtoggle");;
+            if(response.trim().equals("1")) {
 
-            state = STATE.OFF;
+                state = STATE.ON;
+            } else {
+
+                state = STATE.OFF;
+            }
+            return getState();
+        } catch (InterruptedException e) {
+
+            return STATE.OFF;
         }
-        return getState();
     }
 }

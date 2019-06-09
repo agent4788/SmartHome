@@ -67,11 +67,11 @@ public class TemperatureSensor {
      */
     public double updateTemperature() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=gettemperature");
         try {
 
-            temperature = Double.parseDouble(response) / 10;
-        } catch (NumberFormatException e) {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=gettemperature");
+            temperature = Double.parseDouble(response.trim()) / 10;
+        } catch (NumberFormatException | InterruptedException e) {
 
             temperature = 0.0;
         }

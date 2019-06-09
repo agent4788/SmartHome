@@ -8,9 +8,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -51,6 +56,24 @@ public class FritzBoxHandler {
      */
     private Logger logger = LoggerUtil.getLogger(this.getClass());
 
+    /**
+     * HTTP Client
+     */
+    private final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .followRedirects(HttpClient.Redirect.NORMAL)
+            .build();
+
+    /**
+     * String Body Handler
+     */
+    private final HttpResponse.BodyHandler<String> asString = HttpResponse.BodyHandlers.ofString();
+
+    /**
+     * Timeout
+     */
+    private final Duration TIMEOUT = Duration.ofSeconds(2);
+
     public FritzBoxHandler() {}
 
     /**
@@ -76,7 +99,7 @@ public class FritzBoxHandler {
     /**
      * meldet einen Benutzer nur mit Passwort an der Fritz!Box an
      */
-    public void login() {
+    public void login() throws InterruptedException {
 
         this.login(fritzBoxAddress, username, password);
     }
@@ -87,7 +110,7 @@ public class FritzBoxHandler {
      * @param fritzBoxAddress Fritz Box Adresse
      * @param password Passwort
      */
-    public void login(String fritzBoxAddress, String password) {
+    public void login(String fritzBoxAddress, String password) throws InterruptedException {
 
         this.login(fritzBoxAddress, "", password);
     }
@@ -99,7 +122,7 @@ public class FritzBoxHandler {
      * @param username Benutzername
      * @param password Passwort
      */
-    public void login(String fritzBoxAddress, String username, String password) {
+    public void login(String fritzBoxAddress, String username, String password) throws InterruptedException {
 
         this.fritzBoxAddress = fritzBoxAddress;
         this.username = username;
@@ -132,7 +155,7 @@ public class FritzBoxHandler {
      *
      * @return Sitzungs ID
      */
-    private String getSessionId() {
+    private String getSessionId() throws InterruptedException {
 
         if(sessionId == null
                 || sessionId.equals("0000000000000000")
@@ -153,11 +176,30 @@ public class FritzBoxHandler {
      * @param urlFragment URL Fragment
      * @return HTTP Antwort als String
      */
-    public String sendHttpRequest(String urlFragment) throws IOException {
+    public String sendHttpRequest(String urlFragment) throws IOException, InterruptedException {
 
-        URL request = new URL("http://" + this.fritzBoxAddress + "/" + urlFragment + "&sid=" + getSessionId());
+        URI request = URI.create(
+                new StringBuilder("http://")
+                        .append(this.fritzBoxAddress)
+                        .append("/")
+                        .append(urlFragment)
+                        .append("&sid=").append(getSessionId())
+                        .toString()
+        );
+
         this.sessionIdTimeout = LocalDateTime.now().plusSeconds(590);
-        return httpGetRequest(request);
+        HttpResponse<String> response = httpGetRequest(request);
+
+        if(response.statusCode() == 200) {
+
+            return response.body();
+        } else if(response.statusCode() == 403) {
+
+            throw new AuthException("ungültige Anmeldung");
+        } else {
+
+            throw new IOException("Verdindungsfehler");
+        }
     }
 
     /**
@@ -165,12 +207,17 @@ public class FritzBoxHandler {
      *
      * @return Challenge
      */
-    private Optional<String> getChallenge() {
+    private Optional<String> getChallenge() throws InterruptedException {
 
         try {
 
-            URL url = new URL("http://" + this.fritzBoxAddress + "/login_sid.lua ");
-            String response = this.httpGetRequest(url);
+            URI request = URI.create(
+                    new StringBuilder("http://")
+                            .append(this.fritzBoxAddress)
+                            .append("/login_sid.lua")
+                            .toString()
+            );
+            String response = this.httpGetRequest(request).body();
             return Optional.of(response.substring(response.indexOf("<Challenge>") + 11, response.indexOf("<Challenge>") + 19));
 
         } catch (IOException e) {
@@ -188,7 +235,7 @@ public class FritzBoxHandler {
      * @param password Passwort
      * @return Session ID
      */
-    private Optional<String> sendLogin(String challenge, String username, String password) {
+    private Optional<String> sendLogin(String challenge, String username, String password) throws InterruptedException {
 
         String challengeHash = challenge + "-" + password;
         try {
@@ -205,8 +252,16 @@ public class FritzBoxHandler {
             String challengeResponse = challenge + "-" + md5Hash;
 
             //HTTP ANfrage schicken
-            URL url = new URL("http://" + this.fritzBoxAddress + "/login_sid.lua?user=" + username + "&response=" + challengeResponse);
-            String response = this.httpGetRequest(url);
+            URI request = URI.create(
+                    new StringBuilder("http://")
+                            .append(this.fritzBoxAddress)
+                            .append("/login_sid.lua")
+                            .append("?user=").append(username)
+                            .append("&response=").append(challengeResponse)
+                            .toString()
+            );
+            HttpResponse<String> httpResponse = this.httpGetRequest(request);
+            String response = httpResponse.body();
 
             String sid = response.substring(response.indexOf("<SID>") + 5, response.indexOf("<SID>") + 21);
             if(!sid.equals("0000000000000000")) {
@@ -225,11 +280,21 @@ public class FritzBoxHandler {
     /**
      * sendet eine HTTP Anfrage ab
      *
-     * @param url URL
+     * @param uri URI
      * @return HTTP Antwort
      */
-    private String httpGetRequest(URL url) throws IOException {
+    private HttpResponse<String> httpGetRequest(URI uri) throws IOException, InterruptedException {
 
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .timeout(TIMEOUT)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = HTTP_CLIENT.send(request, asString);
+        return response;
+
+        /*
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("GET");
@@ -244,5 +309,6 @@ public class FritzBoxHandler {
             response.append(line);
         }
         return response.toString();
+         */
     }
 }

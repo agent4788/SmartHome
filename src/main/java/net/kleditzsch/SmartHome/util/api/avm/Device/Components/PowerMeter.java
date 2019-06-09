@@ -67,11 +67,11 @@ public class PowerMeter {
      */
     public double updatePower() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchpower");
         try {
 
-            power = Double.parseDouble(response);
-        } catch (NumberFormatException e) {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchpower");
+            power = Double.parseDouble(response.trim());
+        } catch (NumberFormatException | InterruptedException e) {
 
             power = 0.0;
         }
@@ -85,11 +85,11 @@ public class PowerMeter {
      */
     public double updateEnergy() throws IOException {
 
-        String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchenergy");
         try {
 
-            energy = Double.parseDouble(response);
-        } catch (NumberFormatException e) {
+            String response = fritzBoxHandler.sendHttpRequest("webservices/homeautoswitch.lua?ain=" + identifier + "&switchcmd=getswitchenergy");
+            energy = Double.parseDouble(response.trim());
+        } catch (NumberFormatException | InterruptedException e) {
 
             energy = 0.0;
         }
