@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Filme zum demn&auml;chst anschauen</title>
+    <title>Merkliste</title>
     {% include '/webserver/template/header.html' %}
 </head>
 <body>
 {% include '/webserver/template/movie/user/headline.html' with {module: 'dash'} %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Filme zum demn&auml;chst anschauen</h1>
+    <h1 class="ui header top attached">Merkliste</h1>
     <div class="ui link cards four column doubling stackable bottom attached">
         {% if pagination.getSize() > 0 %}
         {% for element in pagination.getCurrentPageElements() %}
