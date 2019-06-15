@@ -90,7 +90,7 @@ public class AutomationRoomElementsServlet extends HttpServlet {
                         pagination.setBaseLink("/automation/admin/roomelements?roomid=" + HtmlEscapers.htmlEscaper().escape(room.getId().get()) + "&filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
                     } else {
 
-                        pagination.setBaseLink("/automation/admin/roomelements?index=");
+                        pagination.setBaseLink("/automation/admin/roomelements?roomid=" + HtmlEscapers.htmlEscaper().escape(room.getId().get()) + "&index=");
                     }
                     model.with("pagination", pagination);
                     model.with("maxOrderId", roomElements.stream().mapToInt(RoomElement::getOrderId).summaryStatistics().getMax());
