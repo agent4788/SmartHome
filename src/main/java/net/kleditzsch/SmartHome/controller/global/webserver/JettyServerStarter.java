@@ -90,16 +90,16 @@ public class JettyServerStarter implements AutoCloseable {
         config.setSendXPoweredBy(false);
         config.setSendServerVersion(false);
         config.addCustomizer(new SecureRequestCustomizer());
-        SslContextFactory sslContextFactory = new SslContextFactory();
+        /*SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(keyStore.toExternalForm());
         sslContextFactory.setKeyStorePassword(keyStorePassword);
         ServerConnector sslConnector = new ServerConnector(
                 server,
                 new SslConnectionFactory(sslContextFactory, "http/1.1"),
                 new HttpConnectionFactory(config));
-        sslConnector.setPort(sslPort);
+        sslConnector.setPort(sslPort);*/
 
-        server.setConnectors(new Connector[] {defaultConnector, sslConnector});
+        server.setConnectors(new Connector[] {defaultConnector/*, sslConnector*/});
 
         //Statische Inhalte
         ServletContextHandler staticHandler = new ServletContextHandler();
