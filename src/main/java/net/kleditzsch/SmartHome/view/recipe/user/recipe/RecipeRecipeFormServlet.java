@@ -195,7 +195,6 @@ public class RecipeRecipeFormServlet extends HttpServlet {
                     recipe.setBaseServings(baseServings);
                     recipe.setType(type);
                     recipe.setDifficulty(difficulty);
-                    recipe.setInsertDate(LocalDateTime.now());
 
                     Path targetDirectory = Paths.get("upload/recipe");
                     if(image != null) {
