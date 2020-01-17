@@ -42,14 +42,14 @@ public abstract class MovieEditor {
     public static List<Movie> listMovies() {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable<Document> iterator = movieCollection.find()
-                .sort(Sorts.ascending("title"));
+        FindIterable<Document> iterator = movieCollection.find();
 
         List<Movie> movies = new ArrayList<>(50);
         for (Document document : iterator) {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -64,7 +64,6 @@ public abstract class MovieEditor {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
         FindIterable<Document> iterator = movieCollection.find()
-                .sort(Sorts.ascending("title"))
                 .skip(((Long) start).intValue())
                 .limit(((Long) length).intValue());
 
@@ -73,6 +72,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -132,6 +132,7 @@ public abstract class MovieEditor {
             }
         }
 
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -153,6 +154,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -171,6 +173,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -189,6 +192,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -227,6 +231,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -247,6 +252,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -267,6 +273,7 @@ public abstract class MovieEditor {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
@@ -337,13 +344,14 @@ public abstract class MovieEditor {
     public static List<Movie> listViewSoonMovies() {
 
         MongoCollection movieCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
-        FindIterable<Document> iterator = movieCollection.find(eq("viewSoon", true)).sort(Sorts.ascending("title"));
+        FindIterable<Document> iterator = movieCollection.find(eq("viewSoon", true));
 
         List<Movie> movies = new ArrayList<>(50);
         for (Document document : iterator) {
 
             movies.add(documentToMovie(document));
         }
+        movies = movies.stream().sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName())).collect(Collectors.toList());
         return movies;
     }
 
