@@ -61,6 +61,7 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
             element.setId(ID.of(document.getString("_id")));
             element.setName(document.getString("name"));
             element.setDescription(document.getString("description"));
+            element.setQuality(Disc.Quality.valueOf(document.getString("quality")));
             element.setOrderId(document.getInteger("orderId"));
             element.resetChangedData();
 
@@ -82,6 +83,7 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
                 .append("_id", disc.getId().get())
                 .append("name", disc.getName())
                 .append("description", disc.getDescription().orElseGet(() -> ""))
+                .append("quality", disc.getQuality().toString())
                 .append("orderId", disc.getOrderId());
 
         MongoCollection discCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
@@ -104,6 +106,7 @@ public class DiscEditor extends AbstractDatabaseEditor<Disc> {
                 combine(
                         set("name", disc.getName()),
                         set("description", disc.getDescription().orElseGet(() -> "")),
+                        set("quality", disc.getQuality().toString()),
                         set("orderId", disc.getOrderId())
                         )
         );

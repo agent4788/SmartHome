@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.movie.movie;
 
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 
 import java.util.Optional;
 
@@ -25,6 +26,11 @@ public class MovieFilter {
      * Medium
      */
     private ID disc = null;
+
+    /**
+     * Qualität
+     */
+    private Disc.Quality quality = null;
 
     /**
      * Bewertung
@@ -95,12 +101,39 @@ public class MovieFilter {
     }
 
     /**
+     * setzt die Disc ID
+     *
+     * @param disc Disc ID
+     */
+    public void setDisc(ID disc) {
+        this.disc = disc;
+    }
+
+    /**
+     * gibt die allgemeine Qualität
+     *
+     * @return allgemeine Qualität
+     */
+    public Optional<Disc.Quality> getQuality() {
+        return Optional.ofNullable(quality);
+    }
+
+    /**
      * setzt die Bewertung
      *
      * @param rating Bewertung
      */
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    /**
+     * setzt die allgemeine Qualität
+     *
+     * @param quality allgemeine Qualität
+     */
+    public void setQuality(Disc.Quality quality) {
+        this.quality = quality;
     }
 
     /**
@@ -118,15 +151,6 @@ public class MovieFilter {
     }
 
     /**
-     * setzt die Disc ID
-     *
-     * @param disc Disc ID
-     */
-    public void setDisc(ID disc) {
-        this.disc = disc;
-    }
-
-    /**
      * gibt an ob mindestens ein Filter aktiv ist
      *
      * @return Filter aktiv
@@ -137,6 +161,7 @@ public class MovieFilter {
                 || getMaxLength() < Integer.MAX_VALUE
                 || getGenre().isPresent()
                 || getRating().isPresent()
+                || getQuality().isPresent()
                 || getDisc().isPresent()) {
 
             return true;

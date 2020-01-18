@@ -31,6 +31,14 @@
                 <label>Beschreibung</label>
                 <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if disc.getDescription().isPresent() %}{{ disc.getDescription().get() | escape }}{% endif %}</textarea>
             </div>
+            <div class="field">
+                <label>Qualit&auml;t</label>
+                <select class="ui dropdown" name="quality">
+                    <option value="SD" {% if addElement %}selected="selected"{% elseif disc.getQuality() == "SD" %}selected="selected"{% endif %}>SD</option>
+                    <option value="HD" {% if disc.getQuality() == "HD" %}selected="selected"{% endif %}>HD</option>
+                    <option value="UHD" {% if disc.getQuality() == "UHD" %}selected="selected"{% endif %}>UHD</option>
+                </select>
+            </div>
         </div>
         <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>

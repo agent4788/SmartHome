@@ -1,5 +1,6 @@
 package net.kleditzsch.SmartHome.view.movie.user.movie;
 
+import com.google.common.collect.Lists;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -89,6 +91,29 @@ public class MovieMovieListServlet extends HttpServlet {
                 model.with("filtered", true);
                 model.with("discFilter", discId.get());
             } catch (Exception e) {}
+        } else  if(req.getParameter("quality") != null) {
+
+            switch (req.getParameter("quality").toLowerCase()) {
+
+                case "sd":
+
+                    filter.setQuality(Disc.Quality.SD);
+                    model.with("filtered", true);
+                    model.with("qualityFilter", "sd");
+                    break;
+                case "hd":
+
+                    filter.setQuality(Disc.Quality.HD);
+                    model.with("filtered", true);
+                    model.with("qualityFilter", "hd");
+                    break;
+                case "uhd":
+
+                    filter.setQuality(Disc.Quality.UHD);
+                    model.with("filtered", true);
+                    model.with("qualityFilter", "uhd");
+                    break;
+            }
         } else if(req.getParameter("rating") != null) {
 
             try {
@@ -130,6 +155,9 @@ public class MovieMovieListServlet extends HttpServlet {
         } else if(filter.getDisc().isPresent()) {
 
             pagination.setBaseLink("/movie/movie?disc=" + filter.getDisc().get().get() + "&index=");
+        }  else if(filter.getQuality().isPresent()) {
+
+            pagination.setBaseLink("/movie/movie?quality=" + filter.getQuality().get() + "&index=");
         } else {
 
             pagination.setBaseLink("/movie/movie?index=");

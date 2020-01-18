@@ -34,7 +34,7 @@ public class MovieDiscFormServlet extends HttpServlet {
 
             addElement = false;
 
-            //Schaltserver laden
+            //Disc laden
             try {
 
                 ID id = ID.of(req.getParameter("id").trim());
@@ -80,6 +80,7 @@ public class MovieDiscFormServlet extends HttpServlet {
         }
         String name = form.getString("name", "Titel", 3, 50);
         String description = form.getString("description", "Titel", 0, 250);
+        Disc.Quality quality = form.getEnum("quality", "Qualität", Disc.Quality.class);
 
         if (form.isSuccessful()) {
 
@@ -91,6 +92,7 @@ public class MovieDiscFormServlet extends HttpServlet {
                 disc.setId(ID.create());
                 disc.setName(name);
                 disc.setDescription(description);
+                disc.setQuality(quality);
                 if (de.getData().size() > 0) {
 
                     int nextLevel = de.getData().stream().mapToInt(Disc::getOrderId).summaryStatistics().getMax() + 1;
@@ -112,6 +114,7 @@ public class MovieDiscFormServlet extends HttpServlet {
                     Disc disc = discOptional.get();
                     disc.setName(name);
                     disc.setDescription(description);
+                    disc.setQuality(quality);
                     de.update(disc);
 
                     req.getSession().setAttribute("success", true);

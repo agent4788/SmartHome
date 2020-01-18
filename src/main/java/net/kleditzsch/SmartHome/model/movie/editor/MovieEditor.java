@@ -12,6 +12,7 @@ import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.movie.movie.Movie;
 import net.kleditzsch.SmartHome.model.movie.movie.MovieFilter;
+import net.kleditzsch.SmartHome.model.movie.movie.meta.Disc;
 import net.kleditzsch.SmartHome.util.api.nas.NasState;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
@@ -100,6 +101,14 @@ public abstract class MovieEditor {
         } else if(filter.getDisc().isPresent()) {
 
             bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        } else if(filter.getQuality().isPresent()) {
+
+            Disc.Quality quality = filter.getQuality().get();
+
+            DiscEditor discEditor = DiscEditor.createAndLoad();
+            List<String> filteredDiscIDList = discEditor.getDiscsSorted().stream().filter(e -> e.getQuality() == quality).map(e -> e.getId().get()).collect(Collectors.toList());
+
+            bsonFilter = Filters.in("discId", filteredDiscIDList);
         } else if(filter.getRating().isPresent()) {
 
             bsonFilter = Filters.eq("rating", filter.getRating().get());
@@ -411,6 +420,14 @@ public abstract class MovieEditor {
         } else if(filter.getDisc().isPresent()) {
 
             bsonFilter = Filters.eq("discId", filter.getDisc().get().get());
+        } else if(filter.getQuality().isPresent()) {
+
+            Disc.Quality quality = filter.getQuality().get();
+
+            DiscEditor discEditor = DiscEditor.createAndLoad();
+            List<String> filteredDiscIDList = discEditor.getDiscsSorted().stream().filter(e -> e.getQuality() == quality).map(e -> e.getId().get()).collect(Collectors.toList());
+
+            bsonFilter = Filters.in("discId", filteredDiscIDList);
         } else if(filter.getRating().isPresent()) {
 
             bsonFilter = Filters.eq("rating", filter.getRating().get());

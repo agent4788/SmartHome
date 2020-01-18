@@ -47,6 +47,15 @@
                         {% endfor %}
                     </div>
                 </div>
+                <div class="item {% if qualityFilter %}active{% endif %}">
+                    <i class="dropdown icon"></i>
+                    <span class="text">Qualit&auml;t</span>
+                    <div class="menu">
+                        <a class="item {% if qualityFilter == "sd" %}active{% endif %}" href="/movie/movie?quality=sd">SD</a>
+                        <a class="item {% if qualityFilter == "hd" %}active{% endif %}" href="/movie/movie?quality=hd">HD</a>
+                        <a class="item {% if qualityFilter == "uhd" %}active{% endif %}" href="/movie/movie?quality=uhd">UHD</a>
+                    </div>
+                </div>
                 <div class="item {% if ratingFilter %}active{% endif %}">
                     <i class="dropdown icon"></i>
                     <span class="text">Bewertung</span>
