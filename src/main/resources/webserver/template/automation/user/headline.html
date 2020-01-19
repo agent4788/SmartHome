@@ -35,12 +35,19 @@
             <img src="/static/img/icon/automation.png" width="32" height="32" class="logo">
             Automatisierung
         </a>
+        <a class="header item {% if module == 'dash' %}active{% endif %}" href="/automation/index">
+            Dashboard
+        </a>
         <div class="ui item dropdown">
-            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" width="32" height="32" class="logo">
-            {{ activeRoom.getDisplayText() | escape }}
+            {% if activeRoom %}
+                <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" width="32" height="32" class="logo">
+                {{ activeRoom.getDisplayText() | escape }}
+            {% else %}
+            R&auml;ume
+            {% endif %}
             <div class="ui icon menu">
                 {% for room in rooms %}
-                <a class="item {% if room.getId().equals(activeRoom.getId()) %}active{% endif %}" href="/automation/index?id={{ room.getId().get() | escape }}">
+                <a class="item {% if room.getId().equals(activeRoom.getId()) %}active{% endif %}" href="/automation/room?id={{ room.getId().get() | escape }}">
                     <img class="icon image" src="/static/img/iconset/{{ room.getIconFile() | escape }}">
                     <span style="display: inline-block; margin-top: 8px;">{{ room.getDisplayText() | escape }}</span>
                 </a>
@@ -60,12 +67,19 @@
             <div class="ui dropdown item">
                 <i class="bars icon"></i>
                 <div class="menu">
-                    <div class="ui icon item dropdown">
-                        <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" width="32" height="32" class="ui icon image">
-                        <span style="display: inline-block; margin-top: 8px;">{{ activeRoom.getDisplayText() | escape }}</span>
+                    <a href="/automation/index" class="item {% if module == 'dash' %}active{% endif %}">
+                        Dashboard
+                    </a>
+                    <div class="ui icon item dropdown {% if module == 'room' %}active{% endif %}">
+                        {% if activeRoom %}
+                            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" width="32" height="32" class="ui icon image">
+                            <span style="display: inline-block; margin-top: 8px;">{{ activeRoom.getDisplayText() | escape }}</span>
+                        {% else %}
+                        R&auml;ume
+                        {% endif %}
                         <div class="menu">
                             {% for room in rooms %}
-                            <a class="item {% if room.getId().equals(activeRoom.getId()) %}active{% endif %}" href="/automation/index?id={{ room.getId().get() | escape }}">
+                            <a class="item {% if room.getId().equals(activeRoom.getId()) %}active{% endif %}" href="/automation/room?id={{ room.getId().get() | escape }}">
                                 <img class="icon image" src="/static/img/iconset/{{ room.getIconFile() | escape }}">
                                 <span style="display: inline-block; margin-top: 8px;">{{ room.getDisplayText() | escape }}</span>
                             </a>

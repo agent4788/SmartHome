@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung</title>
+    {% include '/webserver/template/header.html' %}
+    <script src="/static/notify/notify.min.js"></script>
+    <script type="text/javascript">
+
+        function switchDevice(roomId, devId, command) {
+
+            $.getJSON('/automation/switch?roomid=' + roomId + '&id=' + devId + '&command=' + command)
+                .done(function(data, textStatus) {
+
+                    if(textStatus == 'success' && data.success == true) {
+
+                        //Befehl erfolgreich ausgeführt
+                        $.notify("Befehl erfolgreich ausgeführt", "success");
+                    } else {
+
+                        //Fehler
+                        $.notify(data.message, "error");
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $.notify("Der Befehl konnte nicht ausgeführt werden", "error");
+                });
+        }
+
+        function sync() {
+
+            if (window.EventSource) {
+
+                var eventSource = new EventSource('/automation/ssesync?roomid={{ activeRoom.getId().get() }}', { withCredentials : true });
+                eventSource.onmessage = function(entry) {
+
+                    //JOSN parsen
+                    var data = jQuery.parseJSON(entry.data.trim());
+
+                    //Buttons aktualisieren
+                    if(data.buttons && data.buttons.length > 0) {
+
+                        for(var i = 0; i < data.buttons.length; i++) {
+
+                            var e = data.buttons[i];
+                            if(e.state) {
+
+                                //an
+                                var buttonOn = $('#a' + e.id + '_on');
+                                var buttonOff = $('#a' + e.id + '_off');
+                                var onText = buttonOn.text();
+                                var offText = buttonOff.text();
+                                buttonOn.html('<i class="check icon"></i>' + onText);
+                                buttonOff.html(offText);
+                            } else {
+
+                                //aus
+                                var buttonOn = $('#a' + e.id + '_on');
+                                var buttonOff = $('#a' + e.id + '_off');
+                                var onText = buttonOn.text();
+                                var offText = buttonOff.text();
+                                buttonOn.html(onText);
+                                buttonOff.html('<i class="check icon"></i>' + offText);
+                            }
+                        }
+                    }
+
+                    //Sensorwerte aktualisieren
+                    if(data.sensors && data.sensors.length > 0) {
+                         for(var i = 0; i < data.sensors.length; i++) {
+
+                             var e = data.sensors[i];
+                             $('#a' + e.id).text(e.value);
+                        }
+                    }
+
+                    //Virtuelle Sensorwerte aktualisieren
+                    if(data.vSensors && data.vSensors.length > 0) {
+
+                        for(var i = 0; i < data.vSensors.length; i++) {
+
+                            var e = data.vSensors[i];
+                            if(e.avg) {
+
+                                $('#a' + e.id + '_avg').text(e.avg);
+                            }
+                            if(e.sum) {
+
+                                $('#a' + e.id + '_sum').text(e.sum);
+                            }
+                            if(e.min) {
+
+                                //$('#a' + e.id + '_min').text(e.min);
+                            }
+                            if(e.max) {
+
+                                //$('#a' + e.id + '_max').text(e.max);
+                            }
+                        }
+                    }
+                }
+            } else {
+
+                $.getJSON('/automation/sync?roomid={{ activeRoom.getId().get() }}')
+                .done(function(data, textStatus) {
+
+                    if(textStatus == 'success' && data.success == true) {
+
+                        //Buttons aktualisieren
+                        if(data.buttons && data.buttons.length > 0) {
+
+                            for(var i = 0; i < data.buttons.length; i++) {
+
+                                var e = data.buttons[i];
+                                if(e.state) {
+
+                                    //an
+                                    var buttonOn = $('#a' + e.id + '_on');
+                                    var buttonOff = $('#a' + e.id + '_off');
+                                    var onText = buttonOn.text();
+                                    var offText = buttonOff.text();
+                                    buttonOn.html('<i class="check icon"></i>' + onText);
+                                    buttonOff.html(offText);
+                                } else {
+
+                                    //aus
+                                    var buttonOn = $('#a' + e.id + '_on');
+                                    var buttonOff = $('#a' + e.id + '_off');
+                                    var onText = buttonOn.text();
+                                    var offText = buttonOff.text();
+                                    buttonOn.html(onText);
+                                    buttonOff.html('<i class="check icon"></i>' + offText);
+                                }
+                            }
+                        }
+
+                        //Sensorwerte aktualisieren
+                        if(data.sensors && data.sensors.length > 0) {
+
+                            for(var i = 0; i < data.sensors.length; i++) {
+
+                                var e = data.sensors[i];
+                                $('#a' + e.id).text(e.value);
+                            }
+                        }
+
+                        //Virtuelle Sensorwerte aktualisieren
+                        if(data.vSensors && data.vSensors.length > 0) {
+
+                            for(var i = 0; i < data.vSensors.length; i++) {
+
+                                var e = data.vSensors[i];
+                                if(e.avg) {
+
+                                    $('#a' + e.id + '_avg').text(e.avg);
+                                }
+                                if(e.sum) {
+
+                                    $('#a' + e.id + '_sum').text(e.sum);
+                                }
+                                if(e.min) {
+
+                                    //$('#a' + e.id + '_min').text(e.min);
+                                }
+                                if(e.max) {
+
+                                    //$('#a' + e.id + '_max').text(e.max);
+                                }
+                            }
+                        }
+                    } else {
+
+                        //Fehler
+                        if(data.message) {
+
+                            $.notify('Synchronisationsfehler "' + data.message + '"', "error");
+                        } else {
+
+                            $.notify('Synchronisationsfehler', "error");
+                        }
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $.notify("Die Synchronisation ist fehlgeschlagen", "error");
+                });
+                setTimeout('sync()', 500);
+            }
+        }
+
+        $(function() {
+            sync();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/user/headline.html' with {module: "room", rooms: rooms, activeRoom: activeRoom} %}
+<main class="ui main">
+    <div class="ui container" style="margin-bottom: 20px;">
+        <h1 class="ui header top attached">
+            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" class="ui image">
+            {{ activeRoom.getDisplayText() | escape }}
+        </h1>
+        {% if success is defined %}
+        <div class="ui attached message icon {% if success %}success{% else %}error{% endif %}">
+            {% if success %}
+            <i class="check icon green"></i>
+            {% else %}
+            <i class="remove icon red"></i>
+            {% endif %}
+            <div class="content">
+                <p>{{ message | escape }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="ui segment bottom attached">
+            <div class="ui grid relaxed stackable doubling">
+                {% for element in activeRoom.getRoomElemenstSorted() %}
+                    {% if element.isDisabled() == false %}
+                        {% if element.getType() == 'DIVIDER_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/divider.html' %}
+                        {% elseif element.getType() == 'BUTTON_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/button.html' %}
+                        {% elseif element.getType() == 'SENSOR_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/sensor.html' %}
+                        {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/virtualsensor.html' %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+</body>
+</html>

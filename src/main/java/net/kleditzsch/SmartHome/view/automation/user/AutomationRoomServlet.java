@@ -19,13 +19,13 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class AutomationIndexServlet extends HttpServlet {
+public class AutomationRoomServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/user/index.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/user/room.html");
         JtwigModel model = JtwigModel.newModel();
 
         RoomEditor roomEditor = Application.getInstance().getAutomation().getRoomEditor();
@@ -35,7 +35,42 @@ public class AutomationIndexServlet extends HttpServlet {
         List<Room> rooms = roomEditor.getRoomsSorted().stream().filter(room -> !room.isDisabled()).collect(Collectors.toList());
         model.with("rooms", rooms);
 
+        //aktiven Raum ermitteln
+        Room activeRoom = null;
+        if(req.getParameter("id") != null) {
+
+            try {
+
+                ID id = ID.of(req.getParameter("id"));
+                Optional<Room> roomOptional = roomEditor.getById(id);
+                if(roomOptional.isPresent()) {
+
+                    activeRoom = roomOptional.get();
+                }
+            } catch (Exception e) {}
+        }
+
+        if(activeRoom == null && rooms.size() >= 1) {
+
+            activeRoom = rooms.get(0);
+        } else if (activeRoom == null) {
+
+            model.with("success", false);
+            model.with("message", "Der Raum wurde nicht gefunden oder es ist kein Raum Konfiguriert");
+        } else if (activeRoom.isDisabled()) {
+
+            model.with("success", false);
+            model.with("message", "Der Raum wurde deaktiviert");
+        }
+        model.with("activeRoom", activeRoom);
+
         lock.unlock();
+
+        SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
+        ReentrantReadWriteLock.ReadLock sensorLock = sensorEditor.readLock();
+        sensorLock.lock();
+
+        model.with("sensorEditor", sensorEditor);
 
         //Viewport
         if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
@@ -50,5 +85,7 @@ public class AutomationIndexServlet extends HttpServlet {
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);
         template.render(model, new WriterOutputStream(resp.getWriter()));
+
+        sensorLock.unlock();
     }
 }

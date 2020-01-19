@@ -1,6 +1,5 @@
 package net.kleditzsch.SmartHome.app.automation;
 
-import com.google.gson.GsonBuilder;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
@@ -12,8 +11,6 @@ import net.kleditzsch.SmartHome.controller.automation.sensorservice.VirtualSenso
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
-import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.util.json.Serializer.RoomSerializer;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
 import net.kleditzsch.SmartHome.view.automation.admin.room.*;
@@ -25,10 +22,7 @@ import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwi
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerDeleteServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerFormServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerListServlet;
-import net.kleditzsch.SmartHome.view.automation.user.AutomationIndexServlet;
-import net.kleditzsch.SmartHome.view.automation.user.AutomationSseSyncServlet;
-import net.kleditzsch.SmartHome.view.automation.user.AutomationSwitchServlet;
-import net.kleditzsch.SmartHome.view.automation.user.AutomationSyncServlet;
+import net.kleditzsch.SmartHome.view.automation.user.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -107,6 +101,7 @@ public class AutomationAppliaction implements SubApplication {
 
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/");
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
+        contextHandler.addServlet(AutomationRoomServlet.class, "/automation/room");
         contextHandler.addServlet(AutomationSwitchServlet.class, "/automation/switch");
         contextHandler.addServlet(AutomationSyncServlet.class, "/automation/sync");
         contextHandler.addServlet(AutomationSseSyncServlet.class, "/automation/ssesync");
