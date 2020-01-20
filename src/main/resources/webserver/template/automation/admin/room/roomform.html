@@ -92,10 +92,14 @@
     </script>
 </head>
 <body>
+{% if dashboard %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'dashboard'} %}
+{% else %}
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+{% endif %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/roomform?id={{ room.getId().get() | escape }}" method="post">
-        <h1 class="ui header top attached">Raum {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+    <form class="ui form"  action="/automation/admin/roomform?{% if dashboard %}dash&{% endif %}id={{ room.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">{% if dashboard %}Dashboard{% else %}Raum{% endif %} {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
             <i class="remove icon red"></i>
@@ -175,6 +179,16 @@
                     </div>
                 </div>
             </div>
+            {% if dashboard %}
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="defaultDashboard" class="hidden" {% if room.isDefaultDashboard() %}checked="checked"{% endif %}>
+                        <label>Standard Dashboard</label>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>

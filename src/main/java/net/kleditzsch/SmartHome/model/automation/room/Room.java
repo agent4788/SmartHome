@@ -27,6 +27,16 @@ public class Room extends Element {
     private boolean disabled = false;
 
     /**
+     * gibt an ob der Raum ein Dashboard ist
+     */
+    private boolean dashboard = false;
+
+    /**
+     * gibt an ob der Raum das Standard Dashboard ist
+     */
+    private boolean defaultDashboard = false;
+
+    /**
      * Ichon Datei
      */
     private String iconFile = "";
@@ -115,6 +125,46 @@ public class Room extends Element {
 
         Preconditions.checkNotNull(iconFile);
         this.iconFile = iconFile;
+        setChangedData();
+    }
+
+    /**
+     * gibt an ob der Raum ein Dashboard ist
+     *
+     * @return Raum ist ein Dashboard
+     */
+    public boolean isDashboard() {
+        return dashboard;
+    }
+
+    /**
+     * markiert den Raum als Dashboard
+     *
+     * @param dashboard Raum ein Dashboard
+     */
+    public void setDashboard(boolean dashboard) {
+
+        this.dashboard = dashboard;
+        setChangedData();
+    }
+
+    /**
+     * gibt an ob der Raum das Standard Dashboard ist
+     *
+     * @return Standard Dashboard
+     */
+    public boolean isDefaultDashboard() {
+        return defaultDashboard;
+    }
+
+    /**
+     * markiert den Raum als Standard Dashboard
+     *
+     * @param defaultDashboard Standard Dashboard
+     */
+    public void setDefaultDashboard(boolean defaultDashboard) {
+
+        this.defaultDashboard = defaultDashboard;
         setChangedData();
     }
 

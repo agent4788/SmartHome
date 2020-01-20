@@ -23,6 +23,7 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,8 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
             element.setOrderId(document.getInteger("orderId"));
             element.setDisabled(document.getBoolean("disabled"));
             element.setIconFile(document.getString("iconFile"));
+            element.setDashboard(document.getBoolean("dashboard", false));
+            element.setDefaultDashboard(document.getBoolean("defaultDashboard", false));
 
             List<Document> elements = (List<Document>) document.get("elements");
             for (Document roomElement : elements) {
@@ -169,14 +172,53 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
     }
 
     /**
+     * gibt eine Liste mit Räumen zurück
+     *
+     * @return Liste mit Räumen
+     */
+    public List<Room> listRooms() {
+
+        return super.getData().stream().filter(e -> !e.isDashboard()).collect(Collectors.toList());
+    }
+
+    /**
      * gibt eine Liste aller Räume zurück, sortiert nach Sortierungs ID
      *
      * @return Liste aller Räume
      */
     public List<Room> getRoomsSorted() {
-        return super.getData().stream()
+        return listRooms().stream()
                 .sorted(Comparator.comparingInt(Room::getOrderId))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * gibt eine Liste mit Dashboards zurück
+     *
+     * @return Liste mit Dashboards
+     */
+    public List<Room> listDashboards() {
+
+        return super.getData().stream().filter(Room::isDashboard).collect(Collectors.toList());
+    }
+
+    /**
+     * gibt das Standard Dashboard zurück
+     *
+     * @return Standard Dashboard
+     */
+    public Optional<Room> getDefaultDashboard() {
+
+        Optional<Room> defaultDashboard = super.getData().stream().filter(Room::isDefaultDashboard).findFirst();
+        if(!defaultDashboard.isPresent() || defaultDashboard.get().isDisabled()) {
+
+            List<Room> dashboards = listDashboards().stream().filter(e -> !e.isDisabled()).collect(Collectors.toList());
+            if(dashboards.size() > 0) {
+
+                return Optional.of(dashboards.get(0));
+            }
+        }
+        return defaultDashboard;
     }
 
     /**
@@ -282,6 +324,8 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
                                 set("orderId", room.getOrderId()),
                                 set("disabled", room.isDisabled()),
                                 set("iconFile", room.getIconFile()),
+                                set("dashboard", room.isDashboard()),
+                                set("defaultDashboard", room.isDefaultDashboard()),
                                 set("elements", roomElements)
                         ),
                         new UpdateOptions().upsert(true)

@@ -23,6 +23,8 @@ public class AutomationRoomElementOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
+        boolean dashboard = req.getParameter("dash") != null;
+
         if(req.getParameter("direction") != null && req.getParameter("id") != null && req.getParameter("roomid") != null) {
 
             try {
@@ -76,24 +78,24 @@ public class AutomationRoomElementOrderServlet extends HttpServlet {
 
                             req.getSession().setAttribute("success", true);
                             req.getSession().setAttribute("message", "Die Sortierung wurde erfolgreich bearbeitet");
-                            resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                            resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                         } else {
 
                             req.getSession().setAttribute("success", false);
                             req.getSession().setAttribute("message", "Falscher Index");
-                            resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                            resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                         }
                     } else {
 
                         req.getSession().setAttribute("success", false);
                         req.getSession().setAttribute("message", "Das Raumelement konnte nicht gefunden werden");
-                        resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                        resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                     }
                 } else {
 
                     req.getSession().setAttribute("success", false);
                     req.getSession().setAttribute("message", "Der Raum wurde nicht gefunden");
-                    resp.sendRedirect("/automation/admin/room");
+                    resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
                 }
 
                 lock.unlock();
@@ -102,13 +104,13 @@ public class AutomationRoomElementOrderServlet extends HttpServlet {
 
                 req.getSession().setAttribute("success", false);
                 req.getSession().setAttribute("message", "Fehlerhafte Daten");
-                resp.sendRedirect("/automation/admin/room");
+                resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
             }
         } else {
 
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Fehlerhafte Daten");
-            resp.sendRedirect("/automation/admin/room");
+            resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
         }
     }
 }

@@ -200,10 +200,6 @@
 {% include '/webserver/template/automation/user/headline.html' with {module: "room", rooms: rooms, activeRoom: activeRoom} %}
 <main class="ui main">
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">
-            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" class="ui image">
-            {{ activeRoom.getDisplayText() | escape }}
-        </h1>
         {% if success is defined %}
         <div class="ui attached message icon {% if success %}success{% else %}error{% endif %}">
             {% if success %}
@@ -216,6 +212,10 @@
             </div>
         </div>
         {% else %}
+        <h1 class="ui header top attached">
+            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" class="ui image">
+            {{ activeRoom.getDisplayText() | escape }}
+        </h1>
         <div class="ui segment bottom attached">
             <div class="ui grid relaxed stackable doubling">
                 {% for element in activeRoom.getRoomElemenstSorted() %}

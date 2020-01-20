@@ -2,7 +2,6 @@ package net.kleditzsch.SmartHome.view.automation.admin.room;
 
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.global.base.Element;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -24,13 +23,13 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-public class AutomationRoomListServlet extends HttpServlet {
+public class AutomationDashboardListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         //Template Engine initalisieren
-        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/room/roomlist.html");
+        JtwigTemplate template = JtwigFactory.fromClasspath("/webserver/template/automation/admin/room/dashboardlist.html");
         JtwigModel model = JtwigModel.newModel();
 
         //Daten laden
@@ -38,7 +37,7 @@ public class AutomationRoomListServlet extends HttpServlet {
         ReentrantReadWriteLock.ReadLock lock = roomEditor.readLock();
         lock.lock();
 
-        List<Room> roomList = new ArrayList<>(roomEditor.listRooms());
+        List<Room> roomList = new ArrayList<>(roomEditor.listDashboards());
 
         //filtern
         String filterStr = null;
@@ -74,13 +73,12 @@ public class AutomationRoomListServlet extends HttpServlet {
         ListPagination<Room> pagination = new ListPagination<>(roomList, elementsAtPage, index);
         if(filterStr != null) {
 
-            pagination.setBaseLink("/automation/admin/room?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
+            pagination.setBaseLink("/automation/admin/dashboard?filter=" + HtmlEscapers.htmlEscaper().escape(filterStr) + "&index=");
         } else {
 
-            pagination.setBaseLink("/automation/admin/room?index=");
+            pagination.setBaseLink("/automation/admin/dashboard?index=");
         }
         model.with("pagination", pagination);
-        model.with("maxOrderId", roomList.stream().mapToInt(Room::getOrderId).summaryStatistics().getMax());
 
         //Meldung
         if(req.getSession().getAttribute("success") != null && req.getSession().getAttribute("message") != null) {

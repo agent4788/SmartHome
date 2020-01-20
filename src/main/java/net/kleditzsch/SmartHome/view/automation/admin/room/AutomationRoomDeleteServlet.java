@@ -21,6 +21,7 @@ public class AutomationRoomDeleteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         boolean success = true;
+        boolean dashboard = req.getParameter("dash") != null;
 
         String idStr = req.getParameter("id");
         if(idStr != null) {
@@ -54,14 +55,28 @@ public class AutomationRoomDeleteServlet extends HttpServlet {
 
             //löschem i.O.
             req.getSession().setAttribute("success", true);
-            req.getSession().setAttribute("message", "Der Raum wurde erfolgreich gelöscht");
-            resp.sendRedirect("/automation/admin/room");
+            if(req.getParameter("dash") != null) {
+
+                req.getSession().setAttribute("message", "Das Dashboard wurde erfolgreich gelöscht");
+                resp.sendRedirect("/automation/admin/dashboard");
+            } else {
+
+                req.getSession().setAttribute("message", "Der Raum wurde erfolgreich gelöscht");
+                resp.sendRedirect("/automation/admin/room");
+            }
         } else {
 
             //löschem n.i.O.
             req.getSession().setAttribute("success", false);
-            req.getSession().setAttribute("message", "Der Raum konnte nicht gelöscht werden");
-            resp.sendRedirect("/automation/admin/room");
+            if(dashboard) {
+
+                req.getSession().setAttribute("message", "Das Dashboard konnte nicht gelöscht werden");
+                resp.sendRedirect("/automation/admin/dashboard");
+            } else {
+
+                req.getSession().setAttribute("message", "Der Raum konnte nicht gelöscht werden");
+                resp.sendRedirect("/automation/admin/room");
+            }
         }
     }
 }

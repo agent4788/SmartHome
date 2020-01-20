@@ -133,6 +133,7 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationTimerListServlet.class, "/automation/admin/timer");
         contextHandler.addServlet(AutomationTimerFormServlet.class, "/automation/admin/timerform");
         contextHandler.addServlet(AutomationTimerDeleteServlet.class, "/automation/admin/timerdelete");
+        contextHandler.addServlet(AutomationDashboardListServlet.class, "/automation/admin/dashboard");
         contextHandler.addServlet(AutomationRoomListServlet.class, "/automation/admin/room");
         contextHandler.addServlet(AutomationRoomFormServlet.class, "/automation/admin/roomform");
         contextHandler.addServlet(AutomationRoomOrderServlet.class, "/automation/admin/roomorder");

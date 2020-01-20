@@ -139,6 +139,8 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
             switchableLock.unlock();
         }
 
+        model.with("dashboard", req.getParameter("dash") != null);
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -147,6 +149,8 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        boolean dashboard = req.getParameter("dash") != null;
 
         String roomStr = req.getParameter("roomid");
         String idStr = req.getParameter("id");
@@ -348,7 +352,7 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
 
                     req.getSession().setAttribute("success", true);
                     req.getSession().setAttribute("message", "Der Button wurde erfolgreich hinzugefügt");
-                    resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                    resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                 } else {
 
                     //Element bearbeiten
@@ -382,19 +386,19 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
 
                         req.getSession().setAttribute("success", true);
                         req.getSession().setAttribute("message", "Der Button wurde erfolgreich bearbeitet");
-                        resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                        resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                     } else {
 
                         req.getSession().setAttribute("success", false);
                         req.getSession().setAttribute("message", "Der Button konnte nicht gefunden werden");
-                        resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomId.get());
+                        resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "dash&" : "") + "roomid=" + roomId.get());
                     }
                 }
             } else {
 
                 req.getSession().setAttribute("success", false);
                 req.getSession().setAttribute("message", "Der Raum wurde nicht gefunden");
-                resp.sendRedirect("/automation/admin/room");
+                resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
             }
 
             lock.unlock();
@@ -404,7 +408,7 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
             //Eingaben n.i.O.
             req.getSession().setAttribute("success", false);
             req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
-            resp.sendRedirect("/automation/admin/roomelements?roomid=" + roomStr);
+            resp.sendRedirect("/automation/admin/roomelements?" + (dashboard ? "?dash&" : "") + "roomid=" + roomStr);
         }
     }
 }

@@ -4,6 +4,7 @@ import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.icon.IconUtil;
 import net.kleditzsch.SmartHome.util.file.FileUtil;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
@@ -81,6 +82,7 @@ public class AutomationRoomFormServlet extends HttpServlet {
         }
         model.with("addElement", addElement);
         model.with("room", room);
+        model.with("dashboard", req.getParameter("dash") != null);
 
         //Template rendern
         resp.setContentType("text/html");
@@ -93,125 +95,124 @@ public class AutomationRoomFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String idStr = req.getParameter("id");
-        String addElementStr = req.getParameter("addElement");
-        String name = req.getParameter("name");
-        String displayText = req.getParameter("displayText");
-        String description = req.getParameter("description");
-        String iconFile = req.getParameter("iconFile");
-        String disabledStr = req.getParameter("disabled");
+        boolean dashboard = false;
 
-        //Daten vorbereiten
-        boolean addElement = true, disabled = true;
-        ID id = null;
-
-        //Daten prüfen
-        boolean success = true;
+        FormValidation form = FormValidation.create(req);
         try {
 
-            //ID
-            if(!(idStr != null)) {
+            //Optionale Parameter
+            ID roomId = null;
 
-                success = false;
+            boolean addElement = form.getBoolean("addElement", "neues Element");
+            if (!addElement) {
+                roomId = form.getId("id", "Raum ID");
             }
-            id = ID.of(idStr);
-            //Element hinzufügen
-            if(!(addElementStr != null && (addElementStr.equals("1") || addElementStr.equals("0")))) {
-
-                success = false;
-            } else {
-
-                addElement = addElementStr.equals("1");
-            }
-            //Name
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            //ANzeigetext
-            if(!(displayText != null && displayText.length() >= 3 && displayText.length() <= 50)) {
-
-                success = false;
-            }
-            //Icon Datei
+            String name = form.getString("name", "Name", 3, 50);
+            String displayText = form.getString("displayText", "Anzeige Name", 3, 50);
+            String description = form.getString("description", "Beschreibung", 0, 250);
             List<String> fileNames = FileUtil.listResourceDirectoryFileNames("/webserver/static/img/iconset");
-            if(!fileNames.contains(iconFile.substring(iconFile.indexOf("/") + 1))) {
+            String iconFile = form.getString("iconFile", "Icon");
+            if(!fileNames.contains(iconFile.substring(iconFile.indexOf('/') + 1))) {
 
-                success = false;
+                form.setInvalid("iconFile", "Die Icon Datei konnte nicht gefunden werden");
             }
-            //Beschreibung
-            if(!(description != null && description.length() <= 250)) {
+            boolean disabled = form.optBoolean("disabled", "Deaktiviert", false);
+            dashboard = form.fieldExists("dash");
+            boolean defaultDashboard = form.optBoolean("defaultDashboard", "Standard Dashboard", false);
 
-                success = false;
-            }
-            //Deaktiviert
-            disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
+            if (form.isSuccessful()) {
 
-        } catch (Exception e) {
+                RoomEditor roomEditor = Application.getInstance().getAutomation().getRoomEditor();
+                ReentrantReadWriteLock.WriteLock lock = roomEditor.writeLock();
+                lock.lock();
 
-            success = false;
-        }
+                if(addElement) {
 
-        if (success) {
-
-            RoomEditor roomEditor = Application.getInstance().getAutomation().getRoomEditor();
-            ReentrantReadWriteLock.WriteLock lock = roomEditor.writeLock();
-            lock.lock();
-
-            if(addElement) {
-
-                //neues Element hinzufügen
-                Room room = new Room();
-                room.setId(ID.create());
-                room.setName(name);
-                room.setDisplayText(displayText);
-                room.setDescription(description);
-                room.setIconFile(iconFile);
-                int nextOrderId = 0;
-                if (roomEditor.getData().size() > 0) {
-
-                    nextOrderId = roomEditor.getData().stream().mapToInt(Room::getOrderId).summaryStatistics().getMax() + 1;
-                    nextOrderId = nextOrderId >= 0 ? nextOrderId : 0;
-                }
-                room.setOrderId(nextOrderId);
-                room.setDisabled(disabled);
-                roomEditor.getData().add(room);
-
-                req.getSession().setAttribute("success", true);
-                req.getSession().setAttribute("message", "Der Raum wurde erfolgreich hinzugefügt");
-                resp.sendRedirect("/automation/admin/room");
-            } else {
-
-                //Element bearbeiten
-                Optional<Room> roomOptional = roomEditor.getById(id);
-                if (roomOptional.isPresent()) {
-
-                    Room room = roomOptional.get();
+                    //neues Element hinzufügen
+                    Room room = new Room();
+                    room.setId(ID.create());
                     room.setName(name);
                     room.setDisplayText(displayText);
                     room.setDescription(description);
                     room.setIconFile(iconFile);
+                    int nextOrderId = 0;
+                    if (!dashboard && roomEditor.getData().size() > 0) {
+
+                        nextOrderId = roomEditor.getData().stream().mapToInt(Room::getOrderId).summaryStatistics().getMax() + 1;
+                        nextOrderId = nextOrderId >= 0 ? nextOrderId : 0;
+                    }
+                    room.setOrderId(nextOrderId);
                     room.setDisabled(disabled);
+                    room.setDashboard(dashboard);
+                    room.setDefaultDashboard(defaultDashboard);
+                    roomEditor.getData().add(room);
 
                     req.getSession().setAttribute("success", true);
-                    req.getSession().setAttribute("message", "Der Raum wurde erfolgreich bearbeitet");
-                    resp.sendRedirect("/automation/admin/room");
+                    if(dashboard) {
+
+                        req.getSession().setAttribute("message", "Das Dashboard wurde erfolgreich erstellt");
+                        resp.sendRedirect("/automation/admin/dashboard");
+                    } else {
+
+                        req.getSession().setAttribute("message", "Der Raum wurde erfolgreich erstellt");
+                        resp.sendRedirect("/automation/admin/room");
+                    }
                 } else {
 
-                    req.getSession().setAttribute("success", false);
-                    req.getSession().setAttribute("message", "Der Raum konnte nicht gefunden werden");
-                    resp.sendRedirect("/automation/admin/room");
+                    //Element bearbeiten
+                    Optional<Room> roomOptional = roomEditor.getById(roomId);
+                    if (roomOptional.isPresent()) {
+
+                        Room room = roomOptional.get();
+                        room.setName(name);
+                        room.setDisplayText(displayText);
+                        room.setDescription(description);
+                        room.setIconFile(iconFile);
+                        room.setDisabled(disabled);
+                        room.setDashboard(dashboard);
+                        room.setDefaultDashboard(defaultDashboard);
+
+                        req.getSession().setAttribute("success", true);
+                        if(dashboard) {
+
+                            req.getSession().setAttribute("message", "Das Dashboard wurde erfolgreich bearbeitet");
+                            resp.sendRedirect("/automation/admin/dashboard");
+                        } else {
+
+                            req.getSession().setAttribute("message", "Der Raum wurde erfolgreich bearbeitet");
+                            resp.sendRedirect("/automation/admin/room");
+                        }
+                    } else {
+
+                        req.getSession().setAttribute("success", false);
+                        if(dashboard) {
+
+                            req.getSession().setAttribute("message", "Das Dashboard konnte nicht gefunden werden");
+                            resp.sendRedirect("/automation/admin/dashboard");
+                        } else {
+
+                            req.getSession().setAttribute("message", "Der Raum konnte nicht gefunden werden");
+                            resp.sendRedirect("/automation/admin/room");
+                        }
+                    }
                 }
+
+                lock.unlock();
+
+            } else {
+
+                //Eingaben n.i.O.
+                req.getSession().setAttribute("success", false);
+                req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
+                resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
             }
 
-            lock.unlock();
-
-        } else {
+        } catch (Exception e) {
 
             //Eingaben n.i.O.
             req.getSession().setAttribute("success", false);
-            req.getSession().setAttribute("message", "Fehlerhafte Eingaben");
-            resp.sendRedirect("/automation/admin/room");
+            req.getSession().setAttribute("message", "Die Icondateien konnten nicht geladen werden");
+            resp.sendRedirect("/automation/admin/" + (dashboard ? "dashboard" : "room"));
         }
     }
 }

@@ -115,6 +115,8 @@ public class AutomationRoomElementsServlet extends HttpServlet {
             req.getSession().removeAttribute("message");
         }
 
+        model.with("dashboard", req.getParameter("dash") != null);
+
         //Template rendern
         resp.setContentType("text/html");
         resp.setStatus(HttpServletResponse.SC_OK);

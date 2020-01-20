@@ -28,9 +28,13 @@
     </script>
 </head>
 <body>
+{% if dashboard %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'dashboard'} %}
+{% else %}
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+{% endif %}
 <main class="ui main container">
-    <h1 class="ui header top attached">Elemente des Raumes "{{ room.getName() | escape }}" verwalten</h1>
+    <h1 class="ui header top attached">Elemente des {% if dashboard %}Dashboards{% else %}Raums{% endif %} "{{ room.getName() | escape }}" verwalten</h1>
     {% if success is defined %}
     <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
         {% if success %}
@@ -47,16 +51,16 @@
         <div class="ui dropdown item">
             <i class="plus icon"></i> hinzuf&uuml;gen
             <div class="menu">
-                <a class="item" href="/automation/admin/roombuttonelementform?roomid={{ room.getId() }}">
+                <a class="item" href="/automation/admin/roombuttonelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="toggle on icon"></i> Button
                 </a>
-                <a class="item" href="/automation/admin/roomsensorelementform?roomid={{ room.getId() }}">
+                <a class="item" href="/automation/admin/roomsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="tablet thermometer quarter icon"></i> Sensor
                 </a>
-                <a class="item" href="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId() }}">
+                <a class="item" href="/automation/admin/roomvirtualsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="thermometer quarter icon"></i> Virtual Sensor
                 </a>
-                <a class="item" href="/automation/admin/roomdividerelementform?roomid={{ room.getId() }}">
+                <a class="item" href="/automation/admin/roomdividerelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="window minimize icon"></i> Trennlinie
                 </a>
             </div>
@@ -93,19 +97,19 @@
                         <div class="extra">
                             <div class="ui right floated">
                                 {% if element.getOrderId() != 0 %}
-                                <a title="nach oben verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?direction=up&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
+                                <a title="nach oben verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?{% if dashboard %}dash&{% endif %}direction=up&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow up icon"></i></a>
                                 {% endif %}
                                 {% if element.getOrderId() != maxOrderId %}
-                                <a title="nach unten verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?direction=down&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
+                                <a title="nach unten verschieben" class="ui button icon basic" href="/automation/admin/roomelementorder?{% if dashboard %}dash&{% endif %}direction=down&roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="arrow down icon"></i></a>
                                 {% endif %}
                                 {% if element.getType() == 'BUTTON_ELEMENT' %}
-                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roombuttonelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roombuttonelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% elseif element.getType() == 'SENSOR_ELEMENT' %}
-                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomsensorelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
-                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomvirtualsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% elseif element.getType() == 'DIVIDER_ELEMENT' %}
-                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomdividerelementform?roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomdividerelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% endif %}
                                 <div title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</div>
                             </div>
@@ -134,7 +138,7 @@
                                         <i class="remove icon"></i>
                                         Nein
                                     </div>
-                                    <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/roomelementdelete?roomid={{ room.getId() }}&id={{ element.getId() }}'">
+                                    <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/roomelementdelete?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}'">
                                         <i class="checkmark icon"></i>
                                         Ja
                                     </div>
@@ -163,7 +167,7 @@
     </div>
     {% endif %}
     <div class="ui segment bottom attached">
-        <a class="ui button basic secondary" href="/automation/admin/room">Zurück</a>
+        <a class="ui button basic secondary" href="/automation/admin/{% if dashboard %}dashboard{% else %}room{% endif %}">Zurück</a>
     </div>
     <div style="height: 50px;"></div>
 </main>

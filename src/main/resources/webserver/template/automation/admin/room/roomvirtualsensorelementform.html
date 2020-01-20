@@ -99,9 +99,13 @@
     </script>
 </head>
 <body>
-{% include '/webserver/template/automation/admin/headline.html' with {module: 'roomelement'} %}
+{% if dashboard %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'dashboard'} %}
+{% else %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+{% endif %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/roomvirtualsensorelementform?roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
+    <form class="ui form"  action="/automation/admin/roomvirtualsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
         <h1 class="ui header top attached">Virtueller Sensor {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">

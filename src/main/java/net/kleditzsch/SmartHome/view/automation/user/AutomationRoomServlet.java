@@ -66,12 +66,6 @@ public class AutomationRoomServlet extends HttpServlet {
 
         lock.unlock();
 
-        SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
-        ReentrantReadWriteLock.ReadLock sensorLock = sensorEditor.readLock();
-        sensorLock.lock();
-
-        model.with("sensorEditor", sensorEditor);
-
         //Viewport
         if(req.getSession().getAttribute("mobileView") != null && req.getSession().getAttribute("mobileView").equals("1")) {
 
@@ -80,6 +74,12 @@ public class AutomationRoomServlet extends HttpServlet {
 
             model.with("mobileView", false);
         }
+
+        SensorEditor sensorEditor = Application.getInstance().getAutomation().getSensorEditor();
+        ReentrantReadWriteLock.ReadLock sensorLock = sensorEditor.readLock();
+        sensorLock.lock();
+
+        model.with("sensorEditor", sensorEditor);
 
         //Template rendern
         resp.setContentType("text/html");

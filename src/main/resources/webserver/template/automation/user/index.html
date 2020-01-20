@@ -11,13 +11,10 @@
     </script>
 </head>
 <body>
-{% include '/webserver/template/automation/user/headline.html' with {module: "dash", rooms: rooms} %}
+{% include '/webserver/template/automation/user/headline.html' with {module: "dash", rooms: rooms, dashboards: dashboards, activeDashboard: activeDashboard} %}
 <main class="ui main">
     <div class="ui container" style="margin-bottom: 20px;">
-        <h1 class="ui header top attached">
-            <img src="/static/img/iconset/{{ activeRoom.getIconFile() | escape }}" class="ui image">
-            {{ activeRoom.getDisplayText() | escape }}
-        </h1>
+
         {% if success is defined %}
         <div class="ui attached message icon {% if success %}success{% else %}error{% endif %}">
             {% if success %}
@@ -30,10 +27,26 @@
             </div>
         </div>
         {% else %}
+        <h1 class="ui header top attached">
+            <img src="/static/img/iconset/{{ activeDashboard.getIconFile() | escape }}" class="ui image">
+            {{ activeDashboard.getDisplayText() | escape }}
+        </h1>
         <div class="ui segment bottom attached">
-
-
-
+            <div class="ui grid relaxed stackable doubling">
+                {% for element in activeDashboard.getRoomElemenstSorted() %}
+                    {% if element.isDisabled() == false %}
+                        {% if element.getType() == 'DIVIDER_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/divider.html' %}
+                        {% elseif element.getType() == 'BUTTON_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/button.html' %}
+                        {% elseif element.getType() == 'SENSOR_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/sensor.html' %}
+                        {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/virtualsensor.html' %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
         {% endif %}
     </div>
