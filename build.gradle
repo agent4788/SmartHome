@@ -9,10 +9,10 @@ targetCompatibility = '11'
 repositories {
 
     maven {
-        url "http://repo1.maven.org/maven2/"
+        url "https://repo1.maven.org/maven2/"
     }
     jcenter {
-        url "http://jcenter.bintray.com/"
+        url "https://jcenter.bintray.com/"
     }
 }
 
