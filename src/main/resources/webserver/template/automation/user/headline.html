@@ -99,6 +99,20 @@
                             {% endfor %}
                         </div>
                     </div>
+                    <div class="divider"></div>
+                    {% if dashboards %}
+                    <div class="ui icon item dropdown">
+                        Dashboards
+                        <div class="menu">
+                            {% for dashboard in dashboards %}
+                            <a class="item {% if dashboard.getId().equals(activeDashboard.getId()) %}active{% endif %}" href="/automation/index?id={{ dashboard.getId().get() | escape }}">
+                                <img class="icon image" src="/static/img/iconset/{{ dashboard.getIconFile() | escape }}">
+                                <span style="display: inline-block; margin-top: 8px;">{{ dashboard.getDisplayText() | escape }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                     <a href="/automation/admin/index" class="item">
                         <i class="setting icon large"></i>
                         Einstellungen
