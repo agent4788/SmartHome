@@ -30,13 +30,8 @@ public class ExecutorService {
      */
     public void startService() {
 
-
-
         //Threadpool erzeugen
         executor = Executors.newFixedThreadPool(50);
-
-        //FritzBox Service starten
-
 
         //Scheduler starten
         queue = new LinkedBlockingQueue<>();
