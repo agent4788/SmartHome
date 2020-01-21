@@ -44,7 +44,14 @@ public class AutomationIndexServlet extends HttpServlet {
 
         //aktives Dashboard ermitteln
         Room activeDashboard = null;
-        Optional<Cookie> cookieOptional = Arrays.asList(req.getCookies()).stream().filter(c -> c.getName().equalsIgnoreCase(DASHBOARD_COOKIE_NAME)).findFirst();
+        Optional<Cookie> cookieOptional;
+        if(req.getCookies() != null) {
+
+            cookieOptional = Arrays.asList(req.getCookies()).stream().filter(c -> c.getName().equalsIgnoreCase(DASHBOARD_COOKIE_NAME)).findFirst();
+        } else {
+
+            cookieOptional = Optional.empty();
+        }
         if(req.getParameter("id") != null) {
 
             //über ID Parameter (höchste Priorität)
