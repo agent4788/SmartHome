@@ -6,6 +6,7 @@ import net.kleditzsch.SmartHome.model.global.settings.BooleanSetting;
 import net.kleditzsch.SmartHome.model.global.settings.DoubleSetting;
 import net.kleditzsch.SmartHome.model.global.settings.IntegerSetting;
 import net.kleditzsch.SmartHome.model.global.settings.StringSetting;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -52,6 +53,19 @@ public class AutomationSettingsServlet extends HttpServlet {
         Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
         fbPasswordOptional.ifPresent(setting -> model.with("fbPassword", setting.getValue()));
 
+        Optional<BooleanSetting> mqttActiveOptional = se.getBooleanSetting(SettingsEditor.AUTOMATION_MQTT_ACTIVE);
+        mqttActiveOptional.ifPresent(setting -> model.with("mqttActive", setting.getValue()));
+        Optional<StringSetting> brokerAddressOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_ADDRESS);
+        brokerAddressOptional.ifPresent(setting -> model.with("brokerAddress", setting.getValue()));
+        Optional<IntegerSetting> brokerPortOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PORT);
+        brokerPortOptional.ifPresent(setting -> model.with("brokerPort", setting.getValue()));
+        Optional<StringSetting> brokerUsernameOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_USERNAME);
+        brokerUsernameOptional.ifPresent(setting -> model.with("brokerUsername", setting.getValue()));
+        Optional<StringSetting> brokerPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PASSWORD);
+        brokerPasswordOptional.ifPresent(setting -> model.with("brokerPassword", setting.getValue()));
+        Optional<StringSetting> clientIdOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_CLIENT_ID);
+        clientIdOptional.ifPresent(setting -> model.with("clientId", setting.getValue()));
+
         Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_ELECTRIC_PRICE);
         electricPriceOptional.ifPresent(setting -> model.with("electricPrice", setting.getValue()));
         Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_WATER_PRICE);
@@ -78,88 +92,30 @@ public class AutomationSettingsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String sunriseOffsetString = req.getParameter("sunriseOffset");
-        String sunsetOffsetString = req.getParameter("sunsetOffset");
-        String latitudeString = req.getParameter("latitude");
-        String longitudeString = req.getParameter("longitude");
+        FormValidation form = FormValidation.create(req);
+        final int sunriseOffset = form.getInteger("sunriseOffset", "Offset Sonnenaufgang", -60, 60);
+        final int sunsetOffset = form.getInteger("sunsetOffset", "Offset Sonnenauntergang", -60, 60);
+        final double latitude = form.getDouble("latitude", "Breitengrad", 0.0, 360.0);
+        final double longitude = form.getDouble("longitude", "Längengrad", 0.0, 260.0);
 
-        String fbActiveString = req.getParameter("fbActive");
-        String fbAddress = req.getParameter("fbAddress");
-        String fbUser = req.getParameter("fbUser");
-        String fbPassword = req.getParameter("fbPassword");
+        final boolean fbActive = form.optBoolean("fbActive", "FritzBox Support Aktiv", false);
+        final String fbAddress = form.optString("fbAddress", "FritzBox Adresse", "", 3, 100);
+        final String fbUser = form.optString("fbUser", "FitzBox Benutzer", "", 3, 100);
+        final String fbPassword = form.optString("fbPassword", "FritzBox Passwort", "", 3, 100);
 
-        String electricPriceString = req.getParameter("electricPrice");
-        String waterPriceString = req.getParameter("waterPrice");
+        final boolean mqttActive = form.optBoolean("mqttActive", "MQTT Support Aktiv", false);
+        final String brokerAddress = form.optString("brokerAddress", "MQTT Broker Adresse", "", 3, 100);
+        final int brokerPort = form.optInteger("brokerPort", "MQTT Broker Port", 1883,0, 65535);
+        final String brokerUsername = form.optString("brokerUsername", "MQTT Broker Benutzer", "", 0, 100);
+        final String brokerPassword = form.optString("brokerPassword", "MQTT Broker Passwort", "", 0, 100);
+        final String clientId = form.optString("clientId", "MQTT Client ID", "", 3, 100);
 
-        String elementsAtPageString = req.getParameter("elementsAtPage");
+        final double electricPrice = form.getDouble("electricPrice", "Strompreis", 0.01, 10.0);
+        final double waterPrice = form.getDouble("waterPrice", "Wasserpreis", 0.01, 10.0);
 
-        //Daten vorbereiten
-        int sunriseOffset = 0, sunsetOffset = 0, elementsAtPage = 0;
-        double latitude = 0, longitude = 0, electricPrice = 0, waterPrice = 0;
-        boolean fbActive = false;
+        final int elementsAtPage = form.getInteger("elementsAtPage", "Elemente pro Seite", 5, 100);
 
-        //Daten prüfen
-        boolean success = true;
-        try {
-
-            sunriseOffset = Integer.parseInt(sunriseOffsetString);
-            if(!(sunriseOffset >= -60 && sunriseOffset <= 60)) {
-
-                success = false;
-            }
-            sunsetOffset = Integer.parseInt(sunsetOffsetString);
-            if(!(sunsetOffset >= -60 && sunsetOffset <= 60)) {
-
-                success = false;
-            }
-            latitude = Double.parseDouble(latitudeString);
-            if(!(latitude >= 0.0 && latitude <= 360.0)) {
-
-                success = false;
-            }
-            longitude = Double.parseDouble(longitudeString);
-            if(!(longitude >= 0.0 && longitude <= 360.0)) {
-
-                success = false;
-            }
-            fbActive = fbActiveString != null && fbActiveString.equalsIgnoreCase("on");
-            if(fbActive) {
-
-                if(!(fbAddress.length() >= 1 && fbAddress.length() <= 100)) {
-
-                    success = false;
-                }
-                if(!(fbUser.length() >= 1 && fbUser.length() <= 100)) {
-
-                    success = false;
-                }
-                if(!(fbPassword.length() >= 1 && fbPassword.length() <= 100)) {
-
-                    success = false;
-                }
-            }
-            electricPrice = Double.parseDouble(electricPriceString);
-            if(!(electricPrice >= 0.1 && electricPrice <= 10.0)) {
-
-                success = false;
-            }
-            waterPrice = Double.parseDouble(waterPriceString);
-            if(!(waterPrice >= 0.1 && waterPrice <= 10.0)) {
-
-                success = false;
-            }
-            elementsAtPage = Integer.parseInt(elementsAtPageString);
-            if(!(elementsAtPage >= 5 && elementsAtPage <= 100)) {
-
-                success = false;
-            }
-
-        } catch (Exception e) {
-
-            success = false;
-        }
-
-        if (success) {
+        if (form.isSuccessful()) {
 
             //Einstellungen speichern
             SettingsEditor se = Application.getInstance().getSettings();
@@ -167,46 +123,50 @@ public class AutomationSettingsServlet extends HttpServlet {
             lock.lock();
 
             //Einstellungen laden
-            final int finalSunriseOffset = sunriseOffset;
-            final int finalSunsetOffset = sunsetOffset;
-            final double finalLongitude = longitude;
-            final double finalLatitude = latitude;
-            final boolean finalFbActive = fbActive;
-            final String finalFbAddress = fbAddress;
-            final String finalFbUser = fbUser;
-            final String finalFbPassword = fbPassword;
-            final double finalElectricPrice = electricPrice;
-            final double finalWaterPrice = waterPrice;
-            final int finalElementsAtPage = elementsAtPage;
-
             Optional<IntegerSetting> sunriseOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNRISE_OFFSET);
-            sunriseOffsetOptional.ifPresent(setting -> setting.setValue(finalSunriseOffset));
+            sunriseOffsetOptional.ifPresent(setting -> setting.setValue(sunriseOffset));
             Optional<IntegerSetting> sunsetOffsetOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_SUNSET_OFFSET);
-            sunsetOffsetOptional.ifPresent(setting -> setting.setValue(finalSunsetOffset));
+            sunsetOffsetOptional.ifPresent(setting -> setting.setValue(sunsetOffset));
             Optional<DoubleSetting> latitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LATITUDE);
-            latitudeOptional.ifPresent(setting -> setting.setValue(finalLatitude));
+            latitudeOptional.ifPresent(setting -> setting.setValue(latitude));
             Optional<DoubleSetting> longitudeOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_LONGITUDE);
-            longitudeOptional.ifPresent(setting -> setting.setValue(finalLongitude));
+            longitudeOptional.ifPresent(setting -> setting.setValue(longitude));
 
             Optional<BooleanSetting> fbActiveOptional = se.getBooleanSetting(SettingsEditor.AUTOMATION_FB_ACTIVE);
-            fbActiveOptional.ifPresent(setting -> setting.setValue(finalFbActive));
+            fbActiveOptional.ifPresent(setting -> setting.setValue(fbActive));
             if(fbActive) {
 
                 Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_ADDRESS);
-                fbAddressOptional.ifPresent(setting -> setting.setValue(finalFbAddress));
+                fbAddressOptional.ifPresent(setting -> setting.setValue(fbAddress));
                 Optional<StringSetting> fbUserOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_USER);
-                fbUserOptional.ifPresent(setting -> setting.setValue(finalFbUser));
+                fbUserOptional.ifPresent(setting -> setting.setValue(fbUser));
                 Optional<StringSetting> fbPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
-                fbPasswordOptional.ifPresent(setting -> setting.setValue(finalFbPassword));
+                fbPasswordOptional.ifPresent(setting -> setting.setValue(fbPassword));
+            }
+
+            Optional<BooleanSetting> mqttActiveOptional = se.getBooleanSetting(SettingsEditor.AUTOMATION_MQTT_ACTIVE);
+            mqttActiveOptional.ifPresent(setting -> setting.setValue(mqttActive));
+            if(mqttActive) {
+
+                Optional<StringSetting> fbAddressOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_ADDRESS);
+                fbAddressOptional.ifPresent(setting -> setting.setValue(brokerAddress));
+                Optional<IntegerSetting> brokerPortOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PORT);
+                brokerPortOptional.ifPresent(setting -> setting.setValue(brokerPort));
+                Optional<StringSetting> brokerUsernameOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_USERNAME);
+                brokerUsernameOptional.ifPresent(setting -> setting.setValue(brokerUsername));
+                Optional<StringSetting> brokerPasswordOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PASSWORD);
+                brokerPasswordOptional.ifPresent(setting -> setting.setValue(brokerPassword));
+                Optional<StringSetting> clientIdOptional = se.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_CLIENT_ID);
+                clientIdOptional.ifPresent(setting -> setting.setValue(clientId));
             }
 
             Optional<DoubleSetting> electricPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_ELECTRIC_PRICE);
-            electricPriceOptional.ifPresent(setting -> setting.setValue(finalElectricPrice));
+            electricPriceOptional.ifPresent(setting -> setting.setValue(electricPrice));
             Optional<DoubleSetting> waterPriceOptional = se.getDoubleSetting(SettingsEditor.AUTOMATION_ENERGY_WATER_PRICE);
-            waterPriceOptional.ifPresent(setting -> setting.setValue(finalWaterPrice));
+            waterPriceOptional.ifPresent(setting -> setting.setValue(waterPrice));
 
             Optional<IntegerSetting> elementsAtPageOptional = se.getIntegerSetting(SettingsEditor.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE);
-            elementsAtPageOptional.ifPresent(setting -> setting.setValue(finalElementsAtPage));
+            elementsAtPageOptional.ifPresent(setting -> setting.setValue(elementsAtPage));
 
             lock.unlock();
 

@@ -5,12 +5,14 @@ import net.kleditzsch.SmartHome.app.SubApplication;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmDataUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
+import net.kleditzsch.SmartHome.controller.automation.mqttservice.MqttService;
 import net.kleditzsch.SmartHome.controller.automation.sensorservice.LiveBitUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.sensorservice.UserAtHomeUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.sensorservice.VirtualSensorUpdateService;
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
+import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
 import net.kleditzsch.SmartHome.view.automation.admin.room.*;
@@ -27,6 +29,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Hauptklasse der Automatisierungsanwendung
@@ -64,6 +67,16 @@ public class AutomationAppliaction implements SubApplication {
     private volatile ExecutorService executorService;
 
     /**
+     * MQTT Service
+     */
+    private volatile MqttService mqttService;
+
+    /**
+     * Threadpool mit Zeitsteuerung
+     */
+    private volatile ScheduledExecutorService timerExecutor;
+
+    /**
      * AVM Editor
      */
     private volatile AvmEditor avmEditor;
@@ -90,6 +103,8 @@ public class AutomationAppliaction implements SubApplication {
 
         avmEditor = new AvmEditor();
         avmEditor.load();
+
+        mqttService = new MqttService();
     }
 
     /**
@@ -217,11 +232,14 @@ public class AutomationAppliaction implements SubApplication {
     public void start() {
 
         //Scheduler Threadpool
-        ScheduledExecutorService timerExecutor = Application.getInstance().getTimerExecutor();
+        timerExecutor = Application.getInstance().getTimerExecutor();
 
         //Executor starten
         executorService = new ExecutorService();
         executorService.startService();
+
+        //MQTT Service
+        mqttService.startService();
 
         //AVM Update Task starten
         if(avmEditor.isActive()) {
@@ -262,6 +280,17 @@ public class AutomationAppliaction implements SubApplication {
      */
     public void stop() {
 
-        executorService.stopService();
+        try {
+
+            executorService.stopService();
+            mqttService.stopService();
+
+            timerExecutor.shutdown();
+            timerExecutor.awaitTermination(1, TimeUnit.SECONDS);
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+        }
     }
 }

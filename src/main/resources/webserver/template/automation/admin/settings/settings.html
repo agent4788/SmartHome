@@ -7,18 +7,35 @@
     <script type="text/javascript">
         $(function() {
 
+            $('.menu .item').tab();
+            $('.checkbox').checkbox();
+
+            //Fritz Box
             {% if fbActive == false %}
             $('.fritzBox').prop('disabled', true);
             {% endif %}
 
-            $('.menu .item').tab();
-            $('.checkbox').checkbox();
+
             $('#fritzBoxActive').checkbox({
                 onChecked: function() {
                     $('.fritzBox').prop('disabled', false);
                 },
                 onUnchecked: function() {
                     $('.fritzBox').prop('disabled', true);
+                }
+            });
+
+            //MQTT
+            {% if mqttActive == false %}
+            $('.mqtt').prop('disabled', true);
+            {% endif %}
+
+            $('#mqttActive').checkbox({
+                onChecked: function() {
+                    $('.mqtt').prop('disabled', false);
+                },
+                onUnchecked: function() {
+                    $('.mqtt').prop('disabled', true);
                 }
             });
         });
@@ -49,6 +66,7 @@
                 <div data-tab="locale" class="active item" style="cursor: pointer;">Lokalit&auml;t</div>
                 <div data-tab="pagination" class="item" style="cursor: pointer;">Bl&auml;ttern</div>
                 <div data-tab="fritzBox" class="item" style="cursor: pointer;">FritzBox</div>
+                <div data-tab="mqtt" class="item" style="cursor: pointer;">MQTT</div>
                 <div data-tab="energy" class="item" style="cursor: pointer;">Energie</div>
             </div>
             <div data-tab="locale" class="ui bottom attached tab segment active">
@@ -91,7 +109,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <label>Adresss</label>
+                    <label>Adresse</label>
                     <input name="fbAddress" type="text" value="{{ fbAddress | escape }}" class="fritzBox">
                 </div>
                 <div class="field">
@@ -101,6 +119,42 @@
                 <div class="field">
                     <label>Passwort</label>
                     <input name="fbPassword" type="text" value="{{ fbPassword | escape }}" class="fritzBox">
+                </div>
+            </div>
+            <div data-tab="mqtt" class="ui bottom attached tab segment">
+                <div class="ui icon info message">
+                    <i class="info circle icon black"></i>
+                    <div class="content">
+                        <p>Das aktivieren/deaktivieren des MQTT Supports wird erst nach einem Neustart des Servers übernommen.</p>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="field required">
+                        <div class="ui toggle checkbox" id="mqttActive">
+                            <input type="checkbox" name="mqttActive" class="hidden" {% if mqttActive %}checked="checked"{% endif %}>
+                            <label>MQTT Support aktiv</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Broker Adresse</label>
+                    <input name="brokerAddress" type="text" value="{{ brokerAddress | escape }}" class="mqtt">
+                </div>
+                <div class="field">
+                    <label>Broker Port</label>
+                    <input name="brokerPort" type="number" value="{{ brokerPort | escape }}" min="0" max="65535" class="mqtt">
+                </div>
+                <div class="field">
+                    <label>Benutzername</label>
+                    <input name="brokerUsername" type="text" value="{{ brokerUsername | escape }}" class="mqtt">
+                </div>
+                <div class="field">
+                    <label>Passwort</label>
+                    <input name="brokerPassword" type="text" value="{{ brokerPassword | escape }}" class="mqtt">
+                </div>
+                <div class="field">
+                    <label>Client ID</label>
+                    <input name="clientId" type="text" value="{{ clientId | escape }}" class="mqtt">
                 </div>
             </div>
             <div data-tab="energy" class="ui bottom attached tab segment">

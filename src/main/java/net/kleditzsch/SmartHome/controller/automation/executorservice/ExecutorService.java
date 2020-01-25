@@ -60,21 +60,14 @@ public class ExecutorService {
     /**
      * beendet den Service
      */
-    public void stopService() {
+    public void stopService() throws InterruptedException {
 
         if (queue != null && executor != null) {
 
-            try {
-
-                stopFlag = true;
-                queue.put(new StopCommand());
-                executor.shutdown();
-                executor.awaitTermination(1, TimeUnit.SECONDS);
-
-            } catch (InterruptedException e) {
-
-                Thread.currentThread().interrupt();
-            }
+            stopFlag = true;
+            queue.put(new StopCommand());
+            executor.shutdown();
+            executor.awaitTermination(1, TimeUnit.SECONDS);
         }
     }
 }

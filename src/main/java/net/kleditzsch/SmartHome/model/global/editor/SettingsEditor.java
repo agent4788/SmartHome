@@ -56,6 +56,12 @@ public class SettingsEditor implements DatabaseEditor {
     public static final String AUTOMATION_ENERGY_ELECTRIC_PRICE = "AUTOMATION_ENERGY_ELECTRIC_PRICE";
     public static final String AUTOMATION_ENERGY_WATER_PRICE = "AUTOMATION_ENERGY_WATER_PRICE";
     public static final String AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE = "AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE";
+    public static final String AUTOMATION_MQTT_ACTIVE = "AUTOMATION_MQTT_ACTIVE";
+    public static final String AUTOMATION_MQTT_BROKER_ADDRESS = "AUTOMATION_MQTT_BROKER_ADDRESS";
+    public static final String AUTOMATION_MQTT_BROKER_PORT = "AUTOMATION_MQTT_BROKER_PORT";
+    public static final String AUTOMATION_MQTT_BROKER_CLIENT_ID = "AUTOMATION_MQTT_BROKER_CLIENT_ID";
+    public static final String AUTOMATION_MQTT_BROKER_USERNAME = "AUTOMATION_MQTT_BROKER_USERNAME";
+    public static final String AUTOMATION_MQTT_BROKER_PASSWORD = "AUTOMATION_MQTT_BROKER_PASSWORD";
 
     //Filme Einstellungen
     public static final String MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE = "MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE";
@@ -166,6 +172,19 @@ public class SettingsEditor implements DatabaseEditor {
 
         IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
         knownSettings.add(paginationElementsAtPage);
+
+        BooleanSetting mqttActive = new BooleanSetting(AUTOMATION_MQTT_ACTIVE, false, false);
+        knownSettings.add(mqttActive);
+        StringSetting mqttBrokerAddress = new StringSetting(AUTOMATION_MQTT_BROKER_ADDRESS, "", "");
+        knownSettings.add(mqttBrokerAddress);
+        IntegerSetting mqttBrokerPort = new IntegerSetting(AUTOMATION_MQTT_BROKER_PORT, 1883, 1883);
+        knownSettings.add(mqttBrokerPort);
+        StringSetting mqttBrokerClientId = new StringSetting(AUTOMATION_MQTT_BROKER_CLIENT_ID, "SmartHome Server", "SmartHome Server");
+        knownSettings.add(mqttBrokerClientId);
+        StringSetting mqttUsername = new StringSetting(AUTOMATION_MQTT_BROKER_USERNAME, "", "");
+        knownSettings.add(mqttUsername);
+        StringSetting mqttPassword = new StringSetting(AUTOMATION_MQTT_BROKER_PASSWORD, "", "");
+        knownSettings.add(mqttPassword);
 
         //Filme Einstellungen
         IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
