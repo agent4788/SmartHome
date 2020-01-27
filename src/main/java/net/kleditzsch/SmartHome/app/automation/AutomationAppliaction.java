@@ -12,15 +12,11 @@ import net.kleditzsch.SmartHome.controller.automation.sensorservice.VirtualSenso
 import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
-import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
 import net.kleditzsch.SmartHome.view.automation.admin.device.*;
 import net.kleditzsch.SmartHome.view.automation.admin.room.*;
 import net.kleditzsch.SmartHome.view.automation.admin.sensorvalues.*;
 import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerDeleteServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerFormServlet;
-import net.kleditzsch.SmartHome.view.automation.admin.switchserver.AutomationSwitchServerListServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerDeleteServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerFormServlet;
 import net.kleditzsch.SmartHome.view.automation.admin.timer.AutomationTimerListServlet;
@@ -29,7 +25,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Hauptklasse der Automatisierungsanwendung
@@ -45,11 +40,6 @@ public class AutomationAppliaction implements SubApplication {
      * Schaltbare Elemente Editor
      */
     private volatile SwitchableEditor switchableEditor;
-
-    /**
-     * Schaltserver Editor
-     */
-    private volatile SwitchServerEditor switchServerEditor;
 
     /**
      * Raum Editor
@@ -92,9 +82,6 @@ public class AutomationAppliaction implements SubApplication {
         switchableEditor = new SwitchableEditor();
         switchableEditor.load();
 
-        switchServerEditor = new SwitchServerEditor();
-        switchServerEditor.load();
-
         roomEditor = new RoomEditor();
         roomEditor.load();
 
@@ -124,13 +111,11 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
         contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
-        contextHandler.addServlet(AutomationSwitchServerListServlet.class, "/automation/admin/switchserver");
-        contextHandler.addServlet(AutomationSwitchServerFormServlet.class, "/automation/admin/switchserverform");
-        contextHandler.addServlet(AutomationSwitchServerDeleteServlet.class, "/automation/admin/switchserverdelete");
         contextHandler.addServlet(AutomationDeviceListServlet.class, "/automation/admin/device");
         contextHandler.addServlet(AutomationDeviceFormTpLinkServlet.class, "/automation/admin/deviceformtplink");
         contextHandler.addServlet(AutomationDeviceFormAvmServlet.class, "/automation/admin/deviceformavm");
-        contextHandler.addServlet(AutomationDeviceFormOutputServlet.class, "/automation/admin/deviceformoutput");
+        contextHandler.addServlet(AutomationDeviceFormMqttSingleServlet.class, "/automation/admin/deviceformmqttsingle");
+        contextHandler.addServlet(AutomationDeviceFormMqttDoubleServlet.class, "/automation/admin/deviceformmqttdouble");
         contextHandler.addServlet(AutomationDeviceFormWolServlet.class, "/automation/admin/deviceformwol");
         contextHandler.addServlet(AutomationDeviceFormScriptSingleServlet.class, "/automation/admin/deviceformscriptsingle");
         contextHandler.addServlet(AutomationDeviceFormScriptDoubleServlet.class, "/automation/admin/deviceformscriptdouble");
@@ -182,15 +167,6 @@ public class AutomationAppliaction implements SubApplication {
     }
 
     /**
-     * gibt den Schaltserver-Editor zurück
-     *
-     * @return Schaltserver-Editor
-     */
-    public SwitchServerEditor getSwitchServerEditor() {
-        return switchServerEditor;
-    }
-
-    /**
      * gibt den Raum-Editor zurück
      *
      * @return Raum-Editor
@@ -215,6 +191,15 @@ public class AutomationAppliaction implements SubApplication {
      */
     public AvmEditor getAvmEditor() {
         return avmEditor;
+    }
+
+    /**
+     * gibt den MQTT Service zurück
+     *
+     * @return MQTT Service
+     */
+    public MqttService getMqttService() {
+        return mqttService;
     }
 
     /**
@@ -270,7 +255,6 @@ public class AutomationAppliaction implements SubApplication {
 
         sensorEditor.dump();
         switchableEditor.dump();
-        switchServerEditor.dump();
         switchTimerEditor.dump();
         roomEditor.dump();
     }

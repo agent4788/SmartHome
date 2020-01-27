@@ -2,9 +2,7 @@ package net.kleditzsch.SmartHome.view.automation.admin.timer;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
-import net.kleditzsch.SmartHome.model.automation.switchserver.SwitchServer;
 import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 
 import javax.servlet.ServletException;

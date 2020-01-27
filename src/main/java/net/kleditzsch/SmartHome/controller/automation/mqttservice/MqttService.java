@@ -1,7 +1,7 @@
 package net.kleditzsch.SmartHome.controller.automation.mqttservice;
 
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.controller.automation.mqttservice.listener.SampleListener;
+import net.kleditzsch.SmartHome.controller.automation.mqttservice.listener.SwitchableStateListener;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
@@ -183,6 +183,16 @@ public class MqttService {
     }
 
     /**
+     * gibt an ob der MQTT Service aktiv ist
+     *
+     * @return MQTT Service aktiv
+     */
+    public boolean isActive() {
+
+        return active;
+    }
+
+    /**
      * verbindet den MQTT Broker
      */
     public void startService() {
@@ -219,7 +229,7 @@ public class MqttService {
             //für alle SmartHomeTopics anmelden
             client.subscribe(MAIN_TOPIC + "#");
 
-            callback.addTopicListener(new SampleListener());
+            callback.addTopicListener(new SwitchableStateListener());
 
         } catch (MqttException e) {
 

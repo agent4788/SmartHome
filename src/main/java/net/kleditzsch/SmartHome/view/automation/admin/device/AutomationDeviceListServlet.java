@@ -68,22 +68,28 @@ public class AutomationDeviceListServlet extends HttpServlet {
                     case 3:
 
                         switchableList = switchableList.stream()
-                                .filter(e -> e instanceof Output)
+                                .filter(e -> e instanceof MqttSingle)
                                 .collect(Collectors.toList());
                         break;
                     case 4:
 
                         switchableList = switchableList.stream()
-                                .filter(e -> e instanceof ScriptSingle)
+                                .filter(e -> e instanceof MqttDouble)
                                 .collect(Collectors.toList());
                         break;
                     case 5:
 
                         switchableList = switchableList.stream()
-                                .filter(e -> e instanceof ScriptDouble)
+                                .filter(e -> e instanceof ScriptSingle)
                                 .collect(Collectors.toList());
                         break;
                     case 6:
+
+                        switchableList = switchableList.stream()
+                                .filter(e -> e instanceof ScriptDouble)
+                                .collect(Collectors.toList());
+                        break;
+                    case 7:
 
                         switchableList = switchableList.stream()
                                 .filter(e -> e instanceof WakeOnLan)
@@ -149,8 +155,9 @@ public class AutomationDeviceListServlet extends HttpServlet {
             req.getSession().removeAttribute("message");
         }
 
-        //Prüfen ob FritzBoxSupport aktiv
-        model.with("fritzBoxAktiv", Application.getInstance().getAutomation().getAvmEditor().isActive());
+        //Prüfen ob Module Aktiv aktiv
+        model.with("fritzBoxAktive", Application.getInstance().getAutomation().getAvmEditor().isActive());
+        model.with("mqttAktive", Application.getInstance().getAutomation().getMqttService().isActive());
 
         //Template rendern
         resp.setContentType("text/html");

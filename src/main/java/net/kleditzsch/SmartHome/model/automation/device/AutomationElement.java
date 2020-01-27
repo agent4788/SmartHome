@@ -1,11 +1,6 @@
 package net.kleditzsch.SmartHome.model.automation.device;
 
-import com.google.gson.annotations.SerializedName;
 import net.kleditzsch.SmartHome.global.base.Element;
-import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.util.validation.Annotation.ValidateNotNull;
-
-import java.util.Optional;
 
 /**
  * Automatisierungselement
@@ -19,10 +14,11 @@ public abstract class AutomationElement extends Element {
 
         SWITCHABLE_AVM_SOCKET,
         SWITCHABLE_TPLINK_SOCKET,
-        SWITCHABLE_OUTPUT,
         SWITCHABLE_SCRIPT_SINGLE,
         SWITCHABLE_SCRIPT_DOUBLE,
         SWITCHABLE_WAKE_ON_LAN,
+        SWITCHABLE_MQTT_SINGLE,
+        SWITCHABLE_MQTT_DOUBLE,
 
         SENSORVALUE_INPUT,
         SENSORVALUE_USER_AT_HOME,

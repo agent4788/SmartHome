@@ -74,10 +74,15 @@ public class ExecutorScheduler implements Runnable {
                         //WakeOnLan
                         WakeOnLanHandler handler = new WakeOnLanHandler((WakeOnLan) switchCommand.getSwitchable());
                         executor.execute(handler);
-                    } else if(switchCommand.getSwitchable() instanceof Output) {
+                    } else if(switchCommand.getSwitchable() instanceof MqttSingle) {
 
-                        //Ausgang
-                        OutputHandler handler = new OutputHandler((Output) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
+                        //MqttSingle
+                        MqttHandler handler = new MqttHandler((MqttSingle) switchCommand.getSwitchable());
+                        executor.execute(handler);
+                    } else if(switchCommand.getSwitchable() instanceof MqttDouble) {
+
+                        //MqttDouble
+                        MqttHandler handler = new MqttHandler((MqttDouble) switchCommand.getSwitchable(), switchCommand.getSwitchCommands());
                         executor.execute(handler);
                     }
                 } else if(command instanceof SensorValueCommand) {

@@ -72,6 +72,52 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             data.add(avmSocket);
 
                             break;
+                        case SWITCHABLE_MQTT_SINGLE:
+
+                            MqttSingle mqttSingle = new MqttSingle();
+
+                            //Element
+                            mqttSingle.setId(ID.of(document.getString("_id")));
+                            mqttSingle.setName(document.getString("name"));
+                            mqttSingle.setDescription(document.getString("description"));
+                            //Automation Element
+                            mqttSingle.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                mqttSingle.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
+                            }
+                            mqttSingle.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //MQTT Single
+                            mqttSingle.setMqttName(document.getString("mqttName"));
+
+                            data.add(mqttSingle);
+
+                            break;
+                        case SWITCHABLE_MQTT_DOUBLE:
+
+                            MqttDouble mqttDouble = new MqttDouble();
+
+                            //Element
+                            mqttDouble.setId(ID.of(document.getString("_id")));
+                            mqttDouble.setName(document.getString("name"));
+                            mqttDouble.setDescription(document.getString("description"));
+                            //Automation Element
+                            mqttDouble.setDisabled(document.getBoolean("disabled"));
+                            //Switchable
+                            if(document.getDate("lastToggleTime") != null) {
+
+                                mqttDouble.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
+                            }
+                            mqttDouble.setState(AutomationElement.State.valueOf(document.getString("state")));
+                            //Double Switchable
+                            mqttDouble.setInverse(document.getBoolean("inverse"));
+                            //MQTT Double
+                            mqttDouble.setMqttName(document.getString("mqttName"));
+
+                            data.add(mqttDouble);
+
+                            break;
                         case SWITCHABLE_TPLINK_SOCKET:
 
                             TPlinkSocket tPlinkSocket = new TPlinkSocket();
@@ -99,28 +145,6 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                             if(document.getString("energySensorId") != null) tPlinkSocket.setEnergySensorId(ID.of(document.getString("energySensorId")));
 
                             data.add(tPlinkSocket);
-                            break;
-                        case SWITCHABLE_OUTPUT:
-
-                            Output output = new Output();
-                            //Element
-                            output.setId(ID.of(document.getString("_id")));
-                            output.setName(document.getString("name"));
-                            output.setDescription(document.getString("description"));
-                            //Automation Element
-                            output.setDisabled(document.getBoolean("disabled"));
-                            //Switchable
-                            if(document.getDate("lastToggleTime") != null) {
-
-                                output.setLastToggleTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("lastToggleTime")));
-                            }output.setState(AutomationElement.State.valueOf(document.getString("state")));
-                            //Double Switchable
-                            output.setInverse(document.getBoolean("inverse"));
-                            //Ausgang
-                            output.setSwitchServerId(ID.of(document.getString("switchServerId")));
-                            output.setPin(document.getInteger("pin"));
-
-                            data.add(output);
                             break;
                         case SWITCHABLE_SCRIPT_SINGLE:
 
@@ -269,6 +293,52 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                                 new UpdateOptions().upsert(true)
                         );
                         break;
+                    case SWITCHABLE_MQTT_SINGLE:
+
+                        MqttSingle mqttSingle = (MqttSingle) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", mqttSingle.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", mqttSingle.getId().get()),
+                                        set("name", mqttSingle.getName()),
+                                        set("description", mqttSingle.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", mqttSingle.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", mqttSingle.getLastToggleTime()),
+                                        set("state", mqttSingle.getState().toString()),
+                                        //MQTT Single
+                                        setOnInsert("type", mqttSingle.getType().toString()),
+                                        set("mqttName", mqttSingle.getMqttName())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
+                    case SWITCHABLE_MQTT_DOUBLE:
+
+                        MqttDouble mqttDouble = (MqttDouble) switchable;
+                        switchableCollection.updateOne(
+                                eq("_id", mqttDouble.getId().get()),
+                                combine(
+                                        //Element
+                                        setOnInsert("_id", mqttDouble.getId().get()),
+                                        set("name", mqttDouble.getName()),
+                                        set("description", mqttDouble.getDescription().orElseGet(() -> "")),
+                                        //Automation Element
+                                        set("disabled", mqttDouble.isDisabled()),
+                                        //Switchable
+                                        set("lastToggleTime", mqttDouble.getLastToggleTime()),
+                                        set("state", mqttDouble.getState().toString()),
+                                        //Double Switchable
+                                        set("inverse", mqttDouble.isInverse()),
+                                        //MQTT Single
+                                        setOnInsert("type", mqttDouble.getType().toString()),
+                                        set("mqttName", mqttDouble.getMqttName())
+                                ),
+                                new UpdateOptions().upsert(true)
+                        );
+                        break;
                     case SWITCHABLE_TPLINK_SOCKET:
 
                         TPlinkSocket tPlinkSocket = (TPlinkSocket) switchable;
@@ -311,31 +381,6 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
                                         set("currentSensorId", currentSensorId),
                                         set("powerSensorId", powerSensorId),
                                         set("energySensorId", energySensorId)
-                                ),
-                                new UpdateOptions().upsert(true)
-                        );
-                        break;
-                    case SWITCHABLE_OUTPUT:
-
-                        Output output = (Output) switchable;
-                        switchableCollection.updateOne(
-                                eq("_id", output.getId().get()),
-                                combine(
-                                        //Element
-                                        setOnInsert("_id", output.getId().get()),
-                                        set("name", output.getName()),
-                                        set("description", output.getDescription().orElseGet(() -> "")),
-                                        //Automation Element
-                                        set("disabled", output.isDisabled()),
-                                        //Switchable
-                                        set("lastToggleTime", output.getLastToggleTime()),
-                                        set("state", output.getState().toString()),
-                                        //Double Switchable
-                                        set("inverse", output.isInverse()),
-                                        //Ausgang
-                                        setOnInsert("type", output.getType().toString()),
-                                        set("switchServerId", output.getSwitchServerId().get()),
-                                        set("pin", output.getPin())
                                 ),
                                 new UpdateOptions().upsert(true)
                         );
@@ -457,6 +502,9 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
             newSocket.setId(ID.of(oldSocket.getId().get()));
             newSocket.setDisabled(oldSocket.isDisabled());
 
+            //Double Switchable
+            newSocket.setInverse(oldSocket.isInverse());
+
             //Spezifische Daten
             newSocket.setIdentifier(oldSocket.getIdentifier());
             newSocket.setTempSensorId(ID.of(oldSocket.getTempSensorId().get()));
@@ -465,20 +513,36 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
 
             return newSocket;
 
-        } else if(switchable instanceof Output) {
+        } else if(switchable instanceof MqttSingle) {
 
-            Output oldOutput = (Output) switchable;
-            Output newOutput = new Output();
+            MqttSingle mqttSingle = (MqttSingle) switchable;
+            MqttSingle newMqtt = new MqttSingle();
 
             //Allgemeine Daten
-            newOutput.setId(ID.of(oldOutput.getId().get()));
-            newOutput.setDisabled(oldOutput.isDisabled());
+            newMqtt.setId(ID.of(mqttSingle.getId().get()));
+            newMqtt.setDisabled(mqttSingle.isDisabled());
 
             //Spezifische Daten
-            newOutput.setSwitchServerId(ID.of(oldOutput.getSwitchServerId().get()));
-            newOutput.setPin(oldOutput.getPin());
+            newMqtt.setMqttName(mqttSingle.getMqttName());
 
-            return newOutput;
+            return newMqtt;
+
+        } else if(switchable instanceof MqttDouble) {
+
+            MqttDouble mqttDouble = (MqttDouble) switchable;
+            MqttDouble newMqtt = new MqttDouble();
+
+            //Allgemeine Daten
+            newMqtt.setId(ID.of(mqttDouble.getId().get()));
+            newMqtt.setDisabled(mqttDouble.isDisabled());
+
+            //Double Switchable
+            newMqtt.setInverse(mqttDouble.isInverse());
+
+            //Spezifische Daten
+            newMqtt.setMqttName(mqttDouble.getMqttName());
+
+            return newMqtt;
 
         } else if(switchable instanceof ScriptDouble) {
 
@@ -488,6 +552,9 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
             //Allgemeine Daten
             newScript.setId(ID.of(oldScript.getId().get()));
             newScript.setDisabled(oldScript.isDisabled());
+
+            //Double Switchable
+            newScript.setInverse(oldScript.isInverse());
 
             //Spezifische Daten
             newScript.setWorkingDir(oldScript.getWorkingDir());
@@ -545,12 +612,15 @@ public class SwitchableEditor extends AbstractDatabaseEditor<Switchable> {
             case SWITCHABLE_TPLINK_SOCKET:
 
                 return TPlinkSocket.class;
+            case SWITCHABLE_MQTT_SINGLE:
+
+                return MqttSingle.class;
+            case SWITCHABLE_MQTT_DOUBLE:
+
+                return MqttDouble.class;
             case SWITCHABLE_AVM_SOCKET:
 
                 return AvmSocket.class;
-            case SWITCHABLE_OUTPUT:
-
-                return Output.class;
             case SWITCHABLE_SCRIPT_DOUBLE:
 
                 return ScriptDouble.class;

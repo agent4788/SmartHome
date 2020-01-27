@@ -3,9 +3,7 @@ package net.kleditzsch.SmartHome.view.automation.admin.room;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchServerEditor;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.model.automation.switchserver.SwitchServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

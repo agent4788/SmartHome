@@ -15,8 +15,8 @@
 <body>
 {% include '/webserver/template/automation/admin/headline.html' with {module: 'device'} %}
 <main class="ui main container">
-    <form class="ui form"  action="/automation/admin/deviceformoutput?id={{ output.getId().get() | escape }}" method="post">
-        <h1 class="ui header top attached">Ausgang {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+    <form class="ui form"  action="/automation/admin/deviceformmqttdouble?id={{ mqttDevice.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">MQTT Ger&auml;t (an/aus) {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
         {% if error is defined %}
         <div class="ui visible icon message error attached">
             <i class="remove icon red"></i>
@@ -32,30 +32,20 @@
             <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
             <div class="field required">
                 <label>Name</label>
-                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ output.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ mqttDevice.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
             </div>
             <div class="field">
                 <label>Beschreibung</label>
-                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if output.getDescription().isPresent() %}{{ output.getDescription().get() | escape }}{% endif %}</textarea>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if mqttDevice.getDescription().isPresent() %}{{ mqttDevice.getDescription().get() | escape }}{% endif %}</textarea>
             </div>
             <div class="field required">
-                <label>Schaltserver</label>
-                <select class="ui fluid dropdown" {% if addElement == false %}disabled{% endif %} name="switchserver" required>
-                    {% for switchServer in switchServerList %}
-                    <option value="{{ switchServer.Id().get() | escape }}" {% if switchServer.getId() | equals(output.getSwitchServerId()) %}selected{% endif %} {% if (switchServer.isDisabled() == true and addElement) %}disabled{% endif %}>
-                        {{ switchServer.getName() | escape }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="field required">
-                <label>Pin</label>
-                <input name="pin" type="number" min="0" max="1000" step="1" value="{{ output.getPin() | escape }}" required>
+                <label>MQTT Name</label>
+                <input name="mqttname" type="text" {% if addElement %}value=""{% else %}value="{{ mqttDevice.getMqttName() | escape }}"{% endif %} pattern="[a-zA-Z]{3,50}" required>
             </div>
             <div class="ui segment">
                 <div class="field required">
                     <div class="ui toggle checkbox">
-                        <input type="checkbox" name="disabled" class="hidden" {% if output.isDisabled() %}checked="checked"{% endif %}>
+                        <input type="checkbox" name="disabled" class="hidden" {% if mqttDevice.isDisabled() %}checked="checked"{% endif %}>
                         <label>deaktiviert</label>
                     </div>
                 </div>
@@ -63,7 +53,7 @@
             <div class="ui segment">
                 <div class="field required">
                     <div class="ui toggle checkbox">
-                        <input type="checkbox" name="inverse" class="hidden" {% if output.isInverse() %}checked="checked"{% endif %}>
+                        <input type="checkbox" name="inverse" class="hidden" {% if mqttDevice.isInverse() %}checked="checked"{% endif %}>
                         <label>invertiert</label>
                     </div>
                 </div>

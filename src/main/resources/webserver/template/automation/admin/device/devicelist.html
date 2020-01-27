@@ -54,11 +54,14 @@
                 <a class="item" href="/automation/admin/deviceformtplink">
                     <i class="plug icon"></i> TP-Link Steckdose
                 </a>
-                <a class="item {% if fritzBoxAktiv == false %}disabled{% endif %}" href="/automation/admin/deviceformavm">
+                <a class="item {% if fritzBoxAktive == false %}disabled{% endif %}" href="/automation/admin/deviceformavm">
                     <i class="plug icon"></i> AVM Steckdose
                 </a>
-                <a class="item" href="/automation/admin/deviceformoutput">
-                    <i class="microchip icon"></i> Ausgang
+                <a class="item {% if mqttAktive == false %}disabled{% endif %}" href="/automation/admin/deviceformmqttsingle">
+                    <i class="microchip icon"></i> MQTT (einfach)
+                </a>
+                <a class="item {% if mqttAktive == false %}disabled{% endif %}" href="/automation/admin/deviceformmqttdouble">
+                    <i class="microchip icon"></i> MQTT (an/aus)
                 </a>
                 <a class="item" href="/automation/admin/deviceformscriptsingle">
                     <i class="tablet alternate icon"></i> Script (einfach)
@@ -82,15 +85,18 @@
                         AVM Steckdose
                     </a>
                     <a class="item" href="/automation/admin/device?filtertype=3{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
-                        Ausgang
+                        MQTT (einfach)
                     </a>
                     <a class="item" href="/automation/admin/device?filtertype=4{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
-                        Script (einfach)
+                        MQTT (an/aus)
                     </a>
                     <a class="item" href="/automation/admin/device?filtertype=5{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
-                        Script (an/aus)
+                        Script (einfach)
                     </a>
                     <a class="item" href="/automation/admin/device?filtertype=6{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Script (an/aus)
+                    </a>
+                    <a class="item" href="/automation/admin/device?filtertype=7{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
                         Wake on Lan
                     </a>
                     <a class="item" href="/automation/admin/device">
@@ -128,8 +134,10 @@
                             <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformavm?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             {% elseif element.getType() == 'SWITCHABLE_TPLINK_SOCKET' %}
                             <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformtplink?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
-                            {% elseif element.getType() == 'SWITCHABLE_OUTPUT' %}
-                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformoutput?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_MQTT_SINGLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformmqttsingle?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_MQTT_DOUBLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformmqttdouble?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             {% elseif element.getType() == 'SWITCHABLE_SCRIPT_SINGLE' %}
                             <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/deviceformscriptsingle?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                             {% elseif element.getType() == 'SWITCHABLE_SCRIPT_DOUBLE' %}
@@ -143,8 +151,10 @@
                         <div class="ui label yellow">AVM Steckdose</div>
                         {% elseif element.getType() == 'SWITCHABLE_TPLINK_SOCKET' %}
                         <div class="ui label blue">TP-Link Steckdose</div>
-                        {% elseif element.getType() == 'SWITCHABLE_OUTPUT' %}
-                        <div class="ui label orange">Ausgang</div>
+                        {% elseif element.getType() == 'SWITCHABLE_MQTT_SINGLE' %}
+                        <div class="ui label orange">MQTT (einfach)</div>
+                        {% elseif element.getType() == 'SWITCHABLE_MQTT_DOUBLE' %}
+                        <div class="ui label orange">MQTT (an/aus)</div>
                         {% elseif element.getType() == 'SWITCHABLE_SCRIPT_SINGLE' %}
                         <div class="ui label red">Script (einfach)</div>
                         {% elseif element.getType() == 'SWITCHABLE_SCRIPT_DOUBLE' %}
