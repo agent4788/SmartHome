@@ -70,7 +70,14 @@ public class SwitchableStateListener extends TopicListener {
                     if(switchableOptional.isPresent() && switchableOptional.get() instanceof MqttDouble) {
 
                         MqttDouble mqttDouble = (MqttDouble) switchableOptional.get();
-                        mqttDouble.setState(data.state == 1 ? AutomationElement.State.ON : AutomationElement.State.OFF);
+                        mqttDouble.setLastToggleTime(data.date);
+                        if(mqttDouble.isInverse()) {
+
+                            mqttDouble.setState(data.state == 1 ? AutomationElement.State.OFF : AutomationElement.State.ON);
+                        } else {
+
+                            mqttDouble.setState(data.state == 1 ? AutomationElement.State.ON : AutomationElement.State.OFF);
+                        }
                     }
 
                 } else {

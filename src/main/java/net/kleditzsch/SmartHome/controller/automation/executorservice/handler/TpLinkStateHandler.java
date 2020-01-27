@@ -12,6 +12,7 @@ import net.kleditzsch.SmartHome.util.api.tplink.HS100;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -60,9 +61,11 @@ public class TpLinkStateHandler implements Runnable {
                     if(state == 1 && !socket.isInverse() || state == 0 && socket.isInverse()) {
 
                         switchableOptional.get().setState(Switchable.State.ON);
+                        switchableOptional.get().setLastToggleTime(LocalDateTime.now());
                     } else {
 
                         switchableOptional.get().setState(Switchable.State.OFF);
+                        switchableOptional.get().setLastToggleTime(LocalDateTime.now());
                     }
                     LoggerUtil.getLogger(this.getClass()).finest("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " wurde erfolgreich aktualisiert");
                 }
