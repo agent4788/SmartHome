@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Automatisierung</title>
     {% include '/webserver/template/header.html' %}
-    <script src="/static/notify/notify.min.js"></script>
     <script type="text/javascript">
 
         function switchDevice(roomId, devId, command) {
@@ -15,17 +14,29 @@
                     if(textStatus == 'success' && data.success == true) {
 
                         //Befehl erfolgreich ausgeführt
-                        $.notify("Befehl erfolgreich ausgeführt", "success");
+                        $('body').toast({
+                            class: 'success',
+                            showIcon: 'check circle outline',
+                            message: `Befehl erfolgreich ausgeführt`
+                        });
                     } else {
 
                         //Fehler
-                        $.notify(data.message, "error");
+                        $('body').toast({
+                            class: 'error',
+                            showIcon: 'times circle outline',
+                            message: data.message
+                        });
                     }
                 })
                 .fail(function () {
 
                     //Fehler
-                    $.notify("Der Befehl konnte nicht ausgeführt werden", "error");
+                    $('body').toast({
+                        class: 'error',
+                        showIcon: 'times circle outline',
+                        message: `Der Befehl konnte nicht ausgeführt werden`
+                    });
                 });
         }
 
@@ -175,17 +186,29 @@
                         //Fehler
                         if(data.message) {
 
-                            $.notify('Synchronisationsfehler "' + data.message + '"', "error");
+                            $('body').toast({
+                                class: 'error',
+                                showIcon: 'times circle outline',
+                                message: 'Synchronisationsfehler "' + data.message + '"'
+                            });
                         } else {
 
-                            $.notify('Synchronisationsfehler', "error");
+                            $('body').toast({
+                                class: 'error',
+                                showIcon: 'times circle outline',
+                                message: 'Synchronisationsfehler'
+                            });
                         }
                     }
                 })
                 .fail(function () {
 
                     //Fehler
-                    $.notify("Die Synchronisation ist fehlgeschlagen", "error");
+                    $('body').toast({
+                        class: 'error',
+                        showIcon: 'times circle outline',
+                        message: "Die Synchronisation ist fehlgeschlagen"
+                    });
                 });
                 setTimeout('sync()', 500);
             }
