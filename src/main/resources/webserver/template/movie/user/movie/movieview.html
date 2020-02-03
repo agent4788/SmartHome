@@ -97,7 +97,7 @@
                         <h3 class="ui header">{{ movie.getSubTitle() | escape }}</h3>
                     </div>
                     <div class="ui segment">
-                        <div class="ui rating star large" id="b{{ movie.getId().get() }}" data-rating="{{ movie.getRating() }}" data-max-rating="5"></div>
+                        <div class="ui rating yellow large" id="b{{ movie.getId().get() }}" data-rating="{{ movie.getRating() }}" data-icon="star" data-max-rating="5"></div>
                         <script type="text/javascript">
                                     $(function() {
                                         $('#b{{ movie.getId().get() }}').rating({
