@@ -13,13 +13,11 @@ import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
-import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
-import net.kleditzsch.SmartHome.model.automation.room.element.DividerElement;
-import net.kleditzsch.SmartHome.model.automation.room.element.SensorElement;
-import net.kleditzsch.SmartHome.model.automation.room.element.VirtualSensorElement;
+import net.kleditzsch.SmartHome.model.automation.room.element.*;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import org.bson.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -161,6 +159,28 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
                         element.getRoomElements().add(de);
                         break;
+                    case SHUTTER_ELEMENT:
+
+                        ShutterElement sue = new ShutterElement();
+
+                        //Allgemeine Daten
+                        sue.setId(ID.of(roomElement.getString("_id")));
+                        sue.setName(roomElement.getString("name"));
+                        sue.setDescription(roomElement.getString("description"));
+                        sue.setDisplayText(roomElement.getString("displayText"));
+                        sue.setOrderId(roomElement.getInteger("orderId"));
+                        sue.setDisabled(roomElement.getBoolean("disabled"));
+                        sue.setIconFile(roomElement.getString("iconFile"));
+
+                        //Spezifische Daten
+                        List<String> shutterIds = (List<String>) roomElement.get("shutterIds");
+                        for(String shutterId: shutterIds) {
+
+                            sue.getShutterIds().add(ID.of(shutterId));
+                        }
+
+                        element.getRoomElements().add(sue);
+                        break;
                 }
             }
             element.resetChangedData();
@@ -248,7 +268,7 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
 
         MongoCollection roomCollection = Application.getInstance().getDatabaseCollection(COLLECTION);
 
-        ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
+        ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
         lock.lock();
 
         List<Room> data = getData();
@@ -309,6 +329,16 @@ public class RoomEditor extends AbstractDatabaseEditor<Room> {
                         //Divider Element
                         DividerElement de = (DividerElement) roomElement;
                         roomElementDoc.append("icon", de.getIcon().isPresent() ? de.getIcon().get() : "");
+                    } else if (roomElement instanceof ShutterElement) {
+
+                        //Shutter Element
+                        ShutterElement sue = (ShutterElement) roomElement;
+                        List<String> shutterIds = new ArrayList<>(sue.getShutterIds().size());
+                        for (ID shutterId : sue.getShutterIds()) {
+
+                            shutterIds.add(shutterId.get());
+                        }
+                        roomElementDoc.append("shutterIds", shutterIds);
                     }
                     roomElements.add(roomElementDoc);
                 }

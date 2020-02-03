@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.controller.automation.mqttservice;
 
 import net.kleditzsch.SmartHome.app.Application;
+import net.kleditzsch.SmartHome.controller.automation.mqttservice.listener.ShutterStateListener;
 import net.kleditzsch.SmartHome.controller.automation.mqttservice.listener.SwitchableStateListener;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.editor.SettingsEditor;
@@ -230,6 +231,7 @@ public class MqttService {
             client.subscribe(MAIN_TOPIC + "#");
 
             callback.addTopicListener(new SwitchableStateListener());
+            callback.addTopicListener(new ShutterStateListener());
 
         } catch (MqttException e) {
 

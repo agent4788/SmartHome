@@ -6,6 +6,9 @@
     {% include '/webserver/template/header.html' %}
     <script type="text/javascript">
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // schaltbares Element schalten ////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         function switchDevice(roomId, devId, command) {
 
             $.getJSON('/automation/switch?roomid=' + roomId + '&id=' + devId + '&command=' + command)
@@ -40,15 +43,156 @@
                 });
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Rollladen bewegen ///////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function moveShutter(roomId, elementId, targetLevel) {
+
+            $.getJSON('/automation/moveshutter?roomid=' + roomId + '&id=' + elementId + '&level=' + targetLevel)
+                .done(function(data, textStatus) {
+
+                    if(textStatus == 'success' && data.success == true) {
+
+                        //Befehl erfolgreich ausgeführt
+                        $('body').toast({
+                            class: 'success',
+                            showIcon: 'check circle outline',
+                            message: `Befehl erfolgreich ausgeführt`
+                        });
+                    } else {
+
+                        //Fehler
+                        $('body').toast({
+                            class: 'error',
+                            showIcon: 'times circle outline',
+                            message: data.message
+                        });
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $('body').toast({
+                        class: 'error',
+                        showIcon: 'times circle outline',
+                        message: `Der Befehl konnte nicht ausgeführt werden`
+                    });
+                });
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Button Synchronisieren //////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function syncButton(element) {
+
+            if(element.state) {
+
+                //an
+                var buttonOn = $('#a' + element.id + '_on');
+                var buttonOff = $('#a' + element.id + '_off');
+                var onText = buttonOn.text();
+                var offText = buttonOff.text();
+                buttonOn.html('<i class="check icon"></i>' + onText);
+                buttonOff.html(offText);
+            } else {
+
+                //aus
+                var buttonOn = $('#a' + element.id + '_on');
+                var buttonOff = $('#a' + element.id + '_off');
+                var onText = buttonOn.text();
+                var offText = buttonOff.text();
+                buttonOn.html(onText);
+                buttonOff.html('<i class="check icon"></i>' + offText);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Sensor Synchronisieren //////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function syncSensor(element) {
+
+            $('#a' + element.id).text(element.value);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // virtuellen Sensor Synchronisieren ///////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function syncVirtualSensor(element) {
+
+            if(element.avg) {
+
+                $('#a' + element.id + '_avg').text(element.avg);
+            }
+            if(element.sum) {
+
+                $('#a' + element.id + '_sum').text(element.sum);
+            }
+            if(element.min) {
+
+                $('#a' + element.id + '_min').text(element.min);
+            }
+            if(element.max) {
+
+                $('#a' + element.id + '_max').text(element.max);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Rollladen Synchronisieren ///////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function syncShutter(element) {
+
+            var level = element.level;
+
+            var buttonClose = $('#a' + element.id + '_close');
+            var buttonOpen = $('#a' + element.id + '_open');
+            var buttonSlider = $('#a' + element.id + '_sliderbutton');
+
+            console.log("sync shutter");
+
+            if(level == 0) {
+
+                //offen
+                buttonOpen.addClass('blue');
+                buttonClose.removeClass('blue');
+                buttonSlider.removeClass('blue');
+
+                buttonSlider.emptty().html('<i class="bars icon"></i>');
+            } else if(level == 100) {
+
+                //geschlossen
+                buttonOpen.removeClass('blue');
+                buttonClose.addClass('blue');
+                buttonSlider.removeClass('blue');
+
+                buttonSlider.emptty().html('<i class="bars icon"></i>');
+            } else {
+
+                //dazwischen
+                buttonOpen.removeClass('blue');
+                buttonClose.removeClass('blue');
+                buttonSlider.addClass('blue');
+
+                buttonSlider.emptty().text(level + ' %');
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Synchronisation der Elemente ////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        var syncActive = false;
         function sync() {
 
             if (window.EventSource) {
 
+                //Synchronisation per SSE
                 var eventSource = new EventSource('/automation/ssesync?roomid={{ activeRoom.getId().get() }}', { withCredentials : true });
                 eventSource.onmessage = function(entry) {
 
                     //JOSN parsen
                     var data = jQuery.parseJSON(entry.data.trim());
+
+                    syncActive = true;
 
                     //Buttons aktualisieren
                     if(data.buttons && data.buttons.length > 0) {
@@ -56,25 +200,7 @@
                         for(var i = 0; i < data.buttons.length; i++) {
 
                             var e = data.buttons[i];
-                            if(e.state) {
-
-                                //an
-                                var buttonOn = $('#a' + e.id + '_on');
-                                var buttonOff = $('#a' + e.id + '_off');
-                                var onText = buttonOn.text();
-                                var offText = buttonOff.text();
-                                buttonOn.html('<i class="check icon"></i>' + onText);
-                                buttonOff.html(offText);
-                            } else {
-
-                                //aus
-                                var buttonOn = $('#a' + e.id + '_on');
-                                var buttonOff = $('#a' + e.id + '_off');
-                                var onText = buttonOn.text();
-                                var offText = buttonOff.text();
-                                buttonOn.html(onText);
-                                buttonOff.html('<i class="check icon"></i>' + offText);
-                            }
+                            syncButton(e);
                         }
                     }
 
@@ -83,7 +209,7 @@
                          for(var i = 0; i < data.sensors.length; i++) {
 
                              var e = data.sensors[i];
-                             $('#a' + e.id).text(e.value);
+                             syncSensor(e);
                         }
                     }
 
@@ -93,124 +219,22 @@
                         for(var i = 0; i < data.vSensors.length; i++) {
 
                             var e = data.vSensors[i];
-                            if(e.avg) {
-
-                                $('#a' + e.id + '_avg').text(e.avg);
-                            }
-                            if(e.sum) {
-
-                                $('#a' + e.id + '_sum').text(e.sum);
-                            }
-                            if(e.min) {
-
-                                //$('#a' + e.id + '_min').text(e.min);
-                            }
-                            if(e.max) {
-
-                                //$('#a' + e.id + '_max').text(e.max);
-                            }
+                            syncVirtualSensor(e);
                         }
                     }
+
+                    //Rollläden aktualisieren
+                    if(data.shutters && data.shutters.length > 0) {
+
+                        for(var i = 0; i < data.shutters.length; i++) {
+
+                            var e = data.shutters[i];
+                            syncShutter(e);
+                        }
+                    }
+
+                    syncActive = false;
                 }
-            } else {
-
-                $.getJSON('/automation/sync?roomid={{ activeRoom.getId().get() }}')
-                .done(function(data, textStatus) {
-
-                    if(textStatus == 'success' && data.success == true) {
-
-                        //Buttons aktualisieren
-                        if(data.buttons && data.buttons.length > 0) {
-
-                            for(var i = 0; i < data.buttons.length; i++) {
-
-                                var e = data.buttons[i];
-                                if(e.state) {
-
-                                    //an
-                                    var buttonOn = $('#a' + e.id + '_on');
-                                    var buttonOff = $('#a' + e.id + '_off');
-                                    var onText = buttonOn.text();
-                                    var offText = buttonOff.text();
-                                    buttonOn.html('<i class="check icon"></i>' + onText);
-                                    buttonOff.html(offText);
-                                } else {
-
-                                    //aus
-                                    var buttonOn = $('#a' + e.id + '_on');
-                                    var buttonOff = $('#a' + e.id + '_off');
-                                    var onText = buttonOn.text();
-                                    var offText = buttonOff.text();
-                                    buttonOn.html(onText);
-                                    buttonOff.html('<i class="check icon"></i>' + offText);
-                                }
-                            }
-                        }
-
-                        //Sensorwerte aktualisieren
-                        if(data.sensors && data.sensors.length > 0) {
-
-                            for(var i = 0; i < data.sensors.length; i++) {
-
-                                var e = data.sensors[i];
-                                $('#a' + e.id).text(e.value);
-                            }
-                        }
-
-                        //Virtuelle Sensorwerte aktualisieren
-                        if(data.vSensors && data.vSensors.length > 0) {
-
-                            for(var i = 0; i < data.vSensors.length; i++) {
-
-                                var e = data.vSensors[i];
-                                if(e.avg) {
-
-                                    $('#a' + e.id + '_avg').text(e.avg);
-                                }
-                                if(e.sum) {
-
-                                    $('#a' + e.id + '_sum').text(e.sum);
-                                }
-                                if(e.min) {
-
-                                    //$('#a' + e.id + '_min').text(e.min);
-                                }
-                                if(e.max) {
-
-                                    //$('#a' + e.id + '_max').text(e.max);
-                                }
-                            }
-                        }
-                    } else {
-
-                        //Fehler
-                        if(data.message) {
-
-                            $('body').toast({
-                                class: 'error',
-                                showIcon: 'times circle outline',
-                                message: 'Synchronisationsfehler "' + data.message + '"'
-                            });
-                        } else {
-
-                            $('body').toast({
-                                class: 'error',
-                                showIcon: 'times circle outline',
-                                message: 'Synchronisationsfehler'
-                            });
-                        }
-                    }
-                })
-                .fail(function () {
-
-                    //Fehler
-                    $('body').toast({
-                        class: 'error',
-                        showIcon: 'times circle outline',
-                        message: "Die Synchronisation ist fehlgeschlagen"
-                    });
-                });
-                setTimeout('sync()', 500);
             }
         }
 
@@ -251,6 +275,8 @@
                             {% include '/webserver/template/automation/user/elements/sensor.html' %}
                         {% elseif element.getType() == 'VIRTUAL_SENSOR_ELEMENT' %}
                             {% include '/webserver/template/automation/user/elements/virtualsensor.html' %}
+                        {% elseif element.getType() == 'SHUTTER_ELEMENT' %}
+                            {% include '/webserver/template/automation/user/elements/shutter.html' %}
                         {% endif %}
                     {% endif %}
                 {% endfor %}

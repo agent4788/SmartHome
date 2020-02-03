@@ -1,6 +1,6 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 
-import net.kleditzsch.SmartHome.model.automation.device.switchable.WakeOnLan;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.WakeOnLan;
 
 /**
  * sendet WakeOnLan befehle über das Netzwerk

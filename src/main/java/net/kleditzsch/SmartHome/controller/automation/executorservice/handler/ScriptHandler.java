@@ -2,14 +2,11 @@ package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.app.Application;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
-import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptDouble;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.ScriptSingle;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.ScriptDouble;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.ScriptSingle;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
@@ -165,30 +162,32 @@ public class ScriptHandler implements Runnable {
         if(scriptSingle != null && successfull) {
 
             //Einfaches Script
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.WriteLock lock = actorEditor.writeLock();
             lock.lock();
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(scriptSingle.getId());
-            switchableOptional.ifPresent(switchable -> {
+            Optional<Actor> actorOptional = actorEditor.getById(scriptSingle.getId());
+            if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                Switchable switchable = (Switchable) actorOptional.get();
                 switchable.setLastToggleTime(LocalDateTime.now());
-            });
+            }
 
             lock.unlock();
         } else if (scriptDouble != null && successfull) {
 
             //Doppeltes Script
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.WriteLock lock = actorEditor.writeLock();
             lock.lock();
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(scriptDouble.getId());
-            switchableOptional.ifPresent(switchable -> {
+            Optional<Actor> actorOptional = actorEditor.getById(scriptDouble.getId());
+            if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                Switchable switchable = (Switchable) actorOptional.get();
                 switchable.setState(finalNewState);
                 switchable.setLastToggleTime(LocalDateTime.now());
-            });
+            }
 
             lock.unlock();
         }

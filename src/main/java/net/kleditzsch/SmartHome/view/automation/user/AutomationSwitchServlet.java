@@ -5,10 +5,12 @@ import com.google.gson.JsonPrimitive;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.DoubleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.SingleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
@@ -82,16 +84,16 @@ public class AutomationSwitchServlet extends HttpServlet {
                     ExecutorService executorService = Application.getInstance().getAutomation().getExecutorService();
 
                     //Befehle zum ausführen übergeben
-                    SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-                    ReentrantReadWriteLock.ReadLock switchableLock = switchableEditor.readLock();
-                    switchableLock.lock();
+                    ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+                    ReentrantReadWriteLock.ReadLock actorLock = actorEditor.readLock();
+                    actorLock.lock();
 
                     for (SwitchCommand switchCommand : commands) {
 
-                        Optional<Switchable> switchableOptional = switchableEditor.getById(switchCommand.getSwitchableId());
-                        if(switchableOptional.isPresent()) {
+                        Optional<Actor> actorOptional = actorEditor.getById(switchCommand.getSwitchableId());
+                        if(actorOptional.isPresent()) {
 
-                            if(switchableOptional.get() instanceof DoubleSwitchable) {
+                            if(actorOptional.get() instanceof DoubleSwitchable) {
 
                                 SwitchCommands comm = SwitchCommands.on;
                                 if(command.equals("on")) {
@@ -113,17 +115,17 @@ public class AutomationSwitchServlet extends HttpServlet {
 
                                 executorService.putCommand(
                                         new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
-                                            switchableEditor.copyOf(switchableOptional.get()),
+                                                (Switchable) actorEditor.copyOf(actorOptional.get()),
                                             comm
                                         )
                                 );
-                            } else {
+                            } else if(actorOptional.get() instanceof SingleSwitchable) {
 
                                 if(command.equals("on")) {
 
                                     executorService.putCommand(
                                             new net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand(
-                                                switchableEditor.copyOf(switchableOptional.get()),
+                                                    (Switchable) actorEditor.copyOf(actorOptional.get()),
                                                 SwitchCommands.on
                                             )
                                     );
@@ -136,7 +138,7 @@ public class AutomationSwitchServlet extends HttpServlet {
                         }
                     }
 
-                    switchableLock.unlock();
+                    actorLock.unlock();
                 }
 
             } else {

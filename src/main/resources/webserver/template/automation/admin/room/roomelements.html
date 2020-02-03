@@ -54,6 +54,9 @@
                 <a class="item" href="/automation/admin/roombuttonelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="toggle on icon"></i> Button
                 </a>
+                <a class="item" href="/automation/admin/roomshutterelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
+                    <i class="microchip on icon"></i> Rolladen
+                </a>
                 <a class="item" href="/automation/admin/roomsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}">
                     <i class="tablet thermometer quarter icon"></i> Sensor
                 </a>
@@ -110,6 +113,8 @@
                                 <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomvirtualsensorelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% elseif element.getType() == 'DIVIDER_ELEMENT' %}
                                 <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomdividerelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                                {% elseif element.getType() == 'SHUTTER_ELEMENT' %}
+                                <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/roomshutterelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId() }}&id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
                                 {% endif %}
                                 <div title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</div>
                             </div>
@@ -124,6 +129,8 @@
                             <div class="ui label orange">Virtueller Sensor</div>
                             {% elseif element.getType() == 'DIVIDER_ELEMENT' %}
                             <div class="ui label red">Trennlinie</div>
+                            {% elseif element.getType() == 'SHUTTER_ELEMENT' %}
+                            <div class="ui label teal">Rollladen</div>
                             {% endif %}
                             <div class="ui basic modal" id="{{ randomId }}">
                                 <div class="ui icon header">

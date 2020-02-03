@@ -2,11 +2,11 @@ package net.kleditzsch.SmartHome.view.automation.admin.timer;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.DoubleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.SingleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
@@ -75,17 +75,19 @@ public class AutomationTimerFormServlet extends HttpServlet {
         model.with("timer", switchTimer);
 
         //Schaltbare Elemente auflisten
-        SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-        ReentrantReadWriteLock.ReadLock switchableLock = switchableEditor.readLock();
+        ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+        ReentrantReadWriteLock.ReadLock switchableLock = actorEditor.readLock();
         switchableLock.lock();
 
-        Map<String, Switchable> doubleSwitchables = switchableEditor.getData().stream()
+        Map<String, Switchable> doubleSwitchables = actorEditor.getData().stream()
                 .filter(e -> e instanceof DoubleSwitchable)
+                .map(e -> (DoubleSwitchable) e)
                 .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                 .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
         model.with("doubleSwitchables", doubleSwitchables);
-        Map<String, Switchable> singleSwitchables = switchableEditor.getData().stream()
+        Map<String, Switchable> singleSwitchables = actorEditor.getData().stream()
                 .filter(e -> e instanceof SingleSwitchable)
+                .map(e -> (SingleSwitchable) e)
                 .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                 .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
         model.with("singleSwitchables", singleSwitchables);

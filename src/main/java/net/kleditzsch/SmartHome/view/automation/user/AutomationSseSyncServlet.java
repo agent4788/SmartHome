@@ -6,18 +6,20 @@ import com.google.gson.JsonPrimitive;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Shutter;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.VirtualSensorValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.virtual.*;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.DoubleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
 import net.kleditzsch.SmartHome.model.automation.room.element.ButtonElement;
 import net.kleditzsch.SmartHome.model.automation.room.element.SensorElement;
+import net.kleditzsch.SmartHome.model.automation.room.element.ShutterElement;
 import net.kleditzsch.SmartHome.model.automation.room.element.VirtualSensorElement;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.formatter.SensorValueFormatUtil;
@@ -49,19 +51,26 @@ public class AutomationSseSyncServlet extends HttpServlet {
             Map<String, String> sensorState = new HashMap<>();
             Map<String, Map<String, String>> virtualSensorState = new HashMap<>();
             List<String> roomSensors = new ArrayList<>();
+            Map<String, Integer> shutterState = new HashMap<>();
+            Map<String, Integer> roomShutters = new HashMap<>();
 
             try {
 
                 //Liste mit ID und Status aller Doppelschaltelemente laden
-                SwitchableEditor swe = Application.getInstance().getAutomation().getSwitchableEditor();
-                ReentrantReadWriteLock.ReadLock sweLock = swe.readLock();
+                ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+                ReentrantReadWriteLock.ReadLock sweLock = actorEditor.readLock();
                 sweLock.lock();
 
-                swe.getData().forEach(switchable -> {
+                actorEditor.getData().forEach(actor -> {
 
-                    if(switchable instanceof DoubleSwitchable) {
+                    if(actor instanceof DoubleSwitchable) {
 
-                        switchableState.put(switchable.getId().get(), switchable.getState());
+                        DoubleSwitchable doubleSwitchable = (DoubleSwitchable) actor;
+                        switchableState.put(doubleSwitchable.getId().get(), doubleSwitchable.getState());
+                    } else if(actor instanceof Shutter) {
+
+                        Shutter shutter = (Shutter) actor;
+                        shutterState.put(shutter.getId().get(), shutter.getLevel());
                     }
                 });
 
@@ -160,19 +169,31 @@ public class AutomationSseSyncServlet extends HttpServlet {
                             }
 
                             buttonState.put(be.getId().get(), elementState);
-                        }
+                        } else if(roomElement instanceof VirtualSensorElement) {
 
-                        //Sensor ID's auflisten
-                        if(roomElement instanceof VirtualSensorElement) {
-
+                            //Sensor ID's auflisten
                             VirtualSensorElement vSe = (VirtualSensorElement) roomElement;
                             vSe.getVirtualSensorId().ifPresent(id -> roomSensors.add(id.get()));
                         } else if(roomElement instanceof SensorElement) {
 
+                            //Virtuelle Sensoren auflisten
                             SensorElement sensorElement = (SensorElement) roomElement;
                             sensorElement.getFirstSensorValueId().ifPresent(id -> roomSensors.add(id.get()));
                             sensorElement.getSecondSensorValueId().ifPresent(id -> roomSensors.add(id.get()));
                             sensorElement.getThirdSensorValueId().ifPresent(id -> roomSensors.add(id.get()));
+                        } else if(roomElement instanceof ShutterElement) {
+
+                            //Rollläden auflisten
+                            ShutterElement shutterElement = (ShutterElement) roomElement;
+                            OptionalDouble avg = shutterElement.getShutterIds().stream()
+                                    .map(ID::get)
+                                    .mapToInt(shutterState::get)
+                                    .average();
+
+                            if(avg.isPresent()) {
+
+                                roomShutters.put(shutterElement.getId().get(), ((Double) avg.getAsDouble()).intValue());
+                            }
                         }
                     }
 
@@ -236,6 +257,17 @@ public class AutomationSseSyncServlet extends HttpServlet {
                 }
             });
             jo.add("vSensors", vSensors);
+
+            //Rollläden
+            JsonArray shutters = new JsonArray();
+            roomShutters.forEach((id, level) -> {
+
+                JsonObject entry = new JsonObject();
+                entry.add("id", new JsonPrimitive(id));
+                entry.add("level", new JsonPrimitive(level));
+                shutters.add(entry);
+            });
+            jo.add("shutters", shutters);
 
             String json = jo.toString();
 

@@ -4,10 +4,11 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.mqttservice.MqttService;
 import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.MqttDouble;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.MqttSingle;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.MqttDouble;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.MqttSingle;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 import net.kleditzsch.SmartHome.util.datetime.DatabaseDateTimeUtil;
 
@@ -149,31 +150,33 @@ public class MqttHandler implements Runnable {
         final Switchable.State finalNewState = newState;
         if(mqttSingle != null && successfull) {
 
-            //Einfaches Script
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
+            //Einfaches MQTT Element
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.WriteLock lock = actorEditor.writeLock();
             lock.lock();
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(mqttSingle.getId());
-            switchableOptional.ifPresent(switchable -> {
+            Optional<Actor> actorOptional = actorEditor.getById(mqttSingle.getId());
+            if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                Switchable switchable = (Switchable) actorOptional.get();
                 switchable.setLastToggleTime(LocalDateTime.now());
-            });
+            }
 
             lock.unlock();
         } else if (mqttDouble != null && successfull) {
 
-            //Doppeltes Script
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
+            //Doppeltes MQTT Element
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.WriteLock lock = actorEditor.writeLock();
             lock.lock();
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(mqttDouble.getId());
-            switchableOptional.ifPresent(switchable -> {
+            Optional<Actor> actorOptional = actorEditor.getById(mqttDouble.getId());
+            if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                Switchable switchable = (Switchable) actorOptional.get();
                 switchable.setState(finalNewState);
                 switchable.setLastToggleTime(LocalDateTime.now());
-            });
+            }
 
             lock.unlock();
         }

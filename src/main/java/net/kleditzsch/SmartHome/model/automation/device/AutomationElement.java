@@ -20,6 +20,8 @@ public abstract class AutomationElement extends Element {
         SWITCHABLE_MQTT_SINGLE,
         SWITCHABLE_MQTT_DOUBLE,
 
+        SHUTTER_MQTT,
+
         SENSORVALUE_INPUT,
         SENSORVALUE_USER_AT_HOME,
         SENSORVALUE_LIVE_BIT,

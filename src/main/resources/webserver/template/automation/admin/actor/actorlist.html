@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung Ger&auml;te</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        function search() {
+
+            var value = $('.ui.search input').val();
+            {% if filterType > 0 %}
+            window.location = '/automation/admin/actor?filter=' + value + '&filtertype=' + {{ filterType }};
+            {% else %}
+            window.location = '/automation/admin/actor?filter=' + value;
+            {% endif %}
+        }
+
+        $(function() {
+
+            $('.ui.dropdown').dropdown();
+
+            $('.ui.search i').click(function () {
+                search();
+            });
+            $('.ui.search input').keydown(function (e) {
+                if(e.which == 13) {
+                    search();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'actor'} %}
+<main class="ui main container">
+    <h1 class="ui header top attached">Ger&auml;te verwalten</h1>
+    {% if success is defined %}
+    <div class="ui message icon attached {% if success %}success{% else %}error{% endif %}">
+        {% if success %}
+        <i class="check icon green"></i>
+        {% else %}
+        <i class="remove icon red"></i>
+        {% endif %}
+        <div class="content">
+            <p>{{ message | escape }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="ui attached menu inverted blue">
+        <div class="ui dropdown item">
+            <i class="plus icon"></i> hinzuf&uuml;gen
+            <div class="menu">
+                <a class="item" href="/automation/admin/actorformtplink">
+                    <i class="plug icon"></i> TP-Link Steckdose
+                </a>
+                <a class="item {% if fritzBoxAktive == false %}disabled{% endif %}" href="/automation/admin/actorformavm">
+                    <i class="plug icon"></i> AVM Steckdose
+                </a>
+                <a class="item {% if mqttAktive == false %}disabled{% endif %}" href="/automation/admin/actorformmqttsingle">
+                    <i class="microchip icon"></i> MQTT (einfach)
+                </a>
+                <a class="item {% if mqttAktive == false %}disabled{% endif %}" href="/automation/admin/actorformmqttdouble">
+                    <i class="microchip icon"></i> MQTT (an/aus)
+                </a>
+                <a class="item {% if mqttAktive == false %}disabled{% endif %}" href="/automation/admin/actorformmqttshutter">
+                    <i class="bars icon"></i> MQTT Rolladen
+                </a>
+                <a class="item" href="/automation/admin/actorformscriptsingle">
+                    <i class="tablet alternate icon"></i> Script (einfach)
+                </a>
+                <a class="item" href="/automation/admin/actorformscriptdouble">
+                    <i class="tablet alternate icon"></i> Script (an/aus)
+                </a>
+                <a class="item" href="/automation/admin/actorformwol">
+                    <i class="power off icon"></i> Wake on Lan
+                </a>
+            </div>
+        </div>
+        <div class="right menu">
+            <div class="ui dropdown item">
+                <i class="filter icon"></i> Typfilter
+                <div class="menu">
+                    <a class="item" href="/automation/admin/actor?filtertype=1{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        TP-Link Steckdose
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=2{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        AVM Steckdose
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=3{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        MQTT (einfach)
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=4{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        MQTT (an/aus)
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=5{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        MQTT Rollladen
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=6{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Script (einfach)
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=7{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Script (an/aus)
+                    </a>
+                    <a class="item" href="/automation/admin/actor?filtertype=8{% if filterStr.length() %}&filter={{ filterStr | escape }}{% endif %}">
+                        Wake on Lan
+                    </a>
+                    <a class="item" href="/automation/admin/actor">
+                        alle
+                    </a>
+                </div>
+            </div>
+            <div class="ui right aligned category search item">
+                <div class="ui icon input">
+                    <input class="prompt" type="text" placeholder="Suche ..." {% if filterStr is defined %}value="{{ filterStr | escape }}"{% endif %}>
+                    <i class="search link icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if pagination.getSize() > 0 %}
+    <div class="ui segment attached">
+        <div class="ui divided items attached {% if pagination.hasPages() == false %}bottom{% endif %}">
+            {% for element in pagination.getCurrentPageElements() %}
+            {% set randomId = randomstr() %}
+            <div class="item">
+                <div class="content">
+                    <div class="header">{{ element.getName() | escape }}</div>
+                    {% if element.getDescription().isPresent() %}
+                    <div class="meta">
+                        {% if element.getType() == 'SHUTTER_MQTT' %}
+                        <span>zuletzt geschaltet: {{ element.getLastUpdateTime() | timeline('nie') | escape }}</span>
+                        {% else %}
+                        <span>zuletzt geschaltet: {{ element.getLastToggleTime() | timeline('nie') | escape }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="description">
+                        <p>{{ element.getDescription().get() | escape }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="extra">
+                        <div class="ui right floated">
+                            {% if element.getType() == 'SWITCHABLE_AVM_SOCKET' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformavm?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_TPLINK_SOCKET' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformtplink?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_MQTT_SINGLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformmqttsingle?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_MQTT_DOUBLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformmqttdouble?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_SCRIPT_SINGLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformscriptsingle?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_SCRIPT_DOUBLE' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformscriptdouble?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SWITCHABLE_WAKE_ON_LAN' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformwol?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% elseif element.getType() == 'SHUTTER_MQTT' %}
+                            <a title="bearbeiten" class="ui button orange basic" href="/automation/admin/actorformmqttshutter?id={{ element.getId() }}"><i class="edit icon"></i> bearbeiten</a>
+                            {% endif %}
+                            <button title="l&ouml;schen" class="ui button red basic" onclick="$('#{{ randomId }}').modal('show')"><i class="remove icon"></i> l&ouml;schen</button>
+                        </div>
+                        {% if element.getType() == 'SWITCHABLE_AVM_SOCKET' %}
+                        <div class="ui label yellow">AVM Steckdose</div>
+                        {% elseif element.getType() == 'SWITCHABLE_TPLINK_SOCKET' %}
+                        <div class="ui label blue">TP-Link Steckdose</div>
+                        {% elseif element.getType() == 'SWITCHABLE_MQTT_SINGLE' %}
+                        <div class="ui label orange">MQTT (einfach)</div>
+                        {% elseif element.getType() == 'SWITCHABLE_MQTT_DOUBLE' %}
+                        <div class="ui label orange">MQTT (an/aus)</div>
+                        {% elseif element.getType() == 'SWITCHABLE_SCRIPT_SINGLE' %}
+                        <div class="ui label red">Script (einfach)</div>
+                        {% elseif element.getType() == 'SWITCHABLE_SCRIPT_DOUBLE' %}
+                        <div class="ui label red">Script (an/aus)</div>
+                        {% elseif element.getType() == 'SWITCHABLE_WAKE_ON_LAN' %}
+                        <div class="ui label violet">Wake on Lan</div>
+                        {% elseif element.getType() == 'SHUTTER_MQTT' %}
+                        <div class="ui label orange">MQTT Rollladen</div>
+                        {% endif %}
+                        {% if element.isSwitchable() and element.getState() == 'ON' %}
+                        <div class="ui label green">an</div>
+                        {% elseif element.isSwitchable() and element.getState() == 'OFF' %}
+                        <div class="ui label red">aus</div>
+                        {% elseif element.isLevel() %}
+                        <div class="ui label teal">{{ element.getLevel() | numberformat }} %</div>
+                        {% endif %}
+                        {% if element.isDisabled() == true %}
+                        <div class="ui label grey">deaktiviert</div>
+                        {% endif %}
+                        {% if element.isDoubleSwitchable() and element.isInverse() == true %}
+                        <div class="ui label brown">invertiert</div>
+                        {% endif %}
+                        <div class="ui basic modal" id="{{ randomId }}">
+                            <div class="ui icon header">
+                                <i class="delete icon"></i>
+                                Ger&auml;t l&ouml;schen
+                            </div>
+                            <div class="content">
+                                <p>Bist du sicher das du das Ger&auml;t l&ouml;schen m&ouml;chtest?</p>
+                            </div>
+                            <div class="actions">
+                                <div class="ui red basic cancel inverted button">
+                                    <i class="remove icon"></i>
+                                    Nein
+                                </div>
+                                <div class="ui green ok inverted button" onclick="window.location = '/automation/admin/actordelete?id={{ element.getId() }}'">
+                                    <i class="checkmark icon"></i>
+                                    Ja
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% if pagination.hasPages() %}
+    <div class="ui segment bottom attached clearing">
+        <div class="ui right floated pagination menu">
+            {% include '/webserver/template/automation/admin/pagination.html' with {pagination: pagination} %}
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="ui icon info message bottom attached large">
+        <i class="info circle icon black"></i>
+        <div class="content">
+            <p>keine Ger&auml;te gefunden</p>
+        </div>
+    </div>
+    {% endif %}
+    <div style="height: 50px;"></div>
+</main>
+</body>
+</html>

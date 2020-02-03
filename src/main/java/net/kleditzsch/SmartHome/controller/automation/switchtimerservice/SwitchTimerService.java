@@ -3,9 +3,10 @@ package net.kleditzsch.SmartHome.controller.automation.switchtimerservice;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.logger.LoggerUtil;
@@ -53,21 +54,21 @@ public class SwitchTimerService implements Runnable {
                     .forEach(st -> {
 
                         //Schaltbefehle an den Scheduler übergeben
-                        SwitchableEditor se = Application.getInstance().getAutomation().getSwitchableEditor();
+                        ActorEditor se = Application.getInstance().getAutomation().getActorEditor();
                         ReentrantReadWriteLock.ReadLock seLock = se.readLock();
                         seLock.lock();
 
                         st.getCommands().forEach(switchCommand -> {
 
                             //prüfen ob schaltbares Element vorhanden
-                            Optional<Switchable> switchableOptional = se.getById(switchCommand.getSwitchableId());
-                            if(switchableOptional.isPresent()) {
+                            Optional<Actor> actorOptional = se.getById(switchCommand.getSwitchableId());
+                            if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
                                 //Schaltbefehl an den Schaduler übergeben
-                                Switchable switchable = se.copyOf(switchableOptional.get());
-                                if(!switchable.isDisabled()) {
+                                Actor actor = se.copyOf(actorOptional.get());
+                                if(!actor.isDisabled()) {
 
-                                    executorService.putCommand(new SwitchCommand(switchable, switchCommand.getCommand()));
+                                    executorService.putCommand(new SwitchCommand((Switchable) actor, switchCommand.getCommand()));
                                 }
                             }
                         });

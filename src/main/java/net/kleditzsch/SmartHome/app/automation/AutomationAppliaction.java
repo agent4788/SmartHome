@@ -13,7 +13,7 @@ import net.kleditzsch.SmartHome.controller.automation.switchtimerservice.SwitchT
 import net.kleditzsch.SmartHome.controller.automation.tplinkservice.TpLinkUpdateService;
 import net.kleditzsch.SmartHome.model.automation.editor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.*;
-import net.kleditzsch.SmartHome.view.automation.admin.device.*;
+import net.kleditzsch.SmartHome.view.automation.admin.actor.*;
 import net.kleditzsch.SmartHome.view.automation.admin.room.*;
 import net.kleditzsch.SmartHome.view.automation.admin.sensorvalues.*;
 import net.kleditzsch.SmartHome.view.automation.admin.settings.AutomationSettingsServlet;
@@ -37,9 +37,9 @@ public class AutomationAppliaction implements SubApplication {
     private volatile SensorEditor sensorEditor;
 
     /**
-     * Schaltbare Elemente Editor
+     * Aktor Editor
      */
-    private volatile SwitchableEditor switchableEditor;
+    private volatile ActorEditor actorEditor;
 
     /**
      * Raum Editor
@@ -79,8 +79,8 @@ public class AutomationAppliaction implements SubApplication {
         sensorEditor = new SensorEditor();
         sensorEditor.load();
 
-        switchableEditor = new SwitchableEditor();
-        switchableEditor.load();
+        actorEditor = new ActorEditor();
+        actorEditor.load();
 
         roomEditor = new RoomEditor();
         roomEditor.load();
@@ -105,21 +105,22 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
         contextHandler.addServlet(AutomationRoomServlet.class, "/automation/room");
         contextHandler.addServlet(AutomationSwitchServlet.class, "/automation/switch");
-        contextHandler.addServlet(AutomationSyncServlet.class, "/automation/sync");
+        contextHandler.addServlet(AutomationMoveShutterServlet.class, "/automation/moveshutter");
         contextHandler.addServlet(AutomationSseSyncServlet.class, "/automation/ssesync");
 
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
         contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
-        contextHandler.addServlet(AutomationDeviceListServlet.class, "/automation/admin/device");
-        contextHandler.addServlet(AutomationDeviceFormTpLinkServlet.class, "/automation/admin/deviceformtplink");
-        contextHandler.addServlet(AutomationDeviceFormAvmServlet.class, "/automation/admin/deviceformavm");
-        contextHandler.addServlet(AutomationDeviceFormMqttSingleServlet.class, "/automation/admin/deviceformmqttsingle");
-        contextHandler.addServlet(AutomationDeviceFormMqttDoubleServlet.class, "/automation/admin/deviceformmqttdouble");
-        contextHandler.addServlet(AutomationDeviceFormWolServlet.class, "/automation/admin/deviceformwol");
-        contextHandler.addServlet(AutomationDeviceFormScriptSingleServlet.class, "/automation/admin/deviceformscriptsingle");
-        contextHandler.addServlet(AutomationDeviceFormScriptDoubleServlet.class, "/automation/admin/deviceformscriptdouble");
-        contextHandler.addServlet(AutomationDeviceDeleteServlet.class, "/automation/admin/devicedelete");
+        contextHandler.addServlet(AutomationActorListServlet.class, "/automation/admin/actor");
+        contextHandler.addServlet(AutomationActorFormTpLinkServlet.class, "/automation/admin/actorformtplink");
+        contextHandler.addServlet(AutomationActorFormAvmServlet.class, "/automation/admin/actorformavm");
+        contextHandler.addServlet(AutomationActorFormMqttSingleServlet.class, "/automation/admin/actorformmqttsingle");
+        contextHandler.addServlet(AutomationActorFormMqttDoubleServlet.class, "/automation/admin/actorformmqttdouble");
+        contextHandler.addServlet(AutomationActorFormMqttShutterServlet.class, "/automation/admin/actorformmqttshutter");
+        contextHandler.addServlet(AutomationActorFormWolServlet.class, "/automation/admin/actorformwol");
+        contextHandler.addServlet(AutomationActorFormScriptSingleServlet.class, "/automation/admin/actorformscriptsingle");
+        contextHandler.addServlet(AutomationActorFormScriptDoubleServlet.class, "/automation/admin/actorformscriptdouble");
+        contextHandler.addServlet(AutomationActorDeleteServlet.class, "/automation/admin/actordelete");
         contextHandler.addServlet(AutomationSensorValuesListServlet.class, "/automation/admin/sensorvalues");
         contextHandler.addServlet(AutomationSensorValuesPushServlet.class, "/automation/admin/sensorvaluespush");
         contextHandler.addServlet(AutomationSensorValuesDefaultFormServlet.class, "/automation/admin/sensorvaluesdefaultform");
@@ -139,6 +140,7 @@ public class AutomationAppliaction implements SubApplication {
         contextHandler.addServlet(AutomationRoomOrderServlet.class, "/automation/admin/roomorder");
         contextHandler.addServlet(AutomationRoomElementsServlet.class, "/automation/admin/roomelements");
         contextHandler.addServlet(AutomationRoomButtonElementFormServlet.class, "/automation/admin/roombuttonelementform");
+        contextHandler.addServlet(AutomationRoomShutterElementFormServlet.class, "/automation/admin/roomshutterelementform");
         contextHandler.addServlet(AutomationRoomDividerElementFormServlet.class, "/automation/admin/roomdividerelementform");
         contextHandler.addServlet(AutomationRoomSensorElementFormServlet.class, "/automation/admin/roomsensorelementform");
         contextHandler.addServlet(AutomationRoomVirtualSensorElementFormServlet.class, "/automation/admin/roomvirtualsensorelementform");
@@ -158,12 +160,12 @@ public class AutomationAppliaction implements SubApplication {
     }
 
     /**
-     * gibt den Schaltelemente-Editor zurück
+     * gibt den Aktor Editor zurück
      *
-     * @return Schaltelemente-Editor
+     * @return Aktor Editor
      */
-    public SwitchableEditor getSwitchableEditor() {
-        return switchableEditor;
+    public ActorEditor getActorEditor() {
+        return actorEditor;
     }
 
     /**
@@ -254,7 +256,7 @@ public class AutomationAppliaction implements SubApplication {
     public void dump() {
 
         sensorEditor.dump();
-        switchableEditor.dump();
+        actorEditor.dump();
         switchTimerEditor.dump();
         roomEditor.dump();
     }

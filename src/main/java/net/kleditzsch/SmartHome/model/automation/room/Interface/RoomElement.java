@@ -20,7 +20,9 @@ public abstract class RoomElement extends Element {
         @SerializedName("VIRTUAL_SENSOR_ELEMENT")
         VIRTUAL_SENSOR_ELEMENT,
         @SerializedName("DIVIDER_ELEMENT")
-        DIVIDER_ELEMENT
+        DIVIDER_ELEMENT,
+        @SerializedName("SHUTTER_ELEMENT")
+        SHUTTER_ELEMENT
     }
 
     /**

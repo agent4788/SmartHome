@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung R&auml;me</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+
+        var deviceCount = {% if addElement %}0{% else %}{{ usedElementCount }}{% endif %};
+
+        $(function() {
+
+            $('.checkbox').checkbox();
+            $('.dropdown').dropdown();
+            $('#safetyRequestIcon').dropdown().dropdown('set selected', '{{ roomelement.getSafetyRequestIcon() }}');
+            {% if addElement == false %}
+            $('#iconFile.dropdown').dropdown().dropdown('set selected', '{{ roomelement.getIconFile() }}');
+            {% endif %}
+
+            {% if roomelement.isSafetyRequestEnabled() == false %}
+            $('.safetyRequest').prop('disabled', true);
+            $('#safetyRequestIcon').addClass('disabled');
+            {% endif %}
+
+            $('#safetyRequestEnabled').checkbox({
+                onChecked: function() {
+                    $('.safetyRequest').prop('disabled', false);
+                    $('#safetyRequestIcon').removeClass('disabled');
+                },
+                onUnchecked: function() {
+                    $('.safetyRequest').prop('disabled', true);
+                    $('#safetyRequestIcon').addClass('disabled');
+                }
+            });
+
+            //Anzahl der ausgewählten Geräte prüfen
+            $('#buttonelement').submit(function() {
+
+                if(deviceCount <= 0) {
+
+                    //keine geräte ausgewählt
+                    alert("Es wurden keine Geräte ausgewählt");
+                    return false;
+                }
+                return true;
+            });
+        });
+
+        function openIconChooser(icon) {
+
+            if(icon != null) {
+
+                //vorausgewähltes Icon
+                var category = icon.substring(0, icon.indexOf('/'));
+                var iconFile = icon.substring(icon.indexOf('/') + 1);
+                $('.ui.form').form('set values', {
+                    iconCategory : category
+                });
+                loadIcons(category, iconFile);
+
+                $('#iconChooser').modal({ observeChanges: true });
+                $('#iconChooser').modal('show');
+            } else {
+
+                //nur dialog öffnen
+                $('#iconChooser').modal({ observeChanges: true });
+                $('#iconChooser').modal('show');
+            }
+        }
+
+        function loadIcons(category, iconFile) {
+
+            if(category == null) {
+
+                category = $('#iconCategory').val();
+            }
+            $.getJSON('/automation/admin/iconchooser?cat=' + category)
+                .done(function(data, textStatus) {
+
+                    if(data.icons) {
+
+                        $('#icons').addClass('loading');
+                        var html = "";
+                        for(var i = 0; i < data.icons.length; i++) {
+
+                            var icon = data.icons[i];
+                            if(iconFile != null && iconFile == icon.substring(icon.indexOf('/') + 1)) {
+
+                                html += '<div class="column grey" style="cursor: pointer;" onclick="chooseIcon(\'' + icon + '\');"><img class="ui image fluid" src="/static/img/iconset/' + icon + '"></div>';
+                            } else {
+
+                                html += '<div class="column" style="cursor: pointer;" onclick="chooseIcon(\'' + icon + '\');"><img class="ui image fluid" src="/static/img/iconset/' + icon + '"></div>';
+                            }
+                        }
+                        $('#icons').html(html);
+                        $('#icons').removeClass('loading');
+                    } else {
+
+                        //Fehler aufgetreten
+                        if(data.message) {
+
+                            $('#iconMessageText').text(data.message);
+                            $('#iconMessage').show();
+                        } else {
+
+                            $('#iconMessageText').text("keine Icons gefunden");
+                            $('#iconMessage').show();
+                        }
+                    }
+                })
+                .fail(function () {
+
+                    //Fehler
+                    $('#iconMessageText').text("Anfrage Fehlgeschlagen");
+                    $('#iconMessage').show();
+                });
+        }
+
+        function chooseIcon(icon) {
+
+            $('.ui.form').form('set values', {
+                iconFile : icon
+            });
+            $('#iconImage').attr('src','/static/img/iconset/' + icon);
+            $('#iconChooser').modal('hide');
+        }
+    </script>
+</head>
+<body>
+{% if dashboard %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'dashboard'} %}
+{% else %}
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'room'} %}
+{% endif %}
+<main class="ui main container">
+    <form class="ui form" id="buttonelement" action="/automation/admin/roomshutterelementform?{% if dashboard %}dash&{% endif %}roomid={{ room.getId().get() | escape }}&id={{ roomelement.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">Rollladen {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field required">
+                <label>Anzeigetext</label>
+                <input name="displayText" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getDisplayText() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if roomelement.getDescription().isPresent() %}{{ roomelement.getDescription().get() | escape }}{% endif %}</textarea>
+            </div>
+            <div class="fields">
+                <div class="one wide field">
+                    <img class="ui image fluid" src="{% if not addElement %}/static/img/iconset/{{ roomelement.getIconFile() | escape }}{% endif %}" id="iconImage">
+                </div>
+                <div class="eleven wide field required">
+                    <label>Icon</label>
+                    <input name="iconFile" type="text" {% if addElement %}value=""{% else %}value="{{ roomelement.getIconFile() | escape }}"{% endif %} readonly>
+                </div>
+                <div class="four wide field">
+                    <label>Auswahl</label>
+                    <div class="ui button fluid secondary basic" onclick="{% if addElement %}openIconChooser();{% else %}openIconChooser('{{ roomelement.getIconFile() | escape }}');{% endif %}">Ausw&auml;hlen</div>
+                </div>
+                <div class="ui modal" id="iconChooser">
+                    <div class="header">
+                        Icon Auswahl
+                    </div>
+                    <div class="scrolling content" style="min-height: 50%;">
+                        <div class="ui basic segment">
+                            <select class="ui dropdown fluid" onchange="loadIcons();" id="iconCategory" name="iconCategory">
+                                <option value="">Kategorie</option>
+                                {% for iconCategory in iconCategorys %}
+                                <option value="{{ iconCategory | escape }}">{{ iconCategory | escape }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="ui basic segment" id="iconMessage" style="display: none;">
+                            <div class="ui message icon error">
+                                <i class="remove icon red"></i>
+                                <div class="content">
+                                    <p id="iconMessageText"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui basic segment">
+                            <div class="ui grid six column doubling" id="icons">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <div class="ui black deny button">
+                            Abbrechen
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h5 class="ui segment attached top ">Rolll&auml;den</h5>
+            <div class="ui segment attached">
+                <div class="ui divided items" id="shutters">
+                    {% set shutterNextIndex = 1 %}
+                    {% for shutterId in roomelement.getShutterIds() %}
+                    {% if shutters.containsKey(shutterId.get()) %}
+                    {% set shutter = shutters.get(shutterId.get()) %}
+                    <div class="item" id="a{{  shutter.getId().get() | escape }}">
+                        <div class="content">
+                            <div class="header">{{ shutter.getName() | escape }}</div>
+                            <div class="extra">
+                                <div class="ui right floated red basic icon button" onclick="removeShutter('{{ shutter.getId().get() | escape }}');">
+                                    <i class="remove icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="shutterElement_{{ shutterNextIndex }}" value="{{ shutter.getId().get() | escape }}">
+                    </div>
+                    {% set shutterNextIndex = shutterNextIndex + 1 %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="ui segment attached bottom">
+                <div class="ui grid stackable">
+                    <div class="fifteen wide column">
+                        <div id="shutter" class="ui dropdown selection fluid">
+                            <input name="shutter" value="" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Rolll&auml;den</div>
+                            <div class="menu">
+                                {% for key, shutter in shutters %}
+                                {% if usedElementIds.contains(shutter.getId().get()) %}
+                                <div class="item disabled" data-value="{{ shutter.getId() }}">{{ shutter.getName() | escape }}</div>
+                                {% else %}
+                                <div class="item" data-value="{{ shutter.getId() }}">{{ shutter.getName() | escape }}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide column">
+                        <button class="ui button icon secondary basic" type="button" id="addShutter"><i class="add icon"></i></button>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+
+                function removeShutter(id) {
+
+                    $('#a' + id).remove();
+                    $("#shutter").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                    deviceCount--;
+                }
+
+                $(function() {
+
+                    var nextShutterIndex = {{ shutterNextIndex }};
+
+                    //Einfachschaltelement
+                    $('#addShutter').click(function() {
+
+                        var selectedId = $("#shutter").dropdown('get value');
+                        var selectedName = $("#shutter").dropdown('get text');
+
+                        if(selectedId.length > 0) {
+
+                            $('#shutters').append(
+                            '<div class="item" id="a' + selectedId + '">' +
+                            '   <div class="content">' +
+                            '       <div class="header">' + selectedName + '</div>'+
+                            '       <div class="extra">' +
+                            '           <div class="ui right floated red basic icon button" onclick="removeShutter(\'' + selectedId + '\');">' +
+                            '               <i class="remove icon"></i>' +
+                            '           </div>' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <input type="hidden" name="shutterElement_' + nextShutterIndex + '" value="' + selectedId + '">' +
+                            '</div>'
+                            );
+                            $("#shutter").dropdown('clear');
+                            $("#shutter").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
+                            nextShutterIndex++;
+                            deviceCount++;
+                        }
+                    });
+                });
+            </script>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="disabled" class="hidden" {% if roomelement.isDisabled() %}checked="checked"{% endif %}>
+                        <label>deaktiviert</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

@@ -5,10 +5,10 @@ import net.kleditzsch.SmartHome.model.automation.device.sensor.ActualPowerValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.EnergyValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.TemperatureValue;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.AvmSocket;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.api.avm.Device.Components.PowerMeter;
@@ -37,11 +37,11 @@ public class AvmDataUpdateService implements Runnable {
             LoggerUtil.getLogger(this.getClass()).finest("Die AVM Daten wurden erfolgreich aktualisiert");
 
             //Status der AVM Steckdosen aktualisieren
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.WriteLock lock = switchableEditor.writeLock();
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.WriteLock lock = actorEditor.writeLock();
             lock.lock();
 
-            List<AvmSocket> avmSockets = switchableEditor.getData().stream()
+            List<AvmSocket> avmSockets = actorEditor.getData().stream()
                     .filter(e -> e instanceof AvmSocket)
                     .map(e -> ((AvmSocket) e))
                     .collect(Collectors.toList());

@@ -2,11 +2,12 @@ package net.kleditzsch.SmartHome.view.automation.admin.room;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.DoubleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.SingleSwitchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.DoubleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.SingleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.RoomEditor;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.room.Interface.RoomElement;
 import net.kleditzsch.SmartHome.model.automation.room.Room;
@@ -118,17 +119,19 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
         //Schaltbare Elemente auflisten
         if(room != null && roomElement != null) {
 
-            SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-            ReentrantReadWriteLock.ReadLock switchableLock = switchableEditor.readLock();
+            ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+            ReentrantReadWriteLock.ReadLock switchableLock = actorEditor.readLock();
             switchableLock.lock();
 
-            Map<String, Switchable> doubleSwitchables = switchableEditor.getData().stream()
+            Map<String, Switchable> doubleSwitchables = actorEditor.getData().stream()
                     .filter(e -> e instanceof DoubleSwitchable)
+                    .map(e -> (DoubleSwitchable) e)
                     .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                     .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
             model.with("doubleSwitchables", doubleSwitchables);
-            Map<String, Switchable> singleSwitchables = switchableEditor.getData().stream()
+            Map<String, Switchable> singleSwitchables = actorEditor.getData().stream()
                     .filter(e -> e instanceof SingleSwitchable)
+                    .map(e -> (SingleSwitchable) e)
                     .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                     .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
             model.with("singleSwitchables", singleSwitchables);
@@ -292,14 +295,14 @@ public class AutomationRoomButtonElementFormServlet extends HttpServlet {
         }
 
         //Button Art ermitteln
-        SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-        ReentrantReadWriteLock.ReadLock switchableLock = switchableEditor.readLock();
+        ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+        ReentrantReadWriteLock.ReadLock switchableLock = actorEditor.readLock();
         switchableLock.lock();
 
         for (SwitchCommand command : switchCommands) {
 
-            Optional<Switchable> switchableOptional = switchableEditor.getById(command.getSwitchableId());
-            if(switchableOptional.isPresent() && switchableOptional.get() instanceof DoubleSwitchable) {
+            Optional<Actor> actorOptional = actorEditor.getById(command.getSwitchableId());
+            if(actorOptional.isPresent() && actorOptional.get() instanceof DoubleSwitchable) {
 
                 isDoubleSwitch = true;
                 break;

@@ -2,11 +2,9 @@ package net.kleditzsch.SmartHome.controller.automation.tplinkservice;
 
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.ExecutorService;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
-import net.kleditzsch.SmartHome.global.base.ID;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -17,17 +15,14 @@ public class TpLinkUpdateService implements Runnable {
     public void run() {
 
         //Status der TP-Link Steckdosen aktualisieren
-        SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-        ReentrantReadWriteLock.ReadLock lock = switchableEditor.readLock();
+        ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+        ReentrantReadWriteLock.ReadLock lock = actorEditor.readLock();
         lock.lock();
 
         ExecutorService executorService = Application.getInstance().getAutomation().getExecutorService();
-        switchableEditor.getData().stream()
+        actorEditor.getData().stream()
                 .filter(e -> e instanceof TPlinkSocket && !e.isDisabled())
-                .map(e -> {
-
-                    return (TPlinkSocket) switchableEditor.copyOf(e);
-                })
+                .map(e -> (TPlinkSocket) actorEditor.copyOf(e))
                 .forEach(e -> {
 
                     executorService.putCommand(new SwitchCommand(e, SwitchCommands.updateState));

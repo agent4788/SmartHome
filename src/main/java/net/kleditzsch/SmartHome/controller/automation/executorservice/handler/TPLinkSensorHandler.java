@@ -8,7 +8,7 @@ import net.kleditzsch.SmartHome.model.automation.device.sensor.CurrentValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.EnergyValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.VoltageValue;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.TPlinkSocket;
 import net.kleditzsch.SmartHome.model.automation.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;

@@ -3,10 +3,10 @@ package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.controller.automation.avmservice.AvmEditor;
-import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.AvmSocket;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.AvmSocket;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
@@ -119,16 +119,17 @@ public class AvmHandler implements Runnable {
 
                 //Status speichern
                 final Switch.STATE finalNewState = newState;
-                SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-                lock1 = switchableEditor.writeLock();
+                ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+                lock1 = actorEditor.writeLock();
                 lock1.lock();
 
-                Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
-                switchableOptional.ifPresent(switchable -> {
+                Optional<Actor> actorOptional = actorEditor.getById(socket.getId());
+                if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                    Switchable switchable = (Switchable) actorOptional.get();
                     switchable.setState(finalNewState == Switch.STATE.ON ? Switchable.State.ON : Switchable.State.OFF);
                     switchable.setLastToggleTime(LocalDateTime.now());
-                });
+                }
             } else {
 
                 LoggerUtil.getLogger(this.getClass()).warning("Das Avm Gerät \"" + socket.getIdentifier() + "\" konnte nicht gefunden werden");

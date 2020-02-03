@@ -1,0 +1,81 @@
+{% set randomId = randomstr() %}
+{% set id = element.getId().get() %}
+{% set roomId = activeRoom.getId().get() %}
+<div class="eight wide column">
+    <div class="ui unstackable items">
+        <div class="item">
+            <div class="ui image tiny middle aligned">
+                <img src="/static/img/iconset/{{ element.getIconFile() | escape }}">
+            </div>
+            <div class="content middle aligned ">
+                <div class="header centered">
+                    {{ element.getDisplayText() | escape }}
+                </div>
+                <div class="extra">
+                    <div class="ui fluid buttons">
+                        <div class="ui button basic icon" onclick="moveShutter('{{ roomId }}', '{{ id }}', 100);" id="a{{ id }}_close">
+                            <i class="angle double down icon"></i>
+                        </div>
+                        <div class="ui button basic icon" onclick="moveShutter('{{ roomId }}', '{{ id }}', 0);" id="a{{ id }}_open">
+                            <i class="angle double up icon"></i>
+                        </div>
+                        <div class="ui button basic blue icon" id="a{{ id }}_sliderbutton" onclick="$('#a{{ id }}_shuttermodal').modal('show');">
+                            <i class="bars icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui modal" id="a{{ element.getId().get() }}_shuttermodal">
+        <div class="header">Rollladen Position</div>
+        <div class="ui basic segment">
+            <div class="ui blue ticked slider" id="a{{ id }}_slider"></div>
+            <div class="ui labeled fluid input disabled">
+                <div class="ui label" style="width: 25%;">
+                    soll
+                </div>
+                <input type="text" id="a{{ id }}_slider_value_target">
+            </div>
+            <div class="ui labeled fluid input disabled">
+                <div class="ui label" style="width: 25%;">
+                    ist
+                </div>
+                <input type="text" id="a{{ id }}_slider_value_current">
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        $('#a{{ element.getId().get() }}_slider')
+            .slider({
+                min:    0,
+                max:    100,
+                step:   5,
+                start:  0,
+                onMove: function(value) {
+
+                    if(!syncActive) {
+
+                        if(value == 0) {
+
+                            $('#a{{ id }}_slider_value_target').val("offen");
+                        } else if(value == 100) {
+
+                            $('#a{{ id }}_slider_value_target').val("geschlossen");
+                        } else {
+
+                            $('#a{{ id }}_slider_value_target').val(value + " %");
+                        }
+                    }
+                },
+                onChange: function(value) {
+
+                    if(!syncActive) {
+
+                        moveShutter('{{ roomId }}', '{{ id }}', value);
+                    }
+                }
+            });
+    </script>
+</div>

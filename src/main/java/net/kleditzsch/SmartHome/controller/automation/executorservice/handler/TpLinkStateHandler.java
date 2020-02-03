@@ -3,9 +3,10 @@ package net.kleditzsch.SmartHome.controller.automation.executorservice.handler;
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.model.automation.device.AutomationElement;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.TPlinkSocket;
-import net.kleditzsch.SmartHome.model.automation.editor.SwitchableEditor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Actor;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.TPlinkSocket;
+import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
 import net.kleditzsch.SmartHome.model.global.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.global.message.Message;
 import net.kleditzsch.SmartHome.util.api.tplink.HS100;
@@ -51,21 +52,28 @@ public class TpLinkStateHandler implements Runnable {
                 HS100 hs100 = new HS100(socket.getIpAddress(), socket.getPort());
                 int state = hs100.readState();
 
-                SwitchableEditor switchableEditor = Application.getInstance().getAutomation().getSwitchableEditor();
-                lock = switchableEditor.writeLock();
+                ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
+                lock = actorEditor.writeLock();
                 lock.lock();
 
-                Optional<Switchable> switchableOptional = switchableEditor.getById(socket.getId());
-                if(switchableOptional.isPresent()) {
+                Optional<Actor> actorOptional = actorEditor.getById(socket.getId());
+                if(actorOptional.isPresent() && actorOptional.get() instanceof Switchable) {
 
+                    Switchable switchable = (Switchable) actorOptional.get();
                     if(state == 1 && !socket.isInverse() || state == 0 && socket.isInverse()) {
 
-                        switchableOptional.get().setState(Switchable.State.ON);
-                        switchableOptional.get().setLastToggleTime(LocalDateTime.now());
+                        if(switchable.getState() != AutomationElement.State.ON) {
+
+                            switchable.setState(Switchable.State.ON);
+                            switchable.setLastToggleTime(LocalDateTime.now());
+                        }
                     } else {
 
-                        switchableOptional.get().setState(Switchable.State.OFF);
-                        switchableOptional.get().setLastToggleTime(LocalDateTime.now());
+                        if(switchable.getState() != AutomationElement.State.OFF) {
+
+                            switchable.setState(Switchable.State.OFF);
+                            switchable.setLastToggleTime(LocalDateTime.now());
+                        }
                     }
                     LoggerUtil.getLogger(this.getClass()).finest("Die TP-Link Steckdose mit der IP " + socket.getIpAddress() + " wurde erfolgreich aktualisiert");
                 }

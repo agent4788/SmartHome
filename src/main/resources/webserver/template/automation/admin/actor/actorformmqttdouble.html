@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automatisierung Ger&auml;te</title>
+    {% include '/webserver/template/header.html' %}
+    <script type="text/javascript">
+        $(function() {
+
+            $('.checkbox').checkbox();
+            $('.ui.dropdown').dropdown();
+        });
+    </script>
+</head>
+<body>
+{% include '/webserver/template/automation/admin/headline.html' with {module: 'actor'} %}
+<main class="ui main container">
+    <form class="ui form"  action="/automation/admin/actorformmqttdouble?id={{ mqttDevice.getId().get() | escape }}" method="post">
+        <h1 class="ui header top attached">MQTT Ger&auml;t (an/aus) {% if addElement %}hinzuf&uuml;gen{% else %}bearbeiten{% endif %}</h1>
+        {% if error is defined %}
+        <div class="ui visible icon message error attached">
+            <i class="remove icon red"></i>
+            <div class="content">
+                <p>{{ error | escape }}</p>
+            </div>
+        </div>
+        <div class="ui segment attached">
+            <div class="ui button basic primary" onclick="window.history.back()">zur&uuml;ck</div>
+        </div>
+        {% else %}
+        <div class="ui segment attached">
+            <input type="hidden" name="addElement" value="{% if addElement %}1{% else %}0{% endif %}">
+            <div class="field required">
+                <label>Name</label>
+                <input name="name" type="text" {% if addElement %}value=""{% else %}value="{{ mqttDevice.getName() | escape }}"{% endif %} pattern=".{3,50}" required>
+            </div>
+            <div class="field">
+                <label>Beschreibung</label>
+                <textarea name="description" type="text" minlength="0" maxlength="250" rows="5">{% if mqttDevice.getDescription().isPresent() %}{{ mqttDevice.getDescription().get() | escape }}{% endif %}</textarea>
+            </div>
+            <div class="field required">
+                <label>MQTT Name</label>
+                <input name="mqttname" type="text" {% if addElement %}value=""{% else %}value="{{ mqttDevice.getMqttName() | escape }}"{% endif %} pattern="[a-zA-Z0-9]{3,50}" required>
+            </div>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="disabled" class="hidden" {% if mqttDevice.isDisabled() %}checked="checked"{% endif %}>
+                        <label>deaktiviert</label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <div class="field required">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="inverse" class="hidden" {% if mqttDevice.isInverse() %}checked="checked"{% endif %}>
+                        <label>invertiert</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment bottom attached">
+            <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
+            <button class="ui button primary" type="submit">Speichern</button>
+        </div>
+        {% endif %}
+    </form>
+</main>
+</body>
+</html>

@@ -1,9 +1,8 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice.command;
 
+import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.Interface.SensorValue;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 /**
  * Befehl zum aktualisieren von Sensordaten
@@ -19,6 +18,8 @@ public class SensorValueCommand implements Command {
      * @param sensorValue Sensorwert
      */
     public SensorValueCommand(SensorValue sensorValue) {
+
+        Preconditions.checkNotNull(sensorValue);
         this.sensorValue = sensorValue;
     }
 

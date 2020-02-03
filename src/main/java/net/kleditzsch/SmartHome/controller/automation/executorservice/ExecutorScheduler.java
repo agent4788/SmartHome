@@ -1,13 +1,15 @@
 package net.kleditzsch.SmartHome.controller.automation.executorservice;
 
+import net.kleditzsch.SmartHome.controller.automation.executorservice.command.MoveShutterCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SensorValueCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.SwitchCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.Interface.Command;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.command.StopCommand;
 import net.kleditzsch.SmartHome.controller.automation.executorservice.handler.*;
+import net.kleditzsch.SmartHome.model.automation.device.actor.shutter.MqttShutter;
+import net.kleditzsch.SmartHome.model.automation.device.actor.switchable.*;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.LiveBitValue;
 import net.kleditzsch.SmartHome.model.automation.device.sensor.UserAtHomeValue;
-import net.kleditzsch.SmartHome.model.automation.device.switchable.*;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 import java.util.concurrent.BlockingQueue;
@@ -100,6 +102,17 @@ public class ExecutorScheduler implements Runnable {
                         UserAtHomeSensorHandler handler = new UserAtHomeSensorHandler((UserAtHomeValue) sensorValueCommand.getSensorValue());
                         executor.execute(handler);
                     }
+                } else if(command instanceof MoveShutterCommand) {
+
+                    //Rollladen bewegen
+                    MoveShutterCommand moveShutterCommand = (MoveShutterCommand) command;
+                    if(moveShutterCommand.getShutter() instanceof MqttShutter) {
+
+                        //MQTT Rollladen
+                        MoveMqttShutterHandler handler = new MoveMqttShutterHandler((MqttShutter) moveShutterCommand.getShutter(), moveShutterCommand.getTargetLevel());
+                        executor.execute(handler);
+                    }
+
                 } else if(command instanceof StopCommand) {
 
                     //Thread beenden
