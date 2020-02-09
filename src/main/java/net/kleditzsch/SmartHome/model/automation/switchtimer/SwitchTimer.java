@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.automation.switchtimer;
 
 import net.kleditzsch.SmartHome.global.base.Element;
+import net.kleditzsch.SmartHome.model.automation.global.Interface.Command;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class SwitchTimer extends Element {
     /**
      * liste mit den Befehlen
      */
-    private List<SwitchCommand> commands = new ArrayList<>();
+    private List<Command> commands = new ArrayList<>();
 
     /**
      * nächste Ausführungszeit
@@ -98,7 +99,7 @@ public class SwitchTimer extends Element {
      *
      * @return Liste mit den Schaltbefehlen
      */
-    public List<SwitchCommand> getCommands() {
+    public List<Command> getCommands() {
 
         setChangedData();
         return commands;

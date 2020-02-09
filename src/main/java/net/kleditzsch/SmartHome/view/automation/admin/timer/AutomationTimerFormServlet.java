@@ -3,13 +3,17 @@ package net.kleditzsch.SmartHome.view.automation.admin.timer;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.DoubleSwitchable;
+import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Shutter;
 import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.SingleSwitchable;
 import net.kleditzsch.SmartHome.model.automation.device.actor.Interface.Switchable;
 import net.kleditzsch.SmartHome.model.automation.editor.SwitchTimerEditor;
 import net.kleditzsch.SmartHome.model.automation.editor.ActorEditor;
+import net.kleditzsch.SmartHome.model.automation.global.Interface.Command;
+import net.kleditzsch.SmartHome.model.automation.global.MoveCommand;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
+import net.kleditzsch.SmartHome.util.form.FormValidation;
 import net.kleditzsch.SmartHome.util.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AutomationTimerFormServlet extends HttpServlet {
@@ -74,7 +79,7 @@ public class AutomationTimerFormServlet extends HttpServlet {
         model.with("addElement", addElement);
         model.with("timer", switchTimer);
 
-        //Schaltbare Elemente auflisten
+        //Schaltbare Elemente und Rollläden auflisten
         ActorEditor actorEditor = Application.getInstance().getAutomation().getActorEditor();
         ReentrantReadWriteLock.ReadLock switchableLock = actorEditor.readLock();
         switchableLock.lock();
@@ -82,18 +87,31 @@ public class AutomationTimerFormServlet extends HttpServlet {
         Map<String, Switchable> doubleSwitchables = actorEditor.getData().stream()
                 .filter(e -> e instanceof DoubleSwitchable)
                 .map(e -> (DoubleSwitchable) e)
-                .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                 .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
         model.with("doubleSwitchables", doubleSwitchables);
         Map<String, Switchable> singleSwitchables = actorEditor.getData().stream()
                 .filter(e -> e instanceof SingleSwitchable)
                 .map(e -> (SingleSwitchable) e)
-                .sorted((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName()))
                 .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
         model.with("singleSwitchables", singleSwitchables);
-        List<String> usedElementIds = switchTimer.getCommands().stream().map(e -> e.getSwitchableId().get()).collect(Collectors.toList());
+        List<String> usedElementIds = switchTimer.getCommands().stream()
+                .filter(e -> e instanceof SwitchCommand)
+                .map(e -> (SwitchCommand) e)
+                .map(e -> e.getSwitchableId().get())
+                .collect(Collectors.toList());
+        List<String> usedShutterIds = switchTimer.getCommands().stream()
+                .filter(e -> e instanceof MoveCommand)
+                .map(e -> (MoveCommand) e)
+                .map(e -> e.getShutterId().get())
+                .collect(Collectors.toList());
+        Map<String, Shutter> shutters = actorEditor.getData().stream()
+                .filter(e -> e instanceof Shutter)
+                .map(e -> (Shutter) e)
+                .collect(Collectors.toMap(e -> e.getId().get(), e -> e));
         model.with("usedElementIds", usedElementIds);
-        model.with("usedElementCount", usedElementIds.size());
+        model.with("shutters", shutters);
+        model.with("usedShutterIds", usedShutterIds);
+        model.with("usedElementCount", usedElementIds.size() + usedShutterIds.size());
 
         switchableLock.unlock();
 
@@ -106,105 +124,80 @@ public class AutomationTimerFormServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String idStr = req.getParameter("id");
-        String addElementStr = req.getParameter("addElement");
-        String name = req.getParameter("name");
-        String description = req.getParameter("description");
-        String[] month = req.getParameterValues("month");
-        String[] weekday = req.getParameterValues("weekday");
-        String[] day = req.getParameterValues("day");
-        String[] hour = req.getParameterValues("hour");
-        String[] minute = req.getParameterValues("minute");
-        Map<String, String> commands = new HashMap<>();
-        for(int i = 0; i < 100; i++) {
-
-            if(req.getParameter("doubleSwitchableElement_" + i) != null && req.getParameter("doubleSwitchableCommand_" + i) != null) {
-
-                commands.put(req.getParameter("doubleSwitchableElement_" + i), req.getParameter("doubleSwitchableCommand_" + i));
-            }
-            if(req.getParameter("singleSwitchableElement_" + i) != null) {
-
-                commands.put(req.getParameter("singleSwitchableElement_" + i), "on");
-            }
-        }
-        String disabledStr = req.getParameter("disabled");
+        FormValidation form = FormValidation.create(req);
 
         //Daten vorbereiten
-        boolean addElement = true, disabled = false;
-        ID id = null;
         List<Integer> monthList = new ArrayList<>(10);
         List<Integer> weekdayList = new ArrayList<>(10);
         List<Integer> dayList = new ArrayList<>(15);
         List<Integer> hourList = new ArrayList<>(10);
         List<Integer> minuteList = new ArrayList<>(30);
-        List<SwitchCommand> switchCommands = new ArrayList<>(100);
 
-        //Daten prüfen
-        boolean success = true;
+        //Formulardaten validieren
+        ID id = form.getId("id", "ID");
+        boolean addElement = form.optBoolean("addElement", "neues Element", false);
+        String name = form.getString("name", "Name", 3, 50);
+        String description = form.optString("description", "Beschreibung", "", 3, 250);
+        boolean disabled = form.optBoolean("disabled", "Deaktiviert", false);
+
+        List<String> month = form.getStringList("month", "Monat", Pattern.compile("^[\\\\*0-9]{1,2}$"));
+        monthList = month.stream()
+                .filter(e -> !e.equalsIgnoreCase("*"))
+                .map(Integer::parseInt)
+                .filter(e -> e >= 1 && e <= 12)
+                .collect(Collectors.toList());
+        List<String> weekday = form.getStringList("weekday", "Wochentag", Pattern.compile("^[\\\\*0-9]{1}$"));
+        weekdayList = weekday.stream()
+                .filter(e -> !e.equalsIgnoreCase("*"))
+                .map(Integer::parseInt)
+                .filter(e -> e >= 1 && e <= 7)
+                .collect(Collectors.toList());
+        List<String> day = form.getStringList("day", "Tag", Pattern.compile("^[\\\\*0-9]{1,2}$"));
+        dayList = day.stream()
+                .filter(e -> !e.equalsIgnoreCase("*"))
+                .map(Integer::parseInt)
+                .filter(e -> e >= 1 && e <= 31)
+                .collect(Collectors.toList());
+        List<String> hour = form.getStringList("hour", "Stunde", Pattern.compile("^[\\\\*0-9]{1,2}$"));
+        hourList = hour.stream()
+                .filter(e -> !e.equalsIgnoreCase("*"))
+                .map(Integer::parseInt)
+                .filter(e -> e >= 0 && e <= 23)
+                .collect(Collectors.toList());
+        List<String> minute = form.getStringList("minute", "Minute", Pattern.compile("^[\\\\*0-9]{1,2}$"));
+        minuteList = minute.stream()
+                .filter(e -> !e.equalsIgnoreCase("*"))
+                .map(Integer::parseInt)
+                .filter(e -> e >= 0 && e <= 59)
+                .collect(Collectors.toList());
+
+        //Schaltbare Elemente
+        Map<String, String> switchCommands = new HashMap<>();
+        Map<String, String> moveCommands = new HashMap<>();
+        for(int i = 0; i < 100; i++) {
+
+            //Double Switchable
+            if(form.fieldExists("doubleSwitchableElement_" + i) && form.fieldExists("doubleSwitchableCommand_" + i)) {
+
+                switchCommands.put(req.getParameter("doubleSwitchableElement_" + i), req.getParameter("doubleSwitchableCommand_" + i));
+            }
+            //Single Switchable
+            if(form.fieldExists("singleSwitchableElement_" + i)) {
+
+                switchCommands.put(req.getParameter("singleSwitchableElement_" + i), "on");
+            }
+            //Shutter
+            if(form.fieldExists("shutterElement_" + i + "_id") && form.fieldExists("shutterElement_" + i + "_level")) {
+
+                moveCommands.put(req.getParameter("shutterElement_" + i + "_id"), req.getParameter("shutterElement_" + i + "_level"));
+            }
+        }
+
+        List<Command> commands = new ArrayList<>(100);
         try {
 
-            //ID
-            if(!(idStr != null)) {
-
-                success = false;
-            }
-            id = ID.of(idStr);
-            //neues Element
-            if(!(addElementStr != null && (addElementStr.equals("1") || addElementStr.equals("0")))) {
-
-                success = false;
-            } else {
-
-                addElement = addElementStr.equals("1");
-            }
-            //Name
-            if(!(name != null && name.length() >= 3 && name.length() <= 50)) {
-
-                success = false;
-            }
-            //Beschreibung
-            if(!(description != null && description.length() <= 250)) {
-
-                success = false;
-            }
-            //Zeiten
-            if(!(month.length >= 1 && month[0] != null && month[0].equals("*"))) {
-
-                for(int i = 0; i < month.length; i++) {
-
-                    monthList.add(Integer.parseInt(month[i]));
-                }
-            }
-            if(!(weekday.length >= 1 && weekday[0] != null && weekday[0].equals("*"))) {
-
-                for(int i = 0; i < weekday.length; i++) {
-
-                    weekdayList.add(Integer.parseInt(weekday[i]));
-                }
-            }
-            if(!(day.length >= 1 && day[0] != null && day[0].equals("*"))) {
-
-                for (int i = 0; i < day.length; i++) {
-
-                    dayList.add(Integer.parseInt(day[i]));
-                }
-            }
-            if(!(hour.length >= 1 && hour[0] != null && hour[0].equals("*"))) {
-
-                for (int i = 0; i < hour.length; i++) {
-
-                    hourList.add(Integer.parseInt(hour[i]));
-                }
-            }
-            if(!(minute.length >= 1 && minute[0] != null && minute[0].equals("*"))) {
-
-                for (int i = 0; i < minute.length; i++) {
-
-                    minuteList.add(Integer.parseInt(minute[i]));
-                }
-            }
-            //Befehle
-            for(Map.Entry command : commands.entrySet()) {
+            //schaltbefehle
+            for(Map.Entry<String, String> command : switchCommands.entrySet()) {
 
                 SwitchCommands switchCommand = SwitchCommands.off;
                 if (command.getValue().equals("on")) {
@@ -214,17 +207,27 @@ public class AutomationTimerFormServlet extends HttpServlet {
 
                     switchCommand = SwitchCommands.toggle;
                 }
-                switchCommands.add(new SwitchCommand(ID.of((String) command.getKey()), switchCommand));
+                commands.add(new SwitchCommand(ID.of(command.getKey()), switchCommand));
             }
-            //Deaktiviert und Invertiert
-            disabled = disabledStr != null && disabledStr.equalsIgnoreCase("on");
+
+            for(Map.Entry<String, String> command : moveCommands.entrySet()) {
+
+                int level = Integer.parseInt(command.getValue());
+                if(level >= 0 && level <= 100) {
+
+                    commands.add(new MoveCommand(ID.of(command.getKey()), level));
+                } else {
+
+                    throw new Exception();
+                }
+            }
 
         } catch (Exception e) {
 
-            success = false;
+            form.setInvalid("element", "Ungültige Schaltbefehle");
         }
 
-        if (success) {
+        if (form.isSuccessful()) {
 
             SwitchTimerEditor switchTimerEditor = Application.getInstance().getAutomation().getSwitchTimerEditor();
             ReentrantReadWriteLock.WriteLock lock = switchTimerEditor.writeLock();
@@ -248,7 +251,7 @@ public class AutomationTimerFormServlet extends HttpServlet {
                 switchTimer.getMinute().clear();
                 switchTimer.getMinute().addAll(minuteList);
                 switchTimer.getCommands().clear();
-                switchTimer.getCommands().addAll(switchCommands);
+                switchTimer.getCommands().addAll(commands);
                 switchTimer.setDisabled(disabled);
                 switchTimer.setNextExecutionTime(switchTimerEditor.calculateNextExecutionTime(switchTimer));
                 switchTimerEditor.getData().add(switchTimer);
@@ -276,7 +279,7 @@ public class AutomationTimerFormServlet extends HttpServlet {
                     switchTimer.getMinute().clear();
                     switchTimer.getMinute().addAll(minuteList);
                     switchTimer.getCommands().clear();
-                    switchTimer.getCommands().addAll(switchCommands);
+                    switchTimer.getCommands().addAll(commands);
                     switchTimer.setDisabled(disabled);
                     switchTimer.setNextExecutionTime(switchTimerEditor.calculateNextExecutionTime(switchTimer));
 

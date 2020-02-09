@@ -112,7 +112,7 @@
                     {% set doubleSwitchableNextIndex = 1 %}
                     {% set singleSwitchableNextIndex = 1 %}
                     {% for command in timer.getCommands() %}
-                        {% if doubleSwitchables.containsKey(command.getSwitchableId().get()) %}
+                        {% if command.getType() == 'COMMAND_SWITCH' and doubleSwitchables.containsKey(command.getSwitchableId().get()) %}
                             {% set switchable = doubleSwitchables.get(command.getSwitchableId().get()) %}
                             <div class="item" id="a{{ switchable.getId().get() | escape }}">
                                 <div class="content">
@@ -134,7 +134,7 @@
                                 <input type="hidden" name="doubleSwitchableCommand_{{ doubleSwitchableNextIndex }}" value="{{ command.getCommand() | escape}}">
                             </div>
                             {% set doubleSwitchableNextIndex = doubleSwitchableNextIndex + 1 %}
-                        {% elseif singleSwitchables.containsKey(command.getSwitchableId().get()) %}
+                        {% elseif command.getType() == 'COMMAND_SWITCH' and singleSwitchables.containsKey(command.getSwitchableId().get()) %}
                             {% set switchable = singleSwitchables.get(command.getSwitchableId().get()) %}
                             <div class="item" id="a{{  switchable.getId().get() | escape }}">
                                 <div class="content">
@@ -202,9 +202,61 @@
                     </div>
                 </div>
             </div>
+            <h5 class="ui segment attached top ">Rolll&auml;den</h5>
+            <div class="ui segment attached">
+                <div class="ui divided items" id="shutters">
+                    {% set shutterNextIndex = 1 %}
+                    {% for command in timer.getCommands() %}
+                        {% if command.getType() == 'COMMAND_MOVE' and shutters.containsKey(command.getShutterId().get()) %}
+                            {% set shutter = shutters.get(command.getShutterId().get()) %}
+                            <div class="item" id="a{{  shutter.getId().get() | escape }}">
+                                <div class="content">
+                                    <div class="header">{{ shutter.getName() | escape }}</div>
+                                    <div class="extra">
+                                        <div class="ui right floated red basic icon button" onclick="removeShutter('{{ shutter.getId().get() | escape }}');">
+                                            <i class="remove icon"></i>
+                                        </div>
+                                        <div class="ui label teal">{{ command.getTargetLevel() | escape }} %</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="shutterElement_{{ shutterNextIndex }}_id" value="{{ shutter.getId().get() | escape }}">
+                                <input type="hidden" name="shutterElement_{{ shutterNextIndex }}_level" value="{{ command.getTargetLevel() | escape }}">
+                            </div>
+                            {% set shutterNextIndex = shutterNextIndex + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="ui segment attached bottom">
+                <div class="ui grid stackable">
+                    <div class="ten wide column">
+                        <div id="shutter" class="ui dropdown selection fluid">
+                            <input name="shutter" value="" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Rolll&auml;den</div>
+                            <div class="menu">
+                                {% for key, shutter in shutters %}
+                                {% if usedShutterIds.contains(shutter.getId().get()) %}
+                                <div class="item disabled" data-value="{{ shutter.getId() }}">{{ shutter.getName() | escape }}</div>
+                                {% else %}
+                                <div class="item" data-value="{{ shutter.getId() }}">{{ shutter.getName() | escape }}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="five wide column">
+                        <input class="ui input" type="number" min="0" max="100" step="1" id="shutterLevel" placeholder="0">
+                    </div>
+                    <div class="one wide column">
+                        <button class="ui button icon secondary basic" type="button" id="addShutter"><i class="add icon"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
         <script type="text/javascript">
 
+            //Schaltbare Elemente
             function removeDoubleSwitchable(id) {
 
                 $('#a' + id).remove();
@@ -284,7 +336,51 @@
                     }
                 });
             });
-        </script>
+
+            //Rollläden
+            function removeShutter(id) {
+
+                $('#a' + id).remove();
+                $("#shutter").find('.menu .item[data-value=' + id + ']').removeClass('disabled');
+                deviceCount--;
+            }
+
+            $(function() {
+
+                var nextShutterIndex = {{ shutterNextIndex }};
+
+                //Einfachschaltelement
+                $('#addShutter').click(function() {
+
+                var selectedId = $("#shutter").dropdown('get value');
+                var level = $("#shutterLevel").val();
+                var selectedName = $("#shutter").dropdown('get text');
+
+                if(selectedId.length > 0) {
+
+                    $('#shutters').append(
+                        '<div class="item" id="a' + selectedId + '">' +
+                        '   <div class="content">' +
+                        '       <div class="header">' + selectedName + '</div>'+
+                        '       <div class="extra">' +
+                        '           <div class="ui right floated red basic icon button" onclick="removeShutter(\'' + selectedId + '\');">' +
+                        '               <i class="remove icon"></i>' +
+                        '           </div>' +
+                        '           <div class="ui label teal">' + level + ' %</div>' +
+                        '       </div>' +
+                        '   </div>' +
+                        '   <input type="hidden" name="shutterElement_' + nextShutterIndex + '_id" value="' + selectedId + '">' +
+                        '   <input type="hidden" name="shutterElement_' + nextShutterIndex + '_level" value="' + level + '">' +
+                        '</div>'
+                    );
+                    $("#shutter").dropdown('clear');
+                    $("#shutter").find('.menu .item[data-value=' + selectedId + ']').addClass('disabled');
+                    nextShutterIndex++;
+                    deviceCount++;
+                    }
+                });
+            });
+            </script>
         <div class="ui segment bottom attached">
             <div class="ui button basic secondary" onclick="window.history.back()">Zurück</div>
             <button class="ui button primary" type="submit">Speichern</button>

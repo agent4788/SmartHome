@@ -9,6 +9,8 @@ import com.mongodb.client.model.UpdateOptions;
 import net.kleditzsch.SmartHome.app.Application;
 import net.kleditzsch.SmartHome.global.base.ID;
 import net.kleditzsch.SmartHome.global.database.AbstractDatabaseEditor;
+import net.kleditzsch.SmartHome.model.automation.global.Interface.Command;
+import net.kleditzsch.SmartHome.model.automation.global.MoveCommand;
 import net.kleditzsch.SmartHome.model.automation.global.SwitchCommand;
 import net.kleditzsch.SmartHome.model.automation.switchtimer.SwitchTimer;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
@@ -55,14 +57,31 @@ public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
             element.setNextExecutionTime(DatabaseDateTimeUtil.dateToLocalDateTime(document.getDate("nextExecutionTime")));
 
             List<Document> commands = (List<Document>) document.get("commands");
-            for (Document command : commands) {
+            for (Document commandDoc : commands) {
 
-                element.getCommands().add(
-                        new SwitchCommand(
-                                ID.of(command.getString("switchableId")),
-                                SwitchCommands.valueOf(command.getString("command"))
-                        )
-                );
+                Command.Type type = commandDoc.getString("type") != null ? Command.Type.valueOf(commandDoc.getString("type")) : Command.Type.COMMAND_SWITCH;
+                switch (type) {
+
+                    case COMMAND_SWITCH:
+
+                        element.getCommands().add(
+                                new SwitchCommand(
+                                        ID.of(commandDoc.getString("switchableId")),
+                                        SwitchCommands.valueOf(commandDoc.getString("command"))
+                                )
+                        );
+                        break;
+                    case COMMAND_MOVE:
+
+                        element.getCommands().add(
+                                new MoveCommand(
+                                        ID.of(commandDoc.getString("shutterId")),
+                                        commandDoc.getInteger("targetLevel")
+                                )
+                        );
+                        break;
+                }
+
             }
 
             element.resetChangedData();
@@ -123,12 +142,23 @@ public class SwitchTimerEditor extends AbstractDatabaseEditor<SwitchTimer> {
             if(switchTimer.isChangedData()) {
 
                 List<Document> commands = new ArrayList<>(switchTimer.getCommands().size());
-                for(SwitchCommand switchCommand : switchTimer.getCommands()) {
+                for(Command command : switchTimer.getCommands()) {
 
-                    Document command = new Document();
-                    command.append("switchableId", switchCommand.getSwitchableId().get());
-                    command.append("command", switchCommand.getCommand().toString());
-                    commands.add(command);
+                    Document commandDoc = new Document();
+                    if(command instanceof SwitchCommand) {
+
+                        SwitchCommand switchCommand = (SwitchCommand) command;
+                        commandDoc.append("switchableId", switchCommand.getSwitchableId().get());
+                        commandDoc.append("command", switchCommand.getCommand().toString());
+                        commandDoc.append("type", switchCommand.getType().toString());
+                    } else if(command instanceof MoveCommand) {
+
+                        MoveCommand moveCommand = (MoveCommand) command;
+                        commandDoc.append("shutterId", moveCommand.getShutterId().get());
+                        commandDoc.append("targetLevel", moveCommand.getTargetLevel());
+                        commandDoc.append("type", moveCommand.getType().toString());
+                    }
+                    commands.add(commandDoc);
                 }
 
                 switchTimerCollection.updateOne(

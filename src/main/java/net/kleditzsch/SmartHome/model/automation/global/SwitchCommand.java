@@ -1,12 +1,16 @@
 package net.kleditzsch.SmartHome.model.automation.global;
 
+import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.global.base.ID;
+import net.kleditzsch.SmartHome.model.automation.global.Interface.Command;
 import net.kleditzsch.SmartHome.model.global.options.SwitchCommands;
 
 /**
  * Befehlsobjekt
  */
-public class SwitchCommand {
+public class SwitchCommand implements Command {
+
+    private Type type = Type.COMMAND_SWITCH;
 
     /**
      * ID des schaltbaren Elements
@@ -23,8 +27,8 @@ public class SwitchCommand {
      * @param command Befehl
      */
     public SwitchCommand(ID switchableId, SwitchCommands command) {
-        this.switchableId = switchableId;
-        this.command = command;
+        setSwitchableId(switchableId);
+        setCommand(command);
     }
 
     /**
@@ -42,6 +46,8 @@ public class SwitchCommand {
      * @param switchableId ID des schaltbaren Elements
      */
     public void setSwitchableId(ID switchableId) {
+
+        Preconditions.checkNotNull(switchableId);
         this.switchableId = switchableId;
     }
 
@@ -60,6 +66,18 @@ public class SwitchCommand {
      * @param command Befehl
      */
     public void setCommand(SwitchCommands command) {
+
+        Preconditions.checkNotNull(command);
         this.command = command;
+    }
+
+    /**
+     * gibt den Typ des Befels zurück
+     *
+     * @return Typ des Befehles
+     */
+    public Type getType() {
+
+        return type;
     }
 }
