@@ -1,10 +1,10 @@
 package net.kleditzsch.apps.recipe.view.user.recipe;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
 import net.kleditzsch.apps.recipe.model.recipe.Recipe;
 import net.kleditzsch.apps.recipe.model.recipe.WorkStep;
-import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

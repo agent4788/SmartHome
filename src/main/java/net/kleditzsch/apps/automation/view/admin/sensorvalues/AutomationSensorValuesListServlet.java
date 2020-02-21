@@ -3,14 +3,14 @@ package net.kleditzsch.apps.automation.view.admin.sensorvalues;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.Element;
+import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import net.kleditzsch.apps.automation.model.device.sensor.*;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.device.sensor.virtual.*;
 import net.kleditzsch.apps.automation.model.editor.SensorEditor;
-import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
-import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -245,11 +244,7 @@ public class AutomationSensorValuesListServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE);
-        if (elementsAtPageOptional.isPresent()) {
-
-            elementsAtPage = elementsAtPageOptional.get().getValue();
-        }
+        elementsAtPage = settingsEditor.getIntegerSetting(Settings.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE).getValue();
         settingsLock.unlock();
 
         ListPagination<SensorValue> pagination = new ListPagination<>(sensorValuesList, elementsAtPage, index);

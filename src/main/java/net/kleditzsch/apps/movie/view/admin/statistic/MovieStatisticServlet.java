@@ -1,14 +1,14 @@
 package net.kleditzsch.apps.movie.view.admin.statistic;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.movie.model.editor.*;
 import net.kleditzsch.apps.movie.model.movie.Movie;
 import net.kleditzsch.apps.movie.model.movie.MovieBox;
 import net.kleditzsch.apps.movie.model.movie.meta.Disc;
 import net.kleditzsch.apps.movie.model.movie.meta.FSK;
 import net.kleditzsch.apps.movie.model.movie.meta.Genre;
-import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

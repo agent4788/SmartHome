@@ -8,8 +8,8 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.recipe.model.recipe.*;
 import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
+import net.kleditzsch.apps.recipe.model.recipe.*;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 /**
  * Rezepteveraltung

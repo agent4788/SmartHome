@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.settings;
 
 import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 
 /**
  * Integer Einstellung
@@ -29,7 +30,7 @@ public class IntegerSetting extends Setting {
      * @param value
      * @param defaultValue
      */
-    public IntegerSetting(String name, int value, int defaultValue) {
+    public IntegerSetting(Settings name, int value, int defaultValue) {
 
         setName(name);
         setValue(value);

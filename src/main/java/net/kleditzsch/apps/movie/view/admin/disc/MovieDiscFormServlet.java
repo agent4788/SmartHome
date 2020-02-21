@@ -1,10 +1,10 @@
 package net.kleditzsch.apps.movie.view.admin.disc;
 
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.movie.model.editor.DiscEditor;
-import net.kleditzsch.apps.movie.model.movie.meta.Disc;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.movie.model.editor.DiscEditor;
+import net.kleditzsch.apps.movie.model.movie.meta.Disc;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

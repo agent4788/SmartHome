@@ -2,6 +2,7 @@ package net.kleditzsch.SmartHome.model.settings;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,12 @@ public class ListSetting extends Setting {
      */
     private Type type = Type.LIST;
 
-    public ListSetting() {
-    }
+    public ListSetting() {}
 
     /**
      * @param name Name der Einstellung
      */
-    public ListSetting(String name) {
+    public ListSetting(Settings name) {
         setName(name);
     }
 

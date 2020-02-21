@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.settings;
 
 import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 
 /**
  * Boolean Setting
@@ -29,7 +30,7 @@ public class BooleanSetting extends Setting {
      * @param value
      * @param defaultValue
      */
-    public BooleanSetting(String name, boolean value, boolean defaultValue) {
+    public BooleanSetting(Settings name, boolean value, boolean defaultValue) {
 
         setName(name);
         setValue(value);

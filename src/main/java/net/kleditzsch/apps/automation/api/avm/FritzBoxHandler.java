@@ -1,7 +1,7 @@
 package net.kleditzsch.apps.automation.api.avm;
 
-import net.kleditzsch.apps.automation.api.avm.Exception.AuthException;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
+import net.kleditzsch.apps.automation.api.avm.Exception.AuthException;
 
 import java.io.IOException;
 import java.math.BigInteger;

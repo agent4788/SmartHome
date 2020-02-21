@@ -2,10 +2,10 @@ package net.kleditzsch.apps.automation.view.admin.sensorvalues;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.formatter.DateTimeFormatUtil;
 import net.kleditzsch.apps.automation.model.device.sensor.*;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.editor.SensorEditor;
-import net.kleditzsch.SmartHome.utility.formatter.DateTimeFormatUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

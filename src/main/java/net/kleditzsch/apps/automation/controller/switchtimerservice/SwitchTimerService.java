@@ -1,18 +1,18 @@
 package net.kleditzsch.apps.automation.controller.switchtimerservice;
 
 import net.kleditzsch.SmartHome.SmartHome;
+import net.kleditzsch.SmartHome.model.editor.MessageEditor;
+import net.kleditzsch.SmartHome.model.message.Message;
+import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import net.kleditzsch.apps.automation.controller.executorservice.ExecutorService;
 import net.kleditzsch.apps.automation.controller.executorservice.command.MoveShutterCommand;
 import net.kleditzsch.apps.automation.controller.executorservice.command.SwitchCommand;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Shutter;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Switchable;
-import net.kleditzsch.apps.automation.model.editor.SwitchTimerEditor;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
+import net.kleditzsch.apps.automation.model.editor.SwitchTimerEditor;
 import net.kleditzsch.apps.automation.model.global.MoveCommand;
-import net.kleditzsch.SmartHome.model.editor.MessageEditor;
-import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

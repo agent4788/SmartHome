@@ -1,11 +1,11 @@
 package net.kleditzsch.apps.network.view.user.overview;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.network.model.devices.NetworkDevice;
 import net.kleditzsch.apps.network.model.devices.NetworkDeviceGroup;
 import net.kleditzsch.apps.network.model.editor.NetworkDeviceEditor;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

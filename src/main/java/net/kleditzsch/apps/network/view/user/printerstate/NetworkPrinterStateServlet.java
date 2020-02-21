@@ -4,10 +4,10 @@ import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
-import net.kleditzsch.apps.network.api.printer.PrinterState;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.network.api.printer.PrinterState;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Pattern;
 
@@ -39,8 +38,7 @@ public class NetworkPrinterStateServlet extends HttpServlet {
                 SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
                 ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
                 settingsLock.lock();
-                Optional<StringSetting> printerStateSettingOptional = settingsEditor.getStringSetting(SettingsEditor.NETWORK_PRINTER_STATE_IP);
-                printerStateSettingOptional.ifPresent(setting -> setting.setValue(ip));
+                settingsEditor.getStringSetting(Settings.NETWORK_PRINTER_STATE_IP).setValue(ip);
                 settingsLock.unlock();
                 model.with("ipChanged", true);
             }
@@ -51,11 +49,7 @@ public class NetworkPrinterStateServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> printerStateSettingOptional = settingsEditor.getStringSetting(SettingsEditor.NETWORK_PRINTER_STATE_IP);
-        if (printerStateSettingOptional.isPresent()) {
-
-            printerIp = printerStateSettingOptional.get().getValue();
-        }
+        printerIp = settingsEditor.getStringSetting(Settings.NETWORK_PRINTER_STATE_IP).getValue();
         settingsLock.unlock();
 
         //Daten vom Drucker laden

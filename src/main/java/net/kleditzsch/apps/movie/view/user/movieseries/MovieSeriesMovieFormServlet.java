@@ -1,12 +1,13 @@
 package net.kleditzsch.apps.movie.view.user.movieseries;
 
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.movie.model.editor.*;
-import net.kleditzsch.apps.movie.model.movie.Movie;
-import net.kleditzsch.apps.movie.model.movie.MovieSeries;
-import net.kleditzsch.apps.movie.model.movie.meta.*;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.movie.model.editor.MovieEditor;
+import net.kleditzsch.apps.movie.model.editor.MovieSeriesEditor;
+import net.kleditzsch.apps.movie.model.movie.Movie;
+import net.kleditzsch.apps.movie.model.movie.MovieSeries;
+import net.kleditzsch.apps.movie.model.movie.meta.SeriesMovie;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.eclipse.jetty.server.Request;
 import org.jtwig.JtwigModel;

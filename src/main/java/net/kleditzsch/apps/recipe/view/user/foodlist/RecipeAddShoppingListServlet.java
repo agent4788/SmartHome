@@ -3,19 +3,19 @@ package net.kleditzsch.apps.recipe.view.user.foodlist;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
+import net.kleditzsch.SmartHome.utility.formatter.NumberFormatUtil;
 import net.kleditzsch.apps.recipe.model.editor.IngredientEditor;
 import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
 import net.kleditzsch.apps.recipe.model.recipe.Ingredient;
 import net.kleditzsch.apps.recipe.model.recipe.IngredientAmount;
 import net.kleditzsch.apps.recipe.model.recipe.LinkedRecipe;
 import net.kleditzsch.apps.recipe.model.recipe.Recipe;
+import net.kleditzsch.apps.recipe.util.RecipeUtil;
 import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
 import net.kleditzsch.apps.shoppinglist.model.list.Item;
 import net.kleditzsch.apps.shoppinglist.model.list.ShoppingList;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
-import net.kleditzsch.SmartHome.utility.formatter.NumberFormatUtil;
-import net.kleditzsch.apps.recipe.util.RecipeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,11 +37,7 @@ public class RecipeAddShoppingListServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> shoppingListIdOptional = settingsEditor.getStringSetting(SettingsEditor.RECIPE_SHOPPING_LIST_ID);
-        if (shoppingListIdOptional.isPresent()) {
-
-            shoppinListIdStr = shoppingListIdOptional.get().getValue();
-        }
+        shoppinListIdStr = settingsEditor.getStringSetting(Settings.RECIPE_SHOPPING_LIST_ID).getValue();
         settingsLock.unlock();
 
         if(!shoppinListIdStr.isBlank()) {

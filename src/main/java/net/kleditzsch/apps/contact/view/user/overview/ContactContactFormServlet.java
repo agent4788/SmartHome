@@ -1,11 +1,11 @@
 package net.kleditzsch.apps.contact.view.user.overview;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.contact.model.contact.Contact;
 import net.kleditzsch.apps.contact.model.contact.ContactGroup;
 import net.kleditzsch.apps.contact.model.editor.ContactEditor;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

@@ -3,10 +3,10 @@ package net.kleditzsch.apps.recipe.view.user;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
 import net.kleditzsch.apps.recipe.model.recipe.Recipe;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -36,11 +35,7 @@ public class RecipeIndexServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> newestRecipeCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.RECIPE_NEWEST_RECIPE_COUNT);
-        if (newestRecipeCountOptional.isPresent()) {
-
-            newestRecipeCount = newestRecipeCountOptional.get().getValue();
-        }
+        newestRecipeCount = settingsEditor.getIntegerSetting(Settings.RECIPE_NEWEST_RECIPE_COUNT).getValue();
         settingsLock.unlock();
 
         Random random = new Random();

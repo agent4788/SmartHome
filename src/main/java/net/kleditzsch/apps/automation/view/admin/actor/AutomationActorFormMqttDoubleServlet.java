@@ -2,12 +2,12 @@ package net.kleditzsch.apps.automation.view.admin.actor;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.MqttElement;
 import net.kleditzsch.apps.automation.model.device.actor.switchable.MqttDouble;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

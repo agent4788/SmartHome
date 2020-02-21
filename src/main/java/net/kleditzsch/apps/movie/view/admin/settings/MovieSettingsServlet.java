@@ -2,8 +2,7 @@ package net.kleditzsch.apps.movie.view.admin.settings;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MovieSettingsServlet extends HttpServlet {
@@ -33,16 +31,11 @@ public class MovieSettingsServlet extends HttpServlet {
         lock.lock();
 
         //Einstellungen laden
-        Optional<IntegerSetting> newestMoviesCountOptional = se.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-        newestMoviesCountOptional.ifPresent(setting -> model.with("newestMoviesCount", setting.getValue()));
-        Optional<IntegerSetting> bestMoviesCountOptional = se.getIntegerSetting(SettingsEditor.MOVIE_BEST_MOVIES_COUNT);
-        bestMoviesCountOptional.ifPresent(setting -> model.with("bestMoviesCount", setting.getValue()));
-        Optional<IntegerSetting> paginationUcpOptional = se.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE);
-        paginationUcpOptional.ifPresent(setting -> model.with("paginationUcp", setting.getValue()));
-        Optional<IntegerSetting> paginationAcpOptional = se.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
-        paginationAcpOptional.ifPresent(setting -> model.with("paginationAcp", setting.getValue()));
-        Optional<StringSetting> tmdbApiKeyOptional = se.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-        tmdbApiKeyOptional.ifPresent(setting -> model.with("tmdbApiKey", setting.getValue()));
+        model.with("newestMoviesCount", se.getIntegerSetting(Settings.MOVIE_NEWEST_MOVIES_COUNT).getValue());
+        model.with("bestMoviesCount", se.getIntegerSetting(Settings.MOVIE_BEST_MOVIES_COUNT).getValue());
+        model.with("paginationUcp", se.getIntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE).getValue());
+        model.with("paginationAcp", se.getIntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE).getValue());
+        model.with("tmdbApiKey", se.getStringSetting(Settings.MOVIE_TMDB_API_KEY).getValue());
 
         //Meldung
         if(req.getSession().getAttribute("success") != null) {
@@ -77,16 +70,11 @@ public class MovieSettingsServlet extends HttpServlet {
             lock.lock();
 
             //Einstellungen laden
-            Optional<IntegerSetting> newestMoviesCountOptional = se.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-            newestMoviesCountOptional.ifPresent(setting -> setting.setValue(newestMoviesCount));
-            Optional<IntegerSetting> bestMoviesCountOptional = se.getIntegerSetting(SettingsEditor.MOVIE_BEST_MOVIES_COUNT);
-            bestMoviesCountOptional.ifPresent(setting -> setting.setValue(bestMoviesCount));
-            Optional<IntegerSetting> paginationUcpOptional = se.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE);
-            paginationUcpOptional.ifPresent(setting -> setting.setValue(paginationUcp));
-            Optional<IntegerSetting> paginationAcpOptional = se.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
-            paginationAcpOptional.ifPresent(setting -> setting.setValue(paginationAcp));
-            Optional<StringSetting> tmdbApiKeyOptional = se.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-            tmdbApiKeyOptional.ifPresent(setting -> setting.setValue(tmdbApiKey));
+            se.getIntegerSetting(Settings.MOVIE_NEWEST_MOVIES_COUNT).setValue(newestMoviesCount);
+            se.getIntegerSetting(Settings.MOVIE_BEST_MOVIES_COUNT).setValue(bestMoviesCount);
+            se.getIntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE).setValue(paginationUcp);
+            se.getIntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE).setValue(paginationAcp);
+            se.getStringSetting(Settings.MOVIE_TMDB_API_KEY).setValue(tmdbApiKey);
 
             lock.unlock();
 

@@ -1,10 +1,10 @@
 package net.kleditzsch.apps.movie.view.user.moviebox;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 import net.kleditzsch.apps.movie.model.editor.MovieBoxEditor;
 import net.kleditzsch.apps.movie.model.movie.MovieBox;
 import net.kleditzsch.apps.movie.model.movie.meta.BoxMovie;
-import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -3,13 +3,14 @@ package net.kleditzsch.apps.movie.view.user.movieseries;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.apps.movie.model.editor.*;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.utility.string.StringUtil;
+import net.kleditzsch.apps.movie.model.editor.MovieEditor;
+import net.kleditzsch.apps.movie.model.editor.MovieSeriesEditor;
 import net.kleditzsch.apps.movie.model.movie.Movie;
 import net.kleditzsch.apps.movie.model.movie.MovieSeries;
 import net.kleditzsch.apps.movie.model.movie.meta.SeriesMovie;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
-import net.kleditzsch.SmartHome.utility.string.StringUtil;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -38,11 +39,7 @@ public class MovieMovieSeriesViewServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-        if (newestMoviesCountOptional.isPresent()) {
-
-            newestMoviesCount = newestMoviesCountOptional.get().getValue();
-        }
+        newestMoviesCount = settingsEditor.getIntegerSetting(Settings.MOVIE_NEWEST_MOVIES_COUNT).getValue();
         settingsLock.unlock();
         model.with("newestMovies", MovieEditor.listNewestMovieIds(newestMoviesCount).stream().map(ID::toString).collect(Collectors.toList()));
 

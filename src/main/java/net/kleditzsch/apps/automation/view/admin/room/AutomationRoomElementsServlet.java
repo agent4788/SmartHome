@@ -3,13 +3,13 @@ package net.kleditzsch.apps.automation.view.admin.room;
 import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import net.kleditzsch.apps.automation.model.editor.RoomEditor;
 import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 import net.kleditzsch.apps.automation.model.room.Room;
-import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
-import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -77,11 +77,7 @@ public class AutomationRoomElementsServlet extends HttpServlet {
                     SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
                     ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
                     settingsLock.lock();
-                    Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE);
-                    if (elementsAtPageOptional.isPresent()) {
-
-                        elementsAtPage = elementsAtPageOptional.get().getValue();
-                    }
+                    elementsAtPage = settingsEditor.getIntegerSetting(Settings.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE).getValue();
                     settingsLock.unlock();
 
                     ListPagination<RoomElement> pagination = new ListPagination<>(roomElements, elementsAtPage, index);

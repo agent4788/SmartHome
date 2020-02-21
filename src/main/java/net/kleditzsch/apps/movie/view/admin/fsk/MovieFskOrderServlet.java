@@ -1,9 +1,9 @@
 package net.kleditzsch.apps.movie.view.admin.fsk;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 import net.kleditzsch.apps.movie.model.editor.FskEditor;
 import net.kleditzsch.apps.movie.model.movie.meta.FSK;
-import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -5,12 +5,11 @@ import net.kleditzsch.SmartHome.database.DatabaseEditor;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.model.settings.BooleanSetting;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import net.kleditzsch.apps.automation.api.avm.Device.SmarthomeDevice;
 import net.kleditzsch.apps.automation.api.avm.Exception.AuthException;
 import net.kleditzsch.apps.automation.api.avm.FritzBoxSmarthome;
-import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,14 +56,10 @@ public class AvmEditor implements DatabaseEditor {
         ReentrantReadWriteLock.ReadLock lock = settingsEditor.getReadWriteLock().readLock();
         lock.lock();
 
-        Optional<BooleanSetting> activeOptional = settingsEditor.getBooleanSetting(SettingsEditor.AUTOMATION_FB_ACTIVE);
-        active = activeOptional.isPresent() && activeOptional.get().getValue();
-        Optional<StringSetting> addressOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_ADDRESS);
-        address = addressOptional.isPresent() ? addressOptional.get().getValue() : "";
-        Optional<StringSetting> userOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_USER);
-        user = userOptional.isPresent() ? userOptional.get().getValue() : "";
-        Optional<StringSetting> passwordOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_FB_PASSWORD);
-        password = passwordOptional.isPresent() ? passwordOptional.get().getValue() : "";
+        active = settingsEditor.getBooleanSetting(Settings.AUTOMATION_FB_ACTIVE).getValue();
+        address = settingsEditor.getStringSetting(Settings.AUTOMATION_FB_ADDRESS).getValue();
+        user = settingsEditor.getStringSetting(Settings.AUTOMATION_FB_USER).getValue();
+        password = settingsEditor.getStringSetting(Settings.AUTOMATION_FB_PASSWORD).getValue();
 
         lock.unlock();
 

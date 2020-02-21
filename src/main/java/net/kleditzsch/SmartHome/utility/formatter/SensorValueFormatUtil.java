@@ -1,9 +1,9 @@
 package net.kleditzsch.SmartHome.utility.formatter;
 
+import net.kleditzsch.SmartHome.utility.datetime.TimeUtil;
 import net.kleditzsch.apps.automation.model.device.sensor.*;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.device.sensor.virtual.*;
-import net.kleditzsch.SmartHome.utility.datetime.TimeUtil;
 
 import java.math.BigInteger;
 

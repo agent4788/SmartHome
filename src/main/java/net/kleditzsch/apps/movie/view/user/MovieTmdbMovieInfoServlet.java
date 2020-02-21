@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.apps.automation.api.tmdb.SimpleTmdbRestClient;
 import net.kleditzsch.apps.automation.api.tmdb.data.MovieInfo;
 import net.kleditzsch.apps.automation.api.tmdb.exception.TmdbException;
@@ -31,11 +31,7 @@ public class MovieTmdbMovieInfoServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-        if (tmdbApiKeyOptional.isPresent()) {
-
-            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
-        }
+        tmdbApiKey = settingsEditor.getStringSetting(Settings.MOVIE_TMDB_API_KEY).getValue();
         settingsLock.unlock();
 
         if(tmdbApiKey.length() > 0) {

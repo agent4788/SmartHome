@@ -2,12 +2,12 @@ package net.kleditzsch.apps.automation.controller.executorservice.handler;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.SmartHome;
+import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.apps.automation.controller.mqttservice.MqttService;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Shutter;
 import net.kleditzsch.apps.automation.model.device.actor.shutter.MqttShutter;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

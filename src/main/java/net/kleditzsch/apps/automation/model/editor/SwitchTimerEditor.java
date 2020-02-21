@@ -1,21 +1,18 @@
 package net.kleditzsch.apps.automation.model.editor;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import net.kleditzsch.SmartHome.SmartHome;
-import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.database.AbstractDatabaseEditor;
+import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.model.options.SwitchCommands;
+import net.kleditzsch.SmartHome.utility.datetime.CornjobCalculator;
+import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.apps.automation.model.global.Interface.Command;
 import net.kleditzsch.apps.automation.model.global.MoveCommand;
 import net.kleditzsch.apps.automation.model.global.SwitchCommand;
 import net.kleditzsch.apps.automation.model.switchtimer.SwitchTimer;
-import net.kleditzsch.SmartHome.model.options.SwitchCommands;
-import net.kleditzsch.SmartHome.utility.datetime.CornjobCalculator;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
 
 import java.time.LocalDateTime;
@@ -23,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.*;
 
 /**
  * Timer Datenverwaltung

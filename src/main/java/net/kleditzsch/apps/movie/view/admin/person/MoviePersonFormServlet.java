@@ -1,10 +1,10 @@
 package net.kleditzsch.apps.movie.view.admin.person;
 
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.movie.model.editor.PersonEditor;
-import net.kleditzsch.apps.movie.model.movie.meta.Person;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.movie.model.editor.PersonEditor;
+import net.kleditzsch.apps.movie.model.movie.meta.Person;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

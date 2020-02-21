@@ -2,15 +2,15 @@ package net.kleditzsch.apps.automation.view.admin.actor;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
+import net.kleditzsch.apps.automation.model.device.actor.switchable.TPlinkSocket;
 import net.kleditzsch.apps.automation.model.device.sensor.ActualPowerValue;
 import net.kleditzsch.apps.automation.model.device.sensor.CurrentValue;
 import net.kleditzsch.apps.automation.model.device.sensor.EnergyValue;
 import net.kleditzsch.apps.automation.model.device.sensor.VoltageValue;
-import net.kleditzsch.apps.automation.model.device.actor.switchable.TPlinkSocket;
-import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

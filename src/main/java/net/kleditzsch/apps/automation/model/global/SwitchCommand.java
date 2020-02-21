@@ -2,8 +2,8 @@ package net.kleditzsch.apps.automation.model.global;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.automation.model.global.Interface.Command;
 import net.kleditzsch.SmartHome.model.options.SwitchCommands;
+import net.kleditzsch.apps.automation.model.global.Interface.Command;
 
 /**
  * Befehlsobjekt

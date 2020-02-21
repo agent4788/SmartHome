@@ -1,9 +1,9 @@
 package net.kleditzsch.apps.shoppinglist.view.user;
 
-import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
-import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingItemSuggestionEditor;
-import net.kleditzsch.apps.shoppinglist.model.list.ShoppingList;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingItemSuggestionEditor;
+import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
+import net.kleditzsch.apps.shoppinglist.model.list.ShoppingList;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class ShoppingListIndexServlet extends HttpServlet {
 

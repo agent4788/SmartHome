@@ -1,12 +1,12 @@
 package net.kleditzsch.apps.automation.controller.executorservice.handler;
 
 import net.kleditzsch.SmartHome.SmartHome;
-import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
-import net.kleditzsch.apps.automation.model.device.sensor.UserAtHomeValue;
-import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
+import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
+import net.kleditzsch.apps.automation.model.device.sensor.UserAtHomeValue;
+import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 
 import java.net.InetAddress;
 import java.time.LocalDateTime;

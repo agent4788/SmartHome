@@ -1,8 +1,8 @@
 package net.kleditzsch.apps.automation.model.device.actor.shutter;
 
 import com.google.common.base.Preconditions;
-import net.kleditzsch.apps.automation.model.device.actor.Interface.Shutter;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.MqttElement;
+import net.kleditzsch.apps.automation.model.device.actor.Interface.Shutter;
 
 public class MqttShutter extends Shutter implements MqttElement {
 

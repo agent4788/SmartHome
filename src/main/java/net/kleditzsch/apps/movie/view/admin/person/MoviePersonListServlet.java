@@ -4,11 +4,11 @@ import com.google.common.html.HtmlEscapers;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.Element;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.apps.movie.model.editor.PersonEditor;
-import net.kleditzsch.apps.movie.model.movie.meta.Person;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
+import net.kleditzsch.apps.movie.model.editor.PersonEditor;
+import net.kleditzsch.apps.movie.model.movie.meta.Person;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -60,11 +59,7 @@ public class MoviePersonListServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
-        if (elementsAtPageOptional.isPresent()) {
-
-            elementsAtPage = elementsAtPageOptional.get().getValue();
-        }
+        elementsAtPage = settingsEditor.getIntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE).getValue();
         settingsLock.unlock();
 
         ListPagination<Person> pagination = new ListPagination<>(personList, elementsAtPage, index);

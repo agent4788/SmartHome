@@ -1,11 +1,11 @@
 package net.kleditzsch.SmartHome.model.base;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Optional;
 
 /**
  * Basis Element
- *
- * @author Oliver Kleditzsch
  */
 public abstract class Element {
 
@@ -45,13 +45,9 @@ public abstract class Element {
      */
     public void setId(ID id) {
 
-        if(id != null) {
-
-            this.id = id;
-        } else {
-
-            throw new IllegalArgumentException("Ungültige ID");
-        }
+        Preconditions.checkNotNull(id);
+        this.id = id;
+        setChangedData();
     }
 
     /**
@@ -70,14 +66,10 @@ public abstract class Element {
      */
     public void setName(String name) {
 
-        if(name != null && name.trim().length() >= 1) {
-
-            this.name = name;
-            setChangedData();
-        } else {
-
-            throw new IllegalArgumentException("Ungültiger Name");
-        }
+        Preconditions.checkNotNull(name);
+        Preconditions.checkArgument(name.length() >= 1 && name.length() <= 50);
+        this.name = name;
+        setChangedData();
     }
 
     /**
@@ -97,6 +89,8 @@ public abstract class Element {
      */
     public void setDescription(String description) {
 
+        Preconditions.checkNotNull(description);
+        Preconditions.checkArgument(description.length() <= 250);
         this.description = description;
         setChangedData();
     }

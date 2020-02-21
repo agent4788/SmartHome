@@ -1,8 +1,8 @@
 package net.kleditzsch.apps.automation.api.avm;
 
+import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import net.kleditzsch.apps.automation.api.avm.Device.Components.*;
 import net.kleditzsch.apps.automation.api.avm.Device.SmarthomeDevice;
-import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -10,7 +10,9 @@ import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 /**

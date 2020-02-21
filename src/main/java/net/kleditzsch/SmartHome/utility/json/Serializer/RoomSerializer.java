@@ -2,8 +2,8 @@ package net.kleditzsch.SmartHome.utility.json.Serializer;
 
 import com.google.gson.*;
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 import net.kleditzsch.apps.automation.model.global.SwitchCommand;
+import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 import net.kleditzsch.apps.automation.model.room.Room;
 import net.kleditzsch.apps.automation.model.room.element.ButtonElement;
 import net.kleditzsch.apps.automation.model.room.element.DividerElement;

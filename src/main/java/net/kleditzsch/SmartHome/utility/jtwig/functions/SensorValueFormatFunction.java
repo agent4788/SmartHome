@@ -1,7 +1,7 @@
 package net.kleditzsch.SmartHome.utility.jtwig.functions;
 
-import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.SmartHome.utility.formatter.SensorValueFormatUtil;
+import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import org.jtwig.functions.FunctionRequest;
 import org.jtwig.functions.SimpleJtwigFunction;
 

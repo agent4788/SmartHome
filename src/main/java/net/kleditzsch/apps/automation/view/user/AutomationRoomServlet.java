@@ -2,10 +2,10 @@ package net.kleditzsch.apps.automation.view.user;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.automation.model.editor.RoomEditor;
 import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import net.kleditzsch.apps.automation.model.room.Room;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

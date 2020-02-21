@@ -9,10 +9,10 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.apps.movie.model.movie.Movie;
 import net.kleditzsch.apps.movie.model.movie.MovieFilter;
 import net.kleditzsch.apps.movie.model.movie.meta.Disc;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -22,7 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 

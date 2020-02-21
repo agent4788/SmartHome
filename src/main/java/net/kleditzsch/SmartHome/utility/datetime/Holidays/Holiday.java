@@ -1,7 +1,5 @@
 package net.kleditzsch.SmartHome.utility.datetime.Holidays;
 
-import net.kleditzsch.SmartHome.utility.datetime.Holidays.GermanHolidays;
-
 import java.time.Year;
 
 /**

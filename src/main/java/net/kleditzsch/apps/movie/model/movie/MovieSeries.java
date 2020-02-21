@@ -3,7 +3,8 @@ package net.kleditzsch.apps.movie.model.movie;
 import net.kleditzsch.SmartHome.model.base.Element;
 import net.kleditzsch.apps.movie.model.movie.meta.SeriesMovie;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Filmreihe

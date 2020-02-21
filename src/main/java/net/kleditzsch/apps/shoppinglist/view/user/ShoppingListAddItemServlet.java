@@ -1,11 +1,11 @@
 package net.kleditzsch.apps.shoppinglist.view.user;
 
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingItemSuggestionEditor;
+import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
 import net.kleditzsch.apps.shoppinglist.model.list.Item;
 import net.kleditzsch.apps.shoppinglist.model.list.ShoppingList;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

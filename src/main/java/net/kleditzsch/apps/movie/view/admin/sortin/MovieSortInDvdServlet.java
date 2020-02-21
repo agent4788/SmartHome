@@ -3,12 +3,12 @@ package net.kleditzsch.apps.movie.view.admin.sortin;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.movie.model.editor.DiscEditor;
 import net.kleditzsch.apps.movie.model.editor.MovieEditor;
 import net.kleditzsch.apps.movie.model.movie.Movie;
 import net.kleditzsch.apps.movie.model.movie.meta.Disc;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -52,11 +51,7 @@ public class MovieSortInDvdServlet extends HttpServlet {
                 SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
                 ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
                 settingsLock.lock();
-                Optional<IntegerSetting> newestMoviesCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.MOVIE_NEWEST_MOVIES_COUNT);
-                if (newestMoviesCountOptional.isPresent()) {
-
-                    newestMoviesCount = newestMoviesCountOptional.get().getValue();
-                }
+                newestMoviesCount = settingsEditor.getIntegerSetting(Settings.MOVIE_NEWEST_MOVIES_COUNT).getValue();
                 settingsLock.unlock();
 
                 //Auswahlseite anzeigen

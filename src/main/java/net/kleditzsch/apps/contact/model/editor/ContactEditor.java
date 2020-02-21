@@ -6,8 +6,8 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.contact.model.contact.*;
 import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
+import net.kleditzsch.apps.contact.model.contact.*;
 import org.bson.Document;
 
 import java.util.ArrayList;

@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.settings;
 
 import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 
 /**
  * Double Einstellung
@@ -29,7 +30,7 @@ public class DoubleSetting extends Setting {
      * @param value
      * @param defaultValue
      */
-    public DoubleSetting(String name, double value, double defaultValue) {
+    public DoubleSetting(Settings name, double value, double defaultValue) {
 
         setName(name);
         setValue(value);

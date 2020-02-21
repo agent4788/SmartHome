@@ -3,10 +3,10 @@ package net.kleditzsch.apps.movie.view.user.movieseries;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.kleditzsch.SmartHome.utility.datetime.TimeUtil;
+import net.kleditzsch.SmartHome.utility.string.StringUtil;
 import net.kleditzsch.apps.movie.model.editor.MovieEditor;
 import net.kleditzsch.apps.movie.model.movie.Movie;
-import net.kleditzsch.SmartHome.utility.string.StringUtil;
-import net.kleditzsch.SmartHome.utility.datetime.TimeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

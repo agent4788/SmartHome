@@ -1,21 +1,16 @@
 package net.kleditzsch.SmartHome.database;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.mongodb.Block;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import net.kleditzsch.SmartHome.database.exception.DatabaseException;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.SmartHome.utility.datetime.DateTimeConverter;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import org.bson.Document;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

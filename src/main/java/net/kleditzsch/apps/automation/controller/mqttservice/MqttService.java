@@ -1,18 +1,17 @@
 package net.kleditzsch.apps.automation.controller.mqttservice;
 
 import net.kleditzsch.SmartHome.SmartHome;
-import net.kleditzsch.apps.automation.controller.mqttservice.listener.ShutterStateListener;
-import net.kleditzsch.apps.automation.controller.mqttservice.listener.SwitchableStateListener;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.model.settings.BooleanSetting;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
-import org.eclipse.paho.client.mqttv3.*;
+import net.kleditzsch.apps.automation.controller.mqttservice.listener.ShutterStateListener;
+import net.kleditzsch.apps.automation.controller.mqttservice.listener.SwitchableStateListener;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -79,18 +78,12 @@ public class MqttService {
         ReentrantReadWriteLock.ReadLock lock = settingsEditor.readLock();
         lock.lock();
 
-        Optional<BooleanSetting> activeOptional = settingsEditor.getBooleanSetting(SettingsEditor.AUTOMATION_MQTT_ACTIVE);
-        active = activeOptional.isPresent() && activeOptional.get().getValue();
-        Optional<StringSetting> addressOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_ADDRESS);
-        brokerAddress = addressOptional.isPresent() ? addressOptional.get().getValue() : "";
-        Optional<IntegerSetting> portOptional = settingsEditor.getIntegerSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PORT);
-        brokerPort = portOptional.isPresent() ? portOptional.get().getValue() : 1883;
-        Optional<StringSetting> clientIdOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_CLIENT_ID);
-        clientId = clientIdOptional.isPresent() ? clientIdOptional.get().getValue() : "";
-        Optional<StringSetting> userOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_USERNAME);
-        username = userOptional.isPresent() ? userOptional.get().getValue() : "";
-        Optional<StringSetting> passwordOptional = settingsEditor.getStringSetting(SettingsEditor.AUTOMATION_MQTT_BROKER_PASSWORD);
-        password = passwordOptional.isPresent() ? passwordOptional.get().getValue() : "";
+        active = settingsEditor.getBooleanSetting(Settings.AUTOMATION_MQTT_ACTIVE).getValue();
+        brokerAddress = settingsEditor.getStringSetting(Settings.AUTOMATION_MQTT_BROKER_ADDRESS).getValue();
+        brokerPort = settingsEditor.getIntegerSetting(Settings.AUTOMATION_MQTT_BROKER_PORT).getValue();
+        clientId = settingsEditor.getStringSetting(Settings.AUTOMATION_MQTT_BROKER_CLIENT_ID).getValue();
+        username = settingsEditor.getStringSetting(Settings.AUTOMATION_MQTT_BROKER_USERNAME).getValue();
+        password = settingsEditor.getStringSetting(Settings.AUTOMATION_MQTT_BROKER_PASSWORD).getValue();
 
         lock.unlock();
     }

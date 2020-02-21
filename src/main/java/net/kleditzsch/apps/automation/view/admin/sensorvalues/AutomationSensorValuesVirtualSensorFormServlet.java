@@ -2,12 +2,12 @@ package net.kleditzsch.apps.automation.view.admin.sensorvalues;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.apps.automation.model.device.sensor.*;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.VirtualSensorValue;
 import net.kleditzsch.apps.automation.model.device.sensor.virtual.*;
 import net.kleditzsch.apps.automation.model.editor.SensorEditor;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -17,7 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class AutomationSensorValuesVirtualSensorFormServlet extends HttpServlet {

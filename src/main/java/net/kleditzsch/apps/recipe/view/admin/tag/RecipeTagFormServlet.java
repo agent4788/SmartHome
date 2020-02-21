@@ -1,10 +1,10 @@
 package net.kleditzsch.apps.recipe.view.admin.tag;
 
 import net.kleditzsch.SmartHome.model.base.ID;
-import net.kleditzsch.apps.recipe.model.editor.TagEditor;
-import net.kleditzsch.apps.recipe.model.recipe.Tag;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.recipe.model.editor.TagEditor;
+import net.kleditzsch.apps.recipe.model.recipe.Tag;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

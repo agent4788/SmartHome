@@ -2,6 +2,7 @@ package net.kleditzsch.SmartHome.model.settings;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 
 /**
  * String Einstellung
@@ -30,7 +31,7 @@ public class StringSetting extends Setting {
      * @param value
      * @param defaultValue
      */
-    public StringSetting(String name, String value, String defaultValue) {
+    public StringSetting(Settings name, String value, String defaultValue) {
 
         setName(name);
         setValue(value);

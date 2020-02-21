@@ -1,11 +1,11 @@
 package net.kleditzsch.apps.automation.controller.tplinkservice;
 
 import net.kleditzsch.SmartHome.SmartHome;
+import net.kleditzsch.SmartHome.model.options.SwitchCommands;
 import net.kleditzsch.apps.automation.controller.executorservice.ExecutorService;
 import net.kleditzsch.apps.automation.controller.executorservice.command.SwitchCommand;
 import net.kleditzsch.apps.automation.model.device.actor.switchable.TPlinkSocket;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
-import net.kleditzsch.SmartHome.model.options.SwitchCommands;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

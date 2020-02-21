@@ -6,9 +6,9 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.UpdateResult;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.apps.contract.model.contract.Contract;
 import net.kleditzsch.apps.contract.model.contract.ContractGroup;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
 
 import java.util.ArrayList;

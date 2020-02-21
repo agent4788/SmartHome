@@ -3,12 +3,11 @@ package net.kleditzsch.SmartHome.model.editor;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.database.DatabaseEditor;
-import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
 import net.kleditzsch.SmartHome.model.settings.*;
+import net.kleditzsch.SmartHome.model.settings.Interface.Setting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -17,70 +16,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+
 public class SettingsEditor implements DatabaseEditor {
 
     public static final String COLLECTION = "global.settings";
-
-    //Globale Einstellungen
-    public static final String SERVER_PORT = "SERVER_PORT";
-    public static final String SERVER_SECURE_PORT = "SERVER_SECURE_PORT";
-    public static final String SERVER_KEY_STORE_PASSWORD = "SERVER_KEY_STORE_PASSWORD";
-    public static final String BACKUP_ENABLE_AUTO_BACKUP = "BACKUP_ENABLE_AUTO_BACKUP";
-    public static final String BACKUP_AUTO_CLEANUP_DAYS = "BACKUP_AUTO_CLEANUP_DAYS";
-    public static final String BACKUP_AUTO_SUCCESS_MAIL = "BACKUP_AUTO_SUCCESS_MAIL";
-    public static final String BACKUP_AUTO_ERROR_MAIL = "BACKUP_AUTO_ERROR_MAIL";
-    public static final String BACKUP_FTP_UPLOAD = "BACKUP_FTP_UPLOAD";
-    public static final String BACKUP_FTP_UPLOAD_HOST = "BACKUP_FTP_UPLOAD_HOST";
-    public static final String BACKUP_FTP_UPLOAD_PORT = "BACKUP_FTP_UPLOAD_PORT";
-    public static final String BACKUP_FTP_UPLOAD_SECURE_TYPE = "BACKUP_FTP_UPLOAD_SECURE_TYPE";
-    public static final String BACKUP_FTP_UPLOAD_USER = "BACKUP_FTP_UPLOAD_USER";
-    public static final String BACKUP_FTP_UPLOAD_PASSWORD = "BACKUP_FTP_UPLOAD_PASSWORD";
-    public static final String BACKUP_FTP_UPLOAD_DIRECTORY = "BACKUP_FTP_UPLOAD_DIRECTORY";
-    public static final String MAIL_HOST = "MAIL_HOST";
-    public static final String MAIL_PORT = "MAIL_PORT";
-    public static final String MAIL_SECURE_TYPE = "MAIL_SECURE_TYPE";
-    public static final String MAIL_USER = "MAIL_USER";
-    public static final String MAIL_PASSWORD = "MAIL_PASSWORD";
-    public static final String MAIL_RECEIVER_ADDRESS = "MAIL_RECEIVER_ADDRESS";
-
-    //Smarthome Einstellungen
-    public static final String AUTOMATION_SUNRISE_OFFSET = "AUTOMATION_SUNRISE_OFFSET";
-    public static final String AUTOMATION_SUNSET_OFFSET = "AUTOMATION_SUNSET_OFFSET";
-    public static final String AUTOMATION_LATITUDE = "AUTOMATION_LATITUDE";
-    public static final String AUTOMATION_LONGITUDE = "AUTOMATION_LONGITUDE";
-    public static final String AUTOMATION_FB_ACTIVE = "AUTOMATION_FB_ACTIVE";
-    public static final String AUTOMATION_FB_ADDRESS = "AUTOMATION_FB_ADDRESS";
-    public static final String AUTOMATION_FB_USER = "AUTOMATION_FB_USER";
-    public static final String AUTOMATION_FB_PASSWORD = "AUTOMATION_FB_PASSWORD";
-    public static final String AUTOMATION_ENERGY_ELECTRIC_PRICE = "AUTOMATION_ENERGY_ELECTRIC_PRICE";
-    public static final String AUTOMATION_ENERGY_WATER_PRICE = "AUTOMATION_ENERGY_WATER_PRICE";
-    public static final String AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE = "AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE";
-    public static final String AUTOMATION_MQTT_ACTIVE = "AUTOMATION_MQTT_ACTIVE";
-    public static final String AUTOMATION_MQTT_BROKER_ADDRESS = "AUTOMATION_MQTT_BROKER_ADDRESS";
-    public static final String AUTOMATION_MQTT_BROKER_PORT = "AUTOMATION_MQTT_BROKER_PORT";
-    public static final String AUTOMATION_MQTT_BROKER_CLIENT_ID = "AUTOMATION_MQTT_BROKER_CLIENT_ID";
-    public static final String AUTOMATION_MQTT_BROKER_USERNAME = "AUTOMATION_MQTT_BROKER_USERNAME";
-    public static final String AUTOMATION_MQTT_BROKER_PASSWORD = "AUTOMATION_MQTT_BROKER_PASSWORD";
-
-    //Filme Einstellungen
-    public static final String MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE = "MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE";
-    public static final String MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE = "MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE";
-    public static final String MOVIE_NEWEST_MOVIES_COUNT = "MOVIE_NEWEST_MOVIES_COUNT";
-    public static final String MOVIE_BEST_MOVIES_COUNT = "MOVIE_BEST_MOVIES_COUNT";
-    public static final String MOVIE_TMDB_API_KEY = "MOVIE_TMDB_API_KEY";
-
-    //Netzwerk Einstellungen
-    public static final String NETWORK_PRINTER_STATE_IP = "NETWORK_PRINTER_STATE_IP";
-    public static final String NETWORK_NAS_STATE_IP = "NETWORK_NAS_STATE_IP";
-
-    //Rezepte Einstellungen
-    public static final String RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE = "RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE";
-    public static final String RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE = "RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE";
-    public static final String RECIPE_NEWEST_RECIPE_COUNT = "RECIPE_NEWEST_RECIPE_COUNT";
-    public static final String RECIPE_SHOPPING_LIST_ID = "RECIPE_SHOPPING_LIST_ID";
-
-    //Kontakte
-    public static final String CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE = "CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE";
 
     /**
      * Lock objekt
@@ -100,121 +42,121 @@ public class SettingsEditor implements DatabaseEditor {
     public SettingsEditor() {
 
         //Webserver Einstellungen
-        IntegerSetting applicationServerPort = new IntegerSetting(SERVER_PORT, 8080, 8080);
+        IntegerSetting applicationServerPort = new IntegerSetting(Settings.SERVER_PORT, 8080, 8080);
         knownSettings.add(applicationServerPort);
-        IntegerSetting applicationServerSecurePort = new IntegerSetting(SERVER_SECURE_PORT, 8081, 8081);
+        IntegerSetting applicationServerSecurePort = new IntegerSetting(Settings.SERVER_SECURE_PORT, 8081, 8081);
         knownSettings.add(applicationServerSecurePort);
-        StringSetting keyStorePassword = new StringSetting(SERVER_KEY_STORE_PASSWORD, "", "");
+        StringSetting keyStorePassword = new StringSetting(Settings.SERVER_KEY_STORE_PASSWORD, "", "");
         knownSettings.add(keyStorePassword);
 
-        BooleanSetting enableAutoBackup = new BooleanSetting(BACKUP_ENABLE_AUTO_BACKUP, true, true);
+        BooleanSetting enableAutoBackup = new BooleanSetting(Settings.BACKUP_ENABLE_AUTO_BACKUP, true, true);
         knownSettings.add(enableAutoBackup);
-        IntegerSetting backupAutoCleanupDays = new IntegerSetting(BACKUP_AUTO_CLEANUP_DAYS, 10, 10);
+        IntegerSetting backupAutoCleanupDays = new IntegerSetting(Settings.BACKUP_AUTO_CLEANUP_DAYS, 10, 10);
         knownSettings.add(backupAutoCleanupDays);
 
-        BooleanSetting enableBackupFtpUpload = new BooleanSetting(BACKUP_FTP_UPLOAD, false, false);
+        BooleanSetting enableBackupFtpUpload = new BooleanSetting(Settings.BACKUP_FTP_UPLOAD, false, false);
         knownSettings.add(enableBackupFtpUpload);
-        StringSetting ftpHost = new StringSetting(BACKUP_FTP_UPLOAD_HOST, "", "");
+        StringSetting ftpHost = new StringSetting(Settings.BACKUP_FTP_UPLOAD_HOST, "", "");
         knownSettings.add(ftpHost);
-        IntegerSetting ftpPort = new IntegerSetting(BACKUP_FTP_UPLOAD_PORT, 21, 21);
+        IntegerSetting ftpPort = new IntegerSetting(Settings.BACKUP_FTP_UPLOAD_PORT, 21, 21);
         knownSettings.add(ftpPort);
-        StringSetting ftpSecureType = new StringSetting(BACKUP_FTP_UPLOAD_SECURE_TYPE, "NONE", "NONE");
+        StringSetting ftpSecureType = new StringSetting(Settings.BACKUP_FTP_UPLOAD_SECURE_TYPE, "NONE", "NONE");
         knownSettings.add(ftpSecureType);
-        StringSetting ftpUser = new StringSetting(BACKUP_FTP_UPLOAD_USER, "", "");
+        StringSetting ftpUser = new StringSetting(Settings.BACKUP_FTP_UPLOAD_USER, "", "");
         knownSettings.add(ftpUser);
-        StringSetting ftpPassword = new StringSetting(BACKUP_FTP_UPLOAD_PASSWORD, "", "");
+        StringSetting ftpPassword = new StringSetting(Settings.BACKUP_FTP_UPLOAD_PASSWORD, "", "");
         knownSettings.add(ftpPassword);
-        StringSetting ftpUploadDir = new StringSetting(BACKUP_FTP_UPLOAD_DIRECTORY, "/smartHomeBackup", "/smartHomeBackup");
+        StringSetting ftpUploadDir = new StringSetting(Settings.BACKUP_FTP_UPLOAD_DIRECTORY, "/smartHomeBackup", "/smartHomeBackup");
         knownSettings.add(ftpUploadDir);
 
-        BooleanSetting enableBackupSuccessMail = new BooleanSetting(BACKUP_AUTO_SUCCESS_MAIL, false, false);
+        BooleanSetting enableBackupSuccessMail = new BooleanSetting(Settings.BACKUP_AUTO_SUCCESS_MAIL, false, false);
         knownSettings.add(enableBackupSuccessMail);
-        BooleanSetting enableBackupErrorMail = new BooleanSetting(BACKUP_AUTO_ERROR_MAIL, true, true);
+        BooleanSetting enableBackupErrorMail = new BooleanSetting(Settings.BACKUP_AUTO_ERROR_MAIL, true, true);
         knownSettings.add(enableBackupErrorMail);
 
-        StringSetting mailHost = new StringSetting(MAIL_HOST, "", "");
+        StringSetting mailHost = new StringSetting(Settings.MAIL_HOST, "", "");
         knownSettings.add(mailHost);
-        IntegerSetting mailPort = new IntegerSetting(MAIL_PORT, 465, 465);
+        IntegerSetting mailPort = new IntegerSetting(Settings.MAIL_PORT, 465, 465);
         knownSettings.add(mailPort);
-        StringSetting mailSecureType = new StringSetting(MAIL_SECURE_TYPE, "SSL", "SSL");
+        StringSetting mailSecureType = new StringSetting(Settings.MAIL_SECURE_TYPE, "SSL", "SSL");
         knownSettings.add(mailSecureType);
-        StringSetting mailUser = new StringSetting(MAIL_USER, "", "");
+        StringSetting mailUser = new StringSetting(Settings.MAIL_USER, "", "");
         knownSettings.add(mailUser);
-        StringSetting mailPassword = new StringSetting(MAIL_PASSWORD, "", "");
+        StringSetting mailPassword = new StringSetting(Settings.MAIL_PASSWORD, "", "");
         knownSettings.add(mailPassword);
-        StringSetting mailReceiverAddress = new StringSetting(MAIL_RECEIVER_ADDRESS, "", "");
+        StringSetting mailReceiverAddress = new StringSetting(Settings.MAIL_RECEIVER_ADDRESS, "", "");
         knownSettings.add(mailReceiverAddress);
 
         //Smarthome Einstellungen
-        IntegerSetting sunriseOffset = new IntegerSetting(AUTOMATION_SUNRISE_OFFSET, 0, 0);
+        IntegerSetting sunriseOffset = new IntegerSetting(Settings.AUTOMATION_SUNRISE_OFFSET, 0, 0);
         knownSettings.add(sunriseOffset);
-        IntegerSetting sunsetOffset = new IntegerSetting(AUTOMATION_SUNSET_OFFSET, 0, 0);
+        IntegerSetting sunsetOffset = new IntegerSetting(Settings.AUTOMATION_SUNSET_OFFSET, 0, 0);
         knownSettings.add(sunsetOffset);
-        DoubleSetting latitude = new DoubleSetting(AUTOMATION_LATITUDE, 50.0, 50.0);
+        DoubleSetting latitude = new DoubleSetting(Settings.AUTOMATION_LATITUDE, 50.0, 50.0);
         knownSettings.add(latitude);
-        DoubleSetting longitude = new DoubleSetting(AUTOMATION_LONGITUDE, 12.0, 12.0);
+        DoubleSetting longitude = new DoubleSetting(Settings.AUTOMATION_LONGITUDE, 12.0, 12.0);
         knownSettings.add(longitude);
 
-        BooleanSetting fritzboxActive = new BooleanSetting(AUTOMATION_FB_ACTIVE, false, false);
+        BooleanSetting fritzboxActive = new BooleanSetting(Settings.AUTOMATION_FB_ACTIVE, false, false);
         knownSettings.add(fritzboxActive);
-        StringSetting fritzboxAddress = new StringSetting(AUTOMATION_FB_ADDRESS, "fritz.box", "fritz.box");
+        StringSetting fritzboxAddress = new StringSetting(Settings.AUTOMATION_FB_ADDRESS, "fritz.box", "fritz.box");
         knownSettings.add(fritzboxAddress);
-        StringSetting fritzboxUser = new StringSetting(AUTOMATION_FB_USER, "", "");
+        StringSetting fritzboxUser = new StringSetting(Settings.AUTOMATION_FB_USER, "", "");
         knownSettings.add(fritzboxUser);
-        StringSetting fritzboxPassowrd = new StringSetting(AUTOMATION_FB_PASSWORD, "", "");
+        StringSetting fritzboxPassowrd = new StringSetting(Settings.AUTOMATION_FB_PASSWORD, "", "");
         knownSettings.add(fritzboxPassowrd);
 
-        DoubleSetting energyElectricPrice = new DoubleSetting(AUTOMATION_ENERGY_ELECTRIC_PRICE, 0.1, 0.1);
+        DoubleSetting energyElectricPrice = new DoubleSetting(Settings.AUTOMATION_ENERGY_ELECTRIC_PRICE, 0.1, 0.1);
         knownSettings.add(energyElectricPrice);
-        DoubleSetting energyWaterPrice = new DoubleSetting(AUTOMATION_ENERGY_WATER_PRICE, 0.1, 0.1);
+        DoubleSetting energyWaterPrice = new DoubleSetting(Settings.AUTOMATION_ENERGY_WATER_PRICE, 0.1, 0.1);
         knownSettings.add(energyWaterPrice);
 
-        IntegerSetting paginationElementsAtPage = new IntegerSetting(AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
+        IntegerSetting paginationElementsAtPage = new IntegerSetting(Settings.AUTOMATION_PAGNATION_ELEMENTS_AT_PAGE, 10, 10);
         knownSettings.add(paginationElementsAtPage);
 
-        BooleanSetting mqttActive = new BooleanSetting(AUTOMATION_MQTT_ACTIVE, false, false);
+        BooleanSetting mqttActive = new BooleanSetting(Settings.AUTOMATION_MQTT_ACTIVE, false, false);
         knownSettings.add(mqttActive);
-        StringSetting mqttBrokerAddress = new StringSetting(AUTOMATION_MQTT_BROKER_ADDRESS, "", "");
+        StringSetting mqttBrokerAddress = new StringSetting(Settings.AUTOMATION_MQTT_BROKER_ADDRESS, "", "");
         knownSettings.add(mqttBrokerAddress);
-        IntegerSetting mqttBrokerPort = new IntegerSetting(AUTOMATION_MQTT_BROKER_PORT, 1883, 1883);
+        IntegerSetting mqttBrokerPort = new IntegerSetting(Settings.AUTOMATION_MQTT_BROKER_PORT, 1883, 1883);
         knownSettings.add(mqttBrokerPort);
-        StringSetting mqttBrokerClientId = new StringSetting(AUTOMATION_MQTT_BROKER_CLIENT_ID, "SmartHome Server", "SmartHome Server");
+        StringSetting mqttBrokerClientId = new StringSetting(Settings.AUTOMATION_MQTT_BROKER_CLIENT_ID, "SmartHome Server", "SmartHome Server");
         knownSettings.add(mqttBrokerClientId);
-        StringSetting mqttUsername = new StringSetting(AUTOMATION_MQTT_BROKER_USERNAME, "", "");
+        StringSetting mqttUsername = new StringSetting(Settings.AUTOMATION_MQTT_BROKER_USERNAME, "", "");
         knownSettings.add(mqttUsername);
-        StringSetting mqttPassword = new StringSetting(AUTOMATION_MQTT_BROKER_PASSWORD, "", "");
+        StringSetting mqttPassword = new StringSetting(Settings.AUTOMATION_MQTT_BROKER_PASSWORD, "", "");
         knownSettings.add(mqttPassword);
 
         //Filme Einstellungen
-        IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
+        IntegerSetting paginationElementsAtPageAdmin = new IntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
         knownSettings.add(paginationElementsAtPageAdmin);
-        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        IntegerSetting paginationElementsAtPageUser = new IntegerSetting(Settings.MOVIE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
         knownSettings.add(paginationElementsAtPageUser);
-        IntegerSetting newestMoviesCount = new IntegerSetting(MOVIE_NEWEST_MOVIES_COUNT, 50, 50);
+        IntegerSetting newestMoviesCount = new IntegerSetting(Settings.MOVIE_NEWEST_MOVIES_COUNT, 50, 50);
         knownSettings.add(newestMoviesCount);
-        IntegerSetting bestMoviesCount = new IntegerSetting(MOVIE_BEST_MOVIES_COUNT, 50, 50);
+        IntegerSetting bestMoviesCount = new IntegerSetting(Settings.MOVIE_BEST_MOVIES_COUNT, 50, 50);
         knownSettings.add(bestMoviesCount);
-        StringSetting tmdbApiKey = new StringSetting(MOVIE_TMDB_API_KEY, "", "");
+        StringSetting tmdbApiKey = new StringSetting(Settings.MOVIE_TMDB_API_KEY, "", "");
         knownSettings.add(tmdbApiKey);
 
         //Netzwerk Einstellungen
-        StringSetting printerStateIp = new StringSetting(NETWORK_PRINTER_STATE_IP, "0.0.0.0", "0.0.0.0");
+        StringSetting printerStateIp = new StringSetting(Settings.NETWORK_PRINTER_STATE_IP, "0.0.0.0", "0.0.0.0");
         knownSettings.add(printerStateIp);
-        StringSetting nasStateIp = new StringSetting(NETWORK_NAS_STATE_IP, "0.0.0.0", "0.0.0.0");
+        StringSetting nasStateIp = new StringSetting(Settings.NETWORK_NAS_STATE_IP, "0.0.0.0", "0.0.0.0");
         knownSettings.add(nasStateIp);
 
         //Rezepte Einstellungen
-        IntegerSetting recipePaginationElementsAtPageAdmin = new IntegerSetting(RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
+        IntegerSetting recipePaginationElementsAtPageAdmin = new IntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE, 25, 25);
         knownSettings.add(recipePaginationElementsAtPageAdmin);
-        IntegerSetting recipePaginationElementsAtPageUser = new IntegerSetting(RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        IntegerSetting recipePaginationElementsAtPageUser = new IntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
         knownSettings.add(recipePaginationElementsAtPageUser);
-        IntegerSetting newestRecipeCount = new IntegerSetting(RECIPE_NEWEST_RECIPE_COUNT, 10, 10);
+        IntegerSetting newestRecipeCount = new IntegerSetting(Settings.RECIPE_NEWEST_RECIPE_COUNT, 10, 10);
         knownSettings.add(newestRecipeCount);
-        StringSetting shoppingListId = new StringSetting(RECIPE_SHOPPING_LIST_ID, "", "");
+        StringSetting shoppingListId = new StringSetting(Settings.RECIPE_SHOPPING_LIST_ID, "", "");
         knownSettings.add(shoppingListId);
 
         //Kontakte Einstellungen
-        IntegerSetting contactPaginationElementsAtPageUser = new IntegerSetting(CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
+        IntegerSetting contactPaginationElementsAtPageUser = new IntegerSetting(Settings.CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE, 20, 20);
         knownSettings.add(contactPaginationElementsAtPageUser);
     }
 
@@ -224,7 +166,7 @@ public class SettingsEditor implements DatabaseEditor {
     @Override
     public void load() {
 
-        MongoCollection settingsCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
+        MongoCollection<Document> settingsCollection = SmartHome.i().getDatabaseCollection(COLLECTION);
         FindIterable<Document> iterator = settingsCollection.find();
 
         ReentrantReadWriteLock.WriteLock lock = getReadWriteLock().writeLock();
@@ -238,7 +180,7 @@ public class SettingsEditor implements DatabaseEditor {
                 case STRING:
 
                     StringSetting stringSetting = new StringSetting();
-                    stringSetting.setName(document.getString("name"));
+                    stringSetting.setName(Settings.valueOf(document.getString("name")));
                     stringSetting.setValue(document.getString("value"));
                     stringSetting.setDefaultValue(document.getString("defaultValue"));
                     stringSetting.resetChangedData();
@@ -247,7 +189,7 @@ public class SettingsEditor implements DatabaseEditor {
                 case BOOLEAN:
 
                     BooleanSetting booleanSetting = new BooleanSetting();
-                    booleanSetting.setName(document.getString("name"));
+                    booleanSetting.setName(Settings.valueOf(document.getString("name")));
                     booleanSetting.setValue(document.getBoolean("value"));
                     booleanSetting.setDefaultValue(document.getBoolean("defaultValue"));
                     booleanSetting.resetChangedData();
@@ -256,7 +198,7 @@ public class SettingsEditor implements DatabaseEditor {
                 case INTEGER:
 
                     IntegerSetting integerSetting = new IntegerSetting();
-                    integerSetting.setName(document.getString("name"));
+                    integerSetting.setName(Settings.valueOf(document.getString("name")));
                     integerSetting.setValue(document.getInteger("value"));
                     integerSetting.setDefaultValue(document.getInteger("defaultValue"));
                     integerSetting.resetChangedData();
@@ -265,7 +207,7 @@ public class SettingsEditor implements DatabaseEditor {
                 case DOUBLE:
 
                     DoubleSetting doubleSetting = new DoubleSetting();
-                    doubleSetting.setName(document.getString("name"));
+                    doubleSetting.setName(Settings.valueOf(document.getString("name")));
                     doubleSetting.setValue(document.getDouble("value"));
                     doubleSetting.setDefaultValue(document.getDouble("defaultValue"));
                     doubleSetting.resetChangedData();
@@ -274,7 +216,7 @@ public class SettingsEditor implements DatabaseEditor {
                 case LIST:
 
                     ListSetting listSetting = new ListSetting();
-                    listSetting.setName(document.getString("name"));
+                    listSetting.setName(Settings.valueOf(document.getString("name")));
                     listSetting.getValue().addAll((Collection<? extends String>) document.get("value"));
                     listSetting.getDefaultValue().addAll((Collection<? extends String>) document.get("defaultValue"));
                     listSetting.resetChangedData();
@@ -286,11 +228,11 @@ public class SettingsEditor implements DatabaseEditor {
         //mit bekannten Einstellungen falls nötig auffüllen
         for(Setting knownSetting : knownSettings) {
 
-            String knownSettingName = knownSetting.getName();
+            Settings knownSettingName = knownSetting.getName();
             boolean found = false;
             for(Setting setting : settings) {
 
-                if(setting.getName().equalsIgnoreCase(knownSettingName)) {
+                if(setting.getName() == knownSettingName) {
 
                     found = true;
                 }
@@ -310,9 +252,11 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<Setting> getSetting(String name) {
+    public Optional<Setting> getSetting(Settings name) {
 
-        return settings.stream().filter(setting -> setting.getName().equals(name)).findFirst();
+        return settings.stream()
+                .filter(setting -> setting.getName() == name)
+                .findFirst();
     }
 
     /**
@@ -321,14 +265,18 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<StringSetting> getStringSetting(String name) {
+    public StringSetting getStringSetting(Settings name) {
 
         Optional<Setting> setting = getSetting(name);
-        if(setting.isPresent() && setting.get() instanceof StringSetting) {
+        if(setting.isPresent()) {
 
-            return Optional.of((StringSetting) setting.get());
+            if(setting.get() instanceof StringSetting) {
+
+                return (StringSetting) setting.get();
+            }
+            throw new IllegalStateException("Die Einstellung entspricht nicht dem angeforderten Typ");
         }
-        return Optional.empty();
+        throw new IllegalStateException("Die Einstellung ist nicht vorhanden oder konnte nicht geladen werden");
     }
 
     /**
@@ -337,14 +285,18 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<IntegerSetting> getIntegerSetting(String name) {
+    public IntegerSetting getIntegerSetting(Settings name) {
 
         Optional<Setting> setting = getSetting(name);
-        if(setting.isPresent() && setting.get() instanceof IntegerSetting) {
+        if(setting.isPresent()) {
 
-            return Optional.of((IntegerSetting) setting.get());
+            if(setting.get() instanceof IntegerSetting) {
+
+                return (IntegerSetting) setting.get();
+            }
+            throw new IllegalStateException("Die Einstellung entspricht nicht dem angeforderten Typ");
         }
-        return Optional.empty();
+        throw new IllegalStateException("Die Einstellung ist nicht vorhanden oder konnte nicht geladen werden");
     }
 
     /**
@@ -353,14 +305,18 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<DoubleSetting> getDoubleSetting(String name) {
+    public DoubleSetting getDoubleSetting(Settings name) {
 
         Optional<Setting> setting = getSetting(name);
-        if(setting.isPresent() && setting.get() instanceof DoubleSetting) {
+        if(setting.isPresent()) {
 
-            return Optional.of((DoubleSetting) setting.get());
+            if(setting.get() instanceof DoubleSetting) {
+
+                return (DoubleSetting) setting.get();
+            }
+            throw new IllegalStateException("Die Einstellung entspricht nicht dem angeforderten Typ");
         }
-        return Optional.empty();
+        throw new IllegalStateException("Die Einstellung ist nicht vorhanden oder konnte nicht geladen werden");
     }
 
     /**
@@ -369,14 +325,18 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<BooleanSetting> getBooleanSetting(String name) {
+    public BooleanSetting getBooleanSetting(Settings name) {
 
         Optional<Setting> setting = getSetting(name);
-        if(setting.isPresent() && setting.get() instanceof BooleanSetting) {
+        if(setting.isPresent()) {
 
-            return Optional.of((BooleanSetting) setting.get());
+            if(setting.get() instanceof BooleanSetting) {
+
+                return (BooleanSetting) setting.get();
+            }
+            throw new IllegalStateException("Die Einstellung entspricht nicht dem angeforderten Typ");
         }
-        return Optional.empty();
+        throw new IllegalStateException("Die Einstellung ist nicht vorhanden oder konnte nicht geladen werden");
     }
 
     /**
@@ -385,14 +345,18 @@ public class SettingsEditor implements DatabaseEditor {
      * @param name Name der Einstellung
      * @return Einstellung
      */
-    public Optional<ListSetting> getListSetting(String name) {
+    public ListSetting getListSetting(Settings name) {
 
         Optional<Setting> setting = getSetting(name);
-        if(setting.isPresent() && setting.get() instanceof ListSetting) {
+        if(setting.isPresent()) {
 
-            return Optional.of((ListSetting) setting.get());
+            if(setting.get() instanceof ListSetting) {
+
+                return (ListSetting) setting.get();
+            }
+            throw new IllegalStateException("Die Einstellung entspricht nicht dem angeforderten Typ");
         }
-        return Optional.empty();
+        throw new IllegalStateException("Die Einstellung ist nicht vorhanden oder konnte nicht geladen werden");
     }
 
     /**
@@ -401,8 +365,7 @@ public class SettingsEditor implements DatabaseEditor {
     @Override
     public void dump() {
 
-        MongoCollection settingsCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
-
+        MongoCollection<Document> settingsCollection = SmartHome.i().getDatabaseCollection(COLLECTION);
         ReentrantReadWriteLock.ReadLock lock = getReadWriteLock().readLock();
         lock.lock();
 

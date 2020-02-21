@@ -1,12 +1,12 @@
 package net.kleditzsch.apps.recipe.view.user.recipe;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.apps.recipe.model.editor.IngredientEditor;
 import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
 import net.kleditzsch.apps.recipe.model.recipe.Ingredient;
 import net.kleditzsch.apps.recipe.model.recipe.IngredientAmount;
 import net.kleditzsch.apps.recipe.model.recipe.Recipe;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.apps.recipe.util.RecipeUtil;
 
 import javax.servlet.ServletException;

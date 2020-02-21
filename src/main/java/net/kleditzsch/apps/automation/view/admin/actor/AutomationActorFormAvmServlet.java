@@ -1,17 +1,17 @@
 package net.kleditzsch.apps.automation.view.admin.actor;
 
 import net.kleditzsch.SmartHome.SmartHome;
-import net.kleditzsch.apps.automation.controller.avmservice.AvmEditor;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.automation.api.avm.Device.SmarthomeDevice;
+import net.kleditzsch.apps.automation.controller.avmservice.AvmEditor;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
+import net.kleditzsch.apps.automation.model.device.actor.switchable.AvmSocket;
 import net.kleditzsch.apps.automation.model.device.sensor.ActualPowerValue;
 import net.kleditzsch.apps.automation.model.device.sensor.EnergyValue;
 import net.kleditzsch.apps.automation.model.device.sensor.TemperatureValue;
-import net.kleditzsch.apps.automation.model.device.actor.switchable.AvmSocket;
-import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
-import net.kleditzsch.apps.automation.api.avm.Device.SmarthomeDevice;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;

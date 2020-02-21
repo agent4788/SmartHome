@@ -1,19 +1,16 @@
 package net.kleditzsch.apps.automation.model.editor;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
-
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import net.kleditzsch.SmartHome.SmartHome;
-import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.database.AbstractDatabaseEditor;
+import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.apps.automation.model.device.AutomationElement;
 import net.kleditzsch.apps.automation.model.device.sensor.*;
 import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.device.sensor.virtual.*;
-import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
 
 import java.math.BigInteger;
@@ -22,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.*;
 
 /**
  * Verwaltung Sensoren

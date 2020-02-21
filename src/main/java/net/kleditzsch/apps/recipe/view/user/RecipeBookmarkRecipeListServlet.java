@@ -3,11 +3,11 @@ package net.kleditzsch.apps.recipe.view.user;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
-import net.kleditzsch.apps.recipe.model.recipe.Recipe;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
+import net.kleditzsch.apps.recipe.model.editor.RecipeEditor;
+import net.kleditzsch.apps.recipe.model.recipe.Recipe;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -43,16 +42,8 @@ public class RecipeBookmarkRecipeListServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE);
-        if (elementsAtPageOptional.isPresent()) {
-
-            elementsAtPage = elementsAtPageOptional.get().getValue();
-        }
-        Optional<IntegerSetting> newestRecipeCountOptional = settingsEditor.getIntegerSetting(SettingsEditor.RECIPE_NEWEST_RECIPE_COUNT);
-        if (newestRecipeCountOptional.isPresent()) {
-
-            newestRecipeCount = newestRecipeCountOptional.get().getValue();
-        }
+        elementsAtPage = settingsEditor.getIntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE).getValue();
+        newestRecipeCount = settingsEditor.getIntegerSetting(Settings.RECIPE_NEWEST_RECIPE_COUNT).getValue();
         settingsLock.unlock();
 
         List<Recipe> bookmarkRecipes = RecipeEditor.listBookmaredRecipes();

@@ -2,13 +2,13 @@ package net.kleditzsch.apps.contact.view.user.overview;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import net.kleditzsch.apps.contact.model.contact.Contact;
 import net.kleditzsch.apps.contact.model.contact.ContactGroup;
 import net.kleditzsch.apps.contact.model.editor.ContactEditor;
-import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
-import net.kleditzsch.SmartHome.utility.pagination.ListPagination;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -42,11 +42,7 @@ public class ContactGroupViewServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<IntegerSetting> elementsAtPageOptional = settingsEditor.getIntegerSetting(SettingsEditor.CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE);
-        if (elementsAtPageOptional.isPresent()) {
-
-            elementsAtPage = elementsAtPageOptional.get().getValue();
-        }
+        elementsAtPage = settingsEditor.getIntegerSetting(Settings.CONTACT_PAGINATION_ELEMENTS_AT_USER_PAGE).getValue();
         settingsLock.unlock();
 
         //Daten laden

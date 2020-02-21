@@ -2,10 +2,10 @@ package net.kleditzsch.apps.automation.view.admin.room;
 
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 import net.kleditzsch.apps.automation.model.editor.RoomEditor;
 import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 import net.kleditzsch.apps.automation.model.room.Room;
-import net.kleditzsch.SmartHome.utility.collection.CollectionUtil;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

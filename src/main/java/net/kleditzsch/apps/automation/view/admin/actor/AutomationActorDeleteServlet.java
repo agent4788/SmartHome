@@ -3,11 +3,11 @@ package net.kleditzsch.apps.automation.view.admin.actor;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Actor;
-import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.device.actor.switchable.AvmSocket;
 import net.kleditzsch.apps.automation.model.device.actor.switchable.TPlinkSocket;
-import net.kleditzsch.apps.automation.model.editor.SensorEditor;
+import net.kleditzsch.apps.automation.model.device.sensor.Interface.SensorValue;
 import net.kleditzsch.apps.automation.model.editor.ActorEditor;
+import net.kleditzsch.apps.automation.model.editor.SensorEditor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

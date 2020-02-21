@@ -1,6 +1,7 @@
 package net.kleditzsch.SmartHome.model.settings.Interface;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.common.base.Preconditions;
+import net.kleditzsch.SmartHome.model.base.ID;
 
 /**
  * Einstellung
@@ -20,9 +21,14 @@ public abstract class Setting {
     }
 
     /**
-     * Name der Einstellung
+     * eindeutige ID des Elements
      */
-    private String name;
+    private ID id = null;
+
+    /**
+     * Name des Elements
+     */
+    private Settings name;
 
     /**
      * gibt an ob Daten seit der letzten Speicherung geändert wurden
@@ -30,21 +36,43 @@ public abstract class Setting {
     private boolean changedData = false;
 
     /**
-     * gibt den Namen der Einstellung zurück
+     * gibt die ID des Elements zurück
      *
-     * @return Name
+     * @return ID
      */
-    public String getName() {
+    public ID getId() {
+        return id;
+    }
+
+    /**
+     * setzt die ID des ELements
+     *
+     * @param id ID Objekt
+     */
+    public void setId(ID id) {
+
+        Preconditions.checkNotNull(id);
+        this.id = id;
+        setChangedData();
+    }
+
+    /**
+     * gibt den Namen des Elements zurück
+     *
+     * @return Name des Elements
+     */
+    public Settings getName() {
         return name;
     }
 
     /**
-     * setzt den Namen der Einstellung
+     * setzt den Namen des Elements
      *
-     * @param name Name
+     * @param name Name des Elements
      */
-    public void setName(String name) {
+    public void setName(Settings name) {
 
+        Preconditions.checkNotNull(name);
         this.name = name;
         setChangedData();
     }

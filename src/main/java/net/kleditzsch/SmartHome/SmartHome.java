@@ -5,34 +5,24 @@ import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
-import net.kleditzsch.SmartHome.view.admin.GlobalAdminIndexServlet;
-import net.kleditzsch.SmartHome.view.admin.GlobalRebootServlet;
-import net.kleditzsch.SmartHome.view.admin.GlobalShutdownServlet;
-import net.kleditzsch.apps.automation.AutomationAppliaction;
-import net.kleditzsch.apps.contract.ContractApplication;
-import net.kleditzsch.apps.contact.ContactApplication;
-import net.kleditzsch.apps.knowledge.KnowledgeApplication;
-import net.kleditzsch.apps.movie.MovieApplication;
-import net.kleditzsch.apps.network.NetworkApplication;
-import net.kleditzsch.apps.recipe.RecipeApplication;
-import net.kleditzsch.apps.shoppinglist.ShoppingListApplication;
+import net.kleditzsch.SmartHome.controller.CliBackupRestore;
 import net.kleditzsch.SmartHome.controller.CliConfiguration;
 import net.kleditzsch.SmartHome.controller.DataDumpTask;
 import net.kleditzsch.SmartHome.controller.backup.BackupCleanupTask;
-import net.kleditzsch.SmartHome.controller.CliBackupRestore;
 import net.kleditzsch.SmartHome.controller.backup.BackupTask;
 import net.kleditzsch.SmartHome.controller.webserver.JettyServerStarter;
-import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.database.DatabaseManager;
 import net.kleditzsch.SmartHome.database.exception.DatabaseException;
-import net.kleditzsch.apps.automation.model.room.Room;
+import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.model.settings.BooleanSetting;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.json.Serializer.*;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
+import net.kleditzsch.SmartHome.view.admin.GlobalAdminIndexServlet;
+import net.kleditzsch.SmartHome.view.admin.GlobalRebootServlet;
+import net.kleditzsch.SmartHome.view.admin.GlobalShutdownServlet;
 import net.kleditzsch.SmartHome.view.admin.backup.GlobalBackupServlet;
 import net.kleditzsch.SmartHome.view.admin.backup.GlobalDeleteBackupServlet;
 import net.kleditzsch.SmartHome.view.admin.backup.GlobalDownloadBackupServlet;
@@ -42,6 +32,15 @@ import net.kleditzsch.SmartHome.view.admin.message.GlobalMessageServlet;
 import net.kleditzsch.SmartHome.view.admin.settings.GlobalSettingsServlet;
 import net.kleditzsch.SmartHome.view.user.GlobalIndexServlet;
 import net.kleditzsch.SmartHome.view.user.GlobalMobileViewServlet;
+import net.kleditzsch.apps.automation.AutomationAppliaction;
+import net.kleditzsch.apps.automation.model.room.Room;
+import net.kleditzsch.apps.contact.ContactApplication;
+import net.kleditzsch.apps.contract.ContractApplication;
+import net.kleditzsch.apps.knowledge.KnowledgeApplication;
+import net.kleditzsch.apps.movie.MovieApplication;
+import net.kleditzsch.apps.network.NetworkApplication;
+import net.kleditzsch.apps.recipe.RecipeApplication;
+import net.kleditzsch.apps.shoppinglist.ShoppingListApplication;
 import org.bson.Document;
 
 import java.nio.file.Files;
@@ -50,7 +49,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -350,9 +351,9 @@ public class SmartHome {
         ReentrantReadWriteLock.ReadLock lock = se.readLock();
         lock.lock();
 
-        int port = se.getIntegerSetting(SettingsEditor.SERVER_PORT).get().getValue();
-        int securePort = se.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT).get().getValue();
-        String keyStorePassword = se.getStringSetting(SettingsEditor.SERVER_KEY_STORE_PASSWORD).get().getValue();
+        int port = se.getIntegerSetting(Settings.SERVER_PORT).getValue();
+        int securePort = se.getIntegerSetting(Settings.SERVER_SECURE_PORT).getValue();
+        String keyStorePassword = se.getStringSetting(Settings.SERVER_KEY_STORE_PASSWORD).getValue();
 
         lock.unlock();
 
@@ -532,16 +533,9 @@ public class SmartHome {
         ReentrantReadWriteLock.ReadLock lock = settings.readLock();
         lock.lock();
 
-        Optional<BooleanSetting> enableAutoBackupOptional = settings.getBooleanSetting(SettingsEditor.BACKUP_ENABLE_AUTO_BACKUP);
-        if(enableAutoBackupOptional.isPresent()) {
+        enableAutoBackup = settings.getBooleanSetting(Settings.BACKUP_ENABLE_AUTO_BACKUP).getValue();
+        autoCleanupDays = settings.getIntegerSetting(Settings.BACKUP_AUTO_CLEANUP_DAYS).getValue();
 
-            enableAutoBackup = enableAutoBackupOptional.get().getValue();
-        }
-        Optional<IntegerSetting> autoCleanupDaysOptional = settings.getIntegerSetting(SettingsEditor.BACKUP_AUTO_CLEANUP_DAYS);
-        if(autoCleanupDaysOptional.isPresent()) {
-
-            autoCleanupDays = autoCleanupDaysOptional.get().getValue();
-        }
         lock.unlock();
 
         //Scheduler Threadpool

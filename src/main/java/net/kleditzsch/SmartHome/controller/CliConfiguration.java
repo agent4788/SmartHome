@@ -1,9 +1,11 @@
 package net.kleditzsch.SmartHome.controller;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.model.settings.StringSetting;
 import net.kleditzsch.SmartHome.utility.cli.CliUtil;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
@@ -119,46 +121,26 @@ public class CliConfiguration {
 
         try {
 
-            Optional<IntegerSetting> port = settings.getIntegerSetting(SettingsEditor.SERVER_PORT);
-            if(port.isPresent()) {
+            IntegerSetting port = settings.getIntegerSetting(Settings.SERVER_PORT);
+            Optional<Integer> portOptional = CliUtil.inputIntegerOption("Port", port.getValue(), 1000, 65535, 5);
+            portOptional.ifPresent(port::setValue);
 
-                Optional<Integer> portOptional = CliUtil.inputIntegerOption("Port", port.get().getValue(), 1000, 65535, 5);
-                if(portOptional.isPresent()) {
+            IntegerSetting securePort = settings.getIntegerSetting(Settings.SERVER_SECURE_PORT);
+            Optional<Integer> securePortOptional = CliUtil.inputIntegerOption("SSL Port", securePort.getValue(), 1000, 65535, 5);
+            securePortOptional.ifPresent(securePort::setValue);
 
-                    port.get().setValue(portOptional.get());
-                }
-            }
-
-            Optional<IntegerSetting> securePort = settings.getIntegerSetting(SettingsEditor.SERVER_SECURE_PORT);
-            if(securePort.isPresent()) {
-
-                Optional<Integer> securePortOptional = CliUtil.inputIntegerOption("SSL Port", securePort.get().getValue(), 1000, 65535, 5);
-                if(securePortOptional.isPresent()) {
-
-                    securePort.get().setValue(securePortOptional.get());
-                }
-            }
-
-            Optional<StringSetting> keystorePassword = settings.getStringSetting(SettingsEditor.SERVER_KEY_STORE_PASSWORD);
-            if(keystorePassword.isPresent()) {
-
-                Optional<String> password = CliUtil.inputStringOption("KeyStore Passwort", keystorePassword.get().getValue());
-                if(password.isPresent()) {
-
-                    keystorePassword.get().setValue(password.get());
-                }
-            }
+            StringSetting keystorePassword = settings.getStringSetting(Settings.SERVER_KEY_STORE_PASSWORD);
+            Optional<String> password = CliUtil.inputStringOption("KeyStore Passwort", keystorePassword.getValue());
+            password.ifPresent(keystorePassword::setValue);
 
             //Einstellungen speichern
             settings.dump();
 
             logger.info("Einstellungen erfolgreich gespeichert");
-        } catch (IOException e) {
-
-            System.err.println("Die Einstellungen konnten nicht gespeichert werden");
+        } catch (Exception e) {
 
             //Debug Ausgabe
-            LoggerUtil.serveException(logger, e);
+            LoggerUtil.serveException(logger, "Die Einstellungen konnten nicht gespeichert werden", e);
         } finally {
 
             lock.unlock();

@@ -3,18 +3,18 @@ package net.kleditzsch.apps.movie.view.admin.dbimport.zip;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
+import net.kleditzsch.SmartHome.utility.image.UploadUtil;
+import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.automation.api.tmdb.SimpleTmdbRestClient;
+import net.kleditzsch.apps.automation.api.tmdb.data.SearchResult;
+import net.kleditzsch.apps.automation.api.tmdb.exception.TmdbException;
 import net.kleditzsch.apps.movie.model.editor.*;
 import net.kleditzsch.apps.movie.model.importer.OldMovieDbImport;
 import net.kleditzsch.apps.movie.model.movie.Movie;
 import net.kleditzsch.apps.movie.model.movie.MovieBox;
 import net.kleditzsch.apps.movie.model.movie.meta.*;
-import net.kleditzsch.apps.automation.api.tmdb.SimpleTmdbRestClient;
-import net.kleditzsch.apps.automation.api.tmdb.data.SearchResult;
-import net.kleditzsch.apps.automation.api.tmdb.exception.TmdbException;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
-import net.kleditzsch.SmartHome.utility.image.UploadUtil;
-import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -91,11 +91,7 @@ public class MovieZipImportMovieBoxServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-        if (tmdbApiKeyOptional.isPresent()) {
-
-            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
-        }
+        tmdbApiKey = settingsEditor.getStringSetting(Settings.MOVIE_TMDB_API_KEY).getValue();
         settingsLock.unlock();
         model.with("tmdbApiKey", tmdbApiKey);
 
@@ -389,11 +385,7 @@ public class MovieZipImportMovieBoxServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-        if (tmdbApiKeyOptional.isPresent()) {
-
-            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
-        }
+        tmdbApiKey = settingsEditor.getStringSetting(Settings.MOVIE_TMDB_API_KEY).getValue();
         settingsLock.unlock();
 
         FormValidation form = FormValidation.create(req);

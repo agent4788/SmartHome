@@ -1,9 +1,9 @@
 package net.kleditzsch.apps.automation.controller.executorservice.command;
 
 import com.google.common.base.Preconditions;
+import net.kleditzsch.SmartHome.model.options.SwitchCommands;
 import net.kleditzsch.apps.automation.controller.executorservice.command.Interface.Command;
 import net.kleditzsch.apps.automation.model.device.actor.Interface.Switchable;
-import net.kleditzsch.SmartHome.model.options.SwitchCommands;
 
 /**
  * Schaltbefehl für Schaltelement

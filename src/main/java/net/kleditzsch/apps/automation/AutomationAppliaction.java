@@ -11,8 +11,12 @@ import net.kleditzsch.apps.automation.controller.sensorservice.UserAtHomeUpdateS
 import net.kleditzsch.apps.automation.controller.sensorservice.VirtualSensorUpdateService;
 import net.kleditzsch.apps.automation.controller.switchtimerservice.SwitchTimerService;
 import net.kleditzsch.apps.automation.controller.tplinkservice.TpLinkUpdateService;
-import net.kleditzsch.apps.automation.model.editor.*;
-import net.kleditzsch.apps.automation.view.admin.*;
+import net.kleditzsch.apps.automation.model.editor.ActorEditor;
+import net.kleditzsch.apps.automation.model.editor.RoomEditor;
+import net.kleditzsch.apps.automation.model.editor.SensorEditor;
+import net.kleditzsch.apps.automation.model.editor.SwitchTimerEditor;
+import net.kleditzsch.apps.automation.view.admin.AutomationAdminIndexServlet;
+import net.kleditzsch.apps.automation.view.admin.AutomationIconChooserServlet;
 import net.kleditzsch.apps.automation.view.admin.actor.*;
 import net.kleditzsch.apps.automation.view.admin.room.*;
 import net.kleditzsch.apps.automation.view.admin.sensorvalues.*;

@@ -1,11 +1,11 @@
 package net.kleditzsch.apps.contact.view.user.overview;
 
 import net.kleditzsch.SmartHome.model.base.ID;
+import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.apps.contact.model.contact.Contact;
 import net.kleditzsch.apps.contact.model.contact.ContactGroup;
 import net.kleditzsch.apps.contact.model.contact.PhoneNumber;
 import net.kleditzsch.apps.contact.model.editor.ContactEditor;
-import net.kleditzsch.SmartHome.utility.form.FormValidation;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

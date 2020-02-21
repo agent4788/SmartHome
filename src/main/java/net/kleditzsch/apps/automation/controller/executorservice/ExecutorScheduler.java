@@ -1,16 +1,16 @@
 package net.kleditzsch.apps.automation.controller.executorservice;
 
+import net.kleditzsch.SmartHome.model.options.SwitchCommands;
+import net.kleditzsch.apps.automation.controller.executorservice.command.Interface.Command;
 import net.kleditzsch.apps.automation.controller.executorservice.command.MoveShutterCommand;
 import net.kleditzsch.apps.automation.controller.executorservice.command.SensorValueCommand;
-import net.kleditzsch.apps.automation.controller.executorservice.command.SwitchCommand;
-import net.kleditzsch.apps.automation.controller.executorservice.command.Interface.Command;
 import net.kleditzsch.apps.automation.controller.executorservice.command.StopCommand;
+import net.kleditzsch.apps.automation.controller.executorservice.command.SwitchCommand;
 import net.kleditzsch.apps.automation.controller.executorservice.handler.*;
 import net.kleditzsch.apps.automation.model.device.actor.shutter.MqttShutter;
 import net.kleditzsch.apps.automation.model.device.actor.switchable.*;
 import net.kleditzsch.apps.automation.model.device.sensor.LiveBitValue;
 import net.kleditzsch.apps.automation.model.device.sensor.UserAtHomeValue;
-import net.kleditzsch.SmartHome.model.options.SwitchCommands;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;

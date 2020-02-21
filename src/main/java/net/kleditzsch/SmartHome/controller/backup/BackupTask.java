@@ -4,9 +4,7 @@ import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.MessageEditor;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
 import net.kleditzsch.SmartHome.model.message.Message;
-import net.kleditzsch.SmartHome.model.settings.BooleanSetting;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.logger.LoggerUtil;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
@@ -24,7 +22,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
@@ -57,69 +54,21 @@ public class BackupTask implements Runnable {
         String mailPassword = "";
         String mailReceiverAddress = "";
 
-        Optional<BooleanSetting> enableBackupSuccessMailOptional = se.getBooleanSetting(SettingsEditor.BACKUP_AUTO_SUCCESS_MAIL);
-        if(enableBackupSuccessMailOptional.isPresent()) {
-            enableBackupSuccessMail = enableBackupSuccessMailOptional.get().getValue();
-        }
-        Optional<BooleanSetting> enableBackupErrorMailOptional = se.getBooleanSetting(SettingsEditor.BACKUP_AUTO_ERROR_MAIL);
-        if(enableBackupErrorMailOptional.isPresent()) {
-            enableBackupErrorMail = enableBackupErrorMailOptional.get().getValue();
-        }
-
-        Optional<BooleanSetting> enableBackupFtpUploadOptional = se.getBooleanSetting(SettingsEditor.BACKUP_FTP_UPLOAD);
-        if(enableBackupFtpUploadOptional.isPresent()) {
-            enableBackupFtpUpload = enableBackupFtpUploadOptional.get().getValue();
-        }
-        Optional<StringSetting> ftpHostOptional = se.getStringSetting(SettingsEditor.BACKUP_FTP_UPLOAD_HOST);
-        if(ftpHostOptional.isPresent()) {
-            ftpHost = ftpHostOptional.get().getValue();
-        }
-        Optional<IntegerSetting> ftpPortOptional = se.getIntegerSetting(SettingsEditor.BACKUP_FTP_UPLOAD_PORT);
-        if(ftpPortOptional.isPresent()) {
-            ftpPort = ftpPortOptional.get().getValue();
-        }
-        Optional<StringSetting> ftpSecureTypeOptional = se.getStringSetting(SettingsEditor.BACKUP_FTP_UPLOAD_SECURE_TYPE);
-        if(ftpSecureTypeOptional.isPresent()) {
-            ftpSecureType = ftpSecureTypeOptional.get().getValue();
-        }
-        Optional<StringSetting> ftpUserOptional = se.getStringSetting(SettingsEditor.BACKUP_FTP_UPLOAD_USER);
-        if(ftpUserOptional.isPresent()) {
-            ftpUser = ftpUserOptional.get().getValue();
-        }
-        Optional<StringSetting> ftpPasswordOptional = se.getStringSetting(SettingsEditor.BACKUP_FTP_UPLOAD_PASSWORD);
-        if(ftpPasswordOptional.isPresent()) {
-            ftpPassword = ftpPasswordOptional.get().getValue();
-        }
-        Optional<StringSetting> ftpUploadDirOptional = se.getStringSetting(SettingsEditor.BACKUP_FTP_UPLOAD_DIRECTORY);
-        if(ftpUploadDirOptional.isPresent()) {
-            ftpUploadDir = ftpUploadDirOptional.get().getValue();
-        }
-
-        Optional<StringSetting> mailHostOptional = se.getStringSetting(SettingsEditor.MAIL_HOST);
-        if(mailHostOptional.isPresent()) {
-            mailHost = mailHostOptional.get().getValue();
-        }
-        Optional<IntegerSetting> mailPortOptional = se.getIntegerSetting(SettingsEditor.MAIL_PORT);
-        if(mailPortOptional.isPresent()) {
-            mailPort = mailPortOptional.get().getValue();
-        }
-        Optional<StringSetting> mailSecureTypeOptional = se.getStringSetting(SettingsEditor.MAIL_SECURE_TYPE);
-        if(mailSecureTypeOptional.isPresent()) {
-
-            mailSecureType = mailSecureTypeOptional.get().getValue();
-        }
-        Optional<StringSetting> mailUserOptional = se.getStringSetting(SettingsEditor.MAIL_USER);
-        if(mailUserOptional.isPresent()) {
-            mailUser = mailUserOptional.get().getValue();
-        }
-        Optional<StringSetting> mailPasswordOptional = se.getStringSetting(SettingsEditor.MAIL_PASSWORD);
-        if(mailPasswordOptional.isPresent()) {
-            mailPassword = mailPasswordOptional.get().getValue();
-        }
-        Optional<StringSetting> mailReceiverAddressOptional = se.getStringSetting(SettingsEditor.MAIL_RECEIVER_ADDRESS);
-        if(mailReceiverAddressOptional.isPresent()) {
-            mailReceiverAddress = mailReceiverAddressOptional.get().getValue();
-        }
+        enableBackupSuccessMail = se.getBooleanSetting(Settings.BACKUP_AUTO_SUCCESS_MAIL).getValue();
+        enableBackupErrorMail = se.getBooleanSetting(Settings.BACKUP_AUTO_SUCCESS_MAIL).getValue();
+        enableBackupFtpUpload = se.getBooleanSetting(Settings.BACKUP_AUTO_SUCCESS_MAIL).getValue();
+        ftpHost = se.getStringSetting(Settings.BACKUP_FTP_UPLOAD_HOST).getValue();
+        ftpPort = se.getIntegerSetting(Settings.BACKUP_FTP_UPLOAD_PORT).getValue();
+        ftpSecureType = se.getStringSetting(Settings.BACKUP_FTP_UPLOAD_SECURE_TYPE).getValue();
+        ftpUser = se.getStringSetting(Settings.BACKUP_FTP_UPLOAD_USER).getValue();
+        ftpPassword = se.getStringSetting(Settings.BACKUP_FTP_UPLOAD_PASSWORD).getValue();
+        ftpUploadDir = se.getStringSetting(Settings.BACKUP_FTP_UPLOAD_DIRECTORY).getValue();
+        mailHost = se.getStringSetting(Settings.MAIL_HOST).getValue();
+        mailPort = se.getIntegerSetting(Settings.MAIL_PORT).getValue();
+        mailSecureType = se.getStringSetting(Settings.MAIL_SECURE_TYPE).getValue();
+        mailUser = se.getStringSetting(Settings.MAIL_USER).getValue();
+        mailPassword = se.getStringSetting(Settings.MAIL_PASSWORD).getValue();
+        mailReceiverAddress = se.getStringSetting(Settings.MAIL_RECEIVER_ADDRESS).getValue();
 
         lock.unlock();
 

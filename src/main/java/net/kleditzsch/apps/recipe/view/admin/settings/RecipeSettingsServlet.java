@@ -3,11 +3,10 @@ package net.kleditzsch.apps.recipe.view.admin.settings;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.IntegerSetting;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
-import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.SmartHome.utility.form.FormValidation;
 import net.kleditzsch.SmartHome.utility.jtwig.JtwigFactory;
+import net.kleditzsch.apps.shoppinglist.model.editor.ShoppingListEditor;
 import org.eclipse.jetty.io.WriterOutputStream;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -36,14 +34,10 @@ public class RecipeSettingsServlet extends HttpServlet {
         lock.lock();
 
         //Einstellungen laden
-        Optional<IntegerSetting> newesRecipeCountOptional = se.getIntegerSetting(SettingsEditor.RECIPE_NEWEST_RECIPE_COUNT);
-        newesRecipeCountOptional.ifPresent(setting -> model.with("newesRecipeCount", setting.getValue()));
-        Optional<IntegerSetting> paginationUcpOptional = se.getIntegerSetting(SettingsEditor.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE);
-        paginationUcpOptional.ifPresent(setting -> model.with("paginationUcp", setting.getValue()));
-        Optional<IntegerSetting> paginationAcpOptional = se.getIntegerSetting(SettingsEditor.RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
-        paginationAcpOptional.ifPresent(setting -> model.with("paginationAcp", setting.getValue()));
-        Optional<StringSetting> shoppingListIdOptional = se.getStringSetting(SettingsEditor.RECIPE_SHOPPING_LIST_ID);
-        shoppingListIdOptional.ifPresent(setting -> model.with("shoppingListId", setting.getValue()));
+        model.with("newesRecipeCount", se.getIntegerSetting(Settings.RECIPE_NEWEST_RECIPE_COUNT).getValue());
+        model.with("paginationUcp", se.getIntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE).getValue());
+        model.with("paginationAcp", se.getIntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE).getValue());
+        model.with("shoppingListId", se.getStringSetting(Settings.RECIPE_SHOPPING_LIST_ID).getValue());
 
         model.with("shoppingListMap", ShoppingListEditor.listShoppingLists().stream().collect(Collectors.toMap(s -> s.getId().get(), s -> s)));
 
@@ -79,14 +73,10 @@ public class RecipeSettingsServlet extends HttpServlet {
             lock.lock();
 
             //Einstellungen laden
-            Optional<IntegerSetting> newestRecipeCountOptional = se.getIntegerSetting(SettingsEditor.RECIPE_NEWEST_RECIPE_COUNT);
-            newestRecipeCountOptional.ifPresent(setting -> setting.setValue(newesRecipeCount));
-            Optional<IntegerSetting> paginationUcpOptional = se.getIntegerSetting(SettingsEditor.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE);
-            paginationUcpOptional.ifPresent(setting -> setting.setValue(paginationUcp));
-            Optional<IntegerSetting> paginationAcpOptional = se.getIntegerSetting(SettingsEditor.RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE);
-            paginationAcpOptional.ifPresent(setting -> setting.setValue(paginationAcp));
-            Optional<StringSetting> shoppingListIdOptional = se.getStringSetting(SettingsEditor.RECIPE_SHOPPING_LIST_ID);
-            shoppingListIdOptional.ifPresent(setting -> setting.setValue(shoppingListId.get()));
+            se.getIntegerSetting(Settings.RECIPE_NEWEST_RECIPE_COUNT).setValue(newesRecipeCount);
+            se.getIntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_USER_PAGE).setValue(paginationUcp);
+            se.getIntegerSetting(Settings.RECIPE_PAGINATION_ELEMENTS_AT_ADMIN_PAGE).setValue(paginationAcp);
+            se.getStringSetting(Settings.RECIPE_SHOPPING_LIST_ID).setValue(shoppingListId.get());
 
             lock.unlock();
 

@@ -9,10 +9,12 @@ import net.kleditzsch.SmartHome.model.base.ID;
 import net.kleditzsch.SmartHome.model.message.Message;
 import net.kleditzsch.SmartHome.utility.datetime.DatabaseDateTimeUtil;
 import org.bson.Document;
-import static com.mongodb.client.model.Filters.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Meldungen Verwaltung

@@ -1,6 +1,5 @@
 package net.kleditzsch.SmartHome.app;
 
-import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**

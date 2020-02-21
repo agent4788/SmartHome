@@ -1,7 +1,7 @@
 package net.kleditzsch.apps.automation.model.room.element;
 
-import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 import net.kleditzsch.apps.automation.model.global.SwitchCommand;
+import net.kleditzsch.apps.automation.model.room.Interface.RoomElement;
 
 import java.util.ArrayList;
 import java.util.List;

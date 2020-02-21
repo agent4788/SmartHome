@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.kleditzsch.SmartHome.SmartHome;
 import net.kleditzsch.SmartHome.model.editor.SettingsEditor;
-import net.kleditzsch.SmartHome.model.settings.StringSetting;
+import net.kleditzsch.SmartHome.model.settings.Interface.Settings;
 import net.kleditzsch.apps.automation.api.tmdb.SimpleTmdbRestClient;
 import net.kleditzsch.apps.automation.api.tmdb.data.MovieInfo;
 import net.kleditzsch.apps.automation.api.tmdb.data.SearchResult;
@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MovieTmdbSearchServlet extends HttpServlet {
@@ -33,11 +32,7 @@ public class MovieTmdbSearchServlet extends HttpServlet {
         SettingsEditor settingsEditor = SmartHome.getInstance().getSettings();
         ReentrantReadWriteLock.ReadLock settingsLock = settingsEditor.readLock();
         settingsLock.lock();
-        Optional<StringSetting> tmdbApiKeyOptional = settingsEditor.getStringSetting(SettingsEditor.MOVIE_TMDB_API_KEY);
-        if (tmdbApiKeyOptional.isPresent()) {
-
-            tmdbApiKey = tmdbApiKeyOptional.get().getValue();
-        }
+        tmdbApiKey = settingsEditor.getStringSetting(Settings.MOVIE_TMDB_API_KEY).getValue();
         settingsLock.unlock();
 
         if(tmdbApiKey.length() > 0) {
