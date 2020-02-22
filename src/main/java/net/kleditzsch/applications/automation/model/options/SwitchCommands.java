@@ -1,4 +1,4 @@
-package net.kleditzsch.smarthome.model.options;
+package net.kleditzsch.applications.automation.model.options;
 
 public enum SwitchCommands {
 
