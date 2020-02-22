@@ -1,7 +1,7 @@
 package net.kleditzsch.applications.automation.controller.tplinkservice;
 
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.applications.automation.controller.executorservice.ExecutorService;
 import net.kleditzsch.applications.automation.controller.executorservice.command.SwitchCommand;
 import net.kleditzsch.applications.automation.model.device.actor.switchable.TPlinkSocket;

@@ -6,7 +6,7 @@ import com.mongodb.client.model.UpdateOptions;
 import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.database.AbstractDatabaseEditor;
 import net.kleditzsch.smarthome.model.base.ID;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.datetime.CornjobCalculator;
 import net.kleditzsch.smarthome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.applications.automation.model.global.Interface.Command;

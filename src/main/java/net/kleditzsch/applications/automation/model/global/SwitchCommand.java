@@ -2,7 +2,7 @@ package net.kleditzsch.applications.automation.model.global;
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.smarthome.model.base.ID;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.applications.automation.model.global.Interface.Command;
 
 /**

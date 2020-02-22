@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.model.editor.MessageEditor;
 import net.kleditzsch.smarthome.model.message.Message;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.logger.LoggerUtil;
 import net.kleditzsch.applications.automation.api.tplink.HS100;
 import net.kleditzsch.applications.automation.model.device.AutomationElement;

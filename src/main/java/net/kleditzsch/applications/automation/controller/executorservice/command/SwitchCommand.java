@@ -1,7 +1,7 @@
 package net.kleditzsch.applications.automation.controller.executorservice.command;
 
 import com.google.common.base.Preconditions;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.applications.automation.controller.executorservice.command.Interface.Command;
 import net.kleditzsch.applications.automation.model.device.actor.Interface.Switchable;
 
