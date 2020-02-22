@@ -51,6 +51,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -622,6 +623,21 @@ public class SmartHome {
 
             databaseManager.disconnectDatabase();
         }
+    }
+
+    /**
+     * gibt an ob die Anwendung aus einer JAR Datei heraus gestartet wurde
+     *
+     * @return true wenn JAR
+     */
+    public static boolean runFromJar() {
+
+        String protocol = SmartHome.class.getResource("").getProtocol();
+        if(Objects.equals(protocol, "jar")) {
+
+            return true;
+        }
+        return false;
     }
 
     /**
