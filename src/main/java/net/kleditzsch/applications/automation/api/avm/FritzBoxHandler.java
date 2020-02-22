@@ -218,9 +218,8 @@ public class FritzBoxHandler {
 
         } catch (IOException e) {
 
-            logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     /**
@@ -268,9 +267,8 @@ public class FritzBoxHandler {
 
         } catch (NoSuchAlgorithmException | IOException e) {
 
-            logger.log(Level.WARNING, e.getLocalizedMessage(), e);
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     /**
@@ -289,22 +287,5 @@ public class FritzBoxHandler {
 
         HttpResponse<String> response = HTTP_CLIENT.send(request, asString);
         return response;
-
-        /*
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("User-Agent", "Java Tools");
-        connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-        String line;
-        StringBuilder response = new StringBuilder();
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        while((line = in.readLine()) != null) {
-
-            response.append(line);
-        }
-        return response.toString();
-         */
     }
 }
