@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
+import net.kleditzsch.smarthome.application.Application;
+import net.kleditzsch.smarthome.application.ApplicationRegistry;
 import net.kleditzsch.smarthome.controller.CliBackupRestore;
 import net.kleditzsch.smarthome.controller.CliConfiguration;
 import net.kleditzsch.smarthome.controller.DataDumpTask;
@@ -49,10 +51,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -102,44 +101,9 @@ public class SmartHome {
     private volatile SettingsEditor settings;
 
     /**
-     * Hauptklasse der Automatisierung
+     * Anwendungsregistry
      */
-    private volatile AutomationAppliaction automationAppliaction;
-
-    /**
-     * Hauptklasse des Kalenders
-     */
-    private volatile ContractApplication contractApplication;
-
-    /**
-     * Hauptklasse der Verträgeverwaltung
-     */
-    private volatile ContactApplication contactApplication;
-
-    /**
-     * Hauptklasse der Filmdatenbank
-     */
-    private volatile MovieApplication movieApplication;
-
-    /**
-     * Hauptklasse der Musikverwaltung
-     */
-    private volatile NetworkApplication networkApplication;
-
-    /**
-     * Hauptklasse der Rezepteverwaltung
-     */
-    private volatile RecipeApplication recipeApplication;
-
-    /**
-     * Hauptklasse der Einkaufsliste
-     */
-    private volatile ShoppingListApplication shoppingListApplication;
-
-    /**
-     * Hauptklasse der Wissensdatenbank
-     */
-    private volatile KnowledgeApplication knowledgeApplication;
+    private volatile ApplicationRegistry applicationRegistry = new ApplicationRegistry();
 
     /**
      * Scheduler
@@ -250,37 +214,16 @@ public class SmartHome {
         initDatabase();
         initData();
 
-        //Automatisierung initalisieren
-        automationAppliaction = new AutomationAppliaction();
-        automationAppliaction.init();
+        applicationRegistry.registerApplication(new AutomationAppliaction());
+        applicationRegistry.registerApplication(new ContractApplication());
+        applicationRegistry.registerApplication(new ContactApplication());
+        applicationRegistry.registerApplication(new MovieApplication());
+        applicationRegistry.registerApplication(new NetworkApplication());
+        applicationRegistry.registerApplication(new RecipeApplication());
+        applicationRegistry.registerApplication(new ShoppingListApplication());
+        applicationRegistry.registerApplication(new KnowledgeApplication());
 
-        //Verträge initalisieren
-        contractApplication = new ContractApplication();
-        contractApplication.init();
-
-        //Kontakte initalisieren
-        contactApplication = new ContactApplication();
-        contactApplication.init();
-
-        //Filmdatenbank initalisieren
-        movieApplication = new MovieApplication();
-        movieApplication.init();
-
-        //Netzwerk initalisieren
-        networkApplication = new NetworkApplication();
-        networkApplication.init();
-
-        //Rezeptedatenbank initalisieren
-        recipeApplication = new RecipeApplication();
-        recipeApplication.init();
-
-        //Einkaufsliste initalisieren
-        shoppingListApplication = new ShoppingListApplication();
-        shoppingListApplication.init();
-
-        //Wissensdatenbank initalisieren
-        knowledgeApplication = new KnowledgeApplication();
-        knowledgeApplication.init();
+        applicationRegistry.init();
 
         initWebserver();
     }
@@ -376,14 +319,7 @@ public class SmartHome {
                 contextHandler.addServlet(GlobalShutdownServlet.class, "/admin/shutdown");
 
                 //Webseiten der Anwendungen registrieren
-                automationAppliaction.initWebContext(contextHandler);
-                contactApplication.initWebContext(contextHandler);
-                contractApplication.initWebContext(contextHandler);
-                movieApplication.initWebContext(contextHandler);
-                networkApplication.initWebContext(contextHandler);
-                recipeApplication.initWebContext(contextHandler);
-                shoppingListApplication.initWebContext(contextHandler);
-                knowledgeApplication.initWebContext(contextHandler);
+                applicationRegistry.initWebContext(contextHandler);
             });
 
             serverStarter.config();
@@ -456,7 +392,7 @@ public class SmartHome {
      * @return Automatisierungsverwaltung
      */
     public AutomationAppliaction getAutomation() {
-        return automationAppliaction;
+        return applicationRegistry.getApplication(AutomationAppliaction.class);
     }
 
     /**
@@ -465,7 +401,7 @@ public class SmartHome {
      * @return Kontakteverwaltung
      */
     public ContactApplication getContactApplication() {
-        return contactApplication;
+        return applicationRegistry.getApplication(ContactApplication.class);
     }
 
     /**
@@ -474,7 +410,7 @@ public class SmartHome {
      * @return Verträgeverwaltung
      */
     public ContractApplication getContractApplication() {
-        return contractApplication;
+        return applicationRegistry.getApplication(ContractApplication.class);
     }
 
     /**
@@ -483,7 +419,7 @@ public class SmartHome {
      * @return Filmdatenbank
      */
     public MovieApplication getMovieApplication() {
-        return movieApplication;
+        return applicationRegistry.getApplication(MovieApplication.class);
     }
 
     /**
@@ -492,7 +428,7 @@ public class SmartHome {
      * @return Musikdatenbank
      */
     public NetworkApplication getNetworkApplication() {
-        return networkApplication;
+        return applicationRegistry.getApplication(NetworkApplication.class);
     }
 
     /**
@@ -501,7 +437,7 @@ public class SmartHome {
      * @return Rezepteverwaltung
      */
     public RecipeApplication getRecipeApplication() {
-        return recipeApplication;
+        return applicationRegistry.getApplication(RecipeApplication.class);
     }
 
     /**
@@ -510,7 +446,7 @@ public class SmartHome {
      * @return Einkaufsliste
      */
     public ShoppingListApplication getShoppingListApplication() {
-        return shoppingListApplication;
+        return applicationRegistry.getApplication(ShoppingListApplication.class);
     }
 
     /**
@@ -519,7 +455,17 @@ public class SmartHome {
      * @return Wissensdatenbank
      */
     public KnowledgeApplication getKnowledgeApplication() {
-        return knowledgeApplication;
+        return applicationRegistry.getApplication(KnowledgeApplication.class);
+    }
+
+    /**
+     * gibt eine Liste mit allen bekannten Anwendungen zurück
+     *
+     * @return Liste mit allen bekannten Anwendungen
+     */
+    public List<Application> listApplications() {
+
+        return applicationRegistry.listApplications();
     }
 
     /**
@@ -554,13 +500,7 @@ public class SmartHome {
         }
 
         //Anwendungen starten
-        automationAppliaction.start();
-        contactApplication.start();
-        contractApplication.start();
-        movieApplication.start();
-        networkApplication.start();
-        recipeApplication.start();
-        shoppingListApplication.start();
+        applicationRegistry.start();
 
         //Webserver starten
         try {
@@ -586,13 +526,7 @@ public class SmartHome {
 
         settings.dump();
 
-        automationAppliaction.dump();
-        contactApplication.dump();
-        contractApplication.dump();
-        movieApplication.dump();
-        networkApplication.dump();
-        recipeApplication.dump();
-        shoppingListApplication.dump();
+        applicationRegistry.dump();
     }
 
     /**
@@ -604,13 +538,7 @@ public class SmartHome {
         dump();
 
         //Anwendungen stoppen
-        automationAppliaction.stop();
-        contactApplication.stop();
-        contractApplication.stop();
-        movieApplication.stop();
-        networkApplication.stop();
-        recipeApplication.stop();
-        shoppingListApplication.stop();
+        applicationRegistry.stop();
 
         //Scheduler stoppen
         timerExecutor.shutdown();

@@ -2,7 +2,7 @@ package net.kleditzsch.applications.automation.view.admin.room;
 
 import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.model.base.ID;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.file.FileUtil;
 import net.kleditzsch.smarthome.utility.icon.IconUtil;
 import net.kleditzsch.smarthome.utility.jtwig.JtwigFactory;

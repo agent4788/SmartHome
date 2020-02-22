@@ -1,6 +1,6 @@
 package net.kleditzsch.applications.automation.controller.executorservice;
 
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.applications.automation.controller.executorservice.command.Interface.Command;
 import net.kleditzsch.applications.automation.controller.executorservice.command.MoveShutterCommand;
 import net.kleditzsch.applications.automation.controller.executorservice.command.SensorValueCommand;

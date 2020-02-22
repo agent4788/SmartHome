@@ -4,7 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.movie.model.editor.*;
 import net.kleditzsch.applications.movie.model.movie.meta.Disc;
 import net.kleditzsch.applications.movie.model.movie.meta.FSK;
@@ -38,6 +38,7 @@ import net.kleditzsch.applications.movie.view.user.movieseries.*;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchAllServlet;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchPersonMoviesServlet;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchServlet;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.bson.Document;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -45,6 +46,36 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  * Hauptklasse der Filmdatenbank
  */
 public class MovieApplication implements Application {
+
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Filme",
+            "/movie/",
+            "/movie/index",
+            "movie.png"
+    );
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "movie";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
 
     /**
      * Initlisiert die Anwendungsdaten

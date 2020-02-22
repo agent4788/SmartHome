@@ -1,14 +1,45 @@
 package net.kleditzsch.applications.contact;
 
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.contact.view.user.ContactIndexServlet;
 import net.kleditzsch.applications.contact.view.user.overview.*;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  * Hauptklasse der Kontakteverwaltung
  */
 public class ContactApplication implements Application {
+
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Kontakte",
+            "/contact/",
+            "/contact/index",
+            "contact.png"
+    );
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "contact";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
 
     /**
      * Initlisiert die Anwendungsdaten

@@ -90,7 +90,7 @@ public abstract class Element {
     public void setDescription(String description) {
 
         Preconditions.checkNotNull(description);
-        Preconditions.checkArgument(description.length() <= 250);
+        Preconditions.checkArgument(description.length() <= 100_000);
         this.description = description;
         setChangedData();
     }

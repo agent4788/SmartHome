@@ -1,6 +1,6 @@
 package net.kleditzsch.applications.network;
 
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.network.view.user.NetworkIndexServlet;
 import net.kleditzsch.applications.network.view.user.nasstate.NetworkNasStateServlet;
 import net.kleditzsch.applications.network.view.user.overview.NetworkDeviceDeleteServlet;
@@ -8,6 +8,7 @@ import net.kleditzsch.applications.network.view.user.overview.NetworkDeviceFormS
 import net.kleditzsch.applications.network.view.user.overview.NetworkGroupDeleteServlet;
 import net.kleditzsch.applications.network.view.user.overview.NetworkGroupFormServlet;
 import net.kleditzsch.applications.network.view.user.printerstate.NetworkPrinterStateServlet;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -15,6 +16,35 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 public class NetworkApplication implements Application {
 
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Netzwerk",
+            "/network/",
+            "/network/index",
+            "network.png"
+    );
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "network";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
     /**
      * Initlisiert die Anwendungsdaten
      */

@@ -2,15 +2,46 @@ package net.kleditzsch.applications.shoppinglist;
 
 import com.mongodb.client.model.CreateCollectionOptions;
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.shoppinglist.model.editor.ShoppingItemSuggestionEditor;
 import net.kleditzsch.applications.shoppinglist.view.user.*;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  * Hauptklasse der Einkaufsliste
  */
 public class ShoppingListApplication implements Application {
+
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Einkaufsliste",
+            "/shoppinglist/",
+            "/shoppinglist/index",
+            "shoppinglist.png"
+    );
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "shoppinglist";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
 
     /**
      * Initlisiert die Anwendungsdaten

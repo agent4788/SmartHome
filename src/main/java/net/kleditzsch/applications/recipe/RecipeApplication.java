@@ -4,7 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.recipe.model.editor.RecipeEditor;
 import net.kleditzsch.applications.recipe.view.admin.RecipeAdminIndexServlet;
 import net.kleditzsch.applications.recipe.view.admin.ingredient.RecipeIngredientDeleteServlet;
@@ -25,12 +25,43 @@ import net.kleditzsch.applications.recipe.view.user.recipe.*;
 import net.kleditzsch.applications.recipe.view.user.search.RecipeSearchAllServlet;
 import net.kleditzsch.applications.recipe.view.user.search.RecipeSearchServlet;
 import net.kleditzsch.applications.recipe.view.user.search.RecipeSearchTagRecipesServlet;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  * Hauptklasse der Rezepteverwaltung
  */
 public class RecipeApplication implements Application {
+
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Rezepte",
+            "/recipe/",
+            "/recipe/index",
+            "recipe.png"
+    );
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "recipe";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
 
     /**
      * Initlisiert die Anwendungsdaten

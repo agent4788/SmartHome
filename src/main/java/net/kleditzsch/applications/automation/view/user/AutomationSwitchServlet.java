@@ -6,7 +6,7 @@ import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.model.base.ID;
 import net.kleditzsch.smarthome.model.editor.MessageEditor;
 import net.kleditzsch.smarthome.model.message.Message;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.applications.automation.controller.executorservice.ExecutorService;
 import net.kleditzsch.applications.automation.model.device.actor.Interface.Actor;
 import net.kleditzsch.applications.automation.model.device.actor.Interface.DoubleSwitchable;

@@ -2,7 +2,7 @@ package net.kleditzsch.applications.automation.controller.executorservice.handle
 
 import com.google.common.base.Preconditions;
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.datetime.DatabaseDateTimeUtil;
 import net.kleditzsch.applications.automation.controller.mqttservice.MqttService;
 import net.kleditzsch.applications.automation.model.device.AutomationElement;

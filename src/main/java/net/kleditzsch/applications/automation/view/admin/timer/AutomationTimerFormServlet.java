@@ -2,7 +2,7 @@ package net.kleditzsch.applications.automation.view.admin.timer;
 
 import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.model.base.ID;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.form.FormValidation;
 import net.kleditzsch.smarthome.utility.jtwig.JtwigFactory;
 import net.kleditzsch.applications.automation.model.device.actor.Interface.DoubleSwitchable;

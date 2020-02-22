@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.kleditzsch.smarthome.SmartHome;
 import net.kleditzsch.smarthome.model.base.ID;
-import net.kleditzsch.smarthome.model.options.SwitchCommands;
+import net.kleditzsch.applications.automation.model.options.SwitchCommands;
 import net.kleditzsch.smarthome.utility.formatter.SensorValueFormatUtil;
 import net.kleditzsch.smarthome.utility.sse.SseResponse;
 import net.kleditzsch.smarthome.utility.sse.SseUtil;

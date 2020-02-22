@@ -1,7 +1,7 @@
 package net.kleditzsch.applications.automation;
 
 import net.kleditzsch.smarthome.SmartHome;
-import net.kleditzsch.smarthome.app.Application;
+import net.kleditzsch.smarthome.application.Application;
 import net.kleditzsch.applications.automation.controller.avmservice.AvmDataUpdateService;
 import net.kleditzsch.applications.automation.controller.avmservice.AvmEditor;
 import net.kleditzsch.applications.automation.controller.executorservice.ExecutorService;
@@ -25,6 +25,7 @@ import net.kleditzsch.applications.automation.view.admin.timer.AutomationTimerDe
 import net.kleditzsch.applications.automation.view.admin.timer.AutomationTimerFormServlet;
 import net.kleditzsch.applications.automation.view.admin.timer.AutomationTimerListServlet;
 import net.kleditzsch.applications.automation.view.user.*;
+import net.kleditzsch.smarthome.application.MetaData;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,6 +35,16 @@ import java.util.concurrent.TimeUnit;
  * Hauptklasse der Automatisierungsanwendung
  */
 public class AutomationAppliaction implements Application {
+
+    /**
+     * Meta Informationen
+     */
+    private static MetaData meta = new MetaData(
+            "Automation",
+            "/automation/",
+            "/automation/index",
+            "automation.png"
+    );
 
     /**
      * Sensor Editor
@@ -74,6 +85,26 @@ public class AutomationAppliaction implements Application {
      * AVM Editor
      */
     private volatile AvmEditor avmEditor;
+
+    /**
+     * gibt den Eindeutigen Namen der Anwendung zurück
+     *
+     * @return Eindeutiger Name der Anwendung
+     */
+    @Override
+    public String getApplicationName() {
+        return "automation";
+    }
+
+    /**
+     * gibt die Meta Informationen der Anwendung zurück
+     *
+     * @return Meta Informationen
+     */
+    @Override
+    public MetaData getMetaData() {
+        return meta;
+    }
 
     /**
      * Initlisiert die Anwendungsdaten
