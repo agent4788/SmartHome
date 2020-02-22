@@ -17,7 +17,8 @@ public class ContractApplication implements Application {
             "Verträge",
             "/contract/",
             "/contract/index",
-            "contract.png"
+            "contract.png",
+            6
     );
 
     /**

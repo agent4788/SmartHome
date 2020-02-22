@@ -40,7 +40,8 @@ public class RecipeApplication implements Application {
             "Rezepte",
             "/recipe/",
             "/recipe/index",
-            "recipe.png"
+            "recipe.png",
+            3
     );
 
     /**

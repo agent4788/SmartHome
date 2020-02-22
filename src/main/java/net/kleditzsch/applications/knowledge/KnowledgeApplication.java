@@ -17,7 +17,8 @@ public class KnowledgeApplication implements Application {
             "Wissen",
             "/knowledge/",
             "/knowledge/index",
-            "knowledge.png"
+            "knowledge.png",
+            8
     );
 
     /**

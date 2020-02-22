@@ -26,16 +26,23 @@ public class MetaData {
     private String iconName;
 
     /**
+     * Sortierung
+     */
+    private int orderId;
+
+    /**
      * @param displayName Anzeige Name
      * @param webContextPath Pfad im Webinterface
      * @param webStartUrl Pfad der Index Seite
      * @param iconName Name der Icon Datei
+     * @param orderId Sortierungs ID der Anwendung
      */
-    public MetaData(String displayName, String webContextPath, String webStartUrl, String iconName) {
+    public MetaData(String displayName, String webContextPath, String webStartUrl, String iconName, int orderId) {
         this.displayName = displayName;
         this.webContextPath = webContextPath;
         this.webStartUrl = webStartUrl;
         this.iconName = iconName;
+        this.orderId = orderId;
     }
 
     /**
@@ -72,5 +79,14 @@ public class MetaData {
      */
     public String getIconName() {
         return iconName;
+    }
+
+    /**
+     * gibt die Sortierungs ID der Anwendung zurück
+     *
+     * @return Sortierungs ID der Anwendung
+     */
+    public int getOrderId() {
+        return orderId;
     }
 }

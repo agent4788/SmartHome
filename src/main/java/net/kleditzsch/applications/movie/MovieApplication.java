@@ -54,7 +54,8 @@ public class MovieApplication implements Application {
             "Filme",
             "/movie/",
             "/movie/index",
-            "movie.png"
+            "movie.png",
+            2
     );
 
     /**

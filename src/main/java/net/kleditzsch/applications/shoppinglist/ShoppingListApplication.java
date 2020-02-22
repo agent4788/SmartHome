@@ -20,7 +20,8 @@ public class ShoppingListApplication implements Application {
             "Einkaufsliste",
             "/shoppinglist/",
             "/shoppinglist/index",
-            "shoppinglist.png"
+            "shoppinglist.png",
+            4
     );
 
     /**

@@ -43,7 +43,8 @@ public class AutomationAppliaction implements Application {
             "Automation",
             "/automation/",
             "/automation/index",
-            "automation.png"
+            "automation.png",
+            1
     );
 
     /**

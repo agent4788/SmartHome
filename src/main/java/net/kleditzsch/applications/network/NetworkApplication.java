@@ -23,7 +23,8 @@ public class NetworkApplication implements Application {
             "Netzwerk",
             "/network/",
             "/network/index",
-            "network.png"
+            "network.png",
+            7
     );
 
     /**

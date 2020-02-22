@@ -18,7 +18,8 @@ public class ContactApplication implements Application {
             "Kontakte",
             "/contact/",
             "/contact/index",
-            "contact.png"
+            "contact.png",
+            5
     );
 
     /**
