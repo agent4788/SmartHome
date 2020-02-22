@@ -147,7 +147,6 @@ public class HS110 extends HS100 {
      * gint die Energiedaten zurück
      *
      * @return Energiedaten
-     * @throws IOException
      */
     public EnergyData getEnergyData() throws IOException {
 
@@ -155,7 +154,7 @@ public class HS110 extends HS100 {
         String jsonData = sendCommand(COMMAND_ENERGY);
         if(jsonData.length() > 0) {
 
-            JsonObject jo = new JsonParser().parse(jsonData).getAsJsonObject();
+            JsonObject jo = JsonParser.parseString(jsonData).getAsJsonObject();
             JsonObject energyDataJson = jo.get("emeter").getAsJsonObject().get("get_realtime").getAsJsonObject();
 
             energyData.setNowCurrent(energyDataJson.get("current").getAsDouble());

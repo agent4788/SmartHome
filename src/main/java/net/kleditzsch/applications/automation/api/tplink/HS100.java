@@ -139,7 +139,7 @@ public class HS100 {
         String jsonData = sendCommand(COMMAND_SWITCH_ON);
         if(jsonData.length() > 0) {
 
-            JsonObject jo = new JsonParser().parse(jsonData).getAsJsonObject();
+            JsonObject jo = JsonParser.parseString(jsonData).getAsJsonObject();
             int errorCode = jo.get("system").getAsJsonObject().get("set_relay_state").getAsJsonObject().get("err_code").getAsInt();
             return errorCode == 0;
         }
@@ -156,7 +156,7 @@ public class HS100 {
         String jsonData = sendCommand(COMMAND_SWITCH_OFF);
         if(jsonData.length() > 0) {
 
-            JsonObject jo = new JsonParser().parse(jsonData).getAsJsonObject();
+            JsonObject jo = JsonParser.parseString(jsonData).getAsJsonObject();
             int errorCode = jo.get("system").getAsJsonObject().get("set_relay_state").getAsJsonObject().get("err_code").getAsInt();
             return errorCode == 0;
         }
@@ -173,7 +173,7 @@ public class HS100 {
         String jsonData = sendCommand(COMMAND_INFO);
         if(jsonData.length() > 0) {
 
-            JsonObject jo = new JsonParser().parse(jsonData).getAsJsonObject();
+            JsonObject jo = JsonParser.parseString(jsonData).getAsJsonObject();
             int state = jo.get("system").getAsJsonObject().get("get_sysinfo").getAsJsonObject().get("relay_state").getAsInt();
             return state == 1 ? STATE_ON : STATE_OFF;
         }
@@ -191,7 +191,7 @@ public class HS100 {
         String jsonData = sendCommand(COMMAND_INFO);
         if(jsonData.length() > 0) {
 
-            JsonObject jo = new JsonParser().parse(jsonData).getAsJsonObject();
+            JsonObject jo = JsonParser.parseString(jsonData).getAsJsonObject();
             JsonObject systemInfo = jo.get("system").getAsJsonObject().get("get_sysinfo").getAsJsonObject();
             for(Map.Entry<String, JsonElement> entry : systemInfo.entrySet()) {
 

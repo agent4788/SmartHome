@@ -132,7 +132,7 @@ public class SimpleTmdbRestClient {
 
         HttpResponse<String> response = HTTP_CLIENT.send(request, asString);
         String jsonStr = response.body();
-        JsonObject o = new JsonParser().parse(jsonStr).getAsJsonObject();
+        JsonObject o = JsonParser.parseString(jsonStr).getAsJsonObject();
 
         if(response.statusCode() == 200) {
 
@@ -192,7 +192,7 @@ public class SimpleTmdbRestClient {
 
         HttpResponse<String> response = HTTP_CLIENT.send(request, asString);
         String jsonStr = response.body();
-        JsonObject result = new JsonParser().parse(jsonStr).getAsJsonObject();
+        JsonObject result = JsonParser.parseString(jsonStr).getAsJsonObject();
 
         if(response.statusCode() == 200) {
 

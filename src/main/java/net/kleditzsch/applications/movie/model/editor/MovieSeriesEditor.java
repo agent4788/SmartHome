@@ -134,8 +134,8 @@ public abstract class MovieSeriesEditor {
      */
     public static long countMovieSeries() {
 
-        MongoCollection movieSeriesCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
-        return movieSeriesCollection.count();
+        MongoCollection<Document> movieSeriesCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
+        return movieSeriesCollection.countDocuments();
     }
 
     /**

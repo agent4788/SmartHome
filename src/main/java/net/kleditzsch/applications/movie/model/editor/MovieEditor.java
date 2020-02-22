@@ -437,14 +437,14 @@ public abstract class MovieEditor {
 
             if(includeBoxMovies) {
 
-                return movieCollection.count(bsonFilter);
+                return movieCollection.countDocuments(bsonFilter);
             }
             return movieCollection.countDocuments(and(eq("boxId", null), bsonFilter));
         } else {
 
             if(includeBoxMovies) {
 
-                return movieCollection.count();
+                return movieCollection.countDocuments();
             }
             return movieCollection.countDocuments(eq("boxId", null));
         }

@@ -55,7 +55,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '+'
-
 }
 
 compileJava {

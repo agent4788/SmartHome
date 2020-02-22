@@ -52,7 +52,7 @@ public class OldMovieDbImport {
     public static List<Map<String, String>> listMovies(Path moviesJsonFile) throws IOException {
 
         String json = Files.readString(moviesJsonFile);
-        JsonElement je = new JsonParser().parse(json);
+        JsonElement je = JsonParser.parseString(json);
 
         JsonArray moviesJson = je.getAsJsonArray();
         List<Map<String, String>> movies = new ArrayList<>();
@@ -124,7 +124,7 @@ public class OldMovieDbImport {
     public static List<OldMovieBox> listMovieBoxes(Path movieBoxesJsonFile) throws IOException {
 
         String json = Files.readString(movieBoxesJsonFile);
-        JsonElement je = new JsonParser().parse(json);
+        JsonElement je = JsonParser.parseString(json);
 
         JsonArray movieBoxesJson = je.getAsJsonArray();
         List<OldMovieBox> movieBoxes = new ArrayList<>();

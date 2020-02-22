@@ -5,6 +5,7 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import net.kleditzsch.smarthome.model.base.ID;
 import net.kleditzsch.smarthome.model.editor.MessageEditor;
 import net.kleditzsch.smarthome.model.message.Message;
@@ -404,12 +405,15 @@ public class BackupCreator {
     private List<String> listCollectionNames(String prefix) {
 
         List<String> collectionNames = new ArrayList<>();
-        database.listCollectionNames().forEach((Block<? super String>) collectionName -> {
-            if(collectionName.startsWith(prefix)) {
+        MongoIterable<String> names = database.listCollectionNames();
 
-                collectionNames.add(collectionName);
+        for(String name : names) {
+
+            if(name.startsWith(prefix)) {
+
+                collectionNames.add(name);
             }
-        });
+        }
         return collectionNames;
     }
 

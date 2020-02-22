@@ -2,6 +2,7 @@ package net.kleditzsch.applications.movie.model.editor;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
@@ -115,8 +116,8 @@ public abstract class MovieBoxEditor {
      */
     public static long countMovieBoxes() {
 
-        MongoCollection movieBoxCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
-        return movieBoxCollection.count();
+        MongoCollection<Document> movieBoxCollection = SmartHome.getInstance().getDatabaseCollection(COLLECTION);
+        return movieBoxCollection.countDocuments();
     }
 
     /**
