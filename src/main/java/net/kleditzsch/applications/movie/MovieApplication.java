@@ -192,7 +192,6 @@ public class MovieApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(MovieIndexServlet.class, "/movie/");
         contextHandler.addServlet(MovieIndexServlet.class, "/movie/index");
         contextHandler.addServlet(MovieNewMovieListServlet.class, "/movie/newmovies");
         contextHandler.addServlet(MovieViewSoonMovieListServlet.class, "/movie/viewsoonmovies");
@@ -225,7 +224,6 @@ public class MovieApplication implements Application {
         contextHandler.addServlet(MovieSearchAllServlet.class, "/movie/searchall");
         contextHandler.addServlet(MovieSearchPersonMoviesServlet.class, "/movie/serachpersonmovies");
 
-        contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/");
         contextHandler.addServlet(MovieAdminIndexServlet.class, "/movie/admin/index");
         contextHandler.addServlet(MoviePersonListServlet.class, "/movie/admin/person");
         contextHandler.addServlet(MoviePersonFormServlet.class, "/movie/admin/personform");

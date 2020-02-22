@@ -361,7 +361,6 @@ public class SmartHome {
 
             serverStarter.getRegisterFunctions().add(contextHandler -> {
 
-                contextHandler.addServlet(GlobalIndexServlet.class, "/");
                 contextHandler.addServlet(GlobalIndexServlet.class, "/index");
                 contextHandler.addServlet(GlobalMobileViewServlet.class, "/mobileview");
                 contextHandler.addServlet(GlobalAdminIndexServlet.class, "/admin/index");

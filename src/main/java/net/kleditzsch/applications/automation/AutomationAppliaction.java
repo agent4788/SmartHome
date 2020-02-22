@@ -105,14 +105,12 @@ public class AutomationAppliaction implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(AutomationIndexServlet.class, "/automation/");
         contextHandler.addServlet(AutomationIndexServlet.class, "/automation/index");
         contextHandler.addServlet(AutomationRoomServlet.class, "/automation/room");
         contextHandler.addServlet(AutomationSwitchServlet.class, "/automation/switch");
         contextHandler.addServlet(AutomationMoveShutterServlet.class, "/automation/moveshutter");
         contextHandler.addServlet(AutomationSseSyncServlet.class, "/automation/ssesync");
 
-        contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/");
         contextHandler.addServlet(AutomationAdminIndexServlet.class, "/automation/admin/index");
         contextHandler.addServlet(AutomationSettingsServlet.class, "/automation/admin/settings");
         contextHandler.addServlet(AutomationActorListServlet.class, "/automation/admin/actor");

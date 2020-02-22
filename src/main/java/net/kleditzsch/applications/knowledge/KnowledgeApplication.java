@@ -24,7 +24,6 @@ public class KnowledgeApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(KnowledgeIndexServlet.class, "/knowledge/");
         contextHandler.addServlet(KnowledgeIndexServlet.class, "/knowledge/index");
     }
 

@@ -30,7 +30,6 @@ public class NetworkApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(NetworkIndexServlet.class, "/network/");
         contextHandler.addServlet(NetworkIndexServlet.class, "/network/index");
         contextHandler.addServlet(NetworkGroupFormServlet.class, "/network/groupform");
         contextHandler.addServlet(NetworkGroupDeleteServlet.class, "/network/groupdelete");

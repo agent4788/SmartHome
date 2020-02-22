@@ -24,7 +24,6 @@ public class ContractApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(ContractIndexServlet.class, "/contract/");
         contextHandler.addServlet(ContractIndexServlet.class, "/contract/index");
     }
 

@@ -31,7 +31,6 @@ public class ShoppingListApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(ShoppingListIndexServlet.class, "/shoppinglist/");
         contextHandler.addServlet(ShoppingListIndexServlet.class, "/shoppinglist/index");
         contextHandler.addServlet(ShoppingListAddListServlet.class, "/shoppinglist/addlist");
         contextHandler.addServlet(ShoppingListOrderListServlet.class, "/shoppinglist/listorder");

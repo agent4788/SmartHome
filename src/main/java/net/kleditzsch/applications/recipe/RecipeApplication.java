@@ -52,7 +52,6 @@ public class RecipeApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(RecipeIndexServlet.class, "/recipe/");
         contextHandler.addServlet(RecipeIndexServlet.class, "/recipe/index");
         contextHandler.addServlet(RecipeSearchServlet.class, "/recipe/search");
         contextHandler.addServlet(RecipeSearchAllServlet.class, "/recipe/searchall");

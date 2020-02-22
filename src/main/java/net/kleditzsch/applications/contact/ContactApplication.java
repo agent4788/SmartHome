@@ -25,7 +25,6 @@ public class ContactApplication implements Application {
      */
     public void initWebContext(ServletContextHandler contextHandler) {
 
-        contextHandler.addServlet(ContactIndexServlet.class, "/contact/");
         contextHandler.addServlet(ContactIndexServlet.class, "/contact/index");
         contextHandler.addServlet(ContactGroupViewServlet.class, "/contact/groupview");
         contextHandler.addServlet(ContactGroupFormServlet.class, "/contact/groupform");
