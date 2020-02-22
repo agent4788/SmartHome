@@ -38,6 +38,7 @@ import net.kleditzsch.applications.movie.view.user.movieseries.*;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchAllServlet;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchPersonMoviesServlet;
 import net.kleditzsch.applications.movie.view.user.search.MovieSearchServlet;
+import org.bson.Document;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -169,18 +170,18 @@ public class MovieApplication implements Application {
         //Index anlegen
         if (MovieEditor.countMovies(true) == 0) {
 
-            MongoCollection collection = SmartHome.getInstance().getDatabaseCollection(MovieEditor.COLLECTION);
+            MongoCollection<Document> collection = SmartHome.getInstance().getDatabaseCollection(MovieEditor.COLLECTION);
             collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
         }
 
         if (MovieBoxEditor.countMovieBoxes() == 0) {
 
-            MongoCollection collection = SmartHome.getInstance().getDatabaseCollection(MovieBoxEditor.COLLECTION);
+            MongoCollection<Document> collection = SmartHome.getInstance().getDatabaseCollection(MovieBoxEditor.COLLECTION);
             collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
         }
         if (MovieSeriesEditor.countMovieSeries() == 0) {
 
-            MongoCollection collection = SmartHome.getInstance().getDatabaseCollection(MovieSeriesEditor.COLLECTION);
+            MongoCollection<Document> collection = SmartHome.getInstance().getDatabaseCollection(MovieSeriesEditor.COLLECTION);
             collection.createIndex(Indexes.text("search"), new IndexOptions().defaultLanguage("german"));
         }
     }
